@@ -108,8 +108,8 @@ npm run test:watch
 Antes de empezar a trabajar en una nueva tarea, asegúrate de obtener los últimos cambios:
 
 ```bash
-git checkout dev
-git pull origin dev
+git checkout develop
+git pull origin develop
 git checkout -b feature/#XXX-nombre-requerimiento
 ```
 
