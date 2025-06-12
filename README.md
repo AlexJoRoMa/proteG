@@ -101,3 +101,28 @@ npm run test:watch
 - Integración lista para conectar con Contentful y otros servicios headless.
 - Puedes extender la configuración añadiendo herramientas como Storybook, Cypress, etc.
 
+## ⚠️ Notas importantes
+
+### 📌 Mantén siempre tu rama actualizada
+
+Antes de empezar a trabajar en una nueva tarea, asegúrate de obtener los últimos cambios:
+
+```bash
+git checkout dev
+git pull origin dev
+git checkout -b feature/#XXX-nombre-requerimiento
+```
+
+### 📌 Sincroniza tu rama constantemente
+
+```bash
+git pull origin dev --rebase
+```
+
+### 📌 Revisar y probar antes de hacer PRs
+
+Siempre prueba los cambios antes de subirlos, revisa logs y valida que la funcionalidad sea estable.
+
+## 📜 Licencia
+
+Proyecto interno de Izzi. No compartir código fuera de la organización.
