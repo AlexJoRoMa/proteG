@@ -45,8 +45,6 @@ src/
 ```
 ---
 
-## Instalación y uso local
-
 ## 🛠️ Instalación y uso local
 
 1. **Clona el repositorio:**
