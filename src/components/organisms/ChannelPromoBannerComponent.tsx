@@ -21,8 +21,10 @@ const ChannelPromoBannerComponent = () => {
                transition-all
               w-full h-full
             "
+            priority
             width={402}
             height={328}
+            sizes="(max-width: 768px) 100vw, 80vw"
           />
         </picture>
       </div>
