@@ -14,14 +14,14 @@ export default async function Home() {
   const cards = await getCards(ids);
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 ">
 
       <Navigation />
       
 
        <h1>hazlo fácil, hazlo izzi</h1>
 
-      <div >
+      <div className="border border-yellow-500 flex flex-row">
         {cards.map((card: any) => {
           const fields = card.fields;
           const mediaBlock = fields.image;
@@ -29,7 +29,8 @@ export default async function Home() {
           const imageUrl = imageAsset?.fields?.file?.url;
 
           return (
-            <div key={card.sys.id} className="items-center border border-green-500 items-center">
+            <div key={card.sys.id} className="border border-green-500 ">
+              <div className="items-center justify-items-center">
               {imageUrl && (
                 <Image
                 alt={'Images'}
@@ -38,7 +39,8 @@ export default async function Home() {
                 height={60}
                 />
               )}
-              <div className="border border-blue-500 text-[18px] text-center flex items-center justify-center ">
+              </div>
+              <div className="text-[18px] text-center flex items-center justify-center ">
                 <p>{fields.entryBody}</p>      
               </div>
             </div>
@@ -56,4 +58,7 @@ export default async function Home() {
 h-full
 w-[300px] mx-auto
 className="border border-red-500"
+
+
+className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]"
  */
