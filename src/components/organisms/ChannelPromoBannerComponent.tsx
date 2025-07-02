@@ -38,7 +38,9 @@ const ChannelPromoBannerComponent = () => {
         carouselConfigs={[
           {}, // Carrusel de imágenes (default)
           {}, // Carrusel de logos (default)  
-          { options: { loop: true }, plugins: ['fade'] } // Carrusel de texto con fade
+          { options: { loop: true, breakpoints: {
+            '(max-width: 420px)': { containScroll: false, slidesToScroll: 1},
+          } }, plugins: ['fade'] } // Carrusel de texto con fade
         ]}
       >
       {/* Carrusel Principal */}
@@ -68,24 +70,25 @@ const ChannelPromoBannerComponent = () => {
         </div>
 
         {/* Contenido textual */}
-        <CarouselComponent carouselIndex={2}>
-          <div className="relative z-20 w-full md:w-2/5 px-4 pt-12 pb-6 md:px-8 md:py-12 flex flex-col gap-5 items-center md:items-start bg-black md:bg-transparent">
-            <p className="uppercase text-sm text-gray-400 mb-2 tracking-widest w-full md:w-auto">canales</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 w-full md:w-auto">Sky sports</h2>
-            <p className="text-base text-gray-300 mb-6 w-full md:w-auto">
-              Amplia variedad de contenido deportivo en alta definición, con programación exclusiva y en vivo para que no te pierdas ni un solo minuto de tus deportes favoritos.
-            </p>
-            <ButtonGhost classStyles="border-gray-400 text-white hover:!bg-white hover:!text-black sm:max-w-[320px] max-w-[256px] w-full h-[48px] rounded-md"
-                        text="contratar ahora " />
-          </div>
-        </CarouselComponent>
+          <CarouselComponent carouselIndex={2}>
+              <div className="relative z-20 w-full pl-4 pr-4 md:w-2/5 px-4 pt-12 pb-6 md:px-8 md:py-12 flex flex-col gap-5 items-center md:items-start bg-black md:bg-transparent">
 
+              <p className="uppercase ml-4 md:ml-0 text-sm text-gray-400 mb-2 tracking-widest w-screen md:w-auto">canales</p>
+              <h2 className="text-3xl ml-4 md:ml-0 md:text-4xl font-bold text-white mb-4 w-screen md:w-auto">Sky sports</h2>
+              <p className="text-base ml-4 md:ml-0 pr-4 md:pr-auto text-gray-300 mb-6 w-screen md:w-auto">
+                Amplia variedad de contenido deportivo en alta definición, con programación exclusiva y en vivo para que no te pierdas ni un solo minuto de tus deportes favoritos.
+              </p>
+              <ButtonGhost classStyles="border-gray-400 text-white hover:!bg-white hover:!text-black sm:max-w-[320px] max-w-[256px] w-full h-[48px] rounded-md"
+                          text="contratar ahora " />
+              </div>
+          </CarouselComponent>
+      
       
         <div className="w-full self-end z-5">
 
           {/* Carousel de canales */}
 
-          <div className="flex justify-center items-center w-4/5 md:w-2/5 mx-auto h-[80px] md:h-[60px]">
+          <div className="flex justify-center items-center w-full bg-black md:bg-transparent md:w-2/5 mx-auto h-[80px] md:h-[60px]">
               <CarouselThumbnailComponent targetCarouselIndex={0} syncAllCarousels={true} />
           </div>
           
