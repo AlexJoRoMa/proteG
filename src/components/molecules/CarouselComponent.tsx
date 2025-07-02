@@ -1,13 +1,9 @@
 "use client"
 
-import { useCarouselByIndex } from '@/utils/CarouselController'
+import { CarouselComponentType } from '@/types/CarouselTypes'
+import { useCarouselByIndex } from '@/utils/CarouselProvider'
 
-type CarouselProps = {
-    children: React.ReactNode,
-    carouselIndex?: number
-}
-
-const CarouselComponent = ({children, carouselIndex = 0}:CarouselProps) => {
+const CarouselComponent = ({children, carouselIndex = 0}:CarouselComponentType) => {
 
     const {emblaRef} = useCarouselByIndex(carouselIndex)
 

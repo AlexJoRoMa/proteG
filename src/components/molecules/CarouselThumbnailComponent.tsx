@@ -4,7 +4,7 @@
 import useEmblaCarousel from 'embla-carousel-react'
 import React, { useCallback, useEffect, useState } from 'react'
 import CarouselThumbsButtons from './CarouselThumbsButtons'
-import {useCarouselByIndex } from '@/utils/CarouselController'
+import {useCarouselByIndex } from '@/utils/CarouselProvider'
 
 type CarouselThumbnailProps = {
     targetCarouselIndex?: number,

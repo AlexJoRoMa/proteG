@@ -1,12 +1,7 @@
+import { CarouselThumbsButtonsType } from "@/types/CarouselTypes"
 
 
-type PropType = {
-  selected: boolean
-  index: number
-  onClick: () => void
-}
-
-const CarouselThumbsButtons = ({selected, index, onClick}:PropType) => {
+const CarouselThumbsButtons = ({selected, index, onClick}:CarouselThumbsButtonsType) => {
 
   return (
     <div

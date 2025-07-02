@@ -3,45 +3,25 @@ import Image from "next/image"
 import ButtonGhost from '../atoms/ButtonGhost';
 import CarouselComponent from "../molecules/CarouselComponent";
 import CarouselThumbnailComponent from "../molecules/CarouselThumbnailComponent";
-import { CarouselController } from "@/utils/CarouselController";
+import { CarouselProvider } from "@/utils/CarouselProvider";
+import { EmblaOptionsType } from 'embla-carousel';
 
 const ChannelPromoBannerComponent = () => {
+
+  const carouselOptions = [
+          {}, // Carrusel de imágenes (default)
+          {options: {}, plugins: ['fade']}, // Carrusel de logos (default)  
+          { options: { loop: true, breakpoints: {
+            '(max-width: 420px)': { containScroll: false, slidesToScroll: 1},
+          } }, plugins: ['fade'] } // Carrusel de texto con fade
+   ] as { options?: EmblaOptionsType, plugins?: string[] }[]
       
   return (
     <section className="relative min-h-[740px] max-h-[908px] md:h-full h-[908px] flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
       
-      {/* Imagen absoluta y responsive 
-      <div className="w-full h-[328px] md:flex md:justify-center md:absolute md:inset-0 md:w-full md:h-full z-0 bg-black md:transparent">
-        <picture>
-          <source
-            media="(min-width: 768px)"
-            srcSet="https://images.ctfassets.net/lx4ov5kud2ld/6s6jeJMLjDziXIwLUM4l4R/0051032dbb49482f757e90be911951c1/home-tv-background_desktop_.webp"
-          />
-          <Image
-            src="https://images.ctfassets.net/lx4ov5kud2ld/FFVdnIAhwHjkfDM2c7aMF/520903fad9d097ddf12027d0da3b7b92/home-tv-background_mobile_.webp"
-            alt="Sky Sports Banner"
-            className="
-              select-none pointer-events-none
-               transition-all
-              w-full h-full md:h-[560px]
-            "
-            priority
-            width={402}
-            height={328}
-            sizes="(max-width: 768px) 100vw, 80vw"
-          />
-        </picture>
-      </div>
-      */}
-      <CarouselController 
+      <CarouselProvider
         qtyCarousels={3} 
-        carouselConfigs={[
-          {}, // Carrusel de imágenes (default)
-          {}, // Carrusel de logos (default)  
-          { options: { loop: true, breakpoints: {
-            '(max-width: 420px)': { containScroll: false, slidesToScroll: 1},
-          } }, plugins: ['fade'] } // Carrusel de texto con fade
-        ]}
+        carouselConfigs={carouselOptions}
       >
       {/* Carrusel Principal */}
 
@@ -110,7 +90,7 @@ const ChannelPromoBannerComponent = () => {
             </CarouselComponent>
 
         </div>
-      </CarouselController>
+      </CarouselProvider>
     </section>
   )
 }
