@@ -33,7 +33,14 @@ const ChannelPromoBannerComponent = () => {
         </picture>
       </div>
       */}
-      <CarouselController qtyCarousels={2}>
+      <CarouselController 
+        qtyCarousels={3} 
+        carouselConfigs={[
+          {}, // Carrusel de imágenes (default)
+          {}, // Carrusel de logos (default)  
+          { options: { loop: true }, plugins: ['fade'] } // Carrusel de texto con fade
+        ]}
+      >
       {/* Carrusel Principal */}
 
         <div className="w-full h-[328px] md:flex md:justify-center md:absolute md:inset-0 md:w-full md:h-full z-0 bg-black md:transparent">
@@ -61,7 +68,7 @@ const ChannelPromoBannerComponent = () => {
         </div>
 
         {/* Contenido textual */}
-    
+        <CarouselComponent carouselIndex={2}>
           <div className="relative z-20 w-full md:w-2/5 px-4 pt-12 pb-6 md:px-8 md:py-12 flex flex-col gap-5 items-center md:items-start bg-black md:bg-transparent">
             <p className="uppercase text-sm text-gray-400 mb-2 tracking-widest w-full md:w-auto">canales</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 w-full md:w-auto">Sky sports</h2>
@@ -71,6 +78,7 @@ const ChannelPromoBannerComponent = () => {
             <ButtonGhost classStyles="border-gray-400 text-white hover:!bg-white hover:!text-black sm:max-w-[320px] max-w-[256px] w-full h-[48px] rounded-md"
                         text="contratar ahora " />
           </div>
+        </CarouselComponent>
 
       
         <div className="w-full self-end z-5">

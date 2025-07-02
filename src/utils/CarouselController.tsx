@@ -1,8 +1,9 @@
 "use client"
 
-import { createContext, useCallback, useContext, useState } from "react"
+import { createContext, useCallback, useContext, useState, useMemo } from "react"
 import useEmblaCarousel from "embla-carousel-react"
 import { EmblaCarouselType, EmblaOptionsType } from "embla-carousel"
+import Fade from "embla-carousel-fade"
 
 const OPTIONS: EmblaOptionsType = {}
 
@@ -48,28 +49,43 @@ export const useCarouselByIndex = (index: number) => {
 export const CarouselController = ({ 
   children, 
   qtyCarousels = 1,
-  options = OPTIONS
+  carouselConfigs = []
 }: { 
   children: React.ReactNode, 
   qtyCarousels?: number,
-  options?: EmblaOptionsType
+  carouselConfigs?: { options?: EmblaOptionsType, plugins?: string[] }[]
 }) => {
+  // Helper function to resolve plugins from strings
+  const resolvePlugins = (pluginNames?: string[]) => {
+    if (!pluginNames) return undefined
+    const plugins = pluginNames.map(name => {
+      switch (name) {
+        case 'fade':
+          return Fade()
+        default:
+          return null
+      }
+    }).filter((plugin): plugin is NonNullable<typeof plugin> => plugin !== null)
+    
+    return plugins.length > 0 ? plugins : undefined
+  }
+
   // Create fixed-length arrays for all the hooks we need
   // We need to call all hooks unconditionally at the top level
-  const carousel1 = useEmblaCarousel(options)
+  const carousel1 = useEmblaCarousel(carouselConfigs[0]?.options || OPTIONS, resolvePlugins(carouselConfigs[0]?.plugins))
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const carousel2 = qtyCarousels >= 2 ? useEmblaCarousel(options) : [null, undefined]
+  const carousel2 = qtyCarousels >= 2 ? useEmblaCarousel(carouselConfigs[1]?.options || OPTIONS, resolvePlugins(carouselConfigs[1]?.plugins)) : [null, undefined]
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const carousel3 = qtyCarousels >= 3 ? useEmblaCarousel(options) : [null, undefined]
+  const carousel3 = qtyCarousels >= 3 ? useEmblaCarousel(carouselConfigs[2]?.options || OPTIONS, resolvePlugins(carouselConfigs[2]?.plugins)) : [null, undefined]
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const carousel4 = qtyCarousels >= 4 ? useEmblaCarousel(options) : [null, undefined]
+  const carousel4 = qtyCarousels >= 4 ? useEmblaCarousel(carouselConfigs[3]?.options || OPTIONS, resolvePlugins(carouselConfigs[3]?.plugins)) : [null, undefined]
   
   // Current active carousel index (default to first)
   const [activeIndex, setActiveIndex] = useState(0)
   
   // Create arrays of refs and APIs
   const allRefs = [carousel1[0], carousel2[0], carousel3[0], carousel4[0]] as ((node: HTMLDivElement | null) => void)[]
-  const allApis = [carousel1[1], carousel2[1], carousel3[1], carousel4[1]]
+  const allApis = useMemo(() => [carousel1[1], carousel2[1], carousel3[1], carousel4[1]], [carousel1, carousel2, carousel3, carousel4])
   
   // Get the currently active ref and api
   const emblaRef = allRefs[activeIndex] 
