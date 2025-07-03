@@ -1,7 +1,13 @@
-import { CarouselThumbsButtonsType } from "@/types/CarouselTypes"
+
+type CarouselThumbsButtonsProps = {
+  selected: boolean
+  index: number
+  onClick: () => void
+  children?: React.ReactNode
+}
 
 
-const CarouselThumbsButtons = ({selected, index, onClick}:CarouselThumbsButtonsType) => {
+const CarouselThumbsButtons = ({selected, onClick, children}:CarouselThumbsButtonsProps) => {
 
   return (
     <div
@@ -9,13 +15,9 @@ const CarouselThumbsButtons = ({selected, index, onClick}:CarouselThumbsButtonsT
         selected ? ' embla-thumbs__slide--selected' : ''
       )}
     >
-      <button
-        onClick={onClick}
-        type="button"
-        className="embla-thumbs__slide__number"
-      >
-        {index + 1}
-      </button>
+      <div onClick={onClick} className="embla-thumbs__slide__image">
+        {children}
+      </div>
     </div>
   )
 }
