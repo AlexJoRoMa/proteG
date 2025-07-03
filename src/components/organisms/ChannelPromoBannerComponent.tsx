@@ -10,11 +10,19 @@ const ChannelPromoBannerComponent = () => {
 
   const carouselOptions = [
           {}, // Carrusel de imágenes (default)
-          {options: {}, plugins: ['fade']}, // Carrusel de logos (default)  
+          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['fade']}, // Carrusel de logos (default)  
           { options: { loop: true, breakpoints: {
             '(max-width: 420px)': { containScroll: false, slidesToScroll: 1},
           } }, plugins: ['fade'] } // Carrusel de texto con fade
    ] as { options?: EmblaOptionsType, plugins?: string[] }[]
+
+   //TODO Remove this data and use contentful
+     const thumbnailData = [
+    { src: "https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp", alt: "LaLiga" },
+    { src: "https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp", alt: "Ligue1" },
+    { src: "https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp", alt: "Premier League" },
+    { src: "https://images.ctfassets.net/lx4ov5kud2ld/5w7AHXzn9SQKgPOffEsCUb/20830fabf9de670eada6c9c4d919c20d/hazlointernacional.webp", alt: "Hazlo Internacional" },
+  ]
       
   return (
     <section className="relative min-h-[740px] max-h-[908px] md:h-full h-[908px] flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
@@ -69,26 +77,51 @@ const ChannelPromoBannerComponent = () => {
           {/* Carousel de canales */}
 
           <div className="flex justify-center items-center w-full bg-black md:bg-transparent md:w-2/5 mx-auto h-[80px] md:h-[60px]">
-              <CarouselThumbnailComponent targetCarouselIndex={0} syncAllCarousels={true} />
+              <CarouselThumbnailComponent targetCarouselIndex={0} syncAllCarousels={true}>
+                  {thumbnailData.map((item, index) => (
+                  <Image 
+                    key={index}
+                    width={88} 
+                    height={56} 
+                    src={item.src} 
+                    alt={item.alt} 
+                    className="" 
+                  />
+                ))}              
+                </CarouselThumbnailComponent>
           </div>
           
 
           {/* Footer de logos */}
             <CarouselComponent carouselIndex={1}>
               <div className="
-                flex flex-wrap w-full 
-                bg-(--color-gray-450) p-4 items-center gap-3 border-t border-neutral-700
-                h-[128px] md:h-[128px]
+                w-full 
+                bg-(--color-gray-450) p-4 border-t border-neutral-700
+                h-[128px] md:h-[120px]
               ">
-                <span className="text-xs text-gray-400 mr-4 min-w-max">
+                <p className="text-xs w-full mb-2 text-gray-400 mr-4 min-w-max">
                   Disfruta de estos canales incluidos al contratar Sky sports
-                </span>
-                <Image width={41} height={24} src="https://upload.wikimedia.org/wikipedia/commons/3/3e/LaLiga_logo.png" alt="LaLiga" className="h-6 inline" />
-                <Image width={41} height={24} src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Logo_Ligue1.png" alt="Ligue1" className="h-6 inline" />
+                </p>
+                <div className=" grid grid-flow-col auto-cols-[88px] scroll-smooth snap-mandatory  gap-0.5 items-center overflow-x-auto scrollbar-hide">
+                <Image width={88} height={40} src="https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp" alt="LaLiga" className="mix-blend-screen" />
+                <Image width={88} height={40} src="https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp" alt="Ligue1" className="mix-blend-screen" />
+                <Image width={88} height={40} src="https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp" alt="Ligue1" className="mix-blend-screen" />
+                <Image width={88} height={40} src="https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp" alt="Ligue1" className="mix-blend-screen" />
+                <Image width={88} height={40} src="https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp" alt="Ligue1" className="mix-blend-screen" />
+                <Image width={88} height={40} src="https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp" alt="Ligue1" className="mix-blend-screen" />
+                <Image width={88} height={40} src="https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp" alt="Ligue1" className="mix-blend-screen" />
+                <Image width={88} height={40} src="https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp" alt="Ligue1" className="mix-blend-screen" />
+                <Image width={88} height={40} src="https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp" alt="Ligue1" className="mix-blend-screen" />
+                <Image width={88} height={40} src="https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp" alt="Ligue1" className="mix-blend-screen" />
+                <Image width={88} height={40} src="https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp" alt="Ligue1" className="mix-blend-screen" />
+                <Image width={88} height={40} src="https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp" alt="Ligue1" className="mix-blend-screen" />
+
+                </div>
+                
                 {/* ...otros logos */}
+                
               </div>
             </CarouselComponent>
-
         </div>
       </CarouselProvider>
     </section>

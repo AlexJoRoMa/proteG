@@ -11,7 +11,6 @@ const CarouselArrowsComponent = ({scrollPrev, scrollNext, classPrevButton, class
   return (
     <>
       <button title="Previous" aria-label="Previous" type="button" className={`embla__prev ${classPrevButton}`} onClick={scrollPrev}>
-        &nbsp;
         <Image
           src="/FlechaIzquierda.webp"
           alt="Prev"
