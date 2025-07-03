@@ -1,3 +1,19 @@
+// TODO: Check issue with images and heroui navbar
+export const IzziLogo = () => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="120" height="48" viewBox="0 0 120 48" fill="none">
+        <path d="M95.5488 45.9219H102.763V39.2146H95.5488V45.9219Z" fill="#FCD116"/>
+        <path d="M56.6217 15.6432L40.1277 32.0421H56.6217V38.7493H31.1855V32.0421L47.6786 15.6432H31.1855V8.93594H56.6217V15.6432Z" fill="#2B2B28"/>
+        <path d="M88.8032 15.6432L72.3103 32.0421H88.8032V38.7493H63.3672V32.0421L79.8612 15.6432H63.3672V8.93594H88.8032V15.6432Z" fill="#2B2B28"/>
+        <path d="M7.94665 32.0422H0.732422V38.7495H7.94665V32.0422Z" fill="#00C1B5"/>
+        <path d="M24.4369 1.76343H17.2227V8.47068H24.4369V1.76343Z" fill="#FF6C07"/>
+        <path d="M102.769 8.93594H95.5547V32.0421H102.769V8.93594Z" fill="#2B2B28"/>
+        <path d="M24.4369 15.6429H17.2227V38.7491H24.4369V15.6429Z" fill="#2B2B28"/>
+        <path d="M112.047 15.6424H119.261V8.93515H112.047V15.6424Z" fill="#D60270"/>
+        </svg>
+    );
+  };
+
 export const HelpIcon = () => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
