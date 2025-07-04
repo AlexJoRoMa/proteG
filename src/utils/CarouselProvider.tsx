@@ -6,6 +6,7 @@ import { EmblaOptionsType } from "embla-carousel"
 import Fade from "embla-carousel-fade"
 import { CarouselContextType } from "@/types/CarouselTypes"
 import { OPTIONS } from "@/constants/CarouselConstants"
+import AutoHeight from "embla-carousel-auto-height"
 
 
 const CarouselContext = createContext<CarouselContextType | undefined>(undefined)
@@ -46,6 +47,8 @@ export const CarouselProvider = ({
       switch (name) {
         case 'fade':
           return Fade()
+        case 'autoheight':
+          return AutoHeight()  
         default:
           return null
       }
