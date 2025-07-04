@@ -80,7 +80,7 @@ const onSelect = useCallback(() => {
   const childrenArray = React.Children.toArray(childrenButtons)
 
   return (
-  <div className="embla-thumbs relative w-3/4 sm:w-full">
+  <div className="embla-thumbs relative w-3/4 sm:w-full md:w-max">
         <div className="embla-thumbs__viewport" ref={emblaThumbsRef}>
           <div className="embla-thumbs__container">
                 {childrenArray.map((child, index) => (
