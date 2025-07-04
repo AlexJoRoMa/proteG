@@ -19,25 +19,35 @@ import {
 import { contentfulClient } from '../../services/contentful/client';
 
 interface IzziNavbar {
-    internalName: string;
-    brandLogo?: object;
-    navigation: Array<string>;
+    fields : {
+        internalName: string;
+        brandLogo?: object;
+        navigation: Array<Navigation>;
+    }
 }
 
-const responseData = await contentfulClient.getEntries({
-        include: 3,
-        content_type: 'header'
+interface Navigation {
+    fields: {
+        navigationTitle: string,
+        navigationUrl: string
+    }
+}
+
+async function getHeaderContentType(section:string) {
+    const responseData = await contentfulClient.getEntries({
+        content_type: 'header',
+        'fields.internalName': section,
+        include: 3
     });
-// TODO: Refactor to iterate one time
-const topNavbar: IzziNavbar = responseData.items.filter(item => item.fields.internalName == 'TopNavbar')
-    .map(item => item);
+    return responseData.items[0];
+}
 
-const navbar: IzziNavbar = responseData.items.filter(item => item.fields.internalName == 'Navbar')
-    .map(item => item);
-const logoUrl: string = `https:${navbar[0].fields.brandLogo.fields.file.url}`;
+const topNavbar: IzziNavbar = await getHeaderContentType("TopNavbar");
 
-const navbarButtons: IzziNavbar = responseData.items.filter(item => item.fields.internalName == 'NavbarButtons')
-    .map(item => item);
+const navbar: IzziNavbar = await getHeaderContentType("Navbar");
+const logoUrl: string = `https:${navbar.fields.brandLogo.fields.file.url}`;
+
+const navbarButtons: IzziNavbar = await getHeaderContentType("NavbarButtons");
 
 export default function App() {
 
@@ -59,7 +69,7 @@ export default function App() {
       }}
       className={isMenuOpen ? "hidden" : 'sm:flex'}>
         <NavbarContent>
-        {topNavbar[0].fields.navigation.map((link, index) => (    
+        {topNavbar.fields.navigation.map((link, index) => (    
         <NavbarItem key={`${link}-${index}`}>
             <Link className={`text-black-0 ${index == 0 ? 'font-bold' : 'font-normal'}`} href={link.fields.navigationUrl}>
             {link.fields.navigationTitle}
@@ -94,7 +104,7 @@ export default function App() {
         </NavbarBrand>
       </NavbarContent>
       <NavbarContent className="hidden sm:flex gap-[32px]" justify="start">
-        {navbar[0].fields.navigation.map((link, index) => (    
+        {navbar.fields.navigation.map((link, index) => (    
         <NavbarItem key={`${link}-${index}`}>
             <Link color="foreground" href={link.fields.navigationUrl}>
             {link.fields.navigationTitle}
@@ -103,7 +113,7 @@ export default function App() {
         ))}
       </NavbarContent>
       <NavbarContent justify="end" className="!grow-0">
-        {navbarButtons[0].fields.navigation.map((link, index) => (    
+        {navbarButtons.fields.navigation.map((link, index) => (    
             <NavbarItem key={`${link}-${index}`} className="hidden lg:flex">
                 <Button className={`${index == 2 ? 'bg-black-0 text-white-0' :'bg-color-trasparent'} 
                     h-[48px] border-[2px] border-solid rounded-md text-[18px]`}
@@ -121,7 +131,7 @@ export default function App() {
         </NavbarItem>
       </NavbarContent>
       <NavbarMenu className="mt-[26px] gap-[26px]">
-        {navbar[0].fields.navigation.map((item, index) => (
+        {navbar.fields.navigation.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link
               className="w-full text-black-0 text-[20px]"
@@ -131,7 +141,7 @@ export default function App() {
             </Link>
           </NavbarMenuItem>
         ))}
-        {navbarButtons[0].fields.navigation.map((link, index) => (    
+        {navbarButtons.fields.navigation.map((link, index) => (    
             <NavbarMenuItem key={`${link}-${index}`}>
                 <Button className={`${index == 2 ? 'bg-black-0 text-white-0' :'bg-color-trasparent'} 
                     h-[48px] border-[2px] border-solid rounded-md text-[18px]`}
