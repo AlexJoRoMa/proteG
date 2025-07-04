@@ -15,7 +15,11 @@ export type CarouselContextType = {
   activeCarouselIndex: number
 
   
-  syncAllCarouselsToSlide: (slideIndex: number) => void
+  syncAllCarouselsToSlide: (slideIndex: number) => void,
+
+  stopAutoplay: (carouselIndex?: number) => void,
+
+  playAutoplay: (carouselIndex?: number) => void
 }
 
 
