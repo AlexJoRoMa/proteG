@@ -7,7 +7,7 @@ import Fade from "embla-carousel-fade"
 import { CarouselContextType } from "@/types/CarouselTypes"
 import { OPTIONS } from "@/constants/CarouselConstants"
 import AutoHeight from "embla-carousel-auto-height"
-
+import AutoPlay from "embla-carousel-autoplay"
 
 const CarouselContext = createContext<CarouselContextType | undefined>(undefined)
 
@@ -25,7 +25,9 @@ export const useCarouselByIndex = (index: number) => {
   return {
     emblaApi: context.emblaApis[index],
     emblaRef: context.emblaRefs[index],
-    syncAllCarouselsToSlide: context.syncAllCarouselsToSlide
+    syncAllCarouselsToSlide: context.syncAllCarouselsToSlide,
+    stopAutoplay: context.stopAutoplay,
+    playAutoplay: context.playAutoplay,
   }
 }
 
@@ -48,7 +50,11 @@ export const CarouselProvider = ({
         case 'fade':
           return Fade()
         case 'autoheight':
-          return AutoHeight()  
+          return AutoHeight()
+
+        case 'autoplay':
+          return AutoPlay({playOnInit: true, delay: 3000, stopOnFocusIn : false, stopOnInteraction: false, jump: false, stopOnMouseEnter : false})  
+
         default:
           return null
       }
@@ -84,6 +90,43 @@ export const CarouselProvider = ({
       }
     })
   }, [allApis])
+
+  // Funciones para controlar el autoplay
+const stopAutoplay = useCallback((carouselIndex?: number) => {
+  if (carouselIndex !== undefined) {
+    // Detener autoplay de un carrusel específico
+    const api = allApis[carouselIndex]
+    if (api?.plugins()?.autoplay) {
+      api.plugins().autoplay.stop()
+    }
+  } else {
+    // Detener autoplay de todos los carruseles
+    allApis.forEach(api => {
+      if (api?.plugins()?.autoplay) {
+        api.plugins().autoplay.stop()
+      }
+    })
+  }
+}, [allApis])
+
+
+const playAutoplay = useCallback((carouselIndex?: number) => {
+  if (carouselIndex !== undefined) {
+    // Reanudar autoplay de un carrusel específico
+    const api = allApis[carouselIndex]
+    if (api?.plugins()?.autoplay) {
+      api.plugins().autoplay.play()
+    }
+  } else {
+    // Reanudar autoplay de todos los carruseles que lo tengan configurado
+    allApis.forEach((api, index) => {
+      // Solo reanudar si el carrusel tiene autoplay configurado
+      if (api?.plugins()?.autoplay && carouselConfigs[index]?.plugins?.includes('autoplay')) {
+        api.plugins().autoplay.play()
+      }
+    })
+  }
+}, [allApis, carouselConfigs])
   
   return (
     <CarouselContext.Provider value={{ 
@@ -93,7 +136,9 @@ export const CarouselProvider = ({
       emblaRefs: allRefs,
       setActiveCarousel: setActiveIndex,
       activeCarouselIndex: activeIndex,
-      syncAllCarouselsToSlide
+      syncAllCarouselsToSlide,
+      stopAutoplay,
+      playAutoplay
     }}>
       {children}
     </CarouselContext.Provider>
