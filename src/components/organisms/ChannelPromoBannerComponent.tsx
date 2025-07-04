@@ -7,16 +7,9 @@ import { CarouselProvider } from "@/utils/CarouselProvider";
 import { EmblaOptionsType } from 'embla-carousel';
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import { contentfulClient } from "@/services/contentful/client";
+import { footerImageType, heroImageType } from "@/types/ChannelPromoBannerTypes";
 
-type heroImageType = {
-  url: string;
-  legend?: string;
-}
 
-type footerImageType = {
-  images: { url: string }[];
-  legend: string | null;
-}
 
 let heroImages: heroImageType[] = [];
 let thumbnailImages: heroImageType[] = [];
@@ -32,12 +25,13 @@ let carouselText: {
 
 const ChannelPromoBannerComponent = async() => {
 
+  // Opciones de configuración para los carruseles
   const carouselOptions = [
-          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['autoheight']}, // Carrusel de imágenes (default)
-          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['fade']}, // Carrusel de logos (default)  
-          { options: { breakpoints: {
+          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['autoheight', 'autoplay']}, // Carrusel de imágenes (default)
+          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['fade', 'autoplay', 'autoheight']}, // Carrusel de logos (default)  
+          { options: { dragFree:false, watchDrag: false, watchSlides: false, watchResize: true, breakpoints: {
             '(max-width: 420px)': { containScroll: false, slidesToScroll: 1},
-          } }, plugins: [ 'fade' , 'autoheight'] } // Carrusel de texto con fade
+          } }, plugins: [ 'fade' , 'autoheight', 'autoplay'] } // Carrusel de texto con fade
    ] as { options?: EmblaOptionsType, plugins?: string[] }[]
 
   // Consumo de la API de Contentful para obtener los datos de los canales
@@ -78,7 +72,7 @@ const ChannelPromoBannerComponent = async() => {
     }));
   }
 
-  // Datos de los thumbnails de los canales
+  // Carrusel de los thumbnails
 
     const thumbnailsCarousel = entriesChannels?.[0]?.fields.thumbnailsCarousel as Entry<EntrySkeletonType, undefined, string>;
     if(Array.isArray(thumbnailsCarousel?.fields?.images) && thumbnailsCarousel.fields.images.length > 0) {
@@ -88,13 +82,14 @@ const ChannelPromoBannerComponent = async() => {
     })) || [];
   }
 
-  //Datos para carrusel del footer
-
+//Datos para carrusel del footer
 const footerCarruselField = entriesChannels?.[0]?.fields?.footerCarrusel;
+const footerIndexMapping: { [key: number]: number } = {};
+
 if (Array.isArray(footerCarruselField) && footerCarruselField.length > 0) {
   
   // Crear un array combinando las imágenes con sus leyendas
-  footerImages = footerCarruselField.map((footerItem) => {
+  footerImages = footerCarruselField.map((footerItem, index) => {
     const footerEntry = footerItem as Entry<EntrySkeletonType, undefined, string>;
     const carouselFooterRaw = footerEntry?.fields?.imageGrid;
     
@@ -107,16 +102,28 @@ if (Array.isArray(footerCarruselField) && footerCarruselField.length > 0) {
       // Retornar un objeto con las imágenes y la leyenda
       return {
         images: imageUrls,
-        legend: (footerEntry?.fields?.legendFooter as string) || null
+        legend: (footerEntry?.fields?.legendFooter as string) || null,
+        originalIndex: index
+        // Asumiendo que tienes un campo slideIndex en tu CMS
       };
     }
     
     return {
       images: [],
-      legend: (footerEntry?.fields?.legendFooter as string) || null
+      legend: (footerEntry?.fields?.legendFooter as string) || null,
+      originalIndex: (footerEntry?.fields?.slideIndex as number) || 0
     };
   });
+
+  // Crear el mapeo de índices
+  footerImages.forEach((footerItem, footerIndex) => {
+    footerIndexMapping[footerItem.originalIndex] = footerIndex;
+  });
 }
+
+const getFooterDataForSlide = (currentSlideIndex: number) => {
+  return footerImages[currentSlideIndex] || null;
+};
       
   return (
     <section className="relative min-h-[740px]  md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden w-">
@@ -170,11 +177,11 @@ if (Array.isArray(footerCarruselField) && footerCarruselField.length > 0) {
           </CarouselComponent>
       
       
-        <div className="w-full self-end z-5">
+        <div className="w-full self-end z-5 bg-black md:bg-transparent">
 
           {/* Carousel de canales */}
 
-          <div className="flex justify-center items-center w-full bg-black md:bg-transparent md:w-4/5 mx-auto h-[80px] md:h-[60px]">
+          <div className="flex justify-center items-center w-full md:w-4/5 mx-auto h-[80px] md:h-[60px]">
               <CarouselThumbnailComponent targetCarouselIndex={0} syncAllCarousels={true}>
                   {thumbnailImages.map((item, index) => (
                   <Image 
@@ -193,46 +200,37 @@ if (Array.isArray(footerCarruselField) && footerCarruselField.length > 0) {
 
           {/* Footer de logos */}
             <CarouselComponent carouselIndex={1}>
-
-       {footerImages.map((item, index) => (
-              <div className="
-                w-full 
-                bg-(--color-gray-450) p-4 border-t border-neutral-700
-                
-              " key={index}>
-                <p className="text-xs w-full mb-2 text-gray-400 mr-4 min-w-max">
-                  {item.legend ? item.legend : `Carrusel de Logos`}
-                </p>
-                <div className=" grid grid-flow-col auto-cols-[88px] scroll-smooth snap-mandatory  gap-0.5 items-center overflow-x-auto scrollbar-hide">
-                  {item.images.map((image, imgIndex) => (
-                    <Image 
-                      key={imgIndex}
-                      width={88} 
-                      height={40} 
-                      src={image.url} 
-                      alt={`Logo del footer ${index + 1}-${imgIndex + 1}`}  
-                      className="mix-blend-screen"
-                      priority
-                    />
-                  ))}
+            {heroImages.map((_, heroIndex) => {
+              const footerData = getFooterDataForSlide(heroIndex);
+              
+              return footerData ? (
+                <div className="
+                  w-full 
+                  bg-(--color-gray-450) p-4 border-t border-neutral-700
+                " key={heroIndex}>
+                  <p className="text-xs w-full mb-2 text-gray-400 mr-4 min-w-max">
+                    {footerData.legend ? footerData.legend : `Carrusel de Logos`}
+                  </p>
+                  <div className=" grid grid-flow-col auto-cols-[88px] scroll-smooth snap-mandatory  gap-0.5 items-center overflow-x-auto scrollbar-hide">
+                    {footerData.images.map((image, imgIndex) => (
+                      <Image 
+                        key={imgIndex}
+                        width={88} 
+                        height={40} 
+                        src={image.url} 
+                        alt={`Logo del footer ${heroIndex + 1}-${imgIndex + 1}`}  
+                        className="mix-blend-screen"
+                        priority
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-
-              {/*<div className="
-                w-full 
-                bg-(--color-gray-450) p-4 border-t border-neutral-700
-                h-[128px] md:h-[120px]
-              ">
-                <p className="text-xs w-full mb-2 text-gray-400 mr-4 min-w-max">
-                  Disfruta de estos canales incluidos al contratar Sky sports
-                </p>
-                <div className=" grid grid-flow-col auto-cols-[88px] scroll-smooth snap-mandatory  gap-0.5 items-center overflow-x-auto scrollbar-hide">
-                <Image width={88} height={40} src="https://images.ctfassets.net/lx4ov5kud2ld/3y7xgbMStEeKEIytDaLMdX/e882bd67627b220e9318a473bf2302e7/Universal_.webp" alt="LaLiga" className="mix-blend-screen" />
-                </div>
-                
-              </div>*/}
-            </CarouselComponent>
+              ) : (
+                // Slide vacío para mantener la sincronización
+                <div key={heroIndex} className="w-full h-0 hidden"></div>
+              );
+            })}
+          </CarouselComponent>
         </div>
       </CarouselProvider>
     </section>
