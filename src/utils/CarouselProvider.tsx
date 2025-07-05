@@ -26,8 +26,7 @@ export const useCarouselByIndex = (index: number) => {
     emblaApi: context.emblaApis[index],
     emblaRef: context.emblaRefs[index],
     syncAllCarouselsToSlide: context.syncAllCarouselsToSlide,
-    stopAutoplay: context.stopAutoplay,
-    playAutoplay: context.playAutoplay,
+    pauseAllAutoplay: context.pauseAllAutoplay,
   }
 }
 
@@ -91,42 +90,14 @@ export const CarouselProvider = ({
     })
   }, [allApis])
 
-  // Funciones para controlar el autoplay
-const stopAutoplay = useCallback((carouselIndex?: number) => {
-  if (carouselIndex !== undefined) {
-    // Detener autoplay de un carrusel específico
-    const api = allApis[carouselIndex]
-    if (api?.plugins()?.autoplay) {
-      api.plugins().autoplay.stop()
-    }
-  } else {
-    // Detener autoplay de todos los carruseles
+    const pauseAllAutoplay = useCallback(() => {
     allApis.forEach(api => {
-      if (api?.plugins()?.autoplay) {
-        api.plugins().autoplay.stop()
+      if (api && api.plugins() && api.plugins().autoplay) {
+        api.plugins().autoplay.stop();
       }
-    })
-  }
-}, [allApis])
+    });
+  }, [allApis]);
 
-
-const playAutoplay = useCallback((carouselIndex?: number) => {
-  if (carouselIndex !== undefined) {
-    // Reanudar autoplay de un carrusel específico
-    const api = allApis[carouselIndex]
-    if (api?.plugins()?.autoplay) {
-      api.plugins().autoplay.play()
-    }
-  } else {
-    // Reanudar autoplay de todos los carruseles que lo tengan configurado
-    allApis.forEach((api, index) => {
-      // Solo reanudar si el carrusel tiene autoplay configurado
-      if (api?.plugins()?.autoplay && carouselConfigs[index]?.plugins?.includes('autoplay')) {
-        api.plugins().autoplay.play()
-      }
-    })
-  }
-}, [allApis, carouselConfigs])
   
   return (
     <CarouselContext.Provider value={{ 
@@ -137,8 +108,7 @@ const playAutoplay = useCallback((carouselIndex?: number) => {
       setActiveCarousel: setActiveIndex,
       activeCarouselIndex: activeIndex,
       syncAllCarouselsToSlide,
-      stopAutoplay,
-      playAutoplay
+      pauseAllAutoplay
     }}>
       {children}
     </CarouselContext.Provider>

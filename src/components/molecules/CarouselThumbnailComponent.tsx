@@ -15,7 +15,7 @@ type CarouselThumbnailProps = {
 
 const CarouselThumbnailComponent = ({targetCarouselIndex=0, syncAllCarousels = false, children:childrenButtons}:CarouselThumbnailProps) => {
 
-const { emblaApi, syncAllCarouselsToSlide } = useCarouselByIndex(targetCarouselIndex)
+const { emblaApi, syncAllCarouselsToSlide, pauseAllAutoplay } = useCarouselByIndex(targetCarouselIndex)
 
 const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -35,6 +35,8 @@ const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({
         // Solamente desplazar el carrusel actual
         emblaApi.scrollTo(index)
       }
+
+      pauseAllAutoplay();
     },
     [emblaApi, emblaThumbsApi, syncAllCarousels, syncAllCarouselsToSlide]
   )
