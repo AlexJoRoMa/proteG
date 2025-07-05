@@ -27,11 +27,11 @@ const ChannelPromoBannerComponent = async() => {
 
   // Opciones de configuración para los carruseles
   const carouselOptions = [
-          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['autoheight', 'autoplay']}, // Carrusel de imágenes (default)
-          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['fade', 'autoplay', 'autoheight']}, // Carrusel de logos (default)  
+          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['autoheight', '']}, // Carrusel de imágenes (default)
+          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['fade', '', 'autoheight']}, // Carrusel de logos (default)  
           { options: { dragFree:false, watchDrag: false, watchSlides: false, watchResize: true, breakpoints: {
             '(max-width: 420px)': { containScroll: false, slidesToScroll: 1},
-          } }, plugins: [ 'fade' , 'autoheight', 'autoplay'] } // Carrusel de texto con fade
+          } }, plugins: [ 'fade' , 'autoheight', ''] } // Carrusel de texto con fade
    ] as { options?: EmblaOptionsType, plugins?: string[] }[]
 
   // Consumo de la API de Contentful para obtener los datos de los canales
@@ -162,15 +162,15 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
           <CarouselComponent carouselIndex={2}>
 
               {carouselText.map((item, index) => (
-              <div key={index} style={{height: '-webkit-fill-available'}} className="relative z-20 w-full pl-4
-                pr-4 md:w-2/5 px-4 pt-12 pb-6 md:px-8 md:py-12 flex flex-col gap-5 items-center md:items-start bg-black md:bg-transparent">
+              <div key={index} style={{height: '-webkit-fill-available'}} className="relative z-20 w-full pt-[56px] md:pt-0 xl:ml-[200px] md:ml-[80px] pb-10
+                 md:w-2/5 flex flex-col items-center md:items-start bg-black md:bg-transparent">
                 
-                <p className="uppercase ml-4 md:ml-0 text-sm text-gray-400 mb-2 tracking-widest w-screen md:w-auto">{item.channelType}</p>
-                <h2 className="text-3xl ml-4 md:ml-0 md:text-4xl font-bold text-white mb-4 w-screen md:w-auto">{item.title}</h2>
-                <p className="text-base ml-4 md:ml-0 pr-4 md:pr-auto text-gray-300 mb-6 w-screen md:w-auto">
+                <p className=" ml-4 md:ml-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
+                <h2 className="text-[32px] md:text-4xl ml-4 md:ml-0  font-bold text-white mb-6 w-screen md:w-auto">{item.title}</h2>
+                <p className="text-[16px] md:text-[18px] leading-6 text-(--color-gray-200) ml-4 md:ml-0 pr-4 md:pr-auto mb-6 md:mb-10 w-screen md:w-auto">
                   {item.description}
                 </p>
-                <ButtonGhost classStyles="border-gray-400 text-white hover:!bg-white hover:!text-black sm:max-w-[320px] max-w-[256px] w-full h-[48px] rounded-md"
+                <ButtonGhost classStyles=" border-white text-white text-[16px] leading-6 font-bold hover:!bg-white hover:!text-black sm:max-w-[320px] max-w-[256px] w-full h-[48px] rounded-md"
                             text={item.buttonText} />
               </div>
               ))}
@@ -181,7 +181,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
 
           {/* Carousel de canales */}
 
-          <div className="flex justify-center items-center w-full md:w-4/5 mx-auto h-[80px] md:h-[60px]">
+          <div className="flex items-center w-full justify-center sm:justify-normal sm:w-4/5 mx-auto xl:mx-0 xl:ml-[225px] h-[80px] md:h-[60px]">
               <CarouselThumbnailComponent targetCarouselIndex={0} syncAllCarousels={true}>
                   {thumbnailImages.map((item, index) => (
                   <Image 
@@ -205,13 +205,13 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
               
               return footerData ? (
                 <div className="
-                  w-full 
-                  bg-(--color-gray-450) p-4 border-t border-neutral-700
+                  w-full xl:pl-[225px] md:pl-[100px] pl-[50px]
+                  bg-(--color-gray-450) p-4
                 " key={heroIndex}>
-                  <p className="text-xs w-full mb-2 text-gray-400 mr-4 min-w-max">
+                  <p className="w-full md:mb-2 text-(--color-gray-200) text-[16px] leading-6 mb-2">
                     {footerData.legend ? footerData.legend : `Carrusel de Logos`}
                   </p>
-                  <div className=" grid grid-flow-col auto-cols-[88px] scroll-smooth snap-mandatory  gap-0.5 items-center overflow-x-auto scrollbar-hide">
+                  <div className=" grid grid-flow-col auto-cols-[88px] scroll-smooth snap-mandatory mb-4 gap-0.5 items-center overflow-x-auto scrollbar-hide">
                     {footerData.images.map((image, imgIndex) => (
                       <Image 
                         key={imgIndex}
