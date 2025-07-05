@@ -146,7 +146,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                 <Image
                   src={heroImagesResponsive[index]?.url || image.url}
                   alt={`Sky Sports Banner ${index + 1}`}
-                  className="select-none pointer-events-none transition-all w-full h-full md:h-[560px]"
+                  className="select-none pointer-events-none transition-all w-full h-full md:h-[590px]"
                   priority
                   width={402}
                   height={328}
