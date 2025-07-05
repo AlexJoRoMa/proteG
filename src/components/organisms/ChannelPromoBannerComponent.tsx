@@ -27,11 +27,11 @@ const ChannelPromoBannerComponent = async() => {
 
   // Opciones de configuración para los carruseles
   const carouselOptions = [
-          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['autoheight', '']}, // Carrusel de imágenes (default)
-          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['fade', '', 'autoheight']}, // Carrusel de logos (default)  
+          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['autoheight', 'autoplay']}, // Carrusel de imágenes (default)
+          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['fade', 'autoplay', 'autoheight']}, // Carrusel de logos (default)  
           { options: { dragFree:false, watchDrag: false, watchSlides: false, watchResize: true, breakpoints: {
             '(max-width: 420px)': { containScroll: false, slidesToScroll: 1},
-          } }, plugins: [ 'fade' , 'autoheight', ''] } // Carrusel de texto con fade
+          } }, plugins: [ 'fade' , 'autoheight', 'autoplay'] } // Carrusel de texto con fade
    ] as { options?: EmblaOptionsType, plugins?: string[] }[]
 
   // Consumo de la API de Contentful para obtener los datos de los canales
