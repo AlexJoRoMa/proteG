@@ -177,10 +177,6 @@ body {
     justify-content: center;
     cursor: pointer;
 
-    img{
-    mix-blend-mode: screen; /*TODO Quitar antes de commit */
-    }
-
     @media screen and (min-width: 560px) {
         height: 56px;
     }
