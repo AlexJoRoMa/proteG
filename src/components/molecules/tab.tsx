@@ -1,14 +1,8 @@
 'use client'
 
 import { Tabs, Tab, Card, CardBody } from "@heroui/react";
+import { TabsData } from "@/types/TabsTypes";
 import Image from "next/image";
-
-interface TabsData {
-    fields: {
-        entryTitle: string,
-        cards: Array<Record<string, any>>
-    }
-}
 
 export default function TabContent(tabsData: any) {
 

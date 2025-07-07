@@ -1,20 +1,5 @@
 import {contentfulClient} from './client';
-
-    type Resource = {
-        fields: ResourceFields;
-    };
-
-    type ResourceFields = {
-        key: string,
-        value: string
-    }
-
-    type FilteredData = {
-        fields?: {
-            name?: string,
-            resources?: Resource[];
-        };
-    };
+import { FilteredData } from "@/types/MicrocopyTypes";
 
     
     // Microcopys Delivery API call

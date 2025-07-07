@@ -1,12 +1,10 @@
 import TabContent from "../../molecules/tab";
 import { getTabsContentType, getCopyForComponent } from "@/services/contentful/components";
+import { tabsTileProps } from "@/types/TabsTypes";
 
-type Props = {
-    pageName: string,
-    componentName: string
-}
 
-export default async function TabsTile({pageName, componentName}: Props) {
+
+export default async function TabsTile({pageName, componentName}: tabsTileProps) {
     const tabsData: any = await getTabsContentType(pageName);
     const tabsTitle: Record<string, any> = await getCopyForComponent(componentName);
 
