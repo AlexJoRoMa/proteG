@@ -37,8 +37,7 @@ export default async function ContratacionRapida(){
                             className=" w-[72px] h-[72px] xsm:w-[56px] xsm:h-[56px]"
                             alt={'Images'}
                             src={`https:${imgURL}`}
-                            priority={false}
-                            loading="lazy"
+                            priority
                             width={40}
                             height={40}
                             /> 
@@ -50,8 +49,7 @@ export default async function ContratacionRapida(){
                             className=" md:w-[12px] md:h-[12px] "
                             alt={'Images'}
                             src={`https:${dotURL}`}
-                            priority={false}
-                            loading="lazy"
+                            priority
                             width={16}
                             height={16}
                             />
