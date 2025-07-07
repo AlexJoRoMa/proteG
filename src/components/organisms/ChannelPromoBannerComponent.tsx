@@ -170,7 +170,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                 <p className="text-[16px] md:text-[18px] leading-6 text-(--color-gray-200) pl-4 md:pl-0 pr-4 md:pr-auto mb-6 md:mb-10 w-screen md:w-auto">
                   {item.description}
                 </p>
-                <ButtonGhost classStyles=" border-white text-white text-[16px] leading-6 font-bold hover:!bg-white hover:!text-black sm:max-w-[320px] max-w-[256px] w-full h-[48px] rounded-md"
+                <ButtonGhost classStyles=" border-white text-white text-[16px] leading-6 font-bold sm:max-w-[320px] max-w-[256px] w-full h-[48px] rounded-md"
                             text={item.buttonText} />
               </div>
               ))}
