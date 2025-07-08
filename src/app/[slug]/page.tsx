@@ -4,21 +4,28 @@ import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 
 
-export default async function Home() {
+type PageProps = {
+  params: {
+    slug: string;
+  };
+};
 
-  // Obtener la informacion de la pagina
 
-   const page = await fetchComponentsBySlugPage("home");
+export default async function Page({params}:PageProps) {
+
+  // Obtener la informacion de la pagina segun el parametro slug
+  // Este slug es el que se pasa en la URL, por ejemplo: /tv,
+
+   const page = await fetchComponentsBySlugPage(params.slug);
 
    const components = page.items || [];
-
-   console.log("components", components);
 
   return (
     <div className="">
 
       <Navigation />
       <main className="">
+        <h1>Home Page</h1>
 
         {
           components && components[0] && components[0].fields.components && Array.isArray(components[0].fields.components) && components[0].fields.components.length > 0 ? (
