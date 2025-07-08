@@ -31,3 +31,7 @@ export type CarouselComponentType = {
     children: React.ReactNode,
     carouselIndex?: number
 }
+
+export type ChannelPromoBannerProps = {
+  id: string;
+}
