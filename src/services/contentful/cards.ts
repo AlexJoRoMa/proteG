@@ -21,24 +21,3 @@ export async function getTabbedCard(ids: string[]): Promise<TabbedCardEntry[]>{
     throw error;
   }
 }
-
-
-
-
-
-
-/* 
-
-export async function getCards(ids) {
-  try {
-    const entry = await Promise.all(
-      ids.map((id) => contentfulClient.getEntry(id))
-    );
-    return entry;
-  } catch (error) {
-    console.error(`error`, error);
-    return [];
-  }
-}
-
- */

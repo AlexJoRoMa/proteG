@@ -28,7 +28,7 @@ export default async function ContratacionRapida(){
             const imgURL = image?.fields?.image?.fields?.file?.url;
             const dotURL =  dot?.fields?.file?.url;
   
-            return (  // border border-red-500          py-2
+            return (
               <div key={card.sys.id} className="relative z-10 md:w-40 xsm:w-80 md:h-50 md:p-1 md:mx-3 flex md:flex-col sm:flex-row xsm:my-6">
                 <div className="  items-center md:flex sm:flex xsm:flex md:flex-col sm:flex-row xsm:flex-row">
                     <div className=" w-20 h-20 flex items-center justify-center">
