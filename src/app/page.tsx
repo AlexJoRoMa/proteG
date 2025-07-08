@@ -1,6 +1,6 @@
 import Image from "next/image";
 import ContratacionRapida from '../components/organisms/contratacion-rapida';
-
+//
 export default function Home() {
   return (
     
