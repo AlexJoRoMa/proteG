@@ -16,17 +16,14 @@ export default async function Page({params}:PageProps) {
   // Obtener la informacion de la pagina segun el parametro slug
   // Este slug es el que se pasa en la URL, por ejemplo: /tv,
 
-   const page = await fetchComponentsBySlugPage(params.slug);
+  const {slug} = await params; //Sugerencia de NextJS para obtener los parametros de la ruta
+
+   const page = await fetchComponentsBySlugPage(slug);
 
    const components = page.items || [];
 
   return (
-    <div className="">
-
-      <Navigation />
       <main className="">
-        <h1>Home Page</h1>
-
         {
           components && components[0] && components[0].fields.components && Array.isArray(components[0].fields.components) && components[0].fields.components.length > 0 ? (
                 (components[0].fields.components as Entry<EntrySkeletonType, undefined, string>[]).map((component: Entry<EntrySkeletonType, undefined, string>, index) => {
@@ -39,6 +36,5 @@ export default async function Page({params}:PageProps) {
           )
         }
       </main>
-    </div>
   );
 }
