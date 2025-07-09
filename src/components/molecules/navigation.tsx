@@ -15,6 +15,7 @@ async function getHeaderContentType(section:string) {
 const topNavbar: Entry<EntrySkeletonType, undefined, string> | null = await getHeaderContentType("TopNavbar");
 
 const navbar: Entry<EntrySkeletonType, undefined, string> | null = await getHeaderContentType("Navbar");
+// TODO: Renderizar imagenes de contentful con heroui
 // const logoUrl: string = `https:${navbar.fields.brandLogo?.fields.file.url}`;
 
 const navbarButtons: Entry<EntrySkeletonType, undefined, string> | null = await getHeaderContentType("NavbarButtons");
