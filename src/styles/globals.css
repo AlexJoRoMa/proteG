@@ -94,6 +94,19 @@
  */
 }
 
+@layer utilities {
+  .bg-conic-custom {
+    background-image: conic-gradient(
+      from -17.59deg at 50% 50%,
+      #CE32A3 -34.36deg,
+      #3CB594 86.54deg,
+      #ff6c07 179.07deg,
+      #CE32A3 325.64deg,
+      #3CB594 446.54deg
+    );
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
