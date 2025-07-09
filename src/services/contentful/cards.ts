@@ -1,7 +1,7 @@
 import { contentfulClient } from './client';
 import type { TabbedCardEntry, TabbedCardSkeleton } from '@/types/Cards';
+import { CONTENT_TYPE_TABBED_CARD_ID } from '@/constants/stepTabEntry';
 
-const CONTENT_TYPE_TABBED_CARD_ID = 'stepTabEntry';
 
 export async function getTabbedCard(ids: string[]): Promise<TabbedCardEntry[]>{
 

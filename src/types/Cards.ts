@@ -1,7 +1,7 @@
 import type { EntrySkeletonType, Asset, Entry } from 'contentful';
 
 export type MediaBlock = {
-    image: any;
+    image: Asset;
 };
 
 export type MediaBlockField = {
@@ -13,7 +13,7 @@ export type TabbedCard = {
     entryBody?: string;
     entryBodyLongText?: string;
     image?: MediaBlockField;
-    dot?: any;
+    dot?: Asset;
 };
 
 export interface TabbedCardSkeleton extends EntrySkeletonType {
