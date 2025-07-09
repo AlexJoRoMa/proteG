@@ -12,7 +12,7 @@ import {
     Button
 } from "@heroui/react";
 import { Entry, EntrySkeletonType } from "contentful";
-import { IzziLogo, HelpIcon, CallIcon, UserIcon, LocationIcon } from "@/components/atoms/buttonIcon";
+import { IzziLogo, HelpIcon, CallIcon, UserIcon, LocationIcon } from "@/components/atoms/ButtonIcon";
 import { IzziNavbar } from "@/types/headerTypes";
 
 type HeaderComponentProps = {
