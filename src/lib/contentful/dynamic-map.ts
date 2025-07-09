@@ -4,5 +4,5 @@ import TabsTile from "@/components/organisms/tabs/tabsTile";
 
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
-  tabs: TabsTile
+  //tabs: TabsTile
 };
