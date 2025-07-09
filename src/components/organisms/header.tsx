@@ -8,9 +8,9 @@ import {
     NavbarMenuToggle,
     NavbarMenu,
     NavbarMenuItem,
-    Link,
     Button
 } from "@heroui/react";
+import Link from "next/link"
 import { IzziLogo, HelpIcon, CallIcon, UserIcon, LocationIcon } from "@/components/atoms/ButtonIcon";
 import { IzziNavbar, HeaderComponentProps } from "@/types/headerTypes";
 
@@ -65,7 +65,9 @@ export default function IzziHeaderContent({navbarData, topNavbarData, navbarButt
       </NavbarContent>
       <NavbarContent className="!grow-0 lg:justify-start sm:justify-center">
         <NavbarBrand>
-          <IzziLogo />
+          <Link href="/">
+            <IzziLogo />
+          </Link>
         </NavbarBrand>
       </NavbarContent>
       <NavbarContent className="hidden sm:flex gap-[32px]" justify="start">
