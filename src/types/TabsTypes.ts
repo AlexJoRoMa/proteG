@@ -1,4 +1,4 @@
-import { Entry, EntrySkeletonType } from "contentful";
+import { EntrySkeletonType } from "contentful";
 
 //CardData
 
@@ -44,4 +44,8 @@ export type PageTabContentProps = {
 export type tabsTileProps = {
     pageName: string,
     componentName: string
+}
+
+export type TabsContentProps = {
+    tabsData: EntrySkeletonType<TabsDataFields> | null
 }

@@ -1,13 +1,9 @@
 'use client'
 
 import { Tabs, Tab, Card, CardBody } from "@heroui/react";
-import { TabsDataFields, CardDataFields } from "@/types/TabsTypes";
+import { TabsDataFields, CardDataFields, TabsContentProps } from "@/types/TabsTypes";
 import Image from "next/image";
 import { Entry, EntrySkeletonType } from "contentful";
-
-    type TabsContentProps = {
-        tabsData: EntrySkeletonType<TabsDataFields> | null
-    }
 
 export default function PageTabContent({ tabsData }: TabsContentProps ) {
 
