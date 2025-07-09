@@ -1,3 +1,5 @@
+import { Entry, EntrySkeletonType } from "contentful"
+
 export type IzziNavbar = {
     internalName: string;
     brandLogo?: Logo;
@@ -22,4 +24,10 @@ export type Navigation = {
         navigationTitle: string,
         navigationUrl: string
     }
+}
+
+export type HeaderComponentProps = {
+    navbarData: Entry<EntrySkeletonType, undefined, string> | null,
+    topNavbarData: Entry<EntrySkeletonType, undefined, string> | null,
+    navbarButtonsData: Entry<EntrySkeletonType, undefined, string> | null
 }

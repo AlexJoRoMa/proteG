@@ -11,15 +11,8 @@ import {
     Link,
     Button
 } from "@heroui/react";
-import { Entry, EntrySkeletonType } from "contentful";
 import { IzziLogo, HelpIcon, CallIcon, UserIcon, LocationIcon } from "@/components/atoms/ButtonIcon";
-import { IzziNavbar } from "@/types/headerTypes";
-
-type HeaderComponentProps = {
-    navbarData: Entry<EntrySkeletonType, undefined, string> | null,
-    topNavbarData: Entry<EntrySkeletonType, undefined, string> | null,
-    navbarButtonsData: Entry<EntrySkeletonType, undefined, string> | null
-}
+import { IzziNavbar, HeaderComponentProps } from "@/types/headerTypes";
 
 export default function IzziHeaderContent({navbarData, topNavbarData, navbarButtonsData}: HeaderComponentProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);

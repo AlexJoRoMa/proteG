@@ -20,7 +20,7 @@ const navbar: Entry<EntrySkeletonType, undefined, string> | null = await getHead
 
 const navbarButtons: Entry<EntrySkeletonType, undefined, string> | null = await getHeaderContentType("NavbarButtons");
 
-export default function App() {
+export default function Navigation() {
   return (
     <IzziHeaderContent navbarData={navbar} topNavbarData={topNavbar} navbarButtonsData={navbarButtons} />
   );
