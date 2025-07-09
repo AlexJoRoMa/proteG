@@ -8,7 +8,7 @@ export async function getTabbedCard(ids: string[]): Promise<TabbedCardEntry[]>{
   try{
     const response = await contentfulClient.getEntries<TabbedCardSkeleton>({
       content_type: CONTENT_TYPE_TABBED_CARD_ID,
-      'sys.id[in]': ids.join(','),
+      'sys.id[in]': ids,
       include: 5,
       limit: ids.length,
     });
