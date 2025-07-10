@@ -1,8 +1,7 @@
 import Image from "next/image";
 import { getTabbedCard } from '../../services/contentful/cards';
-import { TabbedCardEntry, TabbedCard } from '@/types/Cards';
+import { TabbedCardEntry, TabbedCard, configuradoCopyFields } from '@/types/Cards';
 import { getCopyForComponent } from '../../services/contentful/components';
-import { configuradoCopyFields } from '../../types/CardsTypes';
 
 export default async function ContratacionRapida(){
     const ids = [

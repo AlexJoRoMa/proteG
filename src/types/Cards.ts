@@ -21,3 +21,8 @@ export interface TabbedCardSkeleton extends EntrySkeletonType {
     fields: TabbedCard;
 }
 export type TabbedCardEntry = Entry<TabbedCardSkeleton, undefined, string>;
+
+
+export type configuradoCopyFields = {
+    titulo: string;
+}
