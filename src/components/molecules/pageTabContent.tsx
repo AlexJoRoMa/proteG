@@ -5,7 +5,7 @@ import { TabsDataFields, CardDataFields, TabsContentProps } from "@/types/TabsTy
 import Image from "next/image";
 import { Entry, EntrySkeletonType } from "contentful";
 
-export default function PageTabContent({ tabsData }: TabsContentProps ) {
+export default function PageTabContent({ tabsData }: TabsContentProps) {
 
     const cardsInfo = tabsData as unknown as EntrySkeletonType<TabsDataFields>[];
 
@@ -16,6 +16,7 @@ export default function PageTabContent({ tabsData }: TabsContentProps ) {
             variant="light"
             radius="md"
             fullWidth={true}
+            destroyInactiveTabPanel
             classNames={{
                 tabContent: "group-data-[selected=true]:font-medium group-data-[selected=true]:text-white text-white lg:py-[20px] px-auto lg:w-[246px] whitespace-normal font-medium !rounded-t-sm leading-[24px] text-base",
                 panel: "bg-gray-450 w-full p-0",
@@ -26,8 +27,8 @@ export default function PageTabContent({ tabsData }: TabsContentProps ) {
             }}>
             {(item: EntrySkeletonType<TabsDataFields>) => (
                 <Tab key={item.fields.entryTitle} title={item.fields.entryTitle}>
-                    <Card className="rounded-none bg-gray-450 shadow-none">
-                        <CardBody className="grid grid-cols-2 lg:grid-cols-4 gap-x-[24px] gap-y-[32px] px-[24px] pt-[48px] pb-[51px] lg:pt-[28px] lg:pb-[16px] h-[787px] lg:h-[374px] items-stretch">
+                    <Card className="rounded-none bg-gray-450 shadow-none lg:mx-[200px]">
+                        <CardBody className="grid grid-cols-2 lg:grid-cols-4 gap-x-[24px] gap-y-[32px] px-[24px] pt-[48px] pb-[51px] lg:pt-[28px] lg:pb-[16px] h-[787px] lg:h-min items-stretch">
                             {item.fields.cards.map((card) => {
                                 const cardItem = card as unknown as Entry<EntrySkeletonType<CardDataFields>>;
                                 const cardData = card?.fields as CardDataFields;
@@ -60,7 +61,8 @@ export default function PageTabContent({ tabsData }: TabsContentProps ) {
                                         </div>
                                     </div>
                                 )
-                            })}
+                            })
+                            }
                         </CardBody>
                     </Card>
                 </Tab>
