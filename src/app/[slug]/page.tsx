@@ -1,14 +1,9 @@
-import Navigation from "@/components/molecules/navigation";
 import { Entry, EntrySkeletonType } from "contentful";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
+import { PageProps } from "@/types/PageTypes";
 
 
-type PageProps = {
-  params: {
-    slug: string;
-  };
-};
 
 
 export default async function Page({params}:PageProps) {
