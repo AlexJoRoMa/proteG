@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { getTabbedCard } from '../../services/contentful/cards';
 import { TabbedCardEntry, TabbedCard } from '@/types/Cards';
+import { getCopyForComponent } from '../../services/contentful/components';
+import { configuradoCopyFields } from '../../types/CardsTypes';
 
 export default async function ContratacionRapida(){
     const ids = [
@@ -12,10 +14,13 @@ export default async function ContratacionRapida(){
 
   const cards = await getTabbedCard(ids);
 
+  const callResourceTitle = await getCopyForComponent('contratacion-rapida');
+  const getTitle = callResourceTitle.contratacion as unknown as configuradoCopyFields;
+
   return (
       <div className=" items-center justify-items-center box-content lg:w-280 md:w-200 xsm:w-[320px] lg:h-80 md:h-80 xsm:h-[550px]">
          
-        <h1 className="font-bold md:text-[25px] xsm:text-[25px] lg:mb-3 lg:mt-3 md:mb-1 xsm:mt-7">hazlo fácil, hazlo izzi</h1>
+        <h1 className="font-bold md:text-[25px] xsm:text-[25px] lg:mb-3 lg:mt-3 md:mb-1 xsm:mt-7">{getTitle.titulo}</h1>
   
         <div className=" relative  md:flex md:flex-row sm:flex-col ">
            
