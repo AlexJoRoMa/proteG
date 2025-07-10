@@ -8,6 +8,7 @@ import { EmblaOptionsType } from 'embla-carousel';
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import { contentfulClient } from "@/services/contentful/client";
 import { footerImageType, heroImageType } from "@/types/ChannelPromoBannerTypes";
+import { ChannelPromoBannerProps } from "@/types/CarouselTypes";
 
 
 
@@ -23,7 +24,9 @@ let carouselText: {
     channelType: string;
   }[] = [];
 
-const ChannelPromoBannerComponent = async() => {
+
+
+const ChannelPromoBannerComponent = async({id}:ChannelPromoBannerProps) => {
 
   // Opciones de configuración para los carruseles
   const carouselOptions = [
@@ -40,6 +43,7 @@ const ChannelPromoBannerComponent = async() => {
 
  const entriesChannels:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
     content_type: "carouselChannelsModel",
+    'sys.id': id,
     select: ['fields.heroCarousel', 'fields.carouselText', 'fields.thumbnailsCarousel', 'fields.footerCarrusel']
   }).then((entriesResponse) => {
     return entriesResponse.items
