@@ -175,7 +175,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                   {item.description}
                 </p>
                 <ButtonGhost classStyles=" border-white text-white text-[16px] leading-6 font-bold sm:max-w-[320px] max-w-[256px] w-full h-[48px] rounded-md"
-                            text={item.buttonText} />
+                            text={item.buttonText} href={item.buttonLink} />
               </div>
               ))}
           </CarouselComponent>
