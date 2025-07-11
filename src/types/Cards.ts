@@ -26,3 +26,7 @@ export type TabbedCardEntry = Entry<TabbedCardSkeleton, undefined, string>;
 export type configuradoCopyFields = {
     titulo: string;
 }
+
+export type ContratacionRapidaID = {
+    id: string;
+}

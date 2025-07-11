@@ -1,21 +1,40 @@
 import Image from "next/image";
 import { getTabbedCard } from '../../services/contentful/cards';
-import { TabbedCardEntry, TabbedCard, configuradoCopyFields } from '@/types/Cards';
+import { ContratacionRapidaID, TabbedCardEntry, TabbedCard, configuradoCopyFields } from '@/types/Cards';
 import { getCopyForComponent } from '../../services/contentful/components';
+import { contentfulClient } from "@/services/contentful/client";
+import { Asset, Entry, EntrySkeletonType } from "contentful";
 
-export default async function ContratacionRapida(){
-    const ids = [
-    '4FL3WMn8tLkutYJ8uhcp9n',
-    '7eranUDkB4XJknzt6VTtXo',
-    'b9CN2z8VbmjiV4zWL8zZH',
-    '3ri4J3b2bIG0SwjW2kafcN'
-  ]; //ids de las cards
+const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
 
-  const cards = await getTabbedCard(ids);
 
-  const callResourceTitle = await getCopyForComponent('contratacion-rapida');
-  const getTitle = callResourceTitle.contratacion as unknown as configuradoCopyFields;
+  
 
+  const callCardsContent:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
+      content_type: "cardsContentModel",
+      'sys.id': id,
+      select: ['fields.cardsContent']
+    }).then((entriesResponse) => {
+      return entriesResponse.items
+    })
+
+  const getCardsFields =  callCardsContent?.[0]?.fields.cardsContent as Entry<EntrySkeletonType, undefined, string>;
+
+    console.log('_____api call ', callCardsContent );
+    console.log('_____getFieldsa ', getCardsFields );
+
+  return (
+    <h1> hello</h1>
+  );
+
+
+}
+
+export default ContratacionRapida
+
+
+/* 
+  
   return (
       <div className=" items-center justify-items-center box-content lg:w-280 md:w-200 xsm:w-[320px] lg:h-80 md:h-80 xsm:h-[550px]">
          
@@ -23,7 +42,7 @@ export default async function ContratacionRapida(){
   
         <div className=" relative  md:flex md:flex-row sm:flex-col ">
            
-           {/* barra radiante_> top-[px] left-[] maneja la posicion...md:mx-[] top-[] bottom-[] manejan el ancho/altura de la barra*/}
+           
            <div className="hidden md:block absolute top-[118px] left-0 right-0 h-[1px] z-0 md:mx-22 gradient-bar-horizontal " />
            <div className="block md:hidden absolute left-[89px] top-10 bottom-10 w-[1px] z-0 gradient-bar-vertical " />
 
@@ -71,7 +90,20 @@ export default async function ContratacionRapida(){
       </div>
     );
 
-}
+*/
 
 
 
+/* 
+    const ids = [
+    '4FL3WMn8tLkutYJ8uhcp9n',
+    '7eranUDkB4XJknzt6VTtXo',
+    'b9CN2z8VbmjiV4zWL8zZH',
+    '3ri4J3b2bIG0SwjW2kafcN'
+  ]; //ids de las cards
+
+
+  const cards = await getTabbedCard(ids);
+
+  const callResourceTitle = await getCopyForComponent('contratacion-rapida');
+  const getTitle = callResourceTitle.contratacion as unknown as configuradoCopyFields; */
