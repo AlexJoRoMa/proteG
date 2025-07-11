@@ -20,7 +20,7 @@ export default function PageTabContent({ tabsData }: TabsContentProps) {
             classNames={{
                 tabContent: "group-data-[selected=true]:font-medium group-data-[selected=true]:text-white text-white lg:py-[20px] px-auto lg:w-[246px] whitespace-normal font-medium !rounded-t-sm leading-[24px] text-base",
                 panel: "bg-gray-450 w-full p-0",
-                tabList: "w-auto flex items-center pb-0 rounded-none",
+                tabList: "w-auto flex items-center pb-0 rounded-none overflow-y-hidden",
                 cursor: "bg-gray-450 rounded-none rounded-t-sm",
                 base: "m-auto flex items-center justify-around",
                 tab: "h-[56px] lg:h-[48px] w-[118px] lg:w-full rounded-none"
@@ -41,8 +41,7 @@ export default function PageTabContent({ tabsData }: TabsContentProps) {
                                                     className="w-[64px] h-[64px] lg:w-[86px] lg:h-[86px]"
                                                     src={`https:${cardData.image.fields.image.fields.file.url}`}
                                                     alt={cardData.image.fields.altText}
-                                                    priority={false}
-                                                    loading="lazy"
+                                                    loading="eager"
                                                     width={64}
                                                     height={64}
                                                 />
