@@ -191,7 +191,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                   <Image 
                     key={index}
                     width={88} 
-                    height={56} 
+                    height={40} 
                     src={item.url} 
                     alt={`Imagen del carrusel ${index + 1}`} 
                     className="min-w-max"
