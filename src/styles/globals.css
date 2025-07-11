@@ -117,7 +117,7 @@ body {
 .embla-thumbs {
   --thumbs-slide-spacing: 0.8rem;
   --thumbs-slide-height: 6rem;
-  margin-top: var(--thumbs-slide-spacing);
+ /* margin-top: var(--thumbs-slide-spacing);*/
 }
 .embla-thumbs__viewport {
   overflow: hidden;
@@ -128,7 +128,7 @@ body {
   margin-left: calc(var(--thumbs-slide-spacing) * -1);
 }
 .embla-thumbs__slide {
-  flex: 0 0 30%;
+  flex: 0 0 max-content;
   min-width: 0;
   padding-left: var(--thumbs-slide-spacing);
 }
@@ -171,7 +171,7 @@ body {
 }
 
 .embla-thumbs__slide__image{
-    height: 67px;
+    height: 78px;
     display: flex;
     align-items: center;
     justify-content: center;
