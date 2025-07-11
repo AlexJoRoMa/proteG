@@ -1,6 +1,5 @@
 import {contentfulClient} from './client';
 import { FilteredData } from "@/types/MicrocopyTypes";
-
     
     // Microcopys Delivery API call
     
@@ -67,11 +66,11 @@ export async function getTabsResourceSetType() {
 }
 export async function getTabsContentType(pageName:string) {
 
-    const data = await contentfulClient.getEntries({
+    const { items } = await contentfulClient.getEntries({
         content_type: 'tabsContainer', 
         'fields.internalName': pageName,
         include: 5
     });
 
-    return data.items[0];
+    return items[0];
 }

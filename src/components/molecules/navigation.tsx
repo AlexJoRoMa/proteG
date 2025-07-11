@@ -1,12 +1,27 @@
-import Link from "next/link";
+import React from "react";
+import IzziHeaderContent from "@/components/organisms/header";
+import { contentfulClient } from "@/services/contentful/client";
+import { Entry, EntrySkeletonType } from "contentful";
+
+async function getHeaderContentType(section:string) {
+  const responseData = await contentfulClient.getEntries({
+      content_type: 'header',
+      'fields.internalName': section,
+      include: 3
+  });
+  return responseData.items[0];
+}
+
+const topNavbar: Entry<EntrySkeletonType, undefined, string> | null = await getHeaderContentType("TopNavbar");
+
+const navbar: Entry<EntrySkeletonType, undefined, string> | null = await getHeaderContentType("Navbar");
+// TODO: Renderizar imagenes de contentful con heroui
+// const logoUrl: string = `https:${navbar.fields.brandLogo?.fields.file.url}`;
+
+const navbarButtons: Entry<EntrySkeletonType, undefined, string> | null = await getHeaderContentType("NavbarButtons");
 
 export default function Navigation() {
-    return (
-        <nav id='navigation-bar' className='flex flex-row w-full justify-between gap-[8] h-fit mx-[20]'>
-            <Link href="/" className="hover:underline">Home</Link>
-            <Link href="/tv" className="hover:underline">Tv</Link>
-            <Link href="/movil" className="hover:underline">Móvil</Link>
-            <Link href="/internet" className="hover:underline">Internet</Link>
-        </nav>
-    )
+  return (
+    <IzziHeaderContent navbarData={navbar} topNavbarData={topNavbar} navbarButtonsData={navbarButtons} />
+  );
 }
