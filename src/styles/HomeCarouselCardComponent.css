@@ -1,18 +1,30 @@
 .HomeCarouselCardComponent{
 
+    padding: 114px 0;
+    background-color: black;
+
 .embla {
-  max-width: calc(75% + 1 * var(--slide-spacing));
-  margin: auto;
+  max-width: calc(75% + 0.1 * var(--slide-spacing));
+    margin-right: auto;
+    margin: auto;
   --slide-height: 19rem;
   --slide-spacing: 24px;
   --slide-size: 100%;
   --slide-spacing-sm: 1.6rem;
   --slide-size-sm: 50%;
   --slide-spacing-lg: 24px;
-  --slide-size-lg: calc(100% / 3.17);
+  --slide-size-lg: initial;
 
   @media screen and (max-width: 576px) {
     max-width: 90vw;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin-left: 80px;
+  }
+
+  @media screen and (min-width: 1400px) {
+    margin-left: 200px;
   }
 }
 .embla__viewport {
@@ -25,7 +37,7 @@
  /* margin-left: calc(var(--slide-spacing) * -1);*/
 
    @media screen and (min-width: 1400px) {
-    justify-content: center;
+    
   }
 }
 @media (min-width: 750px) {

@@ -11,7 +11,7 @@ const CardHomeComponent = () => {
           width={384}
           height={216}
           priority
-          className="w-full object-cover h-[216px] rounded-t-md"
+          className="w-full object-cover h-[216px] rounded-t-md border-b-[1px solid linear-gradient(#FF6C07, #4DA9A7)]"
         />
         <div className='px-6 py-8 bg-(--color-gray-450) h-[calc(785px-216px)] flex flex-col text-white'>
             <p className='font-bold text-2xl leading-8 mb-4 '>
@@ -19,7 +19,7 @@ const CardHomeComponent = () => {
             </p>
             <p className='mb-4'>
                 <span className='align-bottom'>Desde</span>
-                <span className='font-bold text-[56px]'>$850</span>
+                <span className='font-bold text-[48px] xl:text-[56px] sm:text-[48px]'>$850</span>
                 <span className='align-bottom'>al mes</span>
             </p>
             <p className='mb-6'>
@@ -29,8 +29,8 @@ const CardHomeComponent = () => {
                 
             </div>
             <div className='mt-auto'>
-                <ButtonGhost classStyles='w-full mb-4' text='más info' />
-                <ButtonGhost classStyles='w-full' text='contratar ahora' />
+                <ButtonGhost classStyles='w-full mb-4 border-[1px solid (--color-gray-250)] rounded-md text-(--color-gray-100) text-[18px] font-bold' text='más info' />
+                <ButtonGhost classStyles='w-full rounded-md bg-white text-black text-[18px] border-none font-bold' text='contratar ahora' />
             </div>
         </div>
     </div>
