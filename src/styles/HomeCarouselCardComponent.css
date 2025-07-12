@@ -15,7 +15,7 @@
   --slide-size-lg: initial;
 
   @media screen and (max-width: 576px) {
-    max-width: 92vw;
+    max-width: 90.7vw;
     margin-left: 16px;
     margin-right: 0;
   }
