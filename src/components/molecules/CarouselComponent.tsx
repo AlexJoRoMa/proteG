@@ -39,16 +39,16 @@ const CarouselComponent = ({children, carouselIndex = 0, buttons = false, dots =
           {
             dots && (
             <div className="embla__dots">
-              {scrollSnaps.map((_, index) => (
-                <CarouselDotButtonsComponent
-                  key={index}
-                  onClick={() => onDotButtonClick(index)}
-                  className={'embla__dot'.concat(
-                    index === selectedIndex ? ' embla__dot--selected' : ''
-                  )}
-                />
-              ))}
-            </div>
+            {scrollSnaps.map((_, index) => (
+              <CarouselDotButtonsComponent
+                key={index}
+                onClick={() => onDotButtonClick(index)}
+                className={'embla__dot'.concat(
+                  index === selectedIndex ? ' embla__dot--selected' : ''
+                )}
+              />
+            ))}
+          </div>
             )
           }
 

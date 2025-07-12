@@ -12,7 +12,7 @@
   --slide-spacing-sm: 1.6rem;
   --slide-size-sm: 50%;
   --slide-spacing-lg: 24px;
-  --slide-size-lg: calc(100% / 2.95);
+  --slide-size-lg: calc(100% / 3); /* Tener cuidado al modificar esto... puede dañar el componente del carousel */
 
   @media screen and (max-width: 576px) {
     max-width: 90.7vw;
@@ -58,7 +58,7 @@
   max-width: 385px;
 
   &:last-child {
-    padding-right: 0;
+    /*padding-right: 0;*/
   }
 
   @media screen and (max-width: 576px) {
