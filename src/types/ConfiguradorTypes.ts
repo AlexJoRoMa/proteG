@@ -19,6 +19,8 @@ export interface ConfiguradorCopyFields {
 // entryData
 export interface ConfigDataFields {
     title: string,
+    subTitle: string,
+    description: string,
     stepNumber: number,
     internalName: string,
     components: ComponentsFields[]

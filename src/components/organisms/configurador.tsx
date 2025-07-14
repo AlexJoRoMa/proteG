@@ -3,6 +3,7 @@ import { contentfulClient } from "@/services/contentful/client";
 import { getCopyForComponent } from "@/services/contentful/components";
 import { ConfigDataFields, ConfiguradorCopyFields, ConfiguradorProps } from "@/types/ConfiguradorTypes";
 import { Entry, EntrySkeletonType } from "contentful";
+import PlanesTv from "../molecules/configurador/planesTv";
 
 export default async function Configurador({id}:ConfiguradorProps) {
 
@@ -45,13 +46,8 @@ export default async function Configurador({id}:ConfiguradorProps) {
                     <PlanesInternet plans={entryInternet} />
                 </div>
 
-                <div className='w-full py-[10px] flex flex-col gap-[24px]'>
-                    <div className='flex flex-row gap-[8px] items-center'>
-                        <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>3</p>
-                        <h3 className='font-semibold text-xl leading-[24px]'>{pageInfo.tv.title}</h3>
-                    </div>
-                    <p>TODO: tarjeta unica - producto</p>
-                    <h5 className='font-normal leading-[24px] text-base'>{pageInfo.tv.description}</h5>
+                <div className='w-full py-[10px]'>
+                    <PlanesTv plans={entryTv}/>
                     <p>TODO: *si se selecciona la opcion, agregar dos campos de select (añade más diversion, incluye canales a la carta)</p>
                     <p>TODO: **agregar tarjetas de canales a los selectores</p>
                 </div>
