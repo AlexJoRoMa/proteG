@@ -22,7 +22,6 @@ interface StepTabEntrySkeleton extends EntrySkeletonType{
   fields: StepTabEntryFields;
 }
 
-
 const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
 
   const callCardsContent:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
@@ -39,11 +38,9 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
   const getTitle = await getCopyForComponent('contratacion-rapida');
   const setTitle = getTitle.contratacion as unknown as configuradoCopyFields;
   
-  
-  console.log('----apicall ', getCardsContent)
 
   return (
-      <div className="items-center justify-items-center box-content lg:w-280 md:w-200 xsm:w-[320px] lg:h-80 md:h-80 xsm:h-[550px]">
+      <div className=" items-center justify-items-center box-content lg:w-280 md:w-200 xsm:w-[320px] lg:h-80 md:h-80 xsm:h-[550px]">
   
         <h1 className="font-bold md:text-[25px] xsm:text-[25px] lg:mb-3 lg:mt-3 md:mb-1 xsm:mt-7">{setTitle.titulo}</h1>
   
