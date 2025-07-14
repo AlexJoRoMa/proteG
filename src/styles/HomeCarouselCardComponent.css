@@ -27,6 +27,9 @@
   @media screen and (min-width: 1400px) {
     margin-left: 200px;
   }
+
+  position: relative;
+  overflow: initial;
 }
 .embla__viewport {
   overflow: hidden;
@@ -83,20 +86,38 @@
   }
 }
 
-   /*.embla .embla__viewport .embla__container .embla__slide{
-        flex: 0 0 auto;
+    .embla__prev{
+        left: -65px;
+        top: 50%;
+        position: absolute;
+        transform: translateY(-50%);
 
-        @media screen and (max-width: 576px) {
-            flex: 0 0 100%;
+        @media screen and (max-width: 560px) {
+            left: 0;
+            top: initial;
+            bottom: -25px;
         }
     }
 
-    .embla .embla__viewport .embla__container{
-        gap: 24px;
-        justify-content: center;
+     .embla__next{
+        right: -65px;
+        top: 50%;
+        position: absolute;
+        transform: translateY(-50%);
 
-        @media screen and (max-width: 1300px) {
-            justify-content: normal;
+         @media screen and (max-width: 560px) {
+            right: 0;
+            top: initial;
+            bottom: -25px;
         }
-    }*/
+    }
+
+    .embla__next img, .embla__prev img {
+        width: 48px;
+        cursor: pointer;
+
+        @media screen and (max-width: 560px) {
+            width: 32px;
+        }
+    }
 }
