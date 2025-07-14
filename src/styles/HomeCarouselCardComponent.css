@@ -59,6 +59,7 @@
   flex: 0 0 var(--slide-size);
   padding-right: var(--slide-spacing);
   max-width: 385px;
+  
 
   &:last-child {
     /*padding-right: 0;*/
@@ -69,7 +70,16 @@
   }
 
   @media screen and (min-width: 1024px) {
-    max-width: none; /*Quitar si ponen problema por el ancho de las tarjetas*/
+    max-width: none; /*Poner si ponen problema por que las cards en pantallas grandes se ven pocas y pss prefieren rellenar deformando las tarjetas*/
+  }
+
+  @media screen and (min-width: 1601px) {
+   /* max-width: none; /*Poner si ponen problema por que las cards en pantallas grandes se ven pocas y pss prefieren rellenar deformando las tarjetas*/
+    box-sizing: content-box;
+    max-width: min-content;
+   >div{
+    min-width: 384px;
+   }
   }
 }
 @media (min-width: 750px) {
