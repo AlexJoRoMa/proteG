@@ -94,6 +94,16 @@
  */
 }
 
+.marginLayout {
+  
+  @media (min-width: 768px) {
+    margin-inline: 80px;
+  }
+  @media (min-width: 1280px) {
+    margin-inline: 200px;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

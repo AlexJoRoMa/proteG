@@ -29,14 +29,14 @@ export default function PageTabContent({ tabsData }: TabsContentProps) {
             }}>
             {(item: EntrySkeletonType<TabsDataFields>) => (
                 <Tab key={item.fields.entryTitle} title={item.fields.entryTitle}>
-                    <Card className="rounded-none bg-gray-450 shadow-none lg:mx-[200px]">
-                        <CardBody className="grid grid-cols-2 lg:grid-cols-4 gap-x-[24px] gap-y-[32px] px-[24px] pt-[48px] pb-[51px] lg:pt-[28px] lg:pb-[16px] h-[787px] lg:h-min items-stretch">
+                    <Card className="rounded-none bg-gray-450 shadow-none marginLayout">
+                        <CardBody className="grid grid-cols-2 lg:grid-cols-4 gap-x-[24px] gap-y-[32px] px-[24px] md:px-0 pt-[48px] pb-[51px] lg:pt-[28px] lg:pb-[16px] h-[787px] lg:h-min items-stretch">
                             {item.fields.cards.map((card) => {
                                 const cardItem = card as unknown as Entry<EntrySkeletonType<CardDataFields>>;
                                 const cardData = card?.fields as CardDataFields;
 
                                     return (
-                                        <div key={cardItem.sys.id} className="flex flex-col gap-[32px] items-center text-center lg:w-auto lg:p-[8px] flex-grow h-full">
+                                        <div key={cardItem.sys.id} className="flex flex-col gap-[32px] items-center text-center lg:w-auto lg:py-[8px] flex-grow h-full">
                                             <div className="flex flex-col flex-grow w-full gap-[32px]">
                                                 <div className=" flex justify-center w-full">
                                                     <Image
@@ -49,7 +49,7 @@ export default function PageTabContent({ tabsData }: TabsContentProps) {
                                                     />
                                                 </div>
                                                 <div className="flex flex-col gap-[16px] text-white">
-                                                    <h4 className="font-medium text-xl leading-[24px] line-clamp-3 xl:line-clamp-2 min-h-[72px] xl:min-h-[48px]">{cardData.entryTitle}</h4>
+                                                    <h4 className="font-medium text-xl leading-[24px] line-clamp-3 min-h-[72px]">{cardData.entryTitle}</h4>
                                                     <div className="flex flex-col gap-[24px]">
                                                         <p className="font-light text-gray-200 text-base leading-[24px] ">{cardData.entryBody}</p>
                                                         {cardData.entryUserTestimony && (
