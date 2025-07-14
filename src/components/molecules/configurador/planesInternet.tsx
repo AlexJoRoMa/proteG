@@ -25,7 +25,7 @@ export const CheckIcon = (props: any) => {
     );
 };
 
-export default function CardPlanesInternet({ plans }: PlansCardProps) {
+export default function PlanesInternet({ plans }: PlansCardProps) {
 
     const plansStep = plans?.fields.stepNumber;
     const plansTitle = plans?.fields.title;

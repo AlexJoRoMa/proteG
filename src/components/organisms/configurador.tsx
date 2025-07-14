@@ -1,4 +1,4 @@
-import CardPlanesInternet from "@/components/molecules/cardPlanesInternet"
+import PlanesInternet from "@/components/molecules/configurador/planesInternet"
 import { contentfulClient } from "@/services/contentful/client";
 import { getCopyForComponent } from "@/services/contentful/components";
 import { ConfigDataFields, ConfiguradorCopyFields, ConfiguradorProps } from "@/types/ConfiguradorTypes";
@@ -42,7 +42,7 @@ export default async function Configurador({id}:ConfiguradorProps) {
                 </div>
 
                 <div className='w-full py-[10px]'>
-                    <CardPlanesInternet plans={entryInternet} />
+                    <PlanesInternet plans={entryInternet} />
                 </div>
 
                 <div className='w-full py-[10px] flex flex-col gap-[24px]'>
