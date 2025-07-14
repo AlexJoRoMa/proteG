@@ -1,21 +1,25 @@
 import { Entry, EntrySkeletonType } from "contentful";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
+import { PageProps } from "@/types/PageTypes";
 
 
-export default async function Home() {
 
-  // Obtener la informacion de la pagina
 
-   const page = await fetchComponentsBySlugPage("home");
+export default async function Page({params}:PageProps) {
+
+  // Obtener la informacion de la pagina segun el parametro slug
+  // Este slug es el que se pasa en la URL, por ejemplo: /tv,
+
+  const {slug} = await params; //Sugerencia de NextJS para obtener los parametros de la ruta
+
+   const page = await fetchComponentsBySlugPage(slug);
 
    const components = page.items || [];
 
   return (
-    <main className="">
-
+      <main className="">
         {
-          // Verificar si existen componentes y si son un array con al menos un elemento, Si es asi, mapearlos y renderizar el componente correspondiente
           components && components[0] && components[0].fields.components && Array.isArray(components[0].fields.components) && components[0].fields.components.length > 0 ? (
                 (components[0].fields.components as Entry<EntrySkeletonType, undefined, string>[]).map((component: Entry<EntrySkeletonType, undefined, string>, index) => {
                   const componentType = component?.fields?.type;
@@ -26,6 +30,6 @@ export default async function Home() {
             <p>No existen componentes cargados.</p>
           )
         }
-    </main>
+      </main>
   );
 }

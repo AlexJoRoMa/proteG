@@ -8,6 +8,7 @@ import { EmblaOptionsType } from 'embla-carousel';
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import { contentfulClient } from "@/services/contentful/client";
 import { footerImageType, heroImageType } from "@/types/ChannelPromoBannerTypes";
+import { ChannelPromoBannerProps } from "@/types/CarouselTypes";
 
 
 
@@ -23,7 +24,9 @@ let carouselText: {
     channelType: string;
   }[] = [];
 
-const ChannelPromoBannerComponent = async() => {
+
+
+const ChannelPromoBannerComponent = async({id}:ChannelPromoBannerProps) => {
 
   // Opciones de configuración para los carruseles
   const carouselOptions = [
@@ -40,6 +43,7 @@ const ChannelPromoBannerComponent = async() => {
 
  const entriesChannels:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
     content_type: "carouselChannelsModel",
+    'sys.id': id,
     select: ['fields.heroCarousel', 'fields.carouselText', 'fields.thumbnailsCarousel', 'fields.footerCarrusel']
   }).then((entriesResponse) => {
     return entriesResponse.items
@@ -147,7 +151,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                   src={heroImagesResponsive[index]?.url || image.url}
                   alt={`Sky Sports Banner ${index + 1}`}
                   className="select-none pointer-events-none transition-all w-full h-full md:h-[590px]"
-                  priority
+                  loading="eager"
                   width={402}
                   height={328}
                   sizes="(max-width: 768px) 100vw, 80vw"
@@ -165,13 +169,13 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
               <div key={index} style={{height: '-webkit-fill-available'}} className="relative z-20 w-full pt-[56px] md:pt-0 xl:ml-[200px] md:ml-[80px] pb-10
                  md:w-2/5 flex flex-col items-center md:items-start bg-black md:bg-transparent">
                 
-                <p className=" ml-4 md:ml-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
-                <h2 className="text-[32px] md:text-4xl ml-4 md:ml-0  font-bold text-white mb-6 w-screen md:w-auto">{item.title}</h2>
-                <p className="text-[16px] md:text-[18px] leading-6 text-(--color-gray-200) ml-4 md:ml-0 pr-4 md:pr-auto mb-6 md:mb-10 w-screen md:w-auto">
+                <p className=" pl-4 md:pl-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
+                <h2 className="text-[32px] md:text-4xl pl-4 md:pl-0  font-bold text-white mb-6 w-screen md:w-auto">{item.title}</h2>
+                <p className="text-[16px] md:text-[18px] leading-6 text-(--color-gray-200) pl-4 md:pl-0 pr-4 md:pr-auto mb-6 md:mb-10 w-screen md:w-auto">
                   {item.description}
                 </p>
-                <ButtonGhost classStyles=" border-white text-white text-[16px] leading-6 font-bold hover:!bg-white hover:!text-black sm:max-w-[320px] max-w-[256px] w-full h-[48px] rounded-md"
-                            text={item.buttonText} />
+                <ButtonGhost classStyles=" border-white text-white text-[16px] leading-6 font-bold sm:max-w-[320px] max-w-[256px] w-full h-[48px] rounded-md"
+                            text={item.buttonText} href={item.buttonLink} />
               </div>
               ))}
           </CarouselComponent>
@@ -187,11 +191,11 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                   <Image 
                     key={index}
                     width={88} 
-                    height={56} 
+                    height={40} 
                     src={item.url} 
                     alt={`Imagen del carrusel ${index + 1}`} 
-                    className=""
-                    priority
+                    className="min-w-max"
+                    loading="eager"
                   />
                 ))}              
                 </CarouselThumbnailComponent>
@@ -219,8 +223,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                         height={40} 
                         src={image.url} 
                         alt={`Logo del footer ${heroIndex + 1}-${imgIndex + 1}`}  
-                        className="mix-blend-screen"
-                        priority
+                        loading="eager"
                       />
                     ))}
                   </div>
