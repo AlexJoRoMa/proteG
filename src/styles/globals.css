@@ -94,7 +94,6 @@
  */
 }
 
-@layer utilities {
   .bg-conic-custom {
     background-image: conic-gradient(
       from -17.59deg at 50% 50%,
@@ -105,7 +104,6 @@
       #3CB594 446.54deg
     );
   }
-}
 
 body {
   background: var(--background);

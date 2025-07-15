@@ -1,5 +1,6 @@
 'use client'
 
+import AccordionPlanesExtras from "@/components/atoms/accordionPlanesExtras";
 import { ComponentsFields, PlansCardProps } from "@/types/ConfiguradorTypes";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { EntrySkeletonType } from "contentful";
@@ -108,7 +109,10 @@ export default function PlanesTv({ plans }: PlansCardProps) {
                 }
             </div>
             <div>
-                <h5 className="font-normal leading-[24px] text-base">{plansSubTitle}</h5>
+                {selectedIndex === null ?
+                    <h5 className="font-normal leading-[24px] text-base">{plansSubTitle}</h5> :
+                    <AccordionPlanesExtras />
+                }
             </div>
         </div>
 

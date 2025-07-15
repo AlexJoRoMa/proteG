@@ -4,6 +4,7 @@ import { getCopyForComponent } from "@/services/contentful/components";
 import { ConfigDataFields, ConfiguradorCopyFields, ConfiguradorProps } from "@/types/ConfiguradorTypes";
 import { Entry, EntrySkeletonType } from "contentful";
 import PlanesTv from "../molecules/configurador/planesTv";
+import CoberturaCP from "../molecules/configurador/coberturaCP";
 
 export default async function Configurador({id}:ConfiguradorProps) {
 
@@ -21,7 +22,7 @@ export default async function Configurador({id}:ConfiguradorProps) {
     const entryTitle = pageEntry?.fields.title as string;
     const entryData = pageEntry?.fields.steps as unknown as EntrySkeletonType<ConfigDataFields>[];
 
-    const entryPC = entryData[0];
+    const entryCP = entryData[0];
     const entryInternet = entryData[1];
     const entryTv = entryData[2];
     const entryMovil = entryData[3];
@@ -33,13 +34,8 @@ export default async function Configurador({id}:ConfiguradorProps) {
             </div>
 
             <div className='grid gap-[24px]'>
-                <div className='w-full py-[10px] flex flex-col gap-[24px]'>
-                    <div className='flex flex-row gap-[8px] items-center'>
-                        <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>1</p>
-                        <h3 className='font-semibold text-xl leading-[24px]'>{pageInfo.cobertura}</h3>
-                    </div>
-                    <p>TODO: campo imput codigo postal & copy "por que lo necesitamos"</p>
-                    <p>TODO:*campo "porque lo necesitamos" abre un modal de pantalla completa</p>
+                <div className='w-full py-[10px]'>
+                    <CoberturaCP plans={entryCP}/>
                 </div>
 
                 <div className='w-full py-[10px]'>
@@ -48,8 +44,6 @@ export default async function Configurador({id}:ConfiguradorProps) {
 
                 <div className='w-full py-[10px]'>
                     <PlanesTv plans={entryTv}/>
-                    <p>TODO: *si se selecciona la opcion, agregar dos campos de select (añade más diversion, incluye canales a la carta)</p>
-                    <p>TODO: **agregar tarjetas de canales a los selectores</p>
                 </div>
                 
                 <div className='w-full py-[10px] flex flex-col gap-[24px]'>
@@ -57,13 +51,13 @@ export default async function Configurador({id}:ConfiguradorProps) {
                         <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>4</p>
                         <h3 className='font-semibold text-xl leading-[24px]'>{pageInfo.movil}</h3>
                     </div>
-                    <p>TODO: tabs de plazos (contrato 12 meses, sin plazo) con 4 tarjetas de producto</p>
-                    <p>TODO: *las tarjetas de paquetes deben ser checkbox</p>
+                    {/* //TODO: tabs de plazos (contrato 12 meses, sin plazo) con 4 tarjetas de producto */}
+                    {/* //TODO: *las tarjetas de paquetes deben ser checkbox */}
                 </div>
 
             </div>
-            <p>Agregar sticky al final con boton contratar (mobile)</p>
-            <p>* agregar popups emergentes</p>
+            {/* //TODO: Agregar sticky al final con boton contratar (mobile) */}
+            {/* //TODO: agregar popups emergentes */}
 
         </div>
     )
