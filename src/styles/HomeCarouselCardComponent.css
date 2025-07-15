@@ -1,7 +1,11 @@
 .HomeCarouselCardComponent{
 
-    padding: 114px 0;
+    padding: 64px 0;
     background-color: black;
+
+    @media screen and (max-width: 576px) {
+    padding: 56px 0  40px  0;
+  }
 
 .embla {
   max-width: calc(75% + 0.1 * var(--slide-spacing));

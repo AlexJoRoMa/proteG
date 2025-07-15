@@ -1,21 +1,34 @@
 import React from 'react'
 import Image from 'next/image'
 import ButtonGhost from '../atoms/ButtonGhost'
+import { contentfulClient } from '@/services/contentful/client';
+import { Entry, EntrySkeletonType } from 'contentful';
 
-const CardHomeComponent = () => {
+type CardHomePropType = {
+    card: Entry<EntrySkeletonType, undefined, string>;
+}
+
+const CardHomeComponent = async({card}:CardHomePropType) => {
+
+    //Obteniendo la imagen del card
+    const imageUrl = await contentfulClient.getEntry(card?.fields?.image?.sys?.id
+    ).then(asset => {
+        return asset.fields;
+    })
+
   return (
-    <div className='h-[785px] max-h-[785px] flex-col rounded-md'>
+    <div className='h-[740px] max-h-[785px] md:h-[785px] flex-col rounded-md'>
         <Image 
-          src="https://images.ctfassets.net/lx4ov5kud2ld/DRLtKgFYQOWIl06Y4tLuX/e162d9d44048f19cba09e8d1ea430f26/card1.webp"
-          alt="Home Module TV"
+          src={`https:${imageUrl?.image?.fields?.file.url}` as string}
+          alt={imageUrl?.altText as string}
           width={384}
           height={216}
           priority
-          className="w-full object-cover h-[216px] rounded-t-md border-b-[1px solid linear-gradient(#FF6C07, #4DA9A7)]"
+          className="w-full object-cover h-[208px] md:h-[216px] rounded-t-md border-b-[1px solid linear-gradient(#FF6C07, #4DA9A7)]"
         />
-        <div className='px-6 py-8 bg-(--color-gray-450) h-[calc(785px-216px)] flex flex-col text-white'>
+        <div className='px-4 md:px-6 py-8 bg-(--color-gray-450) h-[calc(740px-208px)] md:h-[calc(785px-216px)] flex flex-col text-white'>
             <p className='font-bold text-2xl leading-8 mb-4 '>
-                    contrata 100 y navega por 150 megas durante 6 meses
+                   {card?.fields?.title as string || 'Título del Card'}
             </p>
             <p className='mb-4'>
                 <span className='align-bottom'>Desde</span>
@@ -23,14 +36,16 @@ const CardHomeComponent = () => {
                 <span className='align-bottom'>al mes</span>
             </p>
             <p className='mb-6'>
-                Precio con promoción solo el primer mes. Incluye $50 de descuento por domiciliar. Incluye:
+                {card?.fields?.description as string || 'Descripción del Card'}
             </p>
             <div className='grid-cols-4 grid-rows-2 gap-4'>
                 
             </div>
             <div className='mt-auto'>
-                <ButtonGhost classStyles='w-full mb-4 border-[1px solid (--color-gray-250)] rounded-md text-(--color-gray-100) text-[18px] font-bold' text='más info' />
-                <ButtonGhost classStyles='w-full rounded-md bg-white text-black text-[18px] border-none font-bold' text='contratar ahora' />
+                <ButtonGhost classStyles='w-full mb-4 border-[1px solid (--color-gray-250)] rounded-md text-(--color-gray-100) text-[16px] md:text-[18px] font-bold'
+                 text={card?.fields?.textBtn1 as string} href={card?.fields?.urlBtn1 as string} />
+                <ButtonGhost classStyles='w-full rounded-md bg-white text-black border-none font-bold text-[16px] md:text-[18px]'
+                text={card?.fields?.textBtn2 as string} href={card?.fields?.urlBtn2 as string} />
             </div>
         </div>
     </div>
