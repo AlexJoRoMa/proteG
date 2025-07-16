@@ -17,7 +17,14 @@ const CardHomeComponent = async({card}:CardHomePropType) => {
     })
 
   return (
-    <div className='h-[740px] max-h-[785px] md:h-[785px] flex-col rounded-md'>
+    <div className='h-[740px] max-h-[785px] md:h-[785px] flex-col rounded-md relative'>
+        {
+            card?.fields?.tagPromotional? (
+                <div className=' rounded-t-md px-6 py-1 absolute top-0 text-[18px] leading-6 w-full text-center text-white bg-[image:var(--gradient-card-tag-home)]'>
+                {card.fields.tagPromotional as string}
+                </div>
+            ) : null
+        }
         <Image 
           src={`https:${imageUrl?.image?.fields?.file.url}` as string}
           alt={imageUrl?.altText as string}
