@@ -13,7 +13,7 @@ const CarouselComponent = ({children, carouselIndex = 0, buttons = false, dots =
 
     const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(emblaApi as EmblaCarouselType)
 
-      const childrenArray = React.Children.toArray(children)
+    const childrenArray = React.Children.toArray(children)
 
   return (
         <div className="embla" >
@@ -32,6 +32,7 @@ const CarouselComponent = ({children, carouselIndex = 0, buttons = false, dots =
                 <CarouselArrowsComponent
                     scrollPrev={() => emblaApi?.scrollPrev()}
                     scrollNext={() => emblaApi?.scrollNext()}
+                    emblaApi={emblaApi as EmblaCarouselType}
                 />
               )
           }
