@@ -1,12 +1,9 @@
 import ChannelPromoBannerComponent from "@/components/organisms/ChannelPromoBannerComponent";
-import TabsTile from "@/components/organisms/tabs/tabsTile";
-import ContratacionRapida from '@/components/organisms/contratacion-rapida';
+import PagesTabsTile from "@/components/organisms/pagesTabsTile";
 import TodoEnUnoComp from '@/components/organisms/todo-uno';
 
-
 export const componentMap = {
-  //carouselChannel: ChannelPromoBannerComponent,
-  //tabs: TabsTile
-  //cardsContratacionRapida: ContratacionRapida
+  carouselChannel: ChannelPromoBannerComponent,
+  tabs: PagesTabsTile,
   cardTodoEnUno: TodoEnUnoComp,
 };

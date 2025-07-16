@@ -51,26 +51,3 @@ export async function getCopyForComponent(componentName: string): Promise<Record
 
 
 }
-
-
-// Tabs Component Delivery API call
-
-export async function getTabsResourceSetType() {
-
-    const data = await contentfulClient.getEntries({
-        content_type: 'resourceSet',
-        include: 2
-    });
-
-    return data.items;
-}
-export async function getTabsContentType(pageName:string) {
-
-    const { items } = await contentfulClient.getEntries({
-        content_type: 'tabsContainer', 
-        'fields.internalName': pageName,
-        include: 5
-    });
-
-    return items[0];
-}
