@@ -39,8 +39,8 @@ const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
 
   const getCardsContent: Array<Entry<StepTabEntrySkeleton>> | undefined = callCardsContent?.[0]?.fields.cardsContent as unknown as Array<Entry<StepTabEntrySkeleton>>;
   
-  return (//bg-black
-    <div className="lg:bg-black md:bg-amber-200 sm:bg-orange-200 w-full  lg:h-100 md:h-80 xsm:h-[550px]">
+  return (//bg-black              border border-red-500 
+    <div className="bg-black w-full  lg:h-100 md:h-80 xsm:h-[620px]">
 
       {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
         const { entryTitle, entryBody, desactivarComponentes, image }= card.fields as StepTabEntryFields;
@@ -51,22 +51,29 @@ const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
         return(
           <div key={card.sys.id} className=" flex flex-col lg:flex-row md:flex-row w-full h-full text-white">
             {/*  div del contenido izq  */}
-            <div className=" flex flex-col justify-center w-full lg:w-1/2 md:w-1/2 order-last lg:order-none md:order-none">
-            <div className=" ml-40 mr-10">
-              <h2 className="text-[36px] font-semibold mb-4">{entryTitle}</h2>
-              <p className="text-[18px] mt-6 mb-6">{entryBody}</p>
-              <div>
+            <div className=" flex flex-col justify-center w-full lg:w-1/2 md:w-1/2  order-last lg:order-none md:order-none">
+            <div className=" lg:ml-35 lg:mr-10 md:ml-20 md:mr-10 flex flex-col lg:items-start lg:text-left md:items-start md:text-left xsm:items-center xsm:text-center">
+              <div className=" lg:text-[36px] md:text-[22px] xsm:text-[32px] font-semibold 
+              lg:mb-4 md:mb-4 xsm:mb-2 xsm:mt-4 ">
+              <h2>{entryTitle}</h2>
+              </div>
+              <div className=" lg:text-[18px] md:text-[14px] lg:mt-6 lg:mb-6 md:mt-6 md:mb-6 xsm:mt-4 xsm:mb-4">
+              <p >{entryBody}</p>
+              </div>
+              
+            </div>
+            <div className="flex lg:justify-start lg:ml-35 md:justify-start md:ml-20 xsm:justify-center">
                 {desactivarComponentes === false && (
-                  <ButtonGhost classStyles="border-white text-white text-[16px] mt-2 mb-1 leading-6 font-bold hover:!bg-white hover:!text-black sm:max-w-[320px] max-w-[256px] w-full h-[48px] rounded-md"
+                  <ButtonGhost classStyles="border-white text-white text-[16px] leading-6 font-bold hover:!bg-white hover:!text-black w-full h-[48px] rounded-md
+                  max-w-[256px] md:max-w-[260px] sm:max-w-[320px]"
                     text="saber más"
                     />
                   )}
               </div>
             </div>
-            </div>
 
             {/*  div del contenido derecho  */}
-            <div className="relative w-full lg:w-1/2 md:w-1/2 h-64 lg:h-auto order-first lg:order-none md:order-none overflow-hidden">
+            <div className="relative w-full lg:w-1/2 md:w-1/2 h-64 lg:h-auto xsm:h-1/2 md:h-auto order-first lg:order-none md:order-none overflow-hidden">
             {imgURL && (
               <Image
               alt={'Images'}
@@ -86,10 +93,3 @@ const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
 }
 
 export default TodoEnUnoComp
-
-/* 
-border border-red-100
-<div className="bg-black items-center justify-items-center box-content  w-auto  lg:h-100 md:h-80 xsm:h-[550px]">
-
-className=" w-[72px] h-[72px] xsm:w-[56px] xsm:h-[56px]"
- */
