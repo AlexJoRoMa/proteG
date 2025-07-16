@@ -42,33 +42,18 @@
   backface-visibility: hidden;
   display: flex;
   touch-action: pan-y pinch-zoom;
- /* margin-left: calc(var(--slide-spacing) * -1);*/
 
    @media screen and (min-width: 1400px) {
     
   }
 }
-@media (min-width: 750px) {
-  .embla__container {
-  /*  margin-left: calc(var(--slide-spacing-sm) * -1);*/
-  }
-}
-@media (min-width: 1200px) {
-  .embla__container {
-   /* margin-left: calc(var(--slide-spacing-lg) * -1);*/
-  }
-}
+
 .embla__slide {
   min-width: 0;
   flex: 0 0 var(--slide-size);
   padding-right: var(--slide-spacing);
   max-width: 385px;
   
-
-  &:last-child {
-    /*padding-right: 0;*/
-  }
-
   @media screen and (max-width: 576px) {
     padding-right: 0;
   }
@@ -78,60 +63,85 @@
   }
 
   @media screen and (min-width: 1601px) {
-   /* max-width: none; /*Poner si ponen problema por que las cards en pantallas grandes se ven pocas y pss prefieren rellenar deformando las tarjetas*/
     box-sizing: content-box;
     max-width: min-content;
    >div{
     min-width: 384px;
    }
   }
+  
+  div{
+      img{
+      border-width: 0 0 1px 0;
+      border-style: solid;
+      }
+  }
+
+  
+  &:nth-child(3n+4), &:nth-child(1) {
+      img{
+            border-image: var(--gradient-card-line-1) 1;
+      }
+  }
+
+  &:nth-child(3n+5), &:nth-child(2) {
+      img{
+        border-image: var(--gradient-card-line-2) 1;
+      }
+      
+  }
+
+  &:nth-child(3n+6), &:nth-child(3) {
+    img{
+         border-image: var(--gradient-card-line-3) 1;
+    }
+  }
 }
 @media (min-width: 750px) {
   .embla__slide {
     flex: 0 0 var(--slide-size-sm);
-    /*padding-left: var(--slide-spacing-sm);*/
   }
 }
 @media (min-width: 1200px) {
   .embla__slide {
     flex: 0 0 var(--slide-size-lg);
-   /* padding-left: var(--slide-spacing-lg);*/
 
   }
 }
 
-    .embla__prev{
-        left: -65px;
-        top: 50%;
-        position: absolute;
-        transform: translateY(-50%);
+.embla__prev{
+    left: -65px;
+    top: 50%;
+    position: absolute;
+    transform: translateY(-50%);
 
-        @media screen and (max-width: 560px) {
-            left: 0;
-            top: initial;
-            bottom: -25px;
-        }
+    @media screen and (max-width: 560px) {
+        left: 0;
+        top: initial;
+        bottom: -25px;
     }
+}
 
-     .embla__next{
-        right: -65px;
-        top: 50%;
-        position: absolute;
-        transform: translateY(-50%);
+.embla__next{
+    right: -65px;
+    top: 50%;
+    position: absolute;
+    transform: translateY(-50%);
 
-         @media screen and (max-width: 560px) {
-            right: 0;
-            top: initial;
-            bottom: -25px;
-        }
+      @media screen and (max-width: 560px) {
+        right: 0;
+        top: initial;
+        bottom: -25px;
     }
+}
 
-    .embla__next img, .embla__prev img {
-        width: 48px;
-        cursor: pointer;
+.embla__next img, .embla__prev img {
+    width: 48px;
+    cursor: pointer;
 
-        @media screen and (max-width: 560px) {
-            width: 32px;
-        }
+    @media screen and (max-width: 560px) {
+        width: 32px;
     }
+}
+
 }
