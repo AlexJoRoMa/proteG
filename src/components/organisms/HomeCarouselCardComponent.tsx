@@ -24,7 +24,7 @@ const HomeCarouselCardComponent = async ({id}:HomeCarouselCardProps) => {
         <CarouselProvider qtyCarousels={1} carouselConfigs={[{ options: { align: 'start' } }]} >
            <CarouselComponent buttons={true} dots={true}>
               {
-                entryCarousel && entryCarousel[0]?.fields.cardsCarousel && entryCarousel[0].fields.cardsCarousel.map((card:Entry<EntrySkeletonType, undefined, string>, index:number) => (
+                entryCarousel && entryCarousel[0]?.fields.cardsCarousel && Array.isArray(entryCarousel[0].fields.cardsCarousel) && (entryCarousel[0].fields.cardsCarousel as Entry<EntrySkeletonType, undefined, string>[]).map((card:Entry<EntrySkeletonType, undefined, string>, index:number) => (
                   <CardHomeComponent key={index} card={card} />
                 ))
               }

@@ -2,7 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import ButtonGhost from '../atoms/ButtonGhost'
 import { contentfulClient } from '@/services/contentful/client';
-import { Entry, EntrySkeletonType } from 'contentful';
+import { Entry, EntrySkeletonType, Asset } from 'contentful';
 
 type CardHomePropType = {
     card: Entry<EntrySkeletonType, undefined, string>;
@@ -11,10 +11,11 @@ type CardHomePropType = {
 const CardHomeComponent = async({card}:CardHomePropType) => {
 
     //Obteniendo la imagen del card
-    const imageUrl = await contentfulClient.getEntry(card?.fields?.image?.sys?.id
+    const imageAsset = card?.fields?.image as Asset;
+    const imageUrl = imageAsset?.sys?.id ? await contentfulClient.getEntry(imageAsset.sys.id
     ).then(asset => {
         return asset.fields;
-    })
+    }) : null;
 
   return (
     <div className='h-[740px] max-h-[785px] md:h-[785px] flex-col rounded-md relative'>
@@ -26,7 +27,7 @@ const CardHomeComponent = async({card}:CardHomePropType) => {
             ) : null
         }
         <Image 
-          src={`https:${imageUrl?.image?.fields?.file.url}` as string}
+          src={`https:${(imageUrl?.image as Asset)?.fields?.file?.url}` as string}
           alt={imageUrl?.altText as string}
           width={384}
           height={216}
