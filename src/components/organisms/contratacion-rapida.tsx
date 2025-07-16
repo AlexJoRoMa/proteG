@@ -40,15 +40,17 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
   
 
   return (
-      <div className=" items-center justify-items-center box-content lg:w-280 md:w-200 xsm:w-[320px] lg:h-80 md:h-80 xsm:h-[550px]">
+      <div className="bg-white items-center justify-items-center box-content w-full lg:h-81 md:h-81 xsm:h-[550px] relative">
   
-        <h1 className="font-bold md:text-[25px] xsm:text-[25px] lg:mb-3 lg:mt-3 md:mb-1 xsm:mt-7">{setTitle.titulo}</h1>
+        <div className="  lg:mb-3 lg:pt-4 md:pt-5 md:mb-1 xsm:mt-7">
+        <h1 className=" font-bold md:text-[25px] xsm:text-[25px]">{setTitle.titulo}</h1>
+        </div>
   
         <div className=" relative  md:flex md:flex-row sm:flex-col ">
   
           {/* barra radiante_> top-[px] left-[] maneja la posicion...md:mx-[] top-[] bottom-[] manejan el ancho/altura de la barra*/}
           <div className="hidden md:block absolute top-[118px] left-0 right-0 h-[1px] z-0 md:mx-22 gradient-bar-horizontal " />
-          <div className="block md:hidden absolute left-[89px] top-10 bottom-10 w-[1px] z-0 gradient-bar-vertical " />
+          <div className="block md:hidden absolute left-[102px] top-10 bottom-10 w-[1px] z-0 gradient-bar-vertical " />
   
           {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
             const { entryBody, image, dot } = card.fields as StepTabEntryFields;
@@ -59,7 +61,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
   
             return (
               <div key={card.sys.id} className="relative z-10 md:w-40 xsm:w-80 md:h-50 md:p-1 md:mx-3 flex md:flex-col sm:flex-row xsm:my-6">
-                <div className="  items-center md:flex sm:flex xsm:flex md:flex-col sm:flex-row xsm:flex-row">
+                <div className="  items-center md:flex xsm:flex md:flex-col xsm:flex-row flex-shrink-0">
                   <div className=" w-20 h-20 flex items-center justify-center">
                     {imgURL && (
                       <Image
@@ -75,7 +77,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
                   <div className=" md:mt-1 md:mb-6 md:ml-0 xsm:ml-4">
                     {dotURL && (
                       <Image
-                        className=" md:w-[12px] md:h-[12px] "
+                        className=" md:w-[12px] md:h-[12px] xsm:w-[12px] xsm:h-[12px]"
                         alt={'Images'}
                         src={`https:${dotURL}`}
                         priority
@@ -85,7 +87,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
                     )}
                   </div>
                 </div>
-                <div className="text-[12px] md:text-center xsm:text-left align-middle flex items-center justify-center
+                <div className=" text-[12px] md:text-center xsm:text-left align-middle flex items-center justify-center
                   md:pl-0 xsm:pl-7">
                   <p>{entryBody}</p>
                 </div>
