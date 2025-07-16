@@ -51,7 +51,7 @@
   --color-magenta-500: #AD005E;
   --color-green-200: #25D366;
   --color-blue-400: #007BFF;
-  /* Gray Scale */ 
+  /* Gray Scale */
   --color-gray-50: #F4F4F6;
   --color-gray-100: #DADADF;
   --color-gray-150: #BFBFC5;
@@ -69,13 +69,13 @@
 
   /* Breakpoints */
   --breakpoint-xsm: 320px;
-  --breakpoint-sm:576px;
+  --breakpoint-sm: 576px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 992px;
 
-  /* Shadows */ 
+  /* Shadows */
   --shadow-sm: 0px 2px 6px 0px rgba(0, 2, 5, 0.10);
-  --shadow-md: 0px 4px 16px 0px rgba(0, 2, 5, 0.10); 
+  --shadow-md: 0px 4px 16px 0px rgba(0, 2, 5, 0.10);
   --shadow-lg: 0px 6px 30px 0px rgba(0, 2, 5, 0.10);
   --shadow-xl: 0px 12px 42px 0px rgba(0, 2, 5, 0.10);
 
@@ -92,6 +92,13 @@
     rounded-lg   --> radius-8
     rounded-xl   --> radius-12
  */
+
+  /* Margin Inline*/
+  --spacing-sm: 16px;
+  --spacing-md: 80px;
+  --spacing-lg: 144px;
+  --spacing-xl: 200px;
+
 }
 
 body {
@@ -104,9 +111,11 @@ body {
 .embla {
   overflow: hidden;
 }
+
 .embla__container {
   display: flex;
 }
+
 .embla__slide {
   flex: 0 0 100%;
   min-width: 0;
@@ -117,21 +126,25 @@ body {
 .embla-thumbs {
   --thumbs-slide-spacing: 0.8rem;
   --thumbs-slide-height: 6rem;
-  margin-top: var(--thumbs-slide-spacing);
+  /* margin-top: var(--thumbs-slide-spacing);*/
 }
+
 .embla-thumbs__viewport {
   overflow: hidden;
 }
+
 .embla-thumbs__container {
   display: flex;
   flex-direction: row;
   margin-left: calc(var(--thumbs-slide-spacing) * -1);
 }
+
 .embla-thumbs__slide {
-  flex: 0 0 30%;
+  flex: 0 0 max-content;
   min-width: 0;
   padding-left: var(--thumbs-slide-spacing);
 }
+
 @media (min-width: 576px) {
   .embla-thumbs__slide {
     flex: 0 0 max-content;
@@ -166,20 +179,20 @@ body {
   color: var(--text-body);
 }
 
-.embla-thumbs__slide--selected .embla-thumbs__slide__image{
-  background-color: var( --color-gray-450)
+.embla-thumbs__slide--selected .embla-thumbs__slide__image {
+  background-color: var(--color-gray-450)
 }
 
-.embla-thumbs__slide__image{
-    height: 67px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+.embla-thumbs__slide__image {
+  height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 
-    @media screen and (min-width: 560px) {
-        height: 56px;
-    }
+  @media screen and (min-width: 560px) {
+    height: 56px;
+  }
 }
 
 /* Color gradiants bar para Contrataticion rapida--- hazlo facil, hazlo izzi*/

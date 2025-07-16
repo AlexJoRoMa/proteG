@@ -42,8 +42,7 @@ export type PageTabContentProps = {
 }
 
 export type tabsTileProps = {
-    pageName: string,
-    componentName: string
+    id: string,
 }
 
 export type TabsContentProps = {
