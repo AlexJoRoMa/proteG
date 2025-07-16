@@ -70,8 +70,8 @@
    }
   }
   
-  div{
-      img{
+  >div{
+      >img{
       border-width: 0 0 1px 0;
       border-style: solid;
       }
@@ -79,20 +79,20 @@
 
   
   &:nth-child(3n+4), &:nth-child(1) {
-      img{
+      >div>img{
             border-image: var(--gradient-card-line-1) 1;
       }
   }
 
   &:nth-child(3n+5), &:nth-child(2) {
-      img{
+      >div>img{
         border-image: var(--gradient-card-line-2) 1;
       }
       
   }
 
   &:nth-child(3n+6), &:nth-child(3) {
-    img{
+    >div>img{
          border-image: var(--gradient-card-line-3) 1;
     }
   }

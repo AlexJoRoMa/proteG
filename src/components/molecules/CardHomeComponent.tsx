@@ -17,6 +17,8 @@ const CardHomeComponent = async({card}:CardHomePropType) => {
         return asset.fields;
     }) : null;
 
+    console.log('CardHomeComponent adds', card.fields.adds);
+
   return (
     <div className='h-[740px] max-h-[785px] md:h-[785px] flex-col rounded-md relative'>
         {
@@ -46,8 +48,19 @@ const CardHomeComponent = async({card}:CardHomePropType) => {
             <p className='mb-6'>
                 {card?.fields?.description as string || 'Descripción del Card'}
             </p>
-            <div className='grid-cols-4 grid-rows-2 gap-4'>
-                
+            <div className='grid grid-cols-4 grid-rows-2 gap-4'>
+                {
+                    card?.fields?.adds?.map((add: EntrySkeletonType, index: number) => (
+                        <Image 
+                            key={index}
+                            src={`https:${add.fields?.file?.url}` as string}
+                            alt={`Add ${index + 1}`}
+                            width={56}
+                            height={14}
+                            priority
+                            className=''/>
+                    ))
+                }
             </div>
             <div className='mt-auto'>
                 <ButtonGhost classStyles='w-full mb-4 border-[1px solid (--color-gray-250)] rounded-md text-(--color-gray-100) text-[16px] md:text-[18px] font-bold'
