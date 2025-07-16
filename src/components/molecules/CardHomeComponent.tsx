@@ -50,16 +50,19 @@ const CardHomeComponent = async({card}:CardHomePropType) => {
             </p>
             <div className='grid grid-cols-4 grid-rows-2 gap-4'>
                 {
-                    card?.fields?.adds?.map((add: EntrySkeletonType, index: number) => (
-                        <Image 
-                            key={index}
-                            src={`https:${add.fields?.file?.url}` as string}
-                            alt={`Add ${index + 1}`}
-                            width={56}
-                            height={14}
-                            priority
-                            className=''/>
-                    ))
+                    Array.isArray(card?.fields?.adds) && card?.fields?.adds?.map((add, index: number) => {
+                        const assetAdd = add as Asset;
+                        return assetAdd?.fields?.file?.url ? (
+                            <Image 
+                                key={index}
+                                src={`https:${assetAdd.fields?.file?.url}` as string}
+                                alt={`Add ${index + 1}`}
+                                width={56}
+                                height={14}
+                                priority
+                                className='w-auto'/>
+                        ) : null;
+                    })
                 }
             </div>
             <div className='mt-auto'>

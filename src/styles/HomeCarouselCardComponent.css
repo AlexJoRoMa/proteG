@@ -20,16 +20,16 @@
 
   @media screen and (max-width: 576px) {
     max-width: 90.7vw;
-    margin-left: 16px;
+    margin-left: var(--spacing-sm);
     margin-right: 0;
   }
 
   @media screen and (min-width: 600px) {
-    margin-left: 80px;
+    margin-left: var(--spacing-md);
   }
 
   @media screen and (min-width: 1400px) {
-    margin-left: 200px;
+    margin-left: var(--spacing-xl);
   }
 
   position: relative;
