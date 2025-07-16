@@ -3,7 +3,7 @@ import PagesTabsTile from "@/components/organisms/pagesTabsTile";
 import ContratacionRapida from '@/components/organisms/contratacion-rapida';
 
 export const componentMap = {
- // carouselChannel: ChannelPromoBannerComponent,
- // tabs: PagesTabsTile,
+  carouselChannel: ChannelPromoBannerComponent,
+  tabs: PagesTabsTile,
   cardsContratacionRapida: ContratacionRapida
 };
