@@ -1,6 +1,7 @@
 'use client'
 
-import { ComponentsFields, PlansCardProps } from "@/types/ConfiguradorTypes";
+import { ComponentsFields, ConfigDataFields, PlansCardProps } from "@/types/ConfiguradorTypes";
+import { useContent } from "@/utils/ConfiguradorProvider";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { EntrySkeletonType } from "contentful";
 import { useState } from "react";
@@ -25,7 +26,12 @@ export const CheckIcon = (props: any) => {
     );
 };
 
-export default function PlanesInternet({ plans }: PlansCardProps) {
+export default function PlanesInternet() {
+
+    const content = useContent();
+    const entryContent = content.pageEntry?.fields.steps as unknown as EntrySkeletonType<ConfigDataFields>[];
+    const plans = entryContent[1];
+
 
     const plansStep = plans?.fields.stepNumber;
     const plansTitle = plans?.fields.title;
@@ -80,7 +86,7 @@ export default function PlanesInternet({ plans }: PlansCardProps) {
                                                 <span className="text-sm font-normal">{" /mes"}</span>
                                             </div>
                                             <div className="flex flex-row gap-[16px] items-center justify-between">
-                                                <p className="underline pointer-events-auto" onClick={()=> console.log('click!!!')}>{card.fields.ctaText}</p>
+                                                <p className="underline pointer-events-auto" onClick={() => console.log('click!!!')}>{card.fields.ctaText}</p>
                                                 <span
                                                     className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
                                                     aria-pressed={isSelected}

@@ -1,6 +1,7 @@
 'use client'
 
-import { ComponentsFields, ConfigCardsFields, PlansCardProps } from "@/types/ConfiguradorTypes";
+import { ComponentsFields, ConfigCardsFields, ConfigDataFields, PlansCardProps } from "@/types/ConfiguradorTypes";
+import { useContent } from "@/utils/ConfiguradorProvider";
 import { Card, CardBody, CardHeader, Tab, Tabs } from "@heroui/react";
 import { Entry, EntrySkeletonType } from "contentful";
 import { useState } from "react";
@@ -25,7 +26,12 @@ export const CheckIcon = (props: any) => {
     );
 };
 
-export default function PlanesMovil({ plans }: PlansCardProps) {
+export default function PlanesMovil() {
+
+    const content = useContent();
+    const entryContent = content.pageEntry?.fields.steps as unknown as EntrySkeletonType<ConfigDataFields>[];
+    const plans = entryContent[3];
+
 
     const plansStep = plans?.fields.stepNumber;
     const plansTitle = plans?.fields.title;
@@ -45,7 +51,7 @@ export default function PlanesMovil({ plans }: PlansCardProps) {
             const updateSelected = isAlreadySelected ?
                 currentSelected.filter((id) => id !== cardId) :
                 [...currentSelected, cardId]
-            
+
             return {
                 ...prev,
                 [tabKey]: updateSelected
@@ -119,7 +125,7 @@ export default function PlanesMovil({ plans }: PlansCardProps) {
                                                     <span className="text-sm font-normal">{" /mes"}</span>
                                                 </div>
                                                 <div className="flex flex-row gap-[16px] items-center justify-between">
-                                                    <p className="underline pointer-events-auto" onClick={()=> console.log('click!!!')}>{card.fields.ctaText}</p>
+                                                    <p className="underline pointer-events-auto" onClick={() => console.log('click!!!')}>{card.fields.ctaText}</p>
                                                     <span
                                                         className={`w-[24px] h-[24px] rounded-sm border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
                                                         aria-pressed={isSelected}

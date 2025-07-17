@@ -1,9 +1,13 @@
 'use client'
 
-import { CodigoPostalProps } from "@/types/ConfiguradorTypes";
+import { useContent } from "@/utils/ConfiguradorProvider";
 import { useState } from "react";
 
-export default function InputCP({codigoPostal}: CodigoPostalProps) {
+export default function InputCP() {
+
+    const content = useContent();
+    const codigoPostal = content.coberturaCopy.codigoPostal;
+
 
     const [value, setValue] = useState("");
     const [error, setError] = useState("");
@@ -47,12 +51,12 @@ export default function InputCP({codigoPostal}: CodigoPostalProps) {
                         onChange={validateEntry}
                         onBlur={validateValidEntry}
                     />
-                    
+
                 </div>
                 <button
                     type="submit"
                     className="rounded-sm bg-black-0 text-white-0 py-[12px] px-[16px] font-bold text-base leading-[24px] mt-[29px]"
-                    onClick={()=> console.log('click!!!')}
+                    onClick={() => console.log('click!!!')}
                 >
                     {codigoPostal.button}
                 </button>

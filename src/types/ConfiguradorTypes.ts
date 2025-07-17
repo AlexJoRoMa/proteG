@@ -1,4 +1,5 @@
 import { Entry, EntrySkeletonType } from "contentful";
+import { ReactNode } from "react";
 
 // props
 export type ConfiguradorProps = {
@@ -57,7 +58,6 @@ export interface ConfigTabsFields {
 //cardPlanes
 
 export type PlansCardProps = {
-    plans: EntrySkeletonType<ConfigDataFields> | null,
     data?: CodigoPostalProps
 }
 
@@ -68,4 +68,16 @@ export type CodigoPostalProps = {
         label: string,
         placeHolder: string
     }
+}
+
+//Provider Props
+
+export type ProviderProps = {
+    children: ReactNode,
+    value: DataFields
+}
+
+export type DataFields = {
+    coberturaCopy: CodigoPostalProps,
+    pageEntry: Entry<EntrySkeletonType, undefined> | null
 }
