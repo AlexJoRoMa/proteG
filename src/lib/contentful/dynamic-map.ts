@@ -1,8 +1,8 @@
 import ChannelPromoBannerComponent from "@/components/organisms/ChannelPromoBannerComponent";
-import TabsTile from "@/components/organisms/tabs/tabsTile";
+import PagesTabsTile from "@/components/organisms/pagesTabsTile";
 
 
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
-  //tabs: TabsTile
+  tabs: PagesTabsTile
 };
