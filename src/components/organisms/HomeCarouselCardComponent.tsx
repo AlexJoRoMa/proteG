@@ -4,7 +4,7 @@ import CarouselComponent from '../molecules/CarouselComponent'
 import { CarouselProvider } from '@/utils/CarouselProvider'
 import { HomeCarouselCardProps } from '@/types/HomeCarouselCardTypes'
 import { contentfulClient } from '@/services/contentful/client'
-import { Entry, EntrySkeletonType } from 'contentful'
+import { Asset, Entry, EntrySkeletonType } from 'contentful'
 
 
 const HomeCarouselCardComponent = async ({id}:HomeCarouselCardProps) => {
@@ -14,13 +14,15 @@ const HomeCarouselCardComponent = async ({id}:HomeCarouselCardProps) => {
    const entryCarousel:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
       content_type: "carouselCardHomeModel",
       'sys.id': id,
-      select: ['fields.cardsCarousel']
+      select: ['fields.backgroundImage', 'fields.cardsCarousel']
     }).then((entriesResponse) => {
       return entriesResponse.items
     })
+
+    const imgBackground = entryCarousel?.[0].fields?.backgroundImage as Asset;
   
   return (
-    <div className='HomeCarouselCardComponent'>
+    <div className='HomeCarouselCardComponent bg-no-repeat bg-size-[100%_100%]' style={{backgroundImage: `url(https:${imgBackground?.fields?.file?.url})`}} >
         <CarouselProvider qtyCarousels={1} carouselConfigs={[{ options: { align: 'start' } }]} >
            <CarouselComponent buttons={true} dots={true}>
               {

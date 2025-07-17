@@ -17,8 +17,6 @@ const CardHomeComponent = async({card}:CardHomePropType) => {
         return asset.fields;
     }) : null;
 
-    console.log('CardHomeComponent adds', card.fields.adds);
-
   return (
     <div className='h-[740px] max-h-[785px] md:h-[785px] flex-col rounded-md relative'>
         {
