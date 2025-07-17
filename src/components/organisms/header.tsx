@@ -33,7 +33,7 @@ export default function IzziHeaderContent({navbarData, topNavbarData, navbarButt
     <>
         <Navbar style={borderStyle} shouldHideOnScroll
         classNames={{
-            wrapper: "max-w-full px-2",
+            wrapper: "max-w-full pl-4 pr-0 xl:pl-8 xl:pr-4",
         }}
         className={isMenuOpen ? "hidden" : 'sm:flex'}>
             <NavbarContent>
@@ -56,16 +56,16 @@ export default function IzziHeaderContent({navbarData, topNavbarData, navbarButt
         </Navbar>
         <Navbar onMenuOpenChange={setIsMenuOpen}
         classNames={{
-        wrapper: "max-w-full h-[88px] px-2"
+        wrapper: "max-w-full h-[88px] pl-4 pr-6"
       }}>
       <NavbarContent className="!grow-0">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="xl:hidden"
+          className="xl:hidden pl-2"
         />
         
       </NavbarContent>
-      <NavbarContent className="!grow-0 lg:justify-start sm:justify-center ps-16 lg:ps-0">
+      <NavbarContent className={`${isMenuOpen ? 'ps-0': 'ps-16'} !grow-0 lg:justify-start sm:justify-center lg:ps-0`}>
         <NavbarBrand>
           <Link href="/">
             <IzziLogo />
@@ -95,7 +95,7 @@ export default function IzziHeaderContent({navbarData, topNavbarData, navbarButt
         {mobileButton?.navigation?.map((link, index) => ( 
         <NavbarItem key={`${link}-${index}`}
             className={isMenuOpen ? "hidden" : "xl:hidden sm:flex"}>
-          <Button as={Link} href={link.fields.navigationUrl} className="bg-color-trasparent justify-end">
+          <Button as={Link} href={link.fields.navigationUrl} className="bg-color-trasparent justify-end px-0">
             <Image src={`https:${mobileButton?.brandLogo?.fields?.file?.url}`} alt={link.fields.navigationTitle} width={32} height={32}></Image>
           </Button>
         </NavbarItem>
