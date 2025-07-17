@@ -23,28 +23,49 @@ export interface ConfigDataFields {
     description: string,
     stepNumber: number,
     internalName: string,
-    components: ComponentsFields[]
+    components: ComponentsFields[] | ConfigTabsFields[]
 }
 
 export interface ComponentsFields {
+    fields: ComponentsFields,
+    sys: {
+        id: string
+    },
     internalName: string,
     maxCapacityInternet: string,
     minCapacityInternet: string,
     price: number,
     subTitle: string,
-    title: string
+    title: string,
+    ctaText: string
 }
 
 //entryTabs
 
-export interface ConfigTabFields {
+export interface ConfigCardsFields {
     interalName: string,
     entryTitle: string,
     cards: ComponentsFields[]
 }
 
+export interface ConfigTabsFields {
+    internalName: string,
+    type: string,
+    tabs: ConfigCardsFields[]
+}
+
 //cardPlanes
 
 export type PlansCardProps = {
-    plans: EntrySkeletonType<ConfigDataFields> | null
+    plans: EntrySkeletonType<ConfigDataFields> | null,
+    data?: CodigoPostalProps
+}
+
+//copy CP
+export type CodigoPostalProps = {
+    codigoPostal: {
+        button: string,
+        label: string,
+        placeHolder: string
+    }
 }
