@@ -11,15 +11,15 @@ export default function IzziFooterContent({contactData, linksData}: FooterCompon
     const links = linksData?.fields as IzziFooterLinks;
 
     const itemClasses = {
-        title: "font-normal text-medium text-white-0",
-        content: "text-small px-2",
+        title: "font-normal text-[20px] text-white-0",
+        content: "text-[20px] px-2",
         indicator: "data-[open=true]:-rotate-180",
         heading: "border-b border-gray-250"
     }
     
     const subListClasses = {
-        title: "font-normal text-medium text-white-0",
-        content: "text-small px-2",
+        title: "mr-4 font-normal text-[20px] text-white-0",
+        content: "text-[20px]",
         indicator: "data-[open=true]:-rotate-180",
     }  
 
@@ -38,7 +38,7 @@ export default function IzziFooterContent({contactData, linksData}: FooterCompon
             </p>
           </div>
           <div className='flex items-center gap-6'>
-            
+            {/* TODO: Renderizar imagenes desde contentful */}
               <Link href='#' className='text-white-0 underline text-[18px] flex items-center gap-2'><HeadphoneIcon />centro de ayuda</Link>
             
             
@@ -60,7 +60,7 @@ export default function IzziFooterContent({contactData, linksData}: FooterCompon
                 {link?.fields.footerLink.map((accordion, index) => (
                     <li key={`${accordion}-${index}`}>
                         {accordion?.fields?.footerLink && accordion?.fields?.footerLink.length > 0 &&
-                                <Accordion itemClasses={subListClasses}>
+                                <Accordion isCompact itemClasses={subListClasses}>
                                     <AccordionItem indicator={<DropIcon />} aria-label={accordion.fields.internalName} title={accordion.fields.internalName}>
                                         <ul>
                                         {accordion?.fields?.footerLink.map((subList, index) => (
@@ -72,7 +72,7 @@ export default function IzziFooterContent({contactData, linksData}: FooterCompon
                                     </AccordionItem>
                                 </Accordion>
                         }
-                        <Link href={`${accordion.fields.navigationUrl}`}>{accordion.fields.navigationTitle}</Link>
+                        <Link className='text[20px] text-white-0' href={`${accordion.fields.navigationUrl}`}>{accordion.fields.navigationTitle}</Link>
                     </li>
                 ))}
                 </ul>
@@ -80,19 +80,20 @@ export default function IzziFooterContent({contactData, linksData}: FooterCompon
               </Accordion>
                 }
                 {!link?.fields?.footerLink &&
-                    <Link href={`${link.fields.navigationUrl}`}>{link.fields.navigationTitle}</Link>
+                    <Link className='inline-block align-middle text-[20px] text-white-0' href={`${link.fields.navigationUrl}`}>{link.fields.navigationTitle}</Link>
                 }
             </div>
             ))}
             </div>
         </div>
     </div>
-
+    {/* TODO: Renderizar contenido desde contentful */}
     <div className="mt-8 border-t border-gray-250 pt-8">
-      <div className="sm:flex sm:justify-between">
-        <IzziLogo />
-
-        <ul className="mt-8 flex flex-wrap justify-start gap-4 text-xs sm:mt-0 lg:justify-end">
+      <div className="xsm:grid xsm:justify-center xl:flex xl:justify-between">
+        <div className='xsm:justify-self-center'>
+          <IzziLogo />
+        </div>
+        <ul className="mt-8 flex flex-wrap justify-center gap-4 text-xs sm:mt-0 xl:justify-end">
           <li>
             <ProfecoLogo />
           </li>
