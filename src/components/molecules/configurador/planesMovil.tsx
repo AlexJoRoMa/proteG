@@ -125,7 +125,13 @@ export default function PlanesMovil() {
                                                     <span className="text-sm font-normal">{" /mes"}</span>
                                                 </div>
                                                 <div className="flex flex-row gap-[16px] items-center justify-between">
-                                                    <p className="underline pointer-events-auto" onClick={() => console.log('click!!!')}>{card.fields.ctaText}</p>
+                                                    <p
+                                                        className="underline pointer-events-auto"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            console.log('click!!!')
+                                                        }}
+                                                    >{card.fields.ctaText}</p>
                                                     <span
                                                         className={`w-[24px] h-[24px] rounded-sm border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
                                                         aria-pressed={isSelected}

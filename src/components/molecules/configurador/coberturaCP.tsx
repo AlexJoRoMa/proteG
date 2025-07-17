@@ -37,7 +37,9 @@ export default function CoberturaCP({ data }: PlansCardProps) {
             </div>
             <div className="flex flex-row gap-[16px] items-center">
                 <h5 className="font-normal text-base leading-[24px]">{plansDescription}</h5>
-                <button onClick={() => console.log('click!!!')}><InfoIcon /></button>
+                <button 
+                    onClick={() => console.log('click!!!')}
+                ><InfoIcon /></button>
             </div>
             {/* //TODO: campo imput codigo postal & copy "por que lo necesitamos" */}
             {/* //TODO:*icono de información del "porque lo necesitamos" abre un drawer */}
