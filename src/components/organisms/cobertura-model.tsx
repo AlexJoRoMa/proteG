@@ -1,29 +1,9 @@
 import Image from "next/image";
-import { CoberturaID } from '@/types/CoberturaTypes';
+import { CoberturaID, StepTabEntryFields, StepTabEntrySkeleton } from '@/types/CoberturaTypes';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
 
-interface MediaEntryFields {
-  image?: Asset;
-}
-
-interface MediaEntrySkeleton extends EntrySkeletonType{
-  contentTypeId: 'media';
-  fields: MediaEntryFields;
-}
-
-interface StepTabEntryFields extends EntrySkeletonType{
-  image?: Entry<MediaEntrySkeleton>;
-  entryTitle?: string;
-  entryBody?: string;
-  desactivarComponentes?: boolean;
-}
-
-interface StepTabEntrySkeleton extends EntrySkeletonType{
-  contentTypeId: 'stepTabEntry';
-  fields: StepTabEntryFields;
-}
 
 
 const TodoEnUnoComp = async ({id} : CoberturaID) =>{
@@ -49,7 +29,7 @@ const TodoEnUnoComp = async ({id} : CoberturaID) =>{
 
                 return(
                     <div key={card.sys.id} className=" flex flex flex-col items-center h-full">
-                        <div className="border border-blue-500 flex flex-col items-center h-full w-[97%]">
+                        <div className=" flex flex-col items-center h-full w-[97%]">
                         <div className=" lg:mt-12 md:mt-8 xsm:mt-8">
                         {imgURL && (
                             <Image 
@@ -66,13 +46,13 @@ const TodoEnUnoComp = async ({id} : CoberturaID) =>{
                         <div className=" lg:text-[36px] md:text-[36px] xsm:text-[28px] font-bold lg:mt-8 md:mt-6 xsm:mt-5 text-center">
                             <h1>{entryTitle}</h1>
                         </div>
-                        <div className="border border-red-500 lg:w-[92%] md:w-[95%] lg:mt-6 md:mt-3 xsm:mt-6 lg:h-25 md:h-25 xsm:h-35 lg:text-[18px] md:text-[18px] xsn:text-[16px] text-center ">
+                        <div className="xl:w-[92%] lg:w-[92%] md:w-[95%] lg:mt-6 md:mt-3 xsm:mt-6 lg:h-25 md:h-25 xsm:h-35 lg:text-[18px] md:text-[18px] xsn:text-[16px] text-center ">
                             <p>{entryBody}</p>
                         </div>
 
                         <div className="lg:mt-2 md:mt-1 xsm:mt-1">
                             <ButtonGhost classStyles="border-black text-black text-[16px] leading-6 font-bold hover:!bg-white hover:!text-black w-full h-[48px] rounded-md
-                            lg:w-[320px] md:w-[320px] xsm:w-[320px]"
+                            lg:w-[320px] md:w-[320px] xsm:w-[256px]"
                             text="comprobar mi cobertura"
                             />
                         </div>
