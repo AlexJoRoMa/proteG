@@ -6,7 +6,7 @@ import ButtonGhost from "../atoms/ButtonGhost";
 
 
 
-const TodoEnUnoComp = async ({id} : CoberturaID) =>{
+const CoberturaModel = async ({id} : CoberturaID) =>{
     const callCardsContent:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
         content_type: "coberturaModel",
         'sys.id': id,
@@ -67,4 +67,4 @@ const TodoEnUnoComp = async ({id} : CoberturaID) =>{
     );
 }
 
-export default TodoEnUnoComp
+export default CoberturaModel
