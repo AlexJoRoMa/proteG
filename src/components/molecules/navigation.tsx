@@ -19,9 +19,10 @@ const navbar: Entry<EntrySkeletonType, undefined, string> | null = await getHead
 // const logoUrl: string = `https:${navbar.fields.brandLogo?.fields.file.url}`;
 
 const navbarButtons: Entry<EntrySkeletonType, undefined, string> | null = await getHeaderContentType("NavbarButtons");
+const mobileNavbarButton: Entry<EntrySkeletonType, undefined, string> | null = await getHeaderContentType("MobileAccountButton");
 
 export default function Navigation() {
   return (
-    <IzziHeaderContent navbarData={navbar} topNavbarData={topNavbar} navbarButtonsData={navbarButtons} />
+    <IzziHeaderContent navbarData={navbar} topNavbarData={topNavbar} navbarButtonsData={navbarButtons} mobileNavbarButton={mobileNavbarButton} />
   );
 }
