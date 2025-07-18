@@ -29,5 +29,6 @@ export type Navigation = {
 export type HeaderComponentProps = {
     navbarData: Entry<EntrySkeletonType, undefined, string> | null,
     topNavbarData: Entry<EntrySkeletonType, undefined, string> | null,
-    navbarButtonsData: Entry<EntrySkeletonType, undefined, string> | null
+    navbarButtonsData: Entry<EntrySkeletonType, undefined, string> | null,
+    mobileNavbarButton: Entry<EntrySkeletonType, undefined, string> | null
 }
