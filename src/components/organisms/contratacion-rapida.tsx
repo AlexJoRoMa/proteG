@@ -23,7 +23,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
   
 
   return (
-      <div className=" bg-white items-center justify-items-center box-content w-full lg:h-81 md:h-81 xsm:h-[550px] relative">
+      <div className="bg-white items-center justify-items-center box-content w-full lg:h-81 md:h-81 xsm:h-[550px] relative">
   
         <div className="  lg:mb-3 lg:pt-4 md:pt-5 md:mb-1 xsm:mt-7">
         <h1 className=" font-bold md:text-[25px] xsm:text-[25px]">{setTitle.titulo}</h1>
