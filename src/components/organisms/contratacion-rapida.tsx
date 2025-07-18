@@ -29,10 +29,10 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
         <h1 className=" font-bold md:text-[25px] xsm:text-[25px]">{setTitle.titulo}</h1>
         </div>
   
-        <div className=" relative xl:w-[70%] lg:w-[90%] justify-center md:flex md:flex-row sm:flex-col ">
+        <div className=" relative xl:w-300 lg:w-200 justify-center md:flex md:flex-row sm:flex-col ">
   
           {/* barra radiante_> top-[px] left-[] maneja la posicion...md:mx-[] top-[] bottom-[] manejan el ancho/altura de la barra*/}
-          <div className=" hidden md:block absolute top-[118px] left-0 right-0 h-[1px] z-0 xl:mx-40 lg:mx-20 md:mx-22 gradient-bar-horizontal " />
+          <div className=" hidden md:block absolute top-[118px] left-0 right-0 h-[1px] z-0 xl:mx-50 lg:mx-25 md:mx-22 gradient-bar-horizontal " />
           <div className="block md:hidden absolute left-[102px] top-10 bottom-10 w-[1px] z-0 gradient-bar-vertical " />
   
           {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
