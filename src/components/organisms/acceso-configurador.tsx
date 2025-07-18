@@ -1,28 +1,9 @@
 import Image from "next/image";
-import { AccesoConfiguradorID } from '@/types/ModelAccesoConfig';
+import { AccesoConfiguradorID, StepTabEntryFields, StepTabEntrySkeleton } from '@/types/ModelAccesoConfig';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
 
-interface MediaEntryFields {
-  image?: Asset;
-}
-
-interface MediaEntrySkeleton extends EntrySkeletonType{
-  contentTypeId: 'media';
-  fields: MediaEntryFields;
-}
-
-interface StepTabEntryFields extends EntrySkeletonType{
-  image?: Entry<MediaEntrySkeleton>;
-  entryTitle?: string;
-  entryBodyLongText?: string;
-}
-
-interface StepTabEntrySkeleton extends EntrySkeletonType{
-  contentTypeId: 'stepTabEntry';
-  fields: StepTabEntryFields;
-}
 
 
 const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
@@ -40,7 +21,8 @@ const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
 
     
     return(
-        <div className="bg-white w-full  lg:h-120 md:h-120 xsm:h-[502px]">
+        <div className="bg-white w-full absolute lg:h-120 md:h-120 xsm:h-[502px]">
+
             
             {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
                 const { entryTitle, entryBodyLongText, image }= card.fields as StepTabEntryFields;
@@ -65,7 +47,7 @@ const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
                         </div>
 
                         {/* barra radiante_> top-[px] maneja la posicion...md:mx-[] manejan el ancho de la barra*/}
-                        <div className=" md:block absolute lg:top-[300px] md:top-[300px] xsm:top-[260px] left-0 right-0 h-[1px] z-0 lg:mx-[25%] md:mx-[17%] xsm:mx-[10%] gradient-bar-horizontal " />
+                        <div className=" md:block absolute lg:top-[140px] md:top-[135px] xsm:top-[110px] left-0 right-0 h-[1px] z-0 lg:mx-[25%] md:mx-[17%] xsm:mx-[10%] gradient-bar-horizontal " />
 
                         <div className=" lg:text-[36px] md:text-[36px] xsm:text-[28px] font-bold lg:mt-10 md:mt-10 xsm:mt-8">
                             <h1>{entryTitle}</h1>

@@ -4,5 +4,6 @@ import AccesoConfigurador from '@/components/organisms/acceso-configurador';
 
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
-  tabs: PagesTabsTile
+  tabs: PagesTabsTile,
+  modeloAccesoConfigurador: AccesoConfigurador
 };
