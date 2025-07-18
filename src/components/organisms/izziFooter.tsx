@@ -48,8 +48,8 @@ export default function IzziFooterContent({contactData, linksData}: FooterCompon
         </div>
         ))}
     </div>
-    <div className="lg:flex lg:items-start lg:gap-8 mt-8 border-t border-gray-250 pt-8 text-white-0">
-        <div className="container mx-auto mt-8 grid grid-cols-1 gap-8 px-4">
+    <div className="lg:flex lg:items-start lg:gap-8 mt-8 border-t border-gray-250 text-white-0">
+        <div className="mx-auto mt-8 grid grid-cols-1 gap-8">
           <div className='grid grid-cols-1 md:grid-cols-3 md:gap-8'>
           {links?.footerLinkSection.map((link, index) => (
             <div className="col-span-2 sm:col-span-1" key={`${link}-${index}`}>
@@ -80,7 +80,7 @@ export default function IzziFooterContent({contactData, linksData}: FooterCompon
               </Accordion>
                 }
                 {!link?.fields?.footerLink &&
-                    <Link className='inline-block align-middle text-[20px] text-white-0' href={`${link.fields.navigationUrl}`}>{link.fields.navigationTitle}</Link>
+                    <Link className='inline-block align-middle text-[20px] text-white-0 px-2 pt-4' href={`${link.fields.navigationUrl}`}>{link.fields.navigationTitle}</Link>
                 }
             </div>
             ))}
