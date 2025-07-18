@@ -22,6 +22,8 @@ let carouselText: {
     buttonText: string;
     buttonLink: string;
     channelType: string;
+    btnShowMore?: string; // Nueva propiedad opcional para el botón "Ver más"
+    textPromo?: string; // Nueva propiedad opcional para el texto promocional
   }[] = [];
 
 
@@ -169,13 +171,29 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
               <div key={index} style={{height: '-webkit-fill-available'}} className="relative z-20 w-full pt-[56px] md:pt-0 xl:ml-[200px] md:ml-[80px] pb-10
                  md:w-2/5 flex flex-col items-center md:items-start bg-black md:bg-transparent">
                 
-                <p className=" pl-4 md:pl-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
+                <p className="pl-4 md:pl-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
                 <h2 className="text-[32px] md:text-4xl pl-4 md:pl-0  font-bold text-white mb-6 w-screen md:w-auto">{item.title}</h2>
                 <p className="text-[16px] md:text-[18px] leading-6 text-(--color-gray-200) pl-4 md:pl-0 pr-4 md:pr-auto mb-6 md:mb-10 w-screen md:w-auto">
                   {item.description}
                 </p>
-                <ButtonGhost classStyles=" border-white text-white text-[16px] leading-6 font-bold sm:max-w-[320px] max-w-[256px] w-full h-[48px] rounded-md"
+
+                {
+                  item.textPromo && (
+                    <p className="text-[16px] md:text-[18px] leading-6 text-(--turquoise-450) pl-4 md:pl-0 pr-4 md:pr-auto mb-8 md:mb-6 w-screen md:w-auto">
+                      {item.textPromo}
+                    </p>
+                  )
+                }
+
+                <ButtonGhost classStyles=" border-white text-white text-[16px] md:text-[18px] leading-6 font-bold sm:max-w-[288px] max-w-[224px] w-full h-[20px] rounded-md"
                             text={item.buttonText} href={item.buttonLink} />
+                {
+                  item.btnShowMore && (
+                    <ButtonGhost classStyles="mt-4 border-black bg-white text-white text-[16px] md:text-[18px] leading-6 sm:max-w-[288px] max-w-[224px] w-full h-[20px] rounded-md"
+                            text={item.btnShowMore} href={item.buttonLink} />
+                  )
+                }
+
               </div>
               ))}
           </CarouselComponent>
