@@ -1,29 +1,8 @@
 import Image from "next/image";
-import { TodoEnUnoCompID } from '@/types/ModelTodoUno';
+import { TodoEnUnoCompID, StepTabEntryFields,  StepTabEntrySkeleton} from '@/types/ModelTodoUno';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
-
-interface MediaEntryFields {
-  image?: Asset;
-}
-
-interface MediaEntrySkeleton extends EntrySkeletonType{
-  contentTypeId: 'media';
-  fields: MediaEntryFields;
-}
-
-interface StepTabEntryFields extends EntrySkeletonType{
-  image?: Entry<MediaEntrySkeleton>;
-  entryTitle?: string;
-  entryBody?: string;
-  desactivarComponentes?: boolean;
-}
-
-interface StepTabEntrySkeleton extends EntrySkeletonType{
-  contentTypeId: 'stepTabEntry';
-  fields: StepTabEntryFields;
-}
 
 
 const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
