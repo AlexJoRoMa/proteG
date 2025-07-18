@@ -18,7 +18,7 @@ const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
 
   const getCardsContent: Array<Entry<StepTabEntrySkeleton>> | undefined = callCardsContent?.[0]?.fields.cardsContent as unknown as Array<Entry<StepTabEntrySkeleton>>;
   
-  return (//            border border-red-500 
+  return (
     <div className="bg-black w-full  lg:h-100 md:h-80 xsm:h-[620px]">
 
       {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
