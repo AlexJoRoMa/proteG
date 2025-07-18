@@ -49,7 +49,7 @@ export default function IzziFooterContent({contactData, linksData}: FooterCompon
         ))}
     </div>
     <div className="lg:flex lg:items-start lg:gap-8 mt-8 border-t border-gray-250 text-white-0">
-        <div className="mx-auto xl:mx-xl xl:w-full mt-8 grid grid-cols-1 gap-8">
+        <div className="mx-auto lg:mx-md lg:w-full mt-8 grid grid-cols-1 gap-8">
           <div className='grid grid-cols-1 md:grid-cols-3 md:gap-8'>
           {links?.footerLinkSection.map((link, index) => (
             <div className="col-span-2 sm:col-span-1" key={`${link}-${index}`}>
