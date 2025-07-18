@@ -29,7 +29,9 @@ export type CarouselThumbsButtonsType = {
 
 export type CarouselComponentType = {
     children: React.ReactNode,
-    carouselIndex?: number
+    carouselIndex?: number,
+    buttons?: boolean,
+    dots?: boolean
 }
 
 export type ChannelPromoBannerProps = {

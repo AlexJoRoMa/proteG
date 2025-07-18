@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @config "../../tailwind.config.js";
+@import '../styles/HomeCarouselCardComponent.css';
 
 :root {
   font-family: var(--font-lato);
@@ -72,6 +73,7 @@
   --breakpoint-sm: 576px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 992px;
+  --breakpoint-xl: 1024px;
 
   /* Shadows */
   --shadow-sm: 0px 2px 6px 0px rgba(0, 2, 5, 0.10);
@@ -99,6 +101,16 @@
   --spacing-lg: 144px;
   --spacing-xl: 200px;
 
+
+   --text-high-contrast-rgb-value: 49, 49, 49;
+   --detail-medium-contrast: rgb(234, 234, 234);
+   --text-body: rgb(54, 49, 61);
+
+   /*Gradientes*/
+   --gradient-card-tag-home: linear-gradient(90deg, #D60270 0%, #FF6C07 100%);
+   --gradient-card-line-1: linear-gradient(90deg, #FF6C07, #4DA9A7);
+   --gradient-card-line-2: linear-gradient(to right, #00C1B5, #00C1B5);
+   --gradient-card-line-3: linear-gradient(to right, #FF6C07, #FF6C07);
 }
 
 body {
@@ -126,7 +138,6 @@ body {
 .embla-thumbs {
   --thumbs-slide-spacing: 0.8rem;
   --thumbs-slide-height: 6rem;
-  /* margin-top: var(--thumbs-slide-spacing);*/
 }
 
 .embla-thumbs__viewport {
@@ -195,6 +206,60 @@ body {
   }
 }
 
+.embla__dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 40px;
+  gap: 32px;
+  width: fit-content;
+  margin-inline: auto;
+}
+.embla__dot {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #3F3F45;
+  touch-action: manipulation;
+  display: inline-flex;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: box-shadow 0.2s ease-in-out, width 0.2s
+   ease-in-out, height 0.2s ease-in-out, border-radius 0.2s ease-in-out;
+
+   @media screen and (max-width: 576px) {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.embla__dot--selected{
+  width: 48px;
+  height: 16px;
+  border-radius: 16px;
+  background-color: white;
+
+  @media screen and (max-width: 576px) {
+    width: 24px;
+    height: 12px;
+    border-radius: 6px;
+  }
+}
+
+.embla__next[disabled],
+.embla__prev[disabled] {
+  opacity: 0;
+  cursor: not-allowed;
+}
+
 /* Color gradiants bar para Contrataticion rapida--- hazlo facil, hazlo izzi*/
 .gradient-bar-horizontal {
   background: linear-gradient( to right,
@@ -212,4 +277,4 @@ body {
   #D31772,
   #FCD116
   );
-}
+ }
