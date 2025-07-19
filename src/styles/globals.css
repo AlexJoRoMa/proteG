@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @config "../../tailwind.config.js";
 @import '../styles/HomeCarouselCardComponent.css';
+@import '../styles/ChannelPromoBannerComponent.css';
 
 :root {
   font-family: var(--font-lato);
@@ -52,6 +53,7 @@
   --color-magenta-500: #AD005E;
   --color-green-200: #25D366;
   --color-blue-400: #007BFF;
+  --color--turquoise-450: #009D95;
   /* Gray Scale */
   --color-gray-50: #F4F4F6;
   --color-gray-100: #DADADF;
