@@ -81,8 +81,6 @@ const ChannelPromoBannerComponent = async({id}:ChannelPromoBannerProps) => {
     }));
   }
 
-  console.log('carouselText', carouselText);
-
   // Carrusel de los thumbnails
 
     const thumbnailsCarousel = entriesChannels?.[0]?.fields.thumbnailsCarousel as Entry<EntrySkeletonType, undefined, string>;
@@ -173,7 +171,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
           <CarouselComponent carouselIndex={2}>
 
               {carouselText.map((item, index) => (
-              <div key={index} style={{height: '-webkit-fill-available'}} className="relative z-20 w-full pt-[56px] md:pt-0 xl:ml-[200px] md:ml-[80px] pb-10
+              <div key={index} style={{height: '-webkit-fill-available'}} className="relative z-20 w-full pt-[56px] md:pt-0 2xl:ml-[200px] md:ml-[80px] pb-10
                  md:w-2/5 flex flex-col items-center md:items-start bg-black md:bg-transparent">
                 
                 <p className="pl-4 md:pl-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
@@ -209,7 +207,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
 
           {/* Carousel de canales */}
 
-          <div className="flex items-center w-full justify-center sm:justify-normal mx-auto xl:mx-0 xl:pl-[225px] h-[80px] md:h-[60px] bg-black">
+          <div className="flex items-center w-full justify-center sm:justify-normal mx-auto xl:mx-0 2xl:pl-[225px] md:pl-[80px] md:pr-[80px] h-[80px] md:h-[60px] bg-black">
               <CarouselThumbnailComponent targetCarouselIndex={0} syncAllCarousels={true}>
                   {thumbnailImages.map((item, index) => (
                 <div key={index} className="relative">
