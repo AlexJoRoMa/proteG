@@ -6,5 +6,5 @@ import PagesTabsTile from "@/components/organisms/pagesTabsTile";
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
   tabs: PagesTabsTile,
-  benefits: BenefitsComponent,
+  benefitsInternet: BenefitsComponent,
 };
