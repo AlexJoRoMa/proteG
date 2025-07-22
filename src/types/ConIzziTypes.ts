@@ -24,6 +24,7 @@ export interface StepTabEntryFields extends EntrySkeletonType{
   incluye?: string;
   adicionales?: Asset[];
   textBoton1?: string;
+  linkBoton1?: string;
 }
 
 export interface StepTabEntrySkeleton extends EntrySkeletonType{
