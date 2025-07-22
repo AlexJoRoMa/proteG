@@ -2,6 +2,7 @@
 @config "../../tailwind.config.js";
 @import '../styles/HomeCarouselCardComponent.css';
 @import '../styles/ChannelPromoBannerComponent.css';
+@import '../styles/contratacion-rapida.css';
 
 :root {
   font-family: var(--font-lato);
@@ -263,23 +264,4 @@ body {
 .embla__prev[disabled] {
   opacity: 0;
   cursor: not-allowed;
-}
-
-/* Color gradiants bar para Contrataticion rapida--- hazlo facil, hazlo izzi*/
-.gradient-bar-horizontal {
-  background: linear-gradient( to right,
-  #FF6C07,
-  #4DA9A7,
-  #D31772,
-  #FCD116
-  );
-}
-
-.gradient-bar-vertical {
-  background: linear-gradient( to bottom,
-  #FF6C07,
-  #4DA9A7,
-  #D31772,
-  #FCD116
-  );
 }
