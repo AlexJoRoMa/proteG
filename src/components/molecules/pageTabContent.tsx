@@ -29,7 +29,7 @@ export default function PageTabContent({ tabsData }: TabsContentProps) {
             }}>
             {(item: EntrySkeletonType<TabsDataFields>) => (
                 <Tab key={item.fields.entryTitle} title={item.fields.entryTitle}>
-                    <Card className="rounded-none bg-gray-450 shadow-none md:mx-md xl:mx-xl">
+                    <Card className="rounded-none bg-gray-450 shadow-none md:mx-md 2xl:mx-xl">
                         <CardBody className="grid grid-cols-2 lg:grid-cols-4 gap-x-[24px] gap-y-[32px] px-[24px] md:px-0 pt-[48px] pb-[51px] lg:pt-[28px] lg:pb-[16px] h-[787px] lg:h-min items-stretch">
                             {item.fields.cards.map((card) => {
                                 const cardItem = card as unknown as Entry<EntrySkeletonType<CardDataFields>>;
