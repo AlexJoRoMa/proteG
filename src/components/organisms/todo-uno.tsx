@@ -57,7 +57,7 @@ const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
               <Image
               alt={'Images'}
               src={`https:${imgURL}`}
-              priority
+              loading="lazy"
               fill
               style={{ objectFit: 'cover'}}
               />
