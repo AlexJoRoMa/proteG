@@ -45,9 +45,11 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                             <span className="text-[56px] ml-4">{precio} </span>
                             <span className="text-[16px]">{textTiempo}</span></p>
                     </div>
-                    <div  className="border border-green-100 text-white text-[16px]">
+                    <div  className=" text-white text-[16px]">
                         <p>{incluye}</p>
-                        { adicionales?.map((item: Asset) => {
+                        {adicionales && (
+                            <div className="flex">
+                                { adicionales?.map((item: Asset) => {
                             const url = item.fields?.file?.url;
                             
                             return (
@@ -61,6 +63,8 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                                 </div>
                             );
                         })}
+                            </div>
+                        )}
                     </div>
 
                     <div className="">
