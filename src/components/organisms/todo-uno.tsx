@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { TodoEnUnoCompID, StepTabEntrySkeleton, StepTabEntryFields } from '@/types/ModelTodoUno';
+import { TodoEnUnoCompID, StepTabEntrySkeleton, StepTabEntryFields } from '@/types/ModelTodoUnoTypes';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
@@ -22,7 +22,7 @@ const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
     <div className="bg-black w-full  lg:h-100 md:h-80 xsm:h-[620px]">
 
       {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
-        const { entryTitle, entryBody, desactivarComponentes, image }= card.fields as StepTabEntryFields;
+        const { entryTitle, entryBody, desactivarBoton, textBoton1, linkBoton1, image }= card.fields as StepTabEntryFields;
          
         const assetImage = image?.fields?.image as Asset | undefined;
         const imgURL = assetImage?.fields?.file?.url;
@@ -42,10 +42,10 @@ const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
               
             </div>
             <div className="flex lg:justify-start lg:ml-50  md:ml-22 md:justify-start xsm:justify-center">
-                {desactivarComponentes === false && (
+                {desactivarBoton === false && (
                   <ButtonGhost classStyles="border-white text-white text-[16px] leading-6 font-bold hover:!bg-white hover:!text-black w-full h-[48px] rounded-md
                   max-w-[256px] md:max-w-[260px] sm:max-w-[320px]"
-                    text="saber más"
+                    text={textBoton1 as string} href={linkBoton1 as string}
                     />
                   )}
               </div>

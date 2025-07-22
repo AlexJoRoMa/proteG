@@ -17,7 +17,9 @@ export interface StepTabEntryFields extends EntrySkeletonType{
   image?: Entry<MediaEntrySkeleton>;
   entryTitle?: string;
   entryBody?: string;
-  desactivarComponentes?: boolean;
+  desactivarBoton?: boolean;
+  textBoton1?: string;
+  linkBoton1?: string;
 }
 
 export interface StepTabEntrySkeleton extends EntrySkeletonType{
