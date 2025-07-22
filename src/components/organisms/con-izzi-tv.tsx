@@ -20,19 +20,21 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
 
       console.log('>>>>> getCardsContent ', getCardsContent);
     return(
-    <div className="bg-black flex w-full h-[518px]">
+    <div className=" flex w-full h-[518px]">
         {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
-        const { titulo, body, desde, precio, textTiempo, incluye,  textBoton1, imagen }= card.fields as StepTabEntryFields;
+        const { titulo, tituloResaltado, body, desde, precio, textTiempo, incluye,  textBoton1, adicionales ,imagen }= card.fields as StepTabEntryFields;
          
         const assetImage = imagen?.fields?.image as Asset | undefined;
         const imgURL = assetImage?.fields?.file?.url;
 
         return(
-            <div key={card.sys.id} className="bg-cover w-full" style={{ backgroundImage: `url(${imgURL})`}}>
-                
-                <div className="border border-blue-500 w-[400px] h-[360px] mt-15 ml-40">
+            <div key={card.sys.id} className=" bg-cover w-full" style={{ backgroundImage: `url(${imgURL})`}}>
+                <div className="border border-blue-500 w-[400px] h-[360px] mt-15 ml-50">
                     <div  className=" text-white text-[64px]">
-                        <h1>{titulo}</h1>
+                        <h1>
+                            <span>{titulo} </span>
+                            <span className="font-bold">{tituloResaltado}</span>
+                        </h1>
                     </div>
                     <div  className=" text-white text-[32px] w-[80%]">
                         <h1>{body}</h1>
@@ -43,8 +45,30 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                             <span className="text-[56px] ml-4">{precio} </span>
                             <span className="text-[16px]">{textTiempo}</span></p>
                     </div>
-                    <div  className="text-white text-[16px]">
+                    <div  className="border border-green-100 text-white text-[16px]">
                         <p>{incluye}</p>
+                        { adicionales?.map((item: Asset) => {
+                            const url = item.fields?.file?.url;
+                            
+                            return (
+                                <div key={item.sys.id} className="border border-red-300">
+                                    <Image
+                                    src={`https:${url}`}
+                                    alt={'adicional'}
+                                    width={100}
+                                    height={48}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    <div className="">
+                        <ButtonGhost classStyles="border-white text-black text-[16px] leading-6 font-bold bg-white hover:!bg-white hover:!text-black w-full rounded-md
+                         h-[48px]
+                         w-[320px] "
+                        text={textBoton1 as string} 
+                        />
                     </div>
                 </div>
                 
@@ -58,20 +82,3 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
 
 
 export default ConIzziTv
-
-/* 
-{imgURL && (
-                    <Image 
-                    className="bg-[] " 
-                    alt={'Images'}
-                    src={`https:${imgURL}`}
-                    priority
-                    width={424}
-                    height={88}
-                    />
-                )}
-
-
-
-
- */
