@@ -32,16 +32,16 @@ const CardHomeComponent = async({card}:CardHomePropType) => {
           width={384}
           height={216}
           priority
-          className="w-full object-cover h-[208px] md:h-[216px] rounded-t-md border-b-[1px solid linear-gradient(#FF6C07, #4DA9A7)]"
+          className="w-full object-cover h-auto rounded-t-md border-b-[1px solid linear-gradient(#FF6C07, #4DA9A7)]"
         />
         <div className='px-4 md:px-6 py-8 bg-(--color-gray-450) h-[calc(740px-208px)] md:h-[calc(785px-216px)] flex flex-col text-white'>
             <p className='font-bold text-2xl leading-8 mb-4 '>
                    {card?.fields?.title as string || 'Título del Card'}
             </p>
             <p className='mb-4'>
-                <span className='align-bottom'>Desde</span>
-                <span className='font-bold text-[48px] xl:text-[56px] sm:text-[48px]'>$850</span>
-                <span className='align-bottom'>al mes</span>
+                <span className='align-bottom'>{card?.fields?.textBeforePrice as string}</span>
+                <span className='font-bold text-[48px] xl:text-[56px] sm:text-[48px]'>{card?.fields?.price as string}</span>
+                <span className='align-bottom'>{card?.fields?.textAfterPrice as string}</span>
             </p>
             <p className='mb-6'>
                 {card?.fields?.description as string || 'Descripción del Card'}

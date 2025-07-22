@@ -22,6 +22,8 @@ let carouselText: {
     buttonText: string;
     buttonLink: string;
     channelType: string;
+    btnShowMore?: string; // Nueva propiedad opcional para el botón "Ver más"
+    textPromo?: string; // Nueva propiedad opcional para el texto promocional
   }[] = [];
 
 
@@ -73,6 +75,9 @@ const ChannelPromoBannerComponent = async({id}:ChannelPromoBannerProps) => {
       buttonText: typeof text.fields.textBtn === "string" ? text.fields.textBtn : "",
       buttonLink: typeof text.fields.urlBtn === "string" ? text.fields.urlBtn : "",
       channelType: typeof text.fields.channelType === "string" ? text.fields.channelType : "",
+      btnShowMore: typeof text.fields.btnShowMore === "string" ? text.fields.btnShowMore : undefined,
+      textPromo: typeof text.fields.textPromo === "string" ? text.fields.textPromo : undefined,
+      urlBtnPromo: typeof text.fields.urlBtnPromo === "string" ? text.fields.urlBtnPromo : undefined
     }));
   }
 
@@ -130,7 +135,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
 };
       
   return (
-    <section className="relative min-h-[740px]  md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden w-">
+    <section className="relative min-h-[740px]  md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
       
       <CarouselProvider
         qtyCarousels={3} 
@@ -166,16 +171,33 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
           <CarouselComponent carouselIndex={2}>
 
               {carouselText.map((item, index) => (
-              <div key={index} style={{height: '-webkit-fill-available'}} className="relative z-20 w-full pt-[56px] md:pt-0 xl:ml-[200px] md:ml-[80px] pb-10
+              <div key={index} style={{height: '-webkit-fill-available'}} className="relative z-20 w-full pt-[56px] md:pt-0 2xl:ml-[200px] md:ml-[80px] pb-10
                  md:w-2/5 flex flex-col items-center md:items-start bg-black md:bg-transparent">
                 
-                <p className=" pl-4 md:pl-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
+                <p className="pl-4 md:pl-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
                 <h2 className="text-[32px] md:text-4xl pl-4 md:pl-0  font-bold text-white mb-6 w-screen md:w-auto">{item.title}</h2>
                 <p className="text-[16px] md:text-[18px] leading-6 text-(--color-gray-200) pl-4 md:pl-0 pr-4 md:pr-auto mb-6 md:mb-10 w-screen md:w-auto">
                   {item.description}
                 </p>
-                <ButtonGhost classStyles=" border-white text-white text-[16px] leading-6 font-bold sm:max-w-[320px] max-w-[256px] w-full h-[48px] rounded-md"
+
+                {
+                  item.textPromo && (
+                    <p className="text-[16px] font-bold md:text-[18px] leading-6 text-(--color--turquoise-450) pl-4 md:pl-0 pr-4 md:pr-auto mb-8 md:mb-6 w-screen md:w-auto">
+                      {item.textPromo}
+                    </p>
+                  )
+                }
+
+                <ButtonGhost classStyles=" border-white text-white text-[16px] md:text-[18px] leading-6 font-bold sm:max-w-[320px] max-w-[224px] w-full h-[48px] rounded-md"
                             text={item.buttonText} href={item.buttonLink} />
+                            
+                {
+                  item.btnShowMore && (
+                    <ButtonGhost classStyles="mt-4 border-black bg-white text-black font-bold text-[16px] md:text-[18px] leading-6 sm:max-w-[320px] max-w-[224px] w-full h-[48px] rounded-md"
+                            text={item.btnShowMore} href={item.buttonLink} />
+                  )
+                }
+
               </div>
               ))}
           </CarouselComponent>
@@ -185,11 +207,11 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
 
           {/* Carousel de canales */}
 
-          <div className="flex items-center w-full justify-center sm:justify-normal sm:w-4/5 mx-auto xl:mx-0 xl:ml-[225px] h-[80px] md:h-[60px]">
+          <div className="flex items-center w-full justify-center sm:justify-normal mx-auto xl:mx-0 2xl:pl-[225px] md:pl-[80px] md:pr-[80px] h-[80px] md:h-[60px] bg-black">
               <CarouselThumbnailComponent targetCarouselIndex={0} syncAllCarousels={true}>
                   {thumbnailImages.map((item, index) => (
+                <div key={index} className="relative">
                   <Image 
-                    key={index}
                     width={88} 
                     height={40} 
                     src={item.url} 
@@ -197,6 +219,19 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                     className="min-w-max"
                     loading="eager"
                   />
+                  {carouselText[index]?.textPromo && (
+                    <span
+                      className="
+                        absolute md:-top-2.5 -top-4.5 right-0
+                        w-5 h-5
+                        bg-(--color--turquoise-450)
+                        rounded-bl-[6px]
+                        flex items-center justify-center
+                        text-white text-sm
+                        shadow-md"> % </span>
+                  )}
+                </div>
+
                 ))}              
                 </CarouselThumbnailComponent>
           </div>
