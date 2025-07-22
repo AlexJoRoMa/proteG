@@ -5,7 +5,6 @@ import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
 
 
-
 const CoberturaModel = async ({id} : CoberturaID) =>{
     const callCardsContent:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
         content_type: "coberturaModel",
@@ -22,7 +21,7 @@ const CoberturaModel = async ({id} : CoberturaID) =>{
         <div className="bg-gradient-to-r from-[#DCEFF0] via-[#F4F4F6] to-[#F3E6EE] w-full  lg:h-[455px] md:h-[455px] xsm:h-[464px]">
             
             {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
-                const { entryTitle, entryBody, image }= card.fields as StepTabEntryFields;
+                const { entryTitle, entryBody, textBoton1, linkBoton1, image }= card.fields as StepTabEntryFields;
                 
                 const assetImage = image?.fields?.image as Asset | undefined;
                 const imgURL = assetImage?.fields?.file?.url;
@@ -53,7 +52,7 @@ const CoberturaModel = async ({id} : CoberturaID) =>{
                         <div className="lg:mt-2 md:mt-1 xsm:mt-1">
                             <ButtonGhost classStyles="border-black text-black text-[16px] leading-6 font-bold hover:!bg-white hover:!text-black w-full h-[48px] rounded-md
                             lg:w-[320px] md:w-[320px] xsm:w-[256px]"
-                            text="comprobar mi cobertura"
+                            text={textBoton1 as string} href={linkBoton1 as string}
                             />
                         </div>
                         
@@ -61,8 +60,6 @@ const CoberturaModel = async ({id} : CoberturaID) =>{
                     </div>
                 )
             })}
-            
-
         </div>
     );
 }
