@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ContratacionRapidaID, configuradoCopyFields, StepTabEntryFields, StepTabEntrySkeleton } from '@/types/CardsType';
+import { ContratacionRapidaID, configuradoCopyFields, StepTabEntryFields, StepTabEntrySkeleton } from '@/types/CardsTypes';
 import { getCopyForComponent } from '../../services/contentful/components';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
