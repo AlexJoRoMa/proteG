@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { AccesoConfiguradorID, StepTabEntryFields, StepTabEntrySkeleton } from '@/types/ModelAccesoConfig';
+import { AccesoConfiguradorID, StepTabEntryFields, StepTabEntrySkeleton } from '@/types/ModelAccesoConfigTypes';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
@@ -25,7 +25,7 @@ const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
 
             
             {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
-                const { entryTitle, entryBodyLongText, image }= card.fields as StepTabEntryFields;
+                const { entryTitle, entryBodyLongText, textBoton1, linkBoton1, image }= card.fields as StepTabEntryFields;
                 
                 const assetImage = image?.fields?.image as Asset | undefined;
                 const imgURL = assetImage?.fields?.file?.url;
@@ -59,7 +59,7 @@ const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
                         <div className="lg:mt-8 md:mt-8 md:mt-3">
                             <ButtonGhost classStyles="border-black text-white text-[16px] leading-6 font-bold bg-black hover:!bg-white hover:!text-black w-full h-[48px] rounded-md
                             lg:w-[320px] md:w-[320px] xsm:w-[320px]"
-                            text="configura tu izzi"
+                            text={textBoton1 as string} href={linkBoton1 as string}
                             />
                         </div>
                         

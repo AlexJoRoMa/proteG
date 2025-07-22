@@ -17,6 +17,8 @@ export interface StepTabEntryFields extends EntrySkeletonType{
   image?: Entry<MediaEntrySkeleton>;
   entryTitle?: string;
   entryBodyLongText?: string;
+  textBoton1?: string;
+  linkBoton1?: string;
 }
 
 export interface StepTabEntrySkeleton extends EntrySkeletonType{
