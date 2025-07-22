@@ -62,7 +62,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
                         className=" md:w-[12px] md:h-[12px] xsm:w-[12px] xsm:h-[12px]"
                         alt={'Images'}
                         src={`https:${dotURL}`}
-                        priority
+                        loading="lazy"
                         width={16}
                         height={16}
                       />
