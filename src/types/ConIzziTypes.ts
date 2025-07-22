@@ -14,10 +14,14 @@ interface MediaEntrySkeleton extends EntrySkeletonType{
 }
 
 export interface StepTabEntryFields extends EntrySkeletonType{
-  image?: Entry<MediaEntrySkeleton>;
-  entryTitle?: string;
-  entryBody?: string;
-  desactivarComponentes?: boolean;
+  imagen?: Entry<MediaEntrySkeleton>;
+  titulo?: string;
+  body?: string;
+  desde?: string
+  precio?: string
+  textTiempo?: string
+  incluye?: string;
+  textBoton1?: string;
 }
 
 export interface StepTabEntrySkeleton extends EntrySkeletonType{

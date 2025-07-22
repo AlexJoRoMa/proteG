@@ -20,9 +20,58 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
 
       console.log('>>>>> getCardsContent ', getCardsContent);
     return(
-        <h1>helllo3</h1>
+    <div className="bg-black flex w-full h-[518px]">
+        {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
+        const { titulo, body, desde, precio, textTiempo, incluye,  textBoton1, imagen }= card.fields as StepTabEntryFields;
+         
+        const assetImage = imagen?.fields?.image as Asset | undefined;
+        const imgURL = assetImage?.fields?.file?.url;
+
+        return(
+            <div key={card.sys.id} className="bg-cover w-full" style={{ backgroundImage: `url(${imgURL})`}}>
+                
+                <div className="border border-blue-500 w-[400px] h-[360px] mt-15 ml-40">
+                    <div  className=" text-white text-[64px]">
+                        <h1>{titulo}</h1>
+                    </div>
+                    <div  className=" text-white text-[32px] w-[80%]">
+                        <h1>{body}</h1>
+                    </div>
+                    <div  className="text-white">
+                        <p>
+                            <span className="text-[16px]">{desde}</span>
+                            <span className="text-[56px] ml-4">{precio} </span>
+                            <span className="text-[16px]">{textTiempo}</span></p>
+                    </div>
+                    <div  className="text-white text-[16px]">
+                        <p>{incluye}</p>
+                    </div>
+                </div>
+                
+            </div>
+        );
+      })}
+        
+    </div>
     );
  }
 
 
 export default ConIzziTv
+
+/* 
+{imgURL && (
+                    <Image 
+                    className="bg-[] " 
+                    alt={'Images'}
+                    src={`https:${imgURL}`}
+                    priority
+                    width={424}
+                    height={88}
+                    />
+                )}
+
+
+
+
+ */
