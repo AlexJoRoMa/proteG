@@ -8,13 +8,23 @@ interface MediaEntryFields {
   image?: Asset;
 }
 
+interface MediaMovilEntryFields {
+  image?: Asset;
+}
+
 interface MediaEntrySkeleton extends EntrySkeletonType{
   contentTypeId: 'media';
   fields: MediaEntryFields;
 }
 
+interface MediaMovilEntrySkeleton extends EntrySkeletonType{
+  contentTypeId: 'media';
+  fields: MediaMovilEntryFields;
+}
+
 export interface StepTabEntryFields extends EntrySkeletonType{
   imagen?: Entry<MediaEntrySkeleton>;
+  imagenMovil?: Entry<MediaMovilEntrySkeleton>;
   titulo?: string;
   tituloResaltado?: string;
   body?: string;

@@ -18,18 +18,21 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
     
       const getCardsContent: Array<Entry<StepTabEntrySkeleton>> | undefined = callCardsContent?.[0]?.fields.cardsContent as unknown as Array<Entry<StepTabEntrySkeleton>>;
 
-      console.log('>>>>> getCardsContent ', getCardsContent);
+     
     return(
-    <div className="border md:border-yellow-500 sm:border-red-500 xsm:border-green-500 bg-black flex md:w-full xsm:w-full md:h-[518px] xsm:h-[765px]">
+    <div className=" bg-black flex md:w-full xsm:w-full md:h-[518px] xsm:h-[765px]">
         {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
-        const { titulo, tituloResaltado, body, desde, precio, textTiempo, incluye,  textBoton1, linkBoton1, adicionales ,imagen }= card.fields as StepTabEntryFields;
+        const { titulo, tituloResaltado, body, desde, precio, textTiempo, incluye,  textBoton1, linkBoton1, adicionales ,imagen, imagenMovil }= card.fields as StepTabEntryFields;
          
         const assetImage = imagen?.fields?.image as Asset | undefined;
         const imgURL = assetImage?.fields?.file?.url;
 
+        const movilImage = imagenMovil?.fields?.image as Asset | undefined;
+        const movilURL = movilImage?.fields?.file?.url;
+
         return(
-            <div key={card.sys.id} className="border border-purple-500 bg-cover w-full" style={{ backgroundImage: `url(${imgURL})`}}>
-                <div className="border border-red-500 md:w-[400px] xsm:w-[90%] md:h-[85%] xsm:h-[350px] md:mt-15 md:ml-50 xsm:ml-4 xsm:mt-4">
+            <div key={card.sys.id} className=" bg-cover w-full" style={{ backgroundImage: `url(${imgURL})`}}>
+                <div className=" md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[660px] md:mt-15 md:ml-50 xsm:ml-4 xsm:mt-15">
                     <div  className=" text-white md:text-[64px] xsm:text-[56px]">
                         <h1>
                             <span>{titulo} </span>
@@ -48,19 +51,19 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                     <div  className=" flex w-full text-white text-[16px] mt-1">
                         <p className="whitespace-nonwrap">{incluye}</p>
                         {adicionales && (
-                            <div className=" flex flex-wrap items-start ml-4 mt-[7px] gap-x-2 gap-y-2">
+                            <div className=" flex flex-wrap items-start ml-4 mt-[6px] gap-x-2 gap-y-2">
                                 { adicionales?.map((assets: Asset) => {
                             const url = assets.fields?.file?.url;
-                            // border border-blue-200 border border-green-400 border border-red-500
                              
                             return (
-                                <div key={assets.sys.id} className="  ">
+                                <div key={assets.sys.id} className=" w-[100px] h-[14px] flex overflow-hidden ">
                                     <Image
+                                    className="h-full object-contain"
                                     src={`https:${url}`}
                                     alt={'adicional'}
                                     priority
                                     width={100}
-                                    height={24}
+                                    height={14}
                                     />
                                 </div>
                             );
@@ -73,17 +76,18 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                         <ButtonGhost classStyles="border-white text-black text-[16px] leading-6 font-bold bg-white hover:!bg-white hover:!text-black w-full rounded-md
                         mt-5
                          h-[48px]
-                         w-[320px] "
+                         md:w-[320px] xsm:w-full "
                         text={textBoton1 as string} href={linkBoton1 as string}
                         />
                     </div>
 
                     {/* imagen responsiva para pantalla movil */}
-                    <div className="border border-blue-200 mt-5">
-                        {imgURL && (
+                    <div className="  md:hidden mt-5  ">
+                        {movilURL && (
                             <Image
+                            className="w-full"
                             alt={'Images'}
-                            src={`https:${imgURL}`}
+                            src={`https:${movilURL}`}
                             width={370}
                             height={280}
                             />
