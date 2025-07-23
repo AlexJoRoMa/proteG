@@ -3,7 +3,7 @@ import { AccesoConfiguradorID, StepTabEntryFields, StepTabEntrySkeleton } from '
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
-
+import '@/styles/acceso-configurador.css';
 
 
 const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
@@ -33,7 +33,12 @@ const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
                 return(
                     <div key={card.sys.id} className=" flex flex flex-col items-center h-full">
                         <div className=" flex flex-col items-center h-full w-[90%]">
-                        <div className=" mt-10">
+                        <div className=" mt-10  flex items-center relative">
+                         {/* barra radiante_> top-[px] maneja la posicion...md:mx-[] manejan el ancho de la barra left-0 right-0 xl:mx-[0%] md:mx-[17%] xsm:mx-[10%]*/}
+                        <div className=" block absolute lg:top-[100px]  md:top-[100px] xsm:top-[70px] 
+                         h-[1px] z-0 xl:w-[500px] md:w-[500px] xsm:w-[320px] gradient-bar-horizontal 
+                         left-1/2 transform -translate-x-1/2" />
+                        
                         {imgURL && (
                             <Image 
                              className=" lg:w-[424px] md:w-[424px] xsm:w-[250px] lg:h-[88px] md:h-[88px] xsm:h-[60px]" 
@@ -45,9 +50,6 @@ const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
                             />
                             )}
                         </div>
-
-                        {/* barra radiante_> top-[px] maneja la posicion...md:mx-[] manejan el ancho de la barra*/}
-                        <div className=" md:block absolute lg:top-[140px] md:top-[135px] xsm:top-[110px] left-0 right-0 h-[1px] z-0 lg:mx-[25%] md:mx-[17%] xsm:mx-[10%] gradient-bar-horizontal " />
 
                         <div className=" lg:text-[36px] md:text-[36px] xsm:text-[28px] font-bold lg:mt-10 md:mt-10 xsm:mt-8">
                             <h1>{entryTitle}</h1>

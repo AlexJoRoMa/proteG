@@ -7,12 +7,3 @@
   #FCD116
   );
 }
-
-.gradient-bar-vertical {
-  background: linear-gradient( to bottom,
-  #FF6C07,
-  #4DA9A7,
-  #D31772,
-  #FCD116
-  );
-}
