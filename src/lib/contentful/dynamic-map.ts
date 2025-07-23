@@ -6,5 +6,5 @@ import GenericProductCard from "@/components/molecules/GenericProductComponent";
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
   tabs: PagesTabsTile,
-  genericProduct: GenericProductCard
+  cardContainer: GenericProductCard
 };

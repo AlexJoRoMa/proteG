@@ -1,4 +1,3 @@
-import { Entry, EntrySkeletonType } from "contentful";
 import { ReactNode } from "react";
 
 export type GenericProductProps = {
@@ -6,16 +5,23 @@ export type GenericProductProps = {
 }
 
 export type GenericProductComponentProps = {
-    cardData: Entry<EntrySkeletonType, undefined, string> | null,
+    cardData: GenericProductCardType,
     color: string,
     borderColor: string,
     icon: ReactNode
 }
 
 export type GenericProductCardType = {
-    productName: string,
-    content: string,
-    pricePrefixCopy?: string,
-    priceValue: string,
-    priceSuffixCopy?: string
+    fields: {
+        productName: string,
+        content: string,
+        pricePrefixCopy?: string,
+        priceValue: string,
+        priceSuffixCopy?: string,
+        advertisingCopy: string,
+        primaryButtonCopy: string,
+        primaryButtonUrl: string,
+        secondaryButtonCopy: string,
+        secondaryButtonUrl: string
+    }
 }
