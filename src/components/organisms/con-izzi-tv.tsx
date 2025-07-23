@@ -20,7 +20,7 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
 
       console.log('>>>>> getCardsContent ', getCardsContent);
     return(
-    <div className="border border-green-500 flex w-full h-[518px]">
+    <div className="border md:border-yellow-500 sm:border-red-500 xsm:border-green-500 bg-black flex md:w-full xsm:w-full md:h-[518px] xsm:h-[765px]">
         {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
         const { titulo, tituloResaltado, body, desde, precio, textTiempo, incluye,  textBoton1, linkBoton1, adicionales ,imagen }= card.fields as StepTabEntryFields;
          
@@ -28,32 +28,33 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
         const imgURL = assetImage?.fields?.file?.url;
 
         return(
-            <div key={card.sys.id} className=" bg-cover w-full" style={{ backgroundImage: `url(${imgURL})`}}>
-                <div className=" w-[400px] h-[85%] mt-15 ml-50">
-                    <div  className=" text-white text-[64px]">
+            <div key={card.sys.id} className="border border-purple-500 bg-cover w-full" style={{ backgroundImage: `url(${imgURL})`}}>
+                <div className="border border-red-500 md:w-[400px] xsm:w-[90%] md:h-[85%] xsm:h-[350px] md:mt-15 md:ml-50 xsm:ml-4 xsm:mt-4">
+                    <div  className=" text-white md:text-[64px] xsm:text-[56px]">
                         <h1>
                             <span>{titulo} </span>
                             <span className="font-bold">{tituloResaltado}</span>
                         </h1>
                     </div>
-                    <div  className=" text-white text-[32px] w-[80%]">
+                    <div  className=" text-white md:text-[32px] xsm:text-[24px] w-[80%]">
                         <h1>{body}</h1>
                     </div>
                     <div  className="text-white">
                         <p>
-                            <span className="text-[16px]">{desde}</span>
-                            <span className="text-[56px] ml-4">{precio} </span>
-                            <span className="text-[16px]">{textTiempo}</span></p>
+                            <span className="md:text-[16px] xsm:text-[14px]">{desde}</span>
+                            <span className="md:text-[56px] xsm:text-[48px] ml-4">{precio} </span>
+                            <span className="md:text-[16px] xsm:text-[14px]">{textTiempo}</span></p>
                     </div>
                     <div  className=" flex w-full text-white text-[16px] mt-1">
                         <p className="whitespace-nonwrap">{incluye}</p>
                         {adicionales && (
-                            <div className=" flex flex-wrap items-start ml-4 gap-x-2 gap-y-2">
+                            <div className=" flex flex-wrap items-start ml-4 mt-[7px] gap-x-2 gap-y-2">
                                 { adicionales?.map((assets: Asset) => {
                             const url = assets.fields?.file?.url;
-                            
+                            // border border-blue-200 border border-green-400 border border-red-500
+                             
                             return (
-                                <div key={assets.sys.id} className="mt-1 ">
+                                <div key={assets.sys.id} className="  ">
                                     <Image
                                     src={`https:${url}`}
                                     alt={'adicional'}
@@ -68,13 +69,25 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                         )}
                     </div>
 
-                    <div className="">
+                    <div>
                         <ButtonGhost classStyles="border-white text-black text-[16px] leading-6 font-bold bg-white hover:!bg-white hover:!text-black w-full rounded-md
-                        mt-3
+                        mt-5
                          h-[48px]
                          w-[320px] "
                         text={textBoton1 as string} href={linkBoton1 as string}
                         />
+                    </div>
+
+                    {/* imagen responsiva para pantalla movil */}
+                    <div className="border border-blue-200 mt-5">
+                        {imgURL && (
+                            <Image
+                            alt={'Images'}
+                            src={`https:${imgURL}`}
+                            width={370}
+                            height={280}
+                            />
+                        )}
                     </div>
                 </div>
                 
