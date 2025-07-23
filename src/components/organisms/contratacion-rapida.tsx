@@ -3,6 +3,7 @@ import { ContratacionRapidaID, configuradoCopyFields, StepTabEntryFields, StepTa
 import { getCopyForComponent } from '../../services/contentful/components';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
+import '@/styles/contratacion-rapida.css';
 
 const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
 
@@ -22,16 +23,16 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
   
 
   return (
-      <div className="bg-white items-center justify-items-center box-content w-full lg:h-81 md:h-81 xsm:h-[550px] relative">
+      <div className=" bg-white items-center justify-items-center box-content w-full lg:h-81 md:h-81 xsm:h-[550px] relative">
   
         <div className="  lg:mb-3 lg:pt-4 md:pt-5 md:mb-1 xsm:mt-7">
         <h1 className=" font-bold md:text-[25px] xsm:text-[25px]">{setTitle.titulo}</h1>
         </div>
   
-        <div className=" relative xl:w-300 lg:w-200 justify-center md:flex md:flex-row sm:flex-col ">
+        <div className=" relative xl:w-[85%] xsm:w-full justify-center md:flex md:flex-row sm:flex-col ">
   
           {/* barra radiante_> top-[px] left-[] maneja la posicion...md:mx-[] top-[] bottom-[] manejan el ancho/altura de la barra*/}
-          <div className=" hidden md:block absolute top-[118px] left-0 right-0 h-[1px] z-0 xl:mx-50 lg:mx-25 md:mx-22 gradient-bar-horizontal " />
+          <div className=" hidden md:block absolute top-[118px] left-0 right-0 h-[1px] z-0 xl:mx-[12%] md:mx-26 gradient-bar-horizontal " />
           <div className="block md:hidden absolute left-[102px] top-10 bottom-10 w-[1px] z-0 gradient-bar-vertical " />
   
           {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
@@ -42,7 +43,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
             const dotURL = (dot as unknown as Asset)?.fields?.file?.url;
   
             return (
-              <div key={card.sys.id} className=" relative z-10 xl:w-55 md:w-40 xsm:w-80 md:h-50  lg:mx-6  md:mx-3 xsm:my-6 md:p-1 flex md:flex-col sm:flex-row ">
+              <div key={card.sys.id} className=" relative z-10 xl:w-full md:w-40 xsm:w-[95%] md:h-50  md:mx-3 xsm:my-6  md:p-1 flex md:flex-col sm:flex-row ">
                 <div className=" items-center md:flex xsm:flex md:flex-col xsm:flex-row flex-shrink-0">
                   <div className=" w-20 h-20 flex items-center justify-center">
                     {imgURL && (
