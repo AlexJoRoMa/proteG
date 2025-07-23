@@ -29,7 +29,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
         <h1 className=" font-bold md:text-[25px] xsm:text-[25px]">{setTitle.titulo}</h1>
         </div>
   
-        <div className=" relative xl:w-[85%] xsm:w-full justify-center md:flex md:flex-row sm:flex-col ">
+        <div className=" relative max-w-[2160px] xl:w-[97%] md:w-full xsm:w-full justify-center md:flex md:flex-row sm:flex-col ">
   
           {/* barra radiante_> top-[px] left-[] maneja la posicion...md:mx-[] top-[] bottom-[] manejan el ancho/altura de la barra*/}
           <div className=" hidden md:block absolute top-[118px] left-0 right-0 h-[1px] z-0 xl:mx-[12%] md:mx-26 gradient-bar-horizontal " />
@@ -41,10 +41,11 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
             const assetImage = image?.fields?.image as Asset | undefined;
             const imgURL = assetImage?.fields?.file?.url;
             const dotURL = (dot as unknown as Asset)?.fields?.file?.url;
-  
+
             return (
               <div key={card.sys.id} className=" relative z-10 xl:w-full md:w-40 xsm:w-[95%] 
-              md:h-50  md:mx-3 xsm:my-6  md:p-1 flex md:flex-col sm:flex-row items-center">
+              md:h-50 xl:mx-10 md:mx-3 xsm:my-6 md:p-1 flex md:flex-col sm:flex-row items-center">
+                
                 <div className=" items-center md:flex xsm:flex md:flex-col xsm:flex-row flex-shrink-0">
                   <div className=" w-20 h-20 flex items-center justify-center">
                     {imgURL && (
@@ -71,8 +72,8 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
                     )}
                   </div>
                 </div>
-                <div className=" text-[12px] md:text-center xsm:text-left align-middle flex items-center justify-center
-                  md:pl-0 xsm:pl-7 xl:w-[80%] ">
+                <div className=" text-[12px] md:text-center xsm:text-left 
+                  md:pl-0 xsm:pl-7 lg:w-full align-middle flex items-center justify-center ">
                   <p>{entryBody}</p>
                 </div>
               </div>
