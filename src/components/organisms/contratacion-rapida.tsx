@@ -43,7 +43,8 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
             const dotURL = (dot as unknown as Asset)?.fields?.file?.url;
   
             return (
-              <div key={card.sys.id} className=" relative z-10 xl:w-full md:w-40 xsm:w-[95%] md:h-50  md:mx-3 xsm:my-6  md:p-1 flex md:flex-col sm:flex-row ">
+              <div key={card.sys.id} className=" relative z-10 xl:w-full md:w-40 xsm:w-[95%] 
+              md:h-50  md:mx-3 xsm:my-6  md:p-1 flex md:flex-col sm:flex-row items-center">
                 <div className=" items-center md:flex xsm:flex md:flex-col xsm:flex-row flex-shrink-0">
                   <div className=" w-20 h-20 flex items-center justify-center">
                     {imgURL && (
@@ -71,7 +72,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
                   </div>
                 </div>
                 <div className=" text-[12px] md:text-center xsm:text-left align-middle flex items-center justify-center
-                  md:pl-0 xsm:pl-7">
+                  md:pl-0 xsm:pl-7 xl:w-[80%] ">
                   <p>{entryBody}</p>
                 </div>
               </div>
