@@ -18,8 +18,8 @@ const CoberturaModel = async ({id} : CoberturaID) =>{
   const getCardsContent: Array<Entry<StepTabEntrySkeleton>> | undefined = callCardsContent?.[0]?.fields.cardsContent as unknown as Array<Entry<StepTabEntrySkeleton>>;
   
  return(
-        <div className="bg-gradient-to-r from-[#DCEFF0] via-[#F4F4F6] to-[#F3E6EE] w-full  lg:h-[455px] md:h-[455px] xsm:h-[464px]">
-            
+        <div className=" bg-[image:var(--gradient-background)] w-full  lg:h-[455px] md:h-[455px] xsm:h-[464px]">
+            <div className="md:mx-md 2xl:mx-xl">
             {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
                 const { entryTitle, entryBody, textBoton1, linkBoton1, image }= card.fields as StepTabEntryFields;
                 
@@ -28,7 +28,7 @@ const CoberturaModel = async ({id} : CoberturaID) =>{
 
                 return(
                     <div key={card.sys.id} className=" flex flex flex-col items-center h-full">
-                        <div className=" flex flex-col items-center h-full w-[97%]">
+                        <div className=" flex flex-col items-center h-full ">
                         <div className=" lg:mt-12 md:mt-8 xsm:mt-8">
                         {imgURL && (
                             <Image 
@@ -42,10 +42,10 @@ const CoberturaModel = async ({id} : CoberturaID) =>{
                             )}
                         </div>
 
-                        <div className=" lg:text-[36px] md:text-[36px] xsm:text-[28px] font-bold lg:mt-8 md:mt-6 xsm:mt-5 text-center">
+                        <div className=" lg:text-[36px] md:text-[36px] xsm:text-[28px] font-bold lg:mt-8 md:mt-6 xsm:mt-5 xsm:px-2 md:px-0 text-center">
                             <h1>{entryTitle}</h1>
                         </div>
-                        <div className="xl:w-[92%] lg:w-[92%] md:w-[95%] lg:mt-6 md:mt-3 xsm:mt-6 lg:h-25 md:h-25 xsm:h-35 lg:text-[18px] md:text-[18px] xsn:text-[16px] text-center ">
+                        <div className=" w-full xsm:px-4 lg:mt-6 md:mt-3 xsm:mt-6 lg:h-25 md:h-25 xsm:h-35 lg:text-[18px] md:text-[18px] xsm:text-[16px] text-center flex items-center justify-center">
                             <p>{entryBody}</p>
                         </div>
 
@@ -60,6 +60,7 @@ const CoberturaModel = async ({id} : CoberturaID) =>{
                     </div>
                 )
             })}
+            </div>
         </div>
     );
 }
