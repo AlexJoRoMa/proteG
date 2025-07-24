@@ -21,7 +21,7 @@ const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
 
     
     return(
-        <div className="bg-white w-full absolute lg:h-120 md:h-120 xsm:h-[502px]">
+        <div className=" md:mx-md 2xl:mx-xl relative bg-white lg:h-120 md:h-120 xsm:h-[502px]">
 
             
             {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
@@ -32,7 +32,7 @@ const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
 
                 return(
                     <div key={card.sys.id} className=" flex flex flex-col items-center h-full">
-                        <div className=" flex flex-col items-center h-full w-[90%]">
+                        <div className=" w-full flex flex-col items-center h-full ">
                         <div className=" mt-10  flex items-center relative">
                          {/* barra radiante_> top-[px] maneja la posicion...md:mx-[] manejan el ancho de la barra left-0 right-0 xl:mx-[0%] md:mx-[17%] xsm:mx-[10%]*/}
                         <div className=" block absolute lg:top-[100px]  md:top-[100px] xsm:top-[70px] 
@@ -54,7 +54,7 @@ const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
                         <div className=" lg:text-[36px] md:text-[36px] xsm:text-[28px] font-bold lg:mt-10 md:mt-10 xsm:mt-8">
                             <h1>{entryTitle}</h1>
                         </div>
-                        <div className=" w-[85%] lg:h-25 md:h-25 xsm:h-50 lg:text-[18px] md:text-[18px] xsn:text-[16px] text-center lg:mt-8 md:v xsm:mt-6">
+                        <div className=" md:px-0 xsm:px-5 text-center lg:h-25 md:h-25 xsm:h-50 lg:text-[18px] md:text-[18px] xsm:text-[16px] text-center md:mt-4 xsm:mt-6 w-full flex items-center justify-center">
                             <p>{entryBodyLongText}</p>
                         </div>
 
