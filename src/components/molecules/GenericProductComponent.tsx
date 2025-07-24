@@ -16,7 +16,7 @@ export default async function GenericProductCard({ id }: GenericProductProps) {
 const cards = cardsData?.fields.productCard as Array<GenericProductCardType>
   return (
     <>
-      <div className="flex flex-col xl:flex-row mx-sm lg:mx-md 2xl:mx-xl xl:justify-between">
+      <div className="flex flex-col lg:flex-row mx-sm sm:mx-md 2xl:mx-xl md:justify-between">
         <ProductCard color="bg-orange-400" borderColor="border-orange-400" icon={internetLogo} cardData={cards[0]}/>
         <ProductCard color="bg-cyan-400" borderColor="border-cyan-400" icon={izziTvLogo} cardData={cards[1]}/>
         <ProductCard color="bg-magenta-400" borderColor="border-magenta-400" icon={izziMovilLogo} cardData={cards[2]}/>
