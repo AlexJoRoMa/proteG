@@ -3,7 +3,7 @@ import { ContratacionRapidaID, configuradoCopyFields, StepTabEntryFields, StepTa
 import { getCopyForComponent } from '../../services/contentful/components';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
-import '@/styles/BarraGradiante.css';
+
 
 const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
 
@@ -32,8 +32,8 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
         <div className=" relative w-full  justify-center md:flex md:flex-row sm:flex-col ">
   
           {/* barra radiante_> top-[px] left-[] maneja la posicion...md:mx-[] top-[] bottom-[] manejan el ancho/altura de la barra*/}
-          <div className=" hidden md:block absolute top-[118px] left-0 right-0 h-[1px] z-0 xl:mx-[12.5%] md:mx-[12.5%] gradient-bar-horizontal " />
-          <div className="block md:hidden absolute left-[86px] top-10 bottom-10 w-[1px] z-0 gradient-bar-vertical " />
+          <div className="bg-[image:var(--gradient-bar-horizontal)] hidden md:block absolute top-[118px] left-0 right-0 h-[1px] z-0 xl:mx-[12.5%] md:mx-[12.5%] " />
+          <div className="bg-[image:var(--gradient-bar-vertical)] block md:hidden absolute left-[86px] top-10 bottom-10 w-[1px] z-0 " />
   
           {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
             const { entryBody, image, dot } = card.fields as StepTabEntryFields;
