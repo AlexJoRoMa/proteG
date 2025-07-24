@@ -2,7 +2,7 @@
 @config "../../tailwind.config.js";
 @import '../styles/HomeCarouselCardComponent.css';
 @import '../styles/ChannelPromoBannerComponent.css';
-@import '../styles/contratacion-rapida.css';
+@import '../styles/BarraGradiante.css';
 
 :root {
   font-family: var(--font-lato);

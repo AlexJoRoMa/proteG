@@ -3,7 +3,7 @@ import { ContratacionRapidaID, configuradoCopyFields, StepTabEntryFields, StepTa
 import { getCopyForComponent } from '../../services/contentful/components';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
-import '@/styles/contratacion-rapida.css';
+import '@/styles/BarraGradiante.css';
 
 const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
 
@@ -23,17 +23,17 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
   
 
   return (
-      <div className=" bg-white items-center justify-items-center box-content w-full lg:h-81 md:h-81 xsm:h-[550px] relative">
+      <div className=" md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content lg:h-81 md:h-81 xsm:h-[550px] relative">
   
         <div className="  lg:mb-3 lg:pt-4 md:pt-5 md:mb-1 xsm:mt-7">
         <h1 className=" font-bold md:text-[25px] xsm:text-[25px]">{setTitle.titulo}</h1>
         </div>
   
-        <div className=" relative max-w-[2160px] xl:w-[97%] md:w-full xsm:w-full justify-center md:flex md:flex-row sm:flex-col ">
+        <div className=" relative w-full  justify-center md:flex md:flex-row sm:flex-col ">
   
           {/* barra radiante_> top-[px] left-[] maneja la posicion...md:mx-[] top-[] bottom-[] manejan el ancho/altura de la barra*/}
-          <div className=" hidden md:block absolute top-[118px] left-0 right-0 h-[1px] z-0 xl:mx-[12%] md:mx-26 gradient-bar-horizontal " />
-          <div className="block md:hidden absolute left-[102px] top-10 bottom-10 w-[1px] z-0 gradient-bar-vertical " />
+          <div className=" hidden md:block absolute top-[118px] left-0 right-0 h-[1px] z-0 xl:mx-[12.5%] md:mx-[12.5%] gradient-bar-horizontal " />
+          <div className="block md:hidden absolute left-[86px] top-10 bottom-10 w-[1px] z-0 gradient-bar-vertical " />
   
           {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
             const { entryBody, image, dot } = card.fields as StepTabEntryFields;
@@ -43,8 +43,8 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
             const dotURL = (dot as unknown as Asset)?.fields?.file?.url;
 
             return (
-              <div key={card.sys.id} className=" relative z-10 xl:w-full md:w-40 xsm:w-[95%] 
-              md:h-50 xl:mx-10 md:mx-3 xsm:my-6 md:p-1 flex md:flex-col sm:flex-row items-center">
+              <div key={card.sys.id} className=" relative z-10 w-full xsm:w-[95%] 
+              md:h-50 xsm:my-6 md:p-1 flex md:flex-col sm:flex-row items-center">
                 
                 <div className=" items-center md:flex xsm:flex md:flex-col xsm:flex-row flex-shrink-0">
                   <div className=" w-20 h-20 flex items-center justify-center">
@@ -59,7 +59,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
                       />
                     )}
                   </div>
-                  <div className=" md:mt-1 md:mb-6 md:ml-0 xsm:ml-4">
+                  <div className=" md:mt-1 md:mb-6 ">
                     {dotURL && (
                       <Image
                         className=" md:w-[12px] md:h-[12px] xsm:w-[12px] xsm:h-[12px]"
@@ -73,7 +73,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
                   </div>
                 </div>
                 <div className=" text-[12px] md:text-center xsm:text-left 
-                  md:pl-0 xsm:pl-7 lg:w-full align-middle flex items-center justify-center ">
+                  md:pl-0 xsm:pl-7  align-middle flex items-center justify-center ">
                   <p>{entryBody}</p>
                 </div>
               </div>
