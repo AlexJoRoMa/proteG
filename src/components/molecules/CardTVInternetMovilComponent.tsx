@@ -17,7 +17,8 @@ const CardTVInternetMovilComponent = async({card}:CardPropType) => {
           {
             card?.fields?.tagPromo ? (
               <div
-                className={`rounded-t-md px-6 py-1 mb-[32px] text-[20px] -mt-[32px] -mx-[16px] md:-mx-[24px] leading-6 w-(calc(100% + 32px)) text-center text-white bg-[${color}]`}
+                className="rounded-t-md px-6 py-1 mb-[32px] text-[20px] -mt-[32px] -mx-[16px] md:-mx-[24px] leading-6 w-(calc(100% + 32px)) text-center text-white"
+                style={{ backgroundColor: color }}
               >
                 {card.fields.tagPromo as string}
               </div>
@@ -39,8 +40,12 @@ const CardTVInternetMovilComponent = async({card}:CardPropType) => {
             }
             <h3 className='text-[24px] leading-[32px]'>{card.fields.title as string}</h3>
         </div>
-        <hr className={`mb-[24px] text-[${color}]`} />
-        <p className='line-through text-(--color-gray-200) text-[24px] leading-[32px]'>{card.fields.priceBefore as string}</p>
+        <hr className="mb-[24px]" style={{ color: color }} />
+        {
+          card?.fields?.priceBefore ? (
+            <p className='line-through text-(--color-gray-200) text-[24px] leading-[32px]'>{card.fields.priceBefore as string}</p>
+          ) : null
+        }
         <p className='mb-4'>
             <span className='text-[16px] leading-[24px]'>{card.fields.textBeforePrice as string}</span>
             <span className='text-[56px] font-bold '>{card.fields.price as string}</span>
