@@ -35,7 +35,7 @@ const CoberturaModel = async ({id} : CoberturaID) =>{
                              className=" lg:w-[88px] md:w-[88px] xsm:w-[56px] lg:h-[88px] md:h-[88px] xsm:h-[56px]" 
                             alt={'Images'}
                             src={`https:${imgURL}`}
-                            priority
+                            loading="lazy"
                             width={424}
                             height={88}
                             />
