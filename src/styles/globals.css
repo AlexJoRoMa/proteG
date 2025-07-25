@@ -3,7 +3,6 @@
 @import '../styles/HomeCarouselCardComponent.css';
 @import '../styles/ChannelPromoBannerComponent.css';
 
-
 :root {
   font-family: var(--font-lato);
   padding: 0;
