@@ -36,8 +36,8 @@ const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
                         <div className=" mt-10  flex items-center relative">
                          {/* barra radiante_> top-[px] maneja la posicion...md:mx-[] manejan el ancho de la barra left-0 right-0 xl:mx-[0%] md:mx-[17%] xsm:mx-[10%]*/}
                         <div className=" block absolute lg:top-[100px]  md:top-[100px] xsm:top-[70px] 
-                         h-[1px] z-0 xl:w-[500px] md:w-[500px] xsm:w-[320px] gradient-bar-horizontal 
-                         left-1/2 transform -translate-x-1/2" />
+                         h-[1px] z-0 xl:w-[500px] md:w-[500px] xsm:w-[320px] left-1/2 transform -translate-x-1/2 
+                         bg-[image:var(--gradient-bar-horizontal)]" />
                         
                         {imgURL && (
                             <Image 
