@@ -1,39 +1,70 @@
 import React from 'react'
 import Image from 'next/image'
 import ButtonGhost from '../atoms/ButtonGhost'
+import { CardPropType } from '@/types/CarouselCardsTypes'
+import { Asset } from 'contentful'
+import { contentfulClient } from '@/services/contentful/client'
 
-const CardTVInternetMovilComponent = () => {
+const CardTVInternetMovilComponent = async({card}:CardPropType) => {
+
+      //Obteniendo el icono del card
+        const imageAsset = card?.fields?.icon as Asset;
+
   return (
-    <div className='px-[16px] md:px-[24px] py-[32px] bg-white w-[384px] h-[596px] rounded-md relative'>
-        <div className=' rounded-t-md px-6 py-1 mb-[32px] text-[20px] leading-6 w-full text-center text-white bg-[#FF6C07]'>
-            la más vendida
-        </div>
-        <div className='flex mb-[24px]'>
-            <Image
-                src=""
-                alt="Imagen x"
-                width={32}
-                height={32}
-                className=""
-                priority
-            />
-            <h3>internet de 80 a 100 mb</h3>
+    <div className='px-[16px] md:px-[24px] py-[32px] bg-white h-[596px] rounded-md relative flex-col flex'>
+          {
+            card?.fields?.tagPromo? (
+                <div className='rounded-t-md px-6 py-1 mb-[32px] text-[20px] -mt-[32px] -mx-[16px] md:-mx-[24px] leading-6 w-(calc(100% + 32px)) text-center text-white bg-[#FF6C07]'>
+                {card.fields.tagPromo as string}
+                </div>
+            ) : null
+        }
+
+        <div className='flex mb-[24px] items-center'>
+            {
+                card?.fields?.icon && imageAsset?.fields?.file?.url ? (
+                    <Image 
+                        src={`https:${imageAsset?.fields?.file?.url}` as string}
+                        alt={imageAsset?.fields?.title as string}
+                        width={32}
+                        height={32}
+                        className="mr-[16px]"
+                        priority
+                    />
+                ) : null
+            }
+            <h3 className='text-[24px] leading-[32px]'>{card.fields.title as string}</h3>
         </div>
         <hr className='text-[#FF6C07] mb-[24px]' />
-        <p className='line-through text-(--color-gray-200) text-[24px] leading-[32px]'>$510</p>
-        <span className='text-[16px] leading-[24px]'>desde</span>
-        <span className='text-[56px] font-bold mb-[24px]'>$850</span>
-        <span className='text-[16px] leading-[24px]'>al mes</span>
-        <p className='text-[16px] leading-[24px]'>Precio con promoción por tres meses. 
-        Contrato a 12 meses. Incluye $50 de descuento por domiciliar. Además incluye:</p>
+        <p className='line-through text-(--color-gray-200) text-[24px] leading-[32px]'>{card.fields.priceBefore as string}</p>
+        <p className='mb-4'>
+            <span className='text-[16px] leading-[24px]'>{card.fields.textBeforePrice as string}</span>
+            <span className='text-[56px] font-bold '>{card.fields.price as string}</span>
+            <span className='text-[16px] leading-[24px]'>{card.fields.textAfterPrice as string}</span>
+        </p>
+        <p className='text-[16px] leading-[24px] mb-[24px]'>{card.fields.description as string}</p>
         <div className='grid grid-cols-4 grid-rows-2 gap-4 mb-[32px]'>
-            {/*TODO FALTAN IMAGENES */}
+             {
+                Array.isArray(card?.fields?.adds) && card?.fields?.adds?.map((add, index: number) => {
+                        const assetAdd = add as Asset;
+                    return assetAdd?.fields?.file?.url ? (
+                        <Image 
+                            key={index}
+                            src={`https:${assetAdd.fields?.file?.url}` as string}
+                            alt={`Add ${index + 1}`}
+                            width={56}
+                            height={14}
+                            priority
+                            className='w-auto'/>
+                    ) : null;
+                })
+            }
         </div>
         <div className='mt-auto'>
             <ButtonGhost classStyles='w-full mb-4 border-[1px solid black] rounded-md text-black text-[16px] md:text-[18px] font-bold'
-                 text="saber más" href="#" />
+                 text={card?.fields?.textBtn1 as string} href={card?.fields?.urlBtn1 as string} />
             <ButtonGhost classStyles='w-full rounded-md bg-black text-white border-none font-bold text-[16px] md:text-[18px]'
-                text="contratar ahora" href="#" />
+                text={card?.fields?.textBtn2 as string} href={card?.fields?.urlBtn2 as string} />
         </div>
     </div>
   )

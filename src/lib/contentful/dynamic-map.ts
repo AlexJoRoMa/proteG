@@ -7,6 +7,6 @@ import ContratacionRapida from '@/components/organisms/contratacion-rapida';
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
   tabs: PagesTabsTile,
-  homeCarousel: HomeCarouselCardComponent,
+  carouselCards: HomeCarouselCardComponent,
   cardsContratacionRapida: ContratacionRapida
 };

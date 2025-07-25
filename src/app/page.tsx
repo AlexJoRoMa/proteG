@@ -1,6 +1,7 @@
 import { Entry, EntrySkeletonType } from "contentful";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
+import CardTVInternetMovilComponent from "@/components/molecules/CardTVInternetMovilComponent";
 
 
 export default async function Home() {
@@ -26,6 +27,7 @@ export default async function Home() {
             <p>No existen componentes cargados.</p>
           )
         }
+        
     </main>
   );
 }
