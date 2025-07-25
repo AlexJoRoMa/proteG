@@ -34,11 +34,32 @@ export type Navigation = {
         navigationTitle: string,
         navigationUrl: string,
         footerLink?: Array<Navigation>,
-        internalName?: string
+        internalName?: string,
+        linkIcon?: Icon
     }
 }
 
+export type Icon = {
+    fields: { 
+        title: string,
+        file: File
+    }
+}
+
+export type File = {
+    url: string, 
+    fileName: string
+}
+
 export type FooterComponentProps = {
-    contactData: Entry<EntrySkeletonType, undefined, string> | null,
-    linksData: Entry<EntrySkeletonType, undefined, string> | null
+    FooterData: Entry<EntrySkeletonType, undefined, string> | null
+}
+
+export type IzziCopyright = {
+    fields: {
+        internalName: string,
+        copyright: string, 
+        footerIzziLogo: Icon,
+        footerProfecoLogo: Icon
+    }
 }

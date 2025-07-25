@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import { Accordion, AccordionItem } from '@heroui/react';
-import { IzziFooter, FooterComponentProps, IzziFooterLinks } from "@/types/FooterTypes";
-import { HeadphoneIcon, WppIcon, DropIcon, IzziLogo, ProfecoLogo } from '@/components/atoms/FooterIcons';
+import { FooterComponentProps, IzziFooterLinks, Contact, IzziCopyright } from "@/types/FooterTypes";
+import { DropIcon } from '@/components/atoms/FooterIcons';
+import Image from 'next/image';
 
-export default function IzziFooterContent({contactData, linksData}: FooterComponentProps) {
-
-    const contactSection = contactData?.fields as IzziFooter;
-    const links = linksData?.fields as IzziFooterLinks;
+export default function IzziFooterContent({FooterData}: FooterComponentProps) { 
+    const contactSection = FooterData?.fields.footerContactSection as Array<Contact>;
+    const links = FooterData?.fields as IzziFooterLinks;
+    const copyright = FooterData?.fields?.copyrightSection as IzziCopyright
 
     const itemClasses = {
         title: "font-normal text-[20px] text-white-0",
@@ -26,9 +27,9 @@ export default function IzziFooterContent({contactData, linksData}: FooterCompon
     return (
     <>
         <footer className="bg-black-0 w-full">
-  <div className="max-w-full px-4 py-16 sm:px-6 lg:px-8">
-    <div className="container mx-auto max-w-[80%] grid grid-cols-1 md:grid-cols-2 gap-8">
-        {contactSection?.footerContactSection?.map((link, index) => ( 
+  <div className="max-w-full">
+    <div className="container mx-auto max-w-[80%] grid grid-cols-1 md:grid-cols-2 gap-8 py-8">
+        {contactSection.map((link, index) => ( 
         <div className="flex flex-col items-center justify-center gap-2" key={`${link}-${index}`}>
           <div className="text-center">
             <h2 className="text-[20px] text-white-0">{link?.fields?.topCopy}</h2>
@@ -38,18 +39,15 @@ export default function IzziFooterContent({contactData, linksData}: FooterCompon
             </p>
           </div>
           <div className='flex items-center gap-6'>
-            {/* TODO: Renderizar imagenes desde contentful */}
-              <Link href='#' className='text-white-0 underline text-[18px] flex items-center gap-2'><HeadphoneIcon />centro de ayuda</Link>
-            
-            
-              <Link href='#' className='text-white-0 underline text-[18px] flex items-center gap-2'><WppIcon /> WhatsApp</Link>
-            
+            {link.fields.contactLinks.map((contact, index) => ( 
+            <Link key={`${contact}-${index}`} href={`${contact.fields.navigationUrl}`} className='text-white-0 underline text-[18px] flex items-center gap-2'><Image height={24} width={24} alt={`${contact.fields.linkIcon?.fields.file.fileName}`} src={`https:${contact.fields.linkIcon?.fields.file.url}`} />{contact.fields.navigationTitle}</Link>
+            ))}
           </div>
         </div>
         ))}
     </div>
     <div className="lg:flex lg:items-start lg:gap-8 mt-8 border-t border-gray-250 text-white-0">
-        <div className="mx-auto 2xl:ml-[200px] 2xl:mr-[200px] md:ml-[80px] md:mr-[80px] lg:w-full mt-8 grid grid-cols-1 gap-8">
+        <div className="mx-sm 2xl:ml-[200px] 2xl:mr-[200px] md:mx-[80px] lg:w-full mt-8 grid grid-cols-1 gap-8">
           <div className='grid grid-cols-1 md:grid-cols-3 md:gap-8'>
           {links?.footerLinkSection.map((link, index) => (
             <div className="col-span-2 sm:col-span-1" key={`${link}-${index}`}>
@@ -87,19 +85,18 @@ export default function IzziFooterContent({contactData, linksData}: FooterCompon
             </div>
         </div>
     </div>
-    {/* TODO: Renderizar contenido desde contentful */}
     <div className="mt-8 border-t border-gray-250 pt-8">
-      <div className="xsm:grid xsm:justify-center xl:flex xl:justify-between">
+      <div className="xsm:grid xsm:justify-center xl:flex xl:justify-between md:mx-md 2xl:mx-xl">
         <div className='xsm:justify-self-center'>
-          <IzziLogo />
+          <Image width={112} height={44} src={`https:${copyright.fields.footerIzziLogo.fields.file.url}`} alt={`${copyright.fields.footerIzziLogo.fields.file.fileName}`}/>
         </div>
         <ul className="mt-8 flex flex-wrap justify-center gap-4 text-xs sm:mt-0 xl:justify-end">
           <li>
-            <ProfecoLogo />
+          <Image width={144} height={24} src={`https:${copyright.fields.footerProfecoLogo.fields.file.url}`} alt={`${copyright.fields.footerProfecoLogo.fields.file.fileName}`}/>
           </li>
 
           <li>
-            <p className='text-white-0 text-[14px]'>© 2024, izzi.mx. Todos los derechos reservados.</p>
+            <p className='text-white-0 text-[14px]'>{copyright.fields.copyright}</p>
           </li>
         </ul>
       </div>
