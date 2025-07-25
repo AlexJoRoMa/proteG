@@ -45,7 +45,7 @@ const CoberturaModel = async ({id} : CoberturaID) =>{
                         <div className=" lg:text-[36px] md:text-[36px] xsm:text-[28px] font-bold lg:mt-8 md:mt-6 xsm:mt-5 xsm:px-2 md:px-0 text-center">
                             <h1>{entryTitle}</h1>
                         </div>
-                        <div className=" w-full xsm:px-4 lg:mt-6 md:mt-3 xsm:mt-6 lg:h-25 md:h-25 xsm:h-35 lg:text-[18px] md:text-[18px] xsm:text-[16px] text-center flex items-center justify-center">
+                        <div className=" w-full md:px-0 xsm:px-5 lg:mt-6 md:mt-3 xsm:mt-6 lg:h-25 md:h-25 xsm:h-35 lg:text-[18px] md:text-[18px] xsm:text-[16px] text-center flex items-center justify-center">
                             <p>{entryBody}</p>
                         </div>
 
