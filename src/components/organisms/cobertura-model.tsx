@@ -38,6 +38,7 @@ const CoberturaModel = async ({id} : CoberturaID) =>{
                             loading="lazy"
                             width={424}
                             height={88}
+                            className="w-auto"
                             />
                             )}
                         </div>
