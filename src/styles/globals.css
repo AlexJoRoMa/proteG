@@ -116,8 +116,8 @@
    --gradient-card-line-1: linear-gradient(90deg, #FF6C07, #4DA9A7);
    --gradient-card-line-2: linear-gradient(to right, #00C1B5, #00C1B5);
    --gradient-card-line-3: linear-gradient(to right, #FF6C07, #FF6C07);
-
-   --gradient-background: linear-gradient( to right,#DCEFF0,#F4F4F6,#F3E6EE);
+   --gradient-bar-horizontal: linear-gradient(to right,#FF6C07,#4DA9A7,#D31772,#FCD116);
+   --gradient-bar-vertical: linear-gradient( to bottom,#FF6C07,#4DA9A7,#D31772,#FCD116);
 }
 
 body {
