@@ -3,20 +3,24 @@ import Image from 'next/image'
 import ButtonGhost from '../atoms/ButtonGhost'
 import { CardPropType } from '@/types/CarouselCardsTypes'
 import { Asset } from 'contentful'
-import { contentfulClient } from '@/services/contentful/client'
+import { INTERNETCOLOR, MOVILCOLOR, TVCOLOR } from '@/constants/CardComponent'
 
 const CardTVInternetMovilComponent = async({card}:CardPropType) => {
 
-      //Obteniendo el icono del card
-        const imageAsset = card?.fields?.icon as Asset;
+    //Obteniendo el icono del card
+    const imageAsset = card?.fields?.icon as Asset;
+    const type = card?.fields?.type as string;
+    const color = type === 'internet' ? INTERNETCOLOR : type === 'tv' ? TVCOLOR : type === 'movil' ? MOVILCOLOR : '#000000';
 
   return (
     <div className='px-[16px] md:px-[24px] py-[32px] bg-white h-[596px] rounded-md relative flex-col flex'>
           {
-            card?.fields?.tagPromo? (
-                <div className='rounded-t-md px-6 py-1 mb-[32px] text-[20px] -mt-[32px] -mx-[16px] md:-mx-[24px] leading-6 w-(calc(100% + 32px)) text-center text-white bg-[#FF6C07]'>
+            card?.fields?.tagPromo ? (
+              <div
+                className={`rounded-t-md px-6 py-1 mb-[32px] text-[20px] -mt-[32px] -mx-[16px] md:-mx-[24px] leading-6 w-(calc(100% + 32px)) text-center text-white bg-[${color}]`}
+              >
                 {card.fields.tagPromo as string}
-                </div>
+              </div>
             ) : null
         }
 
@@ -35,7 +39,7 @@ const CardTVInternetMovilComponent = async({card}:CardPropType) => {
             }
             <h3 className='text-[24px] leading-[32px]'>{card.fields.title as string}</h3>
         </div>
-        <hr className='text-[#FF6C07] mb-[24px]' />
+        <hr className={`mb-[24px] text-[${color}]`} />
         <p className='line-through text-(--color-gray-200) text-[24px] leading-[32px]'>{card.fields.priceBefore as string}</p>
         <p className='mb-4'>
             <span className='text-[16px] leading-[24px]'>{card.fields.textBeforePrice as string}</span>
