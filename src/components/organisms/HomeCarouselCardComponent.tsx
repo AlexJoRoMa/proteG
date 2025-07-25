@@ -6,6 +6,9 @@ import { CarouselProvider } from '@/utils/CarouselProvider'
 import { HomeCarouselCardProps } from '@/types/HomeCarouselCardTypes'
 import { contentfulClient } from '@/services/contentful/client'
 import { Asset, Entry, EntrySkeletonType } from 'contentful'
+import {CARDHOMECOMPONENT, CARDTVINTERNETMOVILCOMPONENT} from '@/constants/CardComponent';
+import CardTVInternetMovilComponent from '../molecules/CardTVInternetMovilComponent'
+import { colorPickerType } from '@/types/ColorPickerType'
 
 const HomeCarouselCardComponent = async ({id}:HomeCarouselCardProps) => {
 
@@ -14,16 +17,23 @@ const HomeCarouselCardComponent = async ({id}:HomeCarouselCardProps) => {
    const entryCarousel:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
       content_type: "carouselCardHomeModel",
       'sys.id': id,
-      select: ['fields.backgroundImage', 'fields.backgroundImageMobile' , 'fields.cardsCarousel']
+      select: ['fields.backgroundImage', 'fields.backgroundImageMobile' , 'fields.cardsCarousel', 'fields.bgColor'],
     }).then((entriesResponse) => {
       return entriesResponse.items
     })
 
     const imgBackground = entryCarousel?.[0].fields?.backgroundImage as Asset;
     const imgBackgroundMobile = entryCarousel?.[0].fields?.backgroundImageMobile as Asset;
-  
+
   return (
-    <div className='HomeCarouselCardComponent relative w-full h-full'>
+    <div 
+      className="CarouselCardComponent relative w-full h-full flex justify-center items-center"
+      style={{ 
+        backgroundColor: entryCarousel?.[0].fields?.bgColor 
+          ? (entryCarousel?.[0].fields?.bgColor as colorPickerType)?.value 
+          : '#000000' 
+      }}
+    >
       {/* Imagen de fondo del carrusel */}
         {imgBackground?.fields?.file?.url && (
           <picture>
@@ -45,9 +55,16 @@ const HomeCarouselCardComponent = async ({id}:HomeCarouselCardProps) => {
           <CarouselProvider qtyCarousels={1} carouselConfigs={[{ options: { align: 'start' } }]} >
              <CarouselComponent buttons={true} dots={true}>
                 {
-                  entryCarousel && entryCarousel[0]?.fields.cardsCarousel && Array.isArray(entryCarousel[0].fields.cardsCarousel) && (entryCarousel[0].fields.cardsCarousel as Entry<EntrySkeletonType, undefined, string>[]).map((card:Entry<EntrySkeletonType, undefined, string>, index:number) => (
-                    <CardHomeComponent key={index} card={card} />
-                  ))
+                  entryCarousel && entryCarousel[0]?.fields.cardsCarousel && Array.isArray(entryCarousel[0].fields.cardsCarousel) && (entryCarousel[0].fields.cardsCarousel as Entry<EntrySkeletonType, undefined, string>[]).map((card:Entry<EntrySkeletonType, undefined, string>, index:number) => {
+                    // Renderizar el componente de cards dependiendo del tipo de card
+                    if( card.fields.type === CARDHOMECOMPONENT) {
+                      return <CardHomeComponent key={index} card={card} />
+                    }
+                    else if (typeof card.fields.type === 'string' && CARDTVINTERNETMOVILCOMPONENT.includes(card.fields.type)) {
+                      return <CardTVInternetMovilComponent key={index} card={card} />
+                    }
+                    return null;
+                  })
                 }
              </CarouselComponent>
           </CarouselProvider>
