@@ -3,7 +3,6 @@ import ProductCard from "@/components/organisms/ProductCard";
 import { contentfulClient } from "@/services/contentful/client";
 import { Entry, EntrySkeletonType } from "contentful";
 import { GenericProductProps, GenericProductCardType } from "@/types/GenericProductTypes";
-import { internetLogo, izziTvLogo, izziMovilLogo } from "@/components/atoms/GenericProductCardIcon";
 
 export default async function GenericProductCard({ id }: GenericProductProps) {
   const cardsData:Entry<EntrySkeletonType, undefined, string> | null = await contentfulClient.getEntries({
@@ -17,9 +16,9 @@ const cards = cardsData?.fields.productCard as Array<GenericProductCardType>
   return (
     <>
       <div className="flex flex-col lg:flex-row mx-sm sm:mx-md 2xl:mx-xl md:justify-between">
-        <ProductCard color="bg-orange-400" borderColor="border-orange-400" icon={internetLogo} cardData={cards[0]}/>
-        <ProductCard color="bg-cyan-400" borderColor="border-cyan-400" icon={izziTvLogo} cardData={cards[1]}/>
-        <ProductCard color="bg-magenta-400" borderColor="border-magenta-400" icon={izziMovilLogo} cardData={cards[2]}/>
+        <ProductCard color="bg-orange-400" borderColor="border-orange-400" icon={cards[0].fields.productIcon.fields.file.url} cardData={cards[0]}/>
+        <ProductCard color="bg-cyan-400" borderColor="border-cyan-400" icon={cards[1].fields.productIcon.fields.file.url} cardData={cards[1]}/>
+        <ProductCard color="bg-magenta-400" borderColor="border-magenta-400" icon={cards[2].fields.productIcon.fields.file.url} cardData={cards[2]}/>
       </div>
     </>
   );

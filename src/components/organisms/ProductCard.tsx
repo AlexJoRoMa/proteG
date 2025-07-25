@@ -4,6 +4,7 @@ import React from 'react';
 import {Button} from '@heroui/react';
 import Link from 'next/link';
 import {GenericProductComponentProps} from '@/types/GenericProductTypes';
+import Image from 'next/image';
 
 export default function ProductCard({color, borderColor, icon, cardData}: GenericProductComponentProps) {
 
@@ -16,7 +17,7 @@ export default function ProductCard({color, borderColor, icon, cardData}: Generi
                 <div className={`flex w-full h-[144px] mt-0 ${color}`}>
                     <div className='flex items-center px-[24px]'>
                         <div className='pr-[16px]'>
-                            {icon}
+                            <Image src={`https:${icon}`} width={72} height={72} alt='' />
                         </div>
                         <div className='border-b border-b-white-0'>
                             <p className="text-[36px] lg:text-[30px] xl:text-[32px] 3xl:text-[36px] text-white-0 align-middle text-center">{card?.productName}</p>

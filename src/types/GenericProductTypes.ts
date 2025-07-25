@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
 export type GenericProductProps = {
     id: string
 }
@@ -8,7 +6,7 @@ export type GenericProductComponentProps = {
     cardData: GenericProductCardType,
     color: string,
     borderColor: string,
-    icon: ReactNode
+    icon: string
 }
 
 export type GenericProductCardType = {
@@ -22,6 +20,18 @@ export type GenericProductCardType = {
         primaryButtonCopy: string,
         primaryButtonUrl: string,
         secondaryButtonCopy: string,
-        secondaryButtonUrl: string
+        secondaryButtonUrl: string,
+        productIcon: Icon
     }
+}
+
+export type Icon = {
+    fields: {
+        file: File
+    }
+}
+
+export type File = {
+        fileName: string, 
+        url: string
 }
