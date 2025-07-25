@@ -6,7 +6,8 @@ export type GenericProductComponentProps = {
     cardData: GenericProductCardType,
     color: string,
     borderColor: string,
-    icon: string
+    icon: string,
+    altIcon: string
 }
 
 export type GenericProductCardType = {
