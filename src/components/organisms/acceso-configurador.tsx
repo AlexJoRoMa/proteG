@@ -3,7 +3,6 @@ import { AccesoConfiguradorID, StepTabEntryFields, StepTabEntrySkeleton } from '
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
-import '@/styles/acceso-configurador.css';
 
 
 const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
