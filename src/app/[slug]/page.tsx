@@ -2,6 +2,7 @@ import { Entry, EntrySkeletonType } from "contentful";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import { PageProps } from "@/types/PageTypes";
+import { notFound } from "next/navigation";
 
 
 
@@ -16,6 +17,10 @@ export default async function Page({params}:PageProps) {
    const page = await fetchComponentsBySlugPage(slug);
 
    const components = page.items || [];
+
+   if(components.length < 1) {
+    notFound();
+   }
 
   return (
       <main className="">
