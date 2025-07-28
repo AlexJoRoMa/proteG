@@ -27,12 +27,12 @@ const CarouselArrowsComponent = ({scrollPrev, scrollNext, classPrevButton, class
     <>
       <button title="Previous" aria-label="Previous" type="button" className={`embla__prev ${classPrevButton}`} onClick={scrollPrev} disabled={prevBtnDisabled}>
           <svg xmlns="http://www.w3.org/2000/svg" width="48" height="49" viewBox="0 0 48 49" fill="none">
-            <path d="M30 10.5L18 24.5L30 38.5" stroke={colorArrow} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M30 10.5L18 24.5L30 38.5" stroke={colorArrow} strokeWidth="1.5" strokeLinecap='round' strokeLinejoin='round'/>
           </svg>
       </button>
       <button title="Next" aria-label="Next" type="button" className={`embla__next ${classNextButton}`} onClick={scrollNext} disabled={nextBtnDisabled}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="49" viewBox="0 0 48 49" fill="none">
-          <path d="M18 10.5L30 24.5L18 38.5" stroke={colorArrow} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg xmlns="http://www.w3.org/2000/svg"  width="48" height="49" viewBox="0 0 48 49" fill="none">
+          <path d="M18 10.5L30 24.5L18 38.5" stroke={colorArrow} strokeWidth="1.5" strokeLinecap='round' strokeLinejoin='round'/>
         </svg>
       </button>
     </>

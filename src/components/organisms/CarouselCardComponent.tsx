@@ -45,7 +45,7 @@ const CarouselCardComponent = async ({id}:CarouselCardProps) => {
               fill
               priority
               className=""
-              sizes="100%"
+              sizes="100vw"
               quality={100}
             />
           </picture>
