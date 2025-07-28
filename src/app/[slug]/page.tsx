@@ -18,7 +18,7 @@ export default async function Page({params}:PageProps) {
 
    const components = page.items || [];
 
-   if(components.length < 1) {
+   if(page.total !== 1) {
     notFound();
    }
 
