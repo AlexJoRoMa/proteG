@@ -34,11 +34,13 @@ export const useCarouselByIndex = (index: number) => {
 export const CarouselProvider = ({ 
   children, 
   qtyCarousels = 1,
-  carouselConfigs = []
+  carouselConfigs = [],
+  colorArrow = "white"
 }: { 
   children: React.ReactNode, 
   qtyCarousels?: number,
-  carouselConfigs?: { options?: EmblaOptionsType, plugins?: string[] }[]
+  carouselConfigs?: { options?: EmblaOptionsType, plugins?: string[] }[],
+  colorArrow?: string
 }) => {
 
   // Funcion para resolver plugins basados en nombres
@@ -108,7 +110,8 @@ export const CarouselProvider = ({
       setActiveCarousel: setActiveIndex,
       activeCarouselIndex: activeIndex,
       syncAllCarouselsToSlide,
-      pauseAllAutoplay
+      pauseAllAutoplay,
+      colorArrow
     }}>
       {children}
     </CarouselContext.Provider>

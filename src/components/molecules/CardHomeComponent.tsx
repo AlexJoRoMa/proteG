@@ -3,12 +3,11 @@ import Image from 'next/image'
 import ButtonGhost from '../atoms/ButtonGhost'
 import { contentfulClient } from '@/services/contentful/client';
 import { Entry, EntrySkeletonType, Asset } from 'contentful';
+import { CardPropType } from '@/types/CarouselCardsTypes';
 
-type CardHomePropType = {
-    card: Entry<EntrySkeletonType, undefined, string>;
-}
 
-const CardHomeComponent = async({card}:CardHomePropType) => {
+
+const CardHomeComponent = async({card}:CardPropType) => {
 
     //Obteniendo la imagen del card
     const imageAsset = card?.fields?.image as Asset;
