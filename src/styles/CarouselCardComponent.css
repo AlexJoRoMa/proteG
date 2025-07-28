@@ -118,6 +118,7 @@
         left: 0;
         top: initial;
         bottom: -25px;
+        transform: translateY(-10px);
     }
 }
 
@@ -131,6 +132,7 @@
         right: 0;
         top: initial;
         bottom: -25px;
+        transform: translateY(-10px);
     }
 }
 
