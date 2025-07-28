@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @config "../../tailwind.config.js";
-@import '../styles/HomeCarouselCardComponent.css';
+@import '../styles/CarouselCardComponent.css';
 @import '../styles/ChannelPromoBannerComponent.css';
 
 :root {
