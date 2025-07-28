@@ -26,6 +26,7 @@ export default async function Error() {
                     loading="eager"
                     width={1600}
                     height={438}
+                    priority
                 />
             </div>
             <div className="flex flex-col text-center gap-[40px] w-full px-[16px] md:px-0">
@@ -35,13 +36,13 @@ export default async function Error() {
                 </div>
                 <div className="flex md:flex-row gap-[24px] justify-center flex-col items-center">
                     <ButtonGhost 
-                        classStyles={"py-[14px] px-[16px] w-[320px] h-auto rounded-md border-black-0 text-black-0 font-semibold leading-[24px] text-lg"} 
+                        classStyles={"py-[12px] md:py-[14px] px-[16px] w-[256px] md:w-[320px] h-auto rounded-md border-black-0 text-black-0 font-semibold leading-[24px] text-lg"} 
                         text={errorEntry.buttons[0].fields.navigationTitle as string}
                         href={errorEntry.buttons[0].fields.navigationUrl}
                         external={true}
                     />
                     <ButtonGhost 
-                        classStyles={"py-[14px] px-[16px] w-[320px] h-auto rounded-md border-black-0 bg-black-0 text-white-0 font-semibold leading-[24px] text-lg"} 
+                        classStyles={"py-[12px] md:py-[14px] px-[16px] w-[256px] md:w-[320px] h-auto rounded-md border-black-0 bg-black-0 text-white-0 font-semibold leading-[24px] text-lg"} 
                         text={errorEntry.buttons[1].fields.navigationTitle as string}
                         href={errorEntry.buttons[1].fields.navigationUrl}
                     />
