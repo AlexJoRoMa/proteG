@@ -7,7 +7,7 @@ export default async function Home() {
 
   // Obtener la informacion de la pagina
 
-   const page = await fetchComponentsBySlugPage("izziTV");
+   const page = await fetchComponentsBySlugPage("tv");
 
    const components = page.items || [];
 

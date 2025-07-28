@@ -20,19 +20,21 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
 
      
     return(
-    <div className=" bg-black flex md:w-full xsm:w-full md:h-[518px] xsm:h-[765px]">
+    <div className=" bg-black flex md:w-full xsm:w-full md:h-[489px] xsm:h-[781px]">
         {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
         const { titulo, tituloResaltado, body, desde, precio, textTiempo, incluye,  textBoton1, linkBoton1, adicionales ,imagen, imagenMovil }= card.fields as StepTabEntryFields;
-         
+          
         const assetImage = imagen?.fields?.image as Asset | undefined;
         const imgURL = assetImage?.fields?.file?.url;
 
         const movilImage = imagenMovil?.fields?.image as Asset | undefined;
         const movilURL = movilImage?.fields?.file?.url;
 
+        //md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[660px] md:mt-15 md:ml-50 xsm:ml-4 xsm:mt-15
+
         return(
             <div key={card.sys.id} className=" bg-cover w-full" style={{ backgroundImage: `url(${imgURL})`}}>
-                <div className=" md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[660px] md:mt-15 md:ml-50 xsm:ml-4 xsm:mt-15">
+                <div className="md:mx-md 2xl:mx-xl pl-[1%] md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[660px] md:mt-15  xsm:mt-15">
                     <div  className=" text-white md:text-[64px] xsm:text-[56px]">
                         <h1>
                             <span>{titulo} </span>
@@ -72,11 +74,11 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                         )}
                     </div>
 
-                    <div>
+                    <div className=" flex md:justify-start md:items-start xsm:justify-center xsm:items-center">
                         <ButtonGhost classStyles="border-white text-black text-[16px] leading-6 font-bold bg-white hover:!bg-white hover:!text-black w-full rounded-md
-                        mt-5
-                         h-[48px]
-                         md:w-[320px] xsm:w-full "
+                        md:mt-5 xsm:mt-8 
+                        h-[48px]
+                        md:w-[320px] xsm:w-[256px] "
                         text={textBoton1 as string} href={linkBoton1 as string}
                         />
                     </div>

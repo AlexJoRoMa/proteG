@@ -14,6 +14,6 @@ export const componentMap = {
   cardTodoEnUno: TodoEnUnoComp,
   modeloAccesoConfigurador: AccesoConfigurador,
   cardCobertura: CoberturaModel,
-   modelIzziTV: ConIzziTv,
+  modelIzziTV: ConIzziTv,
   cardsContratacionRapida: ContratacionRapida
 };
