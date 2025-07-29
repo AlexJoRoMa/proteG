@@ -62,6 +62,7 @@ const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
               src={`https:${imgURL}`}
               loading="lazy"
               fill
+              sizes="auto"
               style={{ objectFit: 'cover'}}
               />
             )}

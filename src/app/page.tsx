@@ -26,6 +26,7 @@ export default async function Home() {
             <p>No existen componentes cargados.</p>
           )
         }
+        
     </main>
   );
 }
