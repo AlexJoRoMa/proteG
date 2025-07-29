@@ -35,7 +35,8 @@ export type Navigation = {
         navigationUrl: string,
         footerLink?: Array<Navigation>,
         internalName?: string,
-        linkIcon?: Icon
+        linkIcon?: Icon,
+        backgroundColor?: colorPickerType
     }
 }
 
@@ -63,3 +64,9 @@ export type IzziCopyright = {
         footerProfecoLogo: Icon
     }
 }
+
+export type colorPickerType = {
+    id: string;
+    name: string;
+    value: string;
+  }

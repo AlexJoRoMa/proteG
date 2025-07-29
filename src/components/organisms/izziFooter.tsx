@@ -10,7 +10,7 @@ export default function IzziFooterContent({FooterData}: FooterComponentProps) {
     const contactSection = FooterData?.fields.footerContactSection as Array<Contact>;
     const links = FooterData?.fields as IzziFooterLinks;
     const copyright = FooterData?.fields?.copyrightSection as IzziCopyright
-
+    console.log(contactSection)
     const itemClasses = {
         title: "font-normal text-[20px] text-white-0",
         content: "text-[20px] px-2",
@@ -40,7 +40,9 @@ export default function IzziFooterContent({FooterData}: FooterComponentProps) {
           </div>
           <div className='flex items-center gap-6'>
             {link.fields.contactLinks.map((contact, index) => ( 
-            <Link key={`${contact}-${index}`} href={`${contact.fields.navigationUrl}`} className='text-white-0 underline text-[18px] flex items-center gap-2'><Image height={24} width={24} alt={`${contact.fields.linkIcon?.fields.file.fileName}`} src={`https:${contact.fields.linkIcon?.fields.file.url}`} />{contact.fields.navigationTitle}</Link>
+            <Link key={`${contact}-${index}`} href={`${contact.fields.navigationUrl}`} className='underline text-[18px] flex items-center gap-2'
+              style={{color: contact.fields.backgroundColor?.value }}
+              ><Image height={24} width={24} alt={`${contact.fields.linkIcon?.fields.file.fileName}`} src={`https:${contact.fields.linkIcon?.fields.file.url}`} />{contact.fields.navigationTitle}</Link>
             ))}
           </div>
         </div>
