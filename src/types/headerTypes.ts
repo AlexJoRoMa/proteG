@@ -22,7 +22,8 @@ export type File = {
 export type Navigation = {
     fields: {
         navigationTitle: string,
-        navigationUrl: string
+        navigationUrl: string,
+        linkIcon?: Logo
     }
 }
 
@@ -30,5 +31,7 @@ export type HeaderComponentProps = {
     navbarData: Entry<EntrySkeletonType, undefined, string> | null,
     topNavbarData: Entry<EntrySkeletonType, undefined, string> | null,
     navbarButtonsData: Entry<EntrySkeletonType, undefined, string> | null,
-    mobileNavbarButton: Entry<EntrySkeletonType, undefined, string> | null
+    mobileNavbarButton: Entry<EntrySkeletonType, undefined, string> | null,
+    mobileCoberturaCopyData: Entry<EntrySkeletonType, undefined, string> | null,
+    coberturaCopyData: Entry<EntrySkeletonType, undefined, string> | null
 }

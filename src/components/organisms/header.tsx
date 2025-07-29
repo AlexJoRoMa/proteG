@@ -12,10 +12,9 @@ import {
 } from "@heroui/react";
 import Link from "next/link";
 import Image from "next/image";
-import { IzziLogo, HelpIcon, CallIcon, UserIcon, LocationIcon } from "@/components/atoms/ButtonIcon";
 import { IzziNavbar, HeaderComponentProps } from "@/types/headerTypes";
 
-export default function IzziHeaderContent({navbarData, topNavbarData, navbarButtonsData, mobileNavbarButton}: HeaderComponentProps) {
+export default function IzziHeaderContent({navbarData, topNavbarData, navbarButtonsData, mobileNavbarButton, coberturaCopyData, mobileCoberturaCopyData}: HeaderComponentProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const borderStyle = {
         'borderBottom': '2px solid',
@@ -28,6 +27,8 @@ export default function IzziHeaderContent({navbarData, topNavbarData, navbarButt
     const navbar = navbarData?.fields as IzziNavbar;
     const navbarButtons = navbarButtonsData?.fields as IzziNavbar;
     const mobileButton = mobileNavbarButton?.fields as IzziNavbar;
+    const mobileCoberturaCopy = mobileCoberturaCopyData?.fields as IzziNavbar;
+    const coberturaCopy = coberturaCopyData?.fields as IzziNavbar;
 
     return (
     <>
@@ -46,12 +47,16 @@ export default function IzziHeaderContent({navbarData, topNavbarData, navbarButt
             ))}
             </NavbarContent>
             <NavbarContent justify="end">
-            <NavbarItem className="hidden xl:flex">
-                    <Button startContent={<LocationIcon />} as={Link} href="#" className="text-black-0 font-normal bg-color-trasparent text-[18px]">comprobar mi cobertura</Button>
+              {coberturaCopy?.navigation?.map((copy, index) => (
+              <NavbarItem key={`${copy}-${index}`} className="hidden xl:flex">
+                      <Button startContent={<Image src={`https:${copy.fields.linkIcon?.fields.file.url}`} alt={`${copy.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} loading='lazy' />} as={Link} href="#" className="text-black-0 font-normal bg-color-trasparent text-[18px]">comprobar mi cobertura</Button>
+                  </NavbarItem>
+              ))}
+              {mobileCoberturaCopy?.navigation?.map((copy, index) => (
+                <NavbarItem key={`${copy}-${index}`} className="xl:hidden">
+                <Button startContent={<Image src={`https:${copy.fields.linkIcon?.fields.file.url}`} alt={`${copy.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} loading='lazy' />} as={Link} href="#" className="text-black-0 font-normal bg-color-trasparent sm:text-[18px] text-[16px]">tu cobertura</Button>
                 </NavbarItem>
-                <NavbarItem className="xl:hidden">
-                <Button startContent={<LocationIcon />} as={Link} href="#" className="text-black-0 font-normal bg-color-trasparent sm:text-[18px] text-[16px]">tu cobertura</Button>
-                </NavbarItem>
+              ))}
             </NavbarContent>
         </Navbar>
         <Navbar onMenuOpenChange={setIsMenuOpen}
@@ -68,9 +73,9 @@ export default function IzziHeaderContent({navbarData, topNavbarData, navbarButt
       <NavbarContent className={`${isMenuOpen ? 'ps-0': 'ps-16'} !grow-0 lg:justify-start sm:justify-center lg:ps-0`}>
         <NavbarBrand>
           <Link href="/">
-            <IzziLogo />
+            <Image className='max-w-[120px] h-auto' src={`https:${navbar.brandLogo?.fields.file.url}`} alt={`${navbar.brandLogo?.fields.file.fileName}`} width={120} height={48} loading='lazy'/>
           </Link>
-        </NavbarBrand>
+          </NavbarBrand>
       </NavbarContent>
       <NavbarContent className="hidden xl:flex gap-[32px] min-[1024px]:gap-[16px] min-[1095]:gap-[24px] min-[1150px]:gap-[32px]" justify="start">
         {navbar?.navigation?.map((link, index) => (    
@@ -86,7 +91,7 @@ export default function IzziHeaderContent({navbarData, topNavbarData, navbarButt
             <NavbarItem key={`${link}-${index}`} className="hidden xl:flex ">
                 <Button as={Link} className={`${index == 2 ? 'bg-black-0 text-white-0' :'bg-color-trasparent'} 
                     h-[48px] border-[2px] border-solid rounded-md text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[16px] min-[1150px]:text-[18px]`}
-                        startContent={index == 0 ? <HelpIcon /> : index == 1 ? <CallIcon /> : <UserIcon height={undefined} width={undefined} />} 
+                    startContent={<Image className='max-w-[24px] h-auto' src={`https:${link.fields.linkIcon?.fields.file.url}`} alt={`${link.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} loading='lazy' />}
                         href={link.fields.navigationUrl}>
                     {link.fields.navigationTitle}
                 </Button>
@@ -96,7 +101,7 @@ export default function IzziHeaderContent({navbarData, topNavbarData, navbarButt
         <NavbarItem key={`${link}-${index}`}
             className={isMenuOpen ? "hidden" : "xl:hidden sm:flex"}>
           <Button as={Link} href={link.fields.navigationUrl} className="bg-color-trasparent justify-end px-0">
-            <Image src={`https:${mobileButton?.brandLogo?.fields?.file?.url}`} alt={link.fields.navigationTitle} width={32} height={32}></Image>
+            <Image src={`https:${mobileButton?.brandLogo?.fields?.file?.url}`} alt={link.fields.navigationTitle} width={32} height={32} loading='lazy'></Image>
           </Button>
         </NavbarItem>
         ))}
@@ -116,7 +121,7 @@ export default function IzziHeaderContent({navbarData, topNavbarData, navbarButt
             <NavbarMenuItem key={`${link}-${index}`}>
                 <Button as={Link} className={`${index == 2 ? 'bg-black-0 text-white-0' :'bg-color-trasparent'} 
                     h-[48px] border-[2px] border-solid rounded-md text-[18px]`}
-                        startContent={index == 0 ? <HelpIcon /> : index == 1 ? <CallIcon /> : <UserIcon height={undefined} width={undefined} />}
+                    startContent={<Image className='max-w-[24px] h-auto' src={`https:${link.fields.linkIcon?.fields.file.url}`} alt={`${link.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} loading='lazy' />}
                         href={link.fields.navigationUrl}>
                     {link.fields.navigationTitle}
                 </Button>
