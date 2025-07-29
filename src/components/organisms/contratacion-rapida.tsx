@@ -46,7 +46,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
               <div key={card.sys.id} className=" relative z-10 w-full xsm:w-[95%] 
               md:h-50 xsm:my-6 md:p-1 flex md:flex-col sm:flex-row items-center">
                 
-                <div className=" items-center md:flex xsm:flex md:flex-col xsm:flex-row flex-shrink-0">
+                <div className=" items-center md:flex xsm:flex md:flex-col xsm:flex-row shrink-0">
                   <div className=" w-20 h-20 flex items-center justify-center">
                     {imgURL && (
                       <Image
