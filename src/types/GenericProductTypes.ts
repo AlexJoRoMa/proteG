@@ -1,3 +1,5 @@
+import { colorPickerType } from "./ColorPickerType"
+
 export type GenericProductProps = {
     id: string
 }
@@ -22,7 +24,8 @@ export type GenericProductCardType = {
         primaryButtonUrl: string,
         secondaryButtonCopy: string,
         secondaryButtonUrl: string,
-        productIcon: Icon
+        productIcon: Icon,
+        backgroundColor: colorPickerType
     }
 }
 
