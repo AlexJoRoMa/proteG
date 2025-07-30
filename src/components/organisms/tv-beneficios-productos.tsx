@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { TVBeneficiosProductosID, configuradoCopyFields, StepTabEntrySkeleton, StepTabEntryFields } from '@/types/TVBeneficiosProductos';
+import { TVBeneficiosProductosID, configuradoCopyFields, StepTabEntrySkeleton, StepTabEntryFields } from '@/types/TVBeneficiosProductosTypes';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
