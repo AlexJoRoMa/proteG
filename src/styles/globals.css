@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @config "../../tailwind.config.js";
-@import '../styles/HomeCarouselCardComponent.css';
+@import '../styles/CarouselCardComponent.css';
 @import '../styles/ChannelPromoBannerComponent.css';
 
 :root {
@@ -253,7 +253,7 @@ body {
   width: 48px;
   height: 16px;
   border-radius: 16px;
-  background-color: white;
+  background-color: #BFBFC5;
 
   @media screen and (max-width: 576px) {
     width: 24px;

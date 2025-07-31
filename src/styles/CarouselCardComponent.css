@@ -1,7 +1,6 @@
-.HomeCarouselCardComponent{
+.CarouselCardComponent{
 
     padding: 64px 0;
-    background-color: black;
 
     @media screen and (max-width: 576px) {
     padding: 56px 0  40px  0;
@@ -119,6 +118,7 @@
         left: 0;
         top: initial;
         bottom: -25px;
+        transform: translateY(-10px);
     }
 }
 
@@ -132,6 +132,7 @@
         right: 0;
         top: initial;
         bottom: -25px;
+        transform: translateY(-10px);
     }
 }
 

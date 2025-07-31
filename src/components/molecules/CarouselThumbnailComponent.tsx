@@ -98,7 +98,7 @@ const onSelect = useCallback(() => {
           </div>
         </div>
 
-        <CarouselArrowsComponent scrollPrev={scrollPrev} scrollNext={scrollNext} emblaApi={emblaApi as EmblaCarouselType} classPrevButton="absolute -left-9 top-[10px] cursor-pointer" classNextButton='absolute -right-9 top-[10px] cursor-pointer'/>
+        <CarouselArrowsComponent scrollPrev={scrollPrev} scrollNext={scrollNext} emblaApi={emblaApi as EmblaCarouselType} classPrevButton="absolute -left-12  top-[15px] md:top-[5px] cursor-pointer" classNextButton='absolute -right-12 top-[15px] md:top-[5px] cursor-pointer'/>
     </div>
   )
 }
