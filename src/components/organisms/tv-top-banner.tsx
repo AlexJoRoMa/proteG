@@ -1,4 +1,4 @@
-    import Image from "next/image";
+import Image from "next/image";
 import { ConIzziTvID, StepTabEntryFields, StepTabEntrySkeleton } from '@/types/ConIzziTypes';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
@@ -16,25 +16,24 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
             return entriesResponse.items
         })
     
-      const getCardsContent: Array<Entry<StepTabEntrySkeleton>> | undefined = callCardsContent?.[0]?.fields.cardsContent as unknown as Array<Entry<StepTabEntrySkeleton>>;
+    const getCardsContent: Array<Entry<StepTabEntrySkeleton>> | undefined = callCardsContent?.[0]?.fields.cardsContent as unknown as Array<Entry<StepTabEntrySkeleton>>;
 
      
     return(
-    <div className=" bg-black flex md:w-full xsm:w-full md:h-[489px] xsm:h-[781px]">
-        {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
-        const { titulo, tituloResaltado, body, desde, precio, textTiempo, incluye,  textBoton1, linkBoton1, adicionales ,imagen, imagenMovil }= card.fields as StepTabEntryFields;
+    <div className=" bg-black flex md:w-full xsm:w-full md:h-[489px] xsm:h-[781px] relative overflow-hidden">
+      
+       {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
+        const { titulo, tituloResaltado, body, desde, precio, textTiempo, incluye,  textBoton1, linkBoton1, adicionales ,imagen }= card.fields as StepTabEntryFields;
           
         const assetImage = imagen?.fields?.image as Asset | undefined;
         const imgURL = assetImage?.fields?.file?.url;
-
-        const movilImage = imagenMovil?.fields?.image as Asset | undefined;
-        const movilURL = movilImage?.fields?.file?.url;
-
-        //md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[660px] md:mt-15 md:ml-50 xsm:ml-4 xsm:mt-15
+        const imgResponsive = imgURL;
 
         return(
-            <div key={card.sys.id} className=" bg-cover w-full" style={{ backgroundImage: `url(${imgURL})`}}>
-                <div className=" md:mx-md 2xl:mx-xl md:pl-[1%] xsm:ml-4 md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[660px] md:mt-15  xsm:mt-15">
+            <div key={card.sys.id} className=" z-10 w-full flex md:flex-row xsm:flex-col relative" >
+                {/* componente izquierda  */}
+                <div className="  z-10 md:mx-md 2xl:mx-xl md:pl-[1%] xsm:ml-4 md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[370px] md:mt-15  xsm:mt-15">
+
                     <div  className=" text-white md:text-[64px] xsm:text-[56px]">
                         <h1>
                             <span>{titulo} </span>
@@ -82,19 +81,25 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                         text={textBoton1 as string} href={linkBoton1 as string}
                         />
                     </div>
-
-                    {/* imagen responsiva para pantalla movil */}
-                    <div className="  md:hidden mt-5  ">
-                        {movilURL && (
+                </div>
+                
+                {/* componente imagen  */}
+                <div className=" absolute md:w-full md:h-full xsm:w-[92%] md:mt-0 xsm:mt-110 inset-0 md:z-0 xsm:z-10
+                xsm:h-[300px] 2xl:ml-10 xl:ml-18 md:ml-40 xsm:ml-4 md:order-none xsm:order-2 ">
+                    {imgURL && (
+                        <picture>
+                            <source media="(min-width:768px)" srcSet={`https:${imgURL}`} />
+                            <source media="(max-width:768px)" srcSet={`https:${imgResponsive}`} />
                             <Image
-                            className="w-full"
-                            alt={'Images'}
-                            src={`https:${movilURL}`}
-                            width={370}
-                            height={280}
+                            src={`https:${imgURL}`}
+                            alt="background"
+                            className="w-full h-full object-cover md:object-fill xsm:object-cover"
+                            width={1200}
+                            height={600}
+                            priority
                             />
-                        )}
-                    </div>
+                        </picture>
+                    )}
                 </div>
                 
             </div>

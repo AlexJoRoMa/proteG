@@ -5,7 +5,7 @@ import ContratacionRapida from '@/components/organisms/contratacion-rapida';
 import TodoEnUnoComp from '@/components/organisms/todo-uno';
 import AccesoConfigurador from '@/components/organisms/acceso-configurador';
 import CoberturaModel from '@/components/organisms/cobertura-model';
-import ConIzziTv from '@/components/organisms/con-izzi-tv';
+import ConIzziTv from '@/components/organisms/tv-top-banner';
 
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
