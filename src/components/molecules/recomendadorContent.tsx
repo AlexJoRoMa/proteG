@@ -1,16 +1,24 @@
 'use client'
 
+import { RecomendadorContentProps, StepsDataFields } from "@/types/Recomendador";
 import { Card, CardBody, CardFooter } from "@heroui/react";
+import { EntrySkeletonType } from "contentful";
 
-export default function RecomendadorContent() {
+export default function RecomendadorContent({ data }: RecomendadorContentProps) {
+
+    const cardsInfo = data as unknown as EntrySkeletonType<StepsDataFields>[];
 
     return (
         <div className="flex flex-col gap-[40px] md:mx-md 2xl:mx-xl">
             <div className="grid grid-cols-3 gap-[24px]">
                 <Card
-                    className="w-full h-auto bg-transparent rounded-md border-1 border-gray-150 p-[6px]"
+                    isPressable
+                    classNames={{
+                        base: "w-full h-auto bg-transparent rounded-md border-1 border-gray-150 p-[6px] shadow-none",
+                        header: "pb-[16px]"
+                    }}
                 >
-                    <CardBody className="pb-[16px]">
+                    <CardBody>
                         <h1 className="font-normal leading-[24px] text-base">Solo yo</h1>
                     </CardBody>
                     <CardFooter>
@@ -21,8 +29,14 @@ export default function RecomendadorContent() {
                     </CardFooter>
                 </Card>
 
-                <Card className="w-full h-auto bg-transparent rounded-md border-1 border-gray-150 p-[6px]">
-                    <CardBody className="pb-[16px]">
+                <Card
+                    isPressable
+                    classNames={{
+                        base: "w-full h-auto bg-transparent rounded-md border-1 border-gray-150 p-[6px] shadow-none",
+                        header: "pb-[16px]"
+                    }}
+                >
+                    <CardBody>
                         <h1 className="font-normal leading-[24px] text-base">2 a 3 personas</h1>
                     </CardBody>
                     <CardFooter>
@@ -33,8 +47,14 @@ export default function RecomendadorContent() {
                     </CardFooter>
                 </Card>
 
-                <Card className="w-full h-auto bg-transparent rounded-md border-1 border-gray-150 p-[6px]">
-                    <CardBody className="pb-[16px]">
+                <Card
+                    isPressable
+                    classNames={{
+                        base: "w-full h-auto bg-transparent rounded-md border-1 border-gray-150 p-[6px] shadow-none",
+                        header: "pb-[16px]"
+                    }}
+                >
+                    <CardBody>
                         <h1 className="font-normal leading-[24px] text-base">más de 4 personas</h1>
                     </CardBody>
                     <CardFooter>

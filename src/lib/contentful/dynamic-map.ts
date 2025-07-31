@@ -5,6 +5,7 @@ import ContratacionRapida from '@/components/organisms/contratacion-rapida';
 import TodoEnUnoComp from '@/components/organisms/todo-uno';
 import AccesoConfigurador from '@/components/organisms/acceso-configurador';
 import CoberturaModel from '@/components/organisms/cobertura-model';
+import Recomendador from "@/components/organisms/recomendador";
 
 
 export const componentMap = {
@@ -14,5 +15,6 @@ export const componentMap = {
   cardTodoEnUno: TodoEnUnoComp,
   modeloAccesoConfigurador: AccesoConfigurador,
   cardCobertura: CoberturaModel,
-  cardsContratacionRapida: ContratacionRapida
+  cardsContratacionRapida: ContratacionRapida,
+  recomendador: Recomendador
 };
