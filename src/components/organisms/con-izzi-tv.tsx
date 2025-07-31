@@ -1,4 +1,4 @@
-import Image from "next/image";
+    import Image from "next/image";
 import { ConIzziTvID, StepTabEntryFields, StepTabEntrySkeleton } from '@/types/ConIzziTypes';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
@@ -34,7 +34,7 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
 
         return(
             <div key={card.sys.id} className=" bg-cover w-full" style={{ backgroundImage: `url(${imgURL})`}}>
-                <div className="md:mx-md 2xl:mx-xl pl-[1%] md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[660px] md:mt-15  xsm:mt-15">
+                <div className=" md:mx-md 2xl:mx-xl md:pl-[1%] xsm:ml-4 md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[660px] md:mt-15  xsm:mt-15">
                     <div  className=" text-white md:text-[64px] xsm:text-[56px]">
                         <h1>
                             <span>{titulo} </span>
