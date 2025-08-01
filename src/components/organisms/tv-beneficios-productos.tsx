@@ -23,7 +23,7 @@ const TVBeneficiosProductos = async ({id} : TVBeneficiosProductosID) => {
     
     
     return(
-    <div className=" bg-[#F4F4F6] lg:h-[700px] md:h-[700px] xsm:h-[610px]">
+    <div className=" bg-gray-50 lg:h-[700px] md:h-[700px] xsm:h-[610px]">
     <div className="  flex flex-col md:mx-md 2xl:mx-xl items-center justify-center   ">
         
         {/* titulo */}
