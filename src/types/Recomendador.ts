@@ -7,8 +7,12 @@ export type RecomendadorProps = {
     id: string,
 }
 
-export type RecomendadorContentProps = {
+export type RecomendadorQuestionaryProps = {
     data: EntrySkeletonType<StepsDataFields> | null
+}
+
+export type RecomendadorSugestionsProps = {
+    newSelectionAction: () => void
 }
 
 // EntryData
@@ -20,6 +24,11 @@ export type EntryDataFields = {
     ctaTextPropuestas?: string,
     ctaUrlPropuestas?: string,
 }
+
+export type AnswersGroup = {
+    [stepId: string]: string | string[];
+}
+
 
 // StepsDataFields
 

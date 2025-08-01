@@ -1,7 +1,7 @@
 import { Entry, EntrySkeletonType } from "contentful";
 import RecomendadorQuestionary from "../molecules/recomendadorQuestionary"
 import { contentfulClient } from "@/services/contentful/client";
-import { EntryDataFields, RecomendadorProps, StepsDataFields } from "@/types/Recomendador";
+import { RecomendadorProps } from "@/types/Recomendador";
 import { RecomendadorProvider } from "@/utils/RecomendadorProvider";
 
 export default async function Recomendador({ id }: RecomendadorProps) {
