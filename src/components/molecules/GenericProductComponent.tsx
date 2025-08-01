@@ -17,7 +17,7 @@ const cards = cardsData?.fields.productCard as Array<GenericProductCardType>
     <>
       <div className="flex flex-col lg:flex-row mx-sm sm:mx-md 2xl:mx-xl md:justify-between">
         {cards?.map((card, index) => (
-          <ProductCard key={`${card}-${index}`} color={`bg-${card.fields.backgroundColor.name}`} borderColor={`border-${card.fields.backgroundColor.name}`} icon={card.fields.productIcon.fields.file.url} altIcon={card.fields.productIcon.fields.file.fileName} cardData={card}/>
+          <ProductCard key={`${card}-${index}`} color={card.fields.backgroundColor.value} borderColor={card.fields.backgroundColor.value} icon={card.fields.productIcon.fields.file.url} altIcon={card.fields.productIcon.fields.file.fileName} cardData={card}/>
         ))}
       </div>
     </>
