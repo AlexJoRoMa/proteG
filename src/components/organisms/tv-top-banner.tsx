@@ -88,8 +88,6 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                 xsm:h-[300px] 2xl:ml-10 xl:ml-18 md:ml-40 xsm:ml-4 md:order-none xsm:order-2 ">
                     {imgURL && (
                         <picture>
-                            <source media="(min-width:768px)" srcSet={`https:${imgURL}`} />
-                            <source media="(max-width:768px)" srcSet={`https:${imgResponsive}`} />
                             <Image
                             src={`https:${imgURL}`}
                             alt="background"
