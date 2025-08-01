@@ -32,7 +32,8 @@ export default function RecomendadorContent({ data }: RecomendadorContentProps) 
                             isPressable
                             classNames={{
                                 base: "w-full h-auto bg-transparent rounded-md border-1 border-gray-150 p-[6px] shadow-none",
-                                header: "pb-[16px]"
+                                header: "pb-[16px]",
+                                footer: "justify-end"
                             }}
                         >
                             <CardBody>
