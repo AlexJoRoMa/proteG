@@ -1,6 +1,7 @@
 // Props
 
-import { EntrySkeletonType } from "contentful"
+import { Entry, EntrySkeletonType } from "contentful"
+import { ReactNode } from "react"
 
 export type RecomendadorProps = {
     id: string,
@@ -45,4 +46,15 @@ export type CardDataFields = {
             altText: string;
         };
     };
+}
+
+// Provider Props
+
+export type ProviderProps = {
+    children: ReactNode,
+    value: DataFields
+}
+
+export type DataFields = {
+    recomendadorEntry: Entry<EntrySkeletonType, undefined> | null
 }
