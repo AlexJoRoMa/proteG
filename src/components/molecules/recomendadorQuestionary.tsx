@@ -1,11 +1,12 @@
 'use client'
 
-import { CardDataFields, RecomendadorContentProps, StepsDataFields } from "@/types/Recomendador";
+import { AnswersGroup, CardDataFields, StepsDataFields } from "@/types/Recomendador";
 import { useRecomendadorContent } from "@/utils/RecomendadorProvider";
 import { Card, CardBody, CardFooter } from "@heroui/react";
 import { Entry, EntrySkeletonType } from "contentful";
 import Image from "next/image";
 import { useState } from "react";
+import RecomendadorSugestions from "./recomendadorSugestions";
 
 export const CheckIcon = (props: any) => {
     return (
@@ -29,9 +30,6 @@ export const CheckIcon = (props: any) => {
 
 export default function RecomendadorQuestionary() {
 
-    type AnswersGroup = {
-        [stepId: string]: string | string[];
-    }
     const context = useRecomendadorContent();
     console.log('context', context)
 
@@ -53,7 +51,7 @@ export default function RecomendadorQuestionary() {
         }
     }
 
-    function handleSelect(step: EntrySkeletonType<StepsDataFields>, card: EntrySkeletonType<CardDataFields>) {
+    function userSelection(step: EntrySkeletonType<StepsDataFields>, card: EntrySkeletonType<CardDataFields>) {
         const isRadio = card.fields.type === 'radio';
         const questionTitle = step.fields.title;
         const optionTitle = card.fields.title;
@@ -75,6 +73,12 @@ export default function RecomendadorQuestionary() {
                 }
             }
         })
+    }
+
+    function userNewSelection() {
+        setUserAnswers({})
+        setActualStep(0)
+        setIsComplete(false)
     }
 
     const currentStep = stepsInfo[actualStep];
@@ -103,7 +107,7 @@ export default function RecomendadorQuestionary() {
                                     >
                                         <Card
                                             isPressable
-                                            onPress={() => handleSelect(currentStep, card)}
+                                            onPress={() => userSelection(currentStep, card)}
                                             classNames={{
                                                 base: "w-full h-fit bg-gray-50 rounded-sm shadow-none",
                                                 header: "pb-[16px]",
@@ -146,9 +150,8 @@ export default function RecomendadorQuestionary() {
                     </div>
                 </div>
 
-                : <div className="flex flex-col gap-[40px] md:mx-md 2xl:mx-xl">
-                    <h1>complete</h1>
-                </div>}
+                : <RecomendadorSugestions newSelectionAction={userNewSelection}/>
+            }
         </>
     )
 
