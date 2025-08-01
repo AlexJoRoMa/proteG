@@ -31,5 +31,18 @@ export type StepsDataFields = {
 // CardDataFields
 
 export type CardDataFields = {
-    title: string
+    title: string,
+    type: string,
+    icon: {
+        fields: {
+            image: {
+                fields: {
+                    file: {
+                        url: string;
+                    };
+                };
+            };
+            altText: string;
+        };
+    };
 }

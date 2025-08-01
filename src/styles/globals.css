@@ -119,6 +119,7 @@
    --gradient-bar-horizontal: linear-gradient(to right,#FF6C07,#4DA9A7,#D31772,#FCD116);
    --gradient-bar-vertical: linear-gradient( to bottom,#FF6C07,#4DA9A7,#D31772,#FCD116);
    --gradient-background: linear-gradient(to right,#DCEFF0,#F4F4F6,#F3E6EE);
+   --gradient-card-border: conic-gradient(from -17.59deg at 50% 50%, #CE32A3 -34.36deg, #3CB594 86.54deg, #ff6c07 179.07deg, #CE32A3 325.64deg, #3CB594 446.54deg);
 }
 
 body {
