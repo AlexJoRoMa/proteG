@@ -16,7 +16,6 @@ export default async function Recomendador({ id }: RecomendadorProps) {
     console.log('data', recomendadorEntry)
 
     const entryTitleInicial = recomendadorEntry?.fields.titleInicial as string;
-    const entrySubTitleInicial = recomendadorEntry?.fields.subTitleInicial as string;
     const entryTitlePropuestas = recomendadorEntry?.fields.titlePropuestas as string;
     const entrySubTitlePropuestas = recomendadorEntry?.fields.subTitlePropuestas as string;
     const entryCtaTextPropuestas = recomendadorEntry?.fields.ctaTextPropuestas as string;
@@ -24,10 +23,9 @@ export default async function Recomendador({ id }: RecomendadorProps) {
     const entryData = recomendadorEntry?.fields.steps as unknown as EntrySkeletonType<StepsDataFields>;
 
     return (
-        <div className="flex flex-col w-full bg-gray-50 py-[64px]">
-            <div className="flex flex-col gap-[24px] self-center items-center pb-[40px]">
-                <h1 className="font-bold leading-[48px] text-4xl">{entryTitleInicial}</h1>
-                <h4 className="font-normal leading-[24px] text-xl">{entrySubTitleInicial}</h4>
+        <div className="flex flex-col w-full bg-gray-50 py-[64px] px-[16px] md:px-0">
+            <div className="flex flex-col gap-[24px] self-center items-center text-center pb-[40px]">
+                <h1 className="font-bold leading-[40px] md:leading-[48px] text-[32px] md:text-4xl">{entryTitleInicial}</h1>
             </div>
             <RecomendadorContent data={entryData}/>
         </div>

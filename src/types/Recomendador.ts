@@ -32,7 +32,7 @@ export type StepsDataFields = {
 
 export type CardDataFields = {
     title: string,
-    type: string,
+    type: 'radio' | 'checkbox',
     icon: {
         fields: {
             image: {
