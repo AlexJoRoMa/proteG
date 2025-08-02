@@ -81,6 +81,13 @@ export default function RecomendadorQuestionary() {
         setIsComplete(false)
     }
 
+    function isStepAnswered(step: EntrySkeletonType<StepsDataFields>): boolean {
+        const questionTitle = step.fields.title;
+        const selected = userAnswers[questionTitle];
+
+        return Array.isArray(selected) ? selected.length > 0 : typeof selected === 'string' && selected.trim() !== '';
+    }
+
     const currentStep = stepsInfo[actualStep];
 
     return (
@@ -144,6 +151,7 @@ export default function RecomendadorQuestionary() {
                         <button
                             className="py-[14px] px-[16px] border-1 border-black-0 rounded-md w-[320px] h-auto font-bold leading-[24px] text-lg self-center"
                             onClick={() => handleNextStep(actualStep)}
+                            disabled={!isStepAnswered(currentStep)}
                         >
                             {stepsInfo[actualStep].fields.ctaText}
                         </button>
