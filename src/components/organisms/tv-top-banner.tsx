@@ -1,4 +1,4 @@
-import Image from "next/image";
+    import Image from "next/image";
 import { ConIzziTvID, StepTabEntryFields, StepTabEntrySkeleton } from '@/types/ConIzziTypes';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
@@ -6,7 +6,7 @@ import ButtonGhost from "../atoms/ButtonGhost";
 
 
 const ConIzziTv = async ({id} : ConIzziTvID) =>{
-
+    
     const callCardsContent:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
             content_type: "izziTvModel",
             'sys.id': id,
@@ -18,29 +18,33 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
     
     const getCardsContent: Array<Entry<StepTabEntrySkeleton>> | undefined = callCardsContent?.[0]?.fields.cardsContent as unknown as Array<Entry<StepTabEntrySkeleton>>;
 
-     
+
     return(
-    <div className=" bg-black flex md:w-full xsm:w-full md:h-[489px] xsm:h-[781px] relative overflow-hidden">
-      
-       {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
-        const { titulo, tituloResaltado, body, desde, precio, textTiempo, incluye,  textBoton1, linkBoton1, adicionales ,imagen }= card.fields as StepTabEntryFields;
+    <div className=" bg-black flex md:w-full xsm:w-full md:h-[489px] xsm:h-[781px] overflow-hidden">
+        {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
+        const { titulo, tituloResaltado, body, desde, precio, textTiempo, incluye,  textBoton1, linkBoton1, adicionales ,imagen, imagenMovil }= card.fields as StepTabEntryFields;
           
         const assetImage = imagen?.fields?.image as Asset | undefined;
         const imgURL = assetImage?.fields?.file?.url;
-        const imgResponsive = imgURL;
+
+        const movilImage = imagenMovil?.fields?.image as Asset | undefined;
+        const movilURL = movilImage?.fields?.file?.url;
+
 
         return(
-            <div key={card.sys.id} className=" z-10 w-full flex md:flex-row xsm:flex-col relative" >
-                {/* componente izquierda  */}
-                <div className="  z-10 md:mx-md 2xl:mx-xl md:pl-[1%] xsm:ml-4 md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[370px] md:mt-15  xsm:mt-15">
+            <div key={card.sys.id} className=" relative w-full flex flex-col md:flex-row">
+                
+                
 
+                {/* imagen izquierdo */}
+                <div className=" relative md:order-none xsm:order-1  z-10 md:mx-md 2xl:mx-xl md:pl-[1%] xsm:ml-4 md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[360px] md:mt-15  xsm:mt-15">
                     <div  className=" text-white md:text-[64px] xsm:text-[56px]">
                         <h1>
                             <span>{titulo} </span>
                             <span className="font-bold">{tituloResaltado}</span>
                         </h1>
                     </div>
-                    <div  className=" text-white md:text-[32px] xsm:text-[24px] w-[80%]">
+                    <div  className="  text-white md:text-[32px] xsm:text-[24px] w-[80%]">
                         <h1>{body}</h1>
                     </div>
                     <div  className="text-white">
@@ -81,24 +85,29 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                         text={textBoton1 as string} href={linkBoton1 as string}
                         />
                     </div>
+                    
                 </div>
                 
-                {/* componente imagen  */}
-                <div className=" absolute md:w-full md:h-full xsm:w-[92%] md:mt-0 xsm:mt-110 inset-0 md:z-0 xsm:z-10
-                xsm:h-[300px] 2xl:ml-10 xl:ml-18 md:ml-40 xsm:ml-4 md:order-none xsm:order-2 ">
-                    {imgURL && (
-                        <picture>
+                {/* imagen responsiva */}
+                    <div className="  fill 
+                    md:absolute md:inset-0 md:z-0
+                    xsm:relative xsm:z-10 md:order-none xsm:order-2  ">
+                        <picture className="block w-full h-full">
+                            <source media="(min-width:768px)" srcSet={`https:${imgURL}`}/>
+                            <source media="(min-width:320px)" srcSet={`https:${movilURL}`}/>
+
+                            {( imgURL && movilURL ) && (
                             <Image
-                            src={`https:${imgURL}`}
-                            alt="background"
-                            className="w-full h-full object-cover md:object-fill xsm:object-cover"
-                            width={1200}
-                            height={600}
-                            priority
+                            className="md:w-full md:h-full xsm:w-[92%] xsm:ml-4"
+                            alt={'Images'}
+                            src={`https:${ imgURL || movilURL}`}
+                            width={370}
+                            height={280}
                             />
+                        )}
+
                         </picture>
-                    )}
-                </div>
+                    </div>
                 
             </div>
         );
