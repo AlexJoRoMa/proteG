@@ -1,13 +1,9 @@
 
 import React from 'react'
 import Image from 'next/image';
-import { Asset, AssetDetails } from 'contentful';
+import { AssetDetails } from 'contentful';
+import { TextAndImageComponentProps } from '@/types/ModalComponentTypes';
 
-type TextAndImageComponentProps = {
-  text?: string;
-  image?: Asset
-  fontSize?: string;
-};
 
 const TextAndImageComponent = ({text, image, fontSize}:TextAndImageComponentProps) => {
 

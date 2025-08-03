@@ -6,12 +6,8 @@ import ModalComponent from '../layouts/ModalComponent'
 import useSWR from 'swr'
 import Image from 'next/image'
 import RichTextComponent from '../molecules/RichTextComponent';
+import { ButtonModalProps } from '@/types/ModalComponentTypes';
 
-type ButtonModalProps = {
-    textBtn: string;
-    classStyles?: string;
-    idModal: string;
-}
 
 const fetchEntry = async ([id]: [string]) => {
   const res = await fetch(`/api/modal?id=${id}`);

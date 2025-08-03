@@ -1,12 +1,7 @@
 import React from 'react'
 import Image from 'next/image';
-import { Asset, AssetDetails } from 'contentful';
-
-type FeatureListItemComponentProps = {
-  title?: string;
-    description?: string;
-    image?: Asset
-};
+import { AssetDetails } from 'contentful';
+import { FeatureListItemComponentProps } from '@/types/ModalComponentTypes';
 
 const FeatureListItemComponent = ({title, description, image}:FeatureListItemComponentProps) => {
   return (

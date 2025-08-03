@@ -1,12 +1,6 @@
+import { ModalType } from '@/types/ModalComponentTypes'
 import { Modal, ModalBody, ModalContent } from '@heroui/react'
 import React from 'react'
-
-type ModalType = {
-    isOpen: boolean;
-    onOpenChange: () => void;
-    children: React.ReactNode;
-}
-
 
 const ModalComponent = ({isOpen, onOpenChange, children}:ModalType) => {
 

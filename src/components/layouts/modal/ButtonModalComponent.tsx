@@ -1,12 +1,8 @@
+import { ButtonModalComponentProps } from '@/types/ModalComponentTypes'
 import { Button } from '@heroui/react'
 import Link from 'next/link'
 import React from 'react'
 
-type ButtonModalComponentProps = {
-  url?: string;
-  text?: string;
-  external?: boolean; // Indica si el enlace es externo
-};
 
 const ButtonModalComponent = ({url, text, external}: ButtonModalComponentProps) => {
   return (

@@ -1,10 +1,5 @@
+import { PriceComponentProps } from '@/types/ModalComponentTypes'
 import React from 'react'
-
-type PriceComponentProps = {
-  textBeforePrice?: string;
-  textAfterPrice?: string;
-  price?: string;
-};
 
 const PriceComponent = ({textBeforePrice, textAfterPrice, price}: PriceComponentProps) => {
   return (
