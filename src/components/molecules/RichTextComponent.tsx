@@ -39,9 +39,40 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
       ),
     },
     renderNode: {
-      [BLOCKS.PARAGRAPH]: (_node: Block | Inline, children: React.ReactNode) => (
-        <p className="text-base ">{children}</p>
-      ),
+      [BLOCKS.PARAGRAPH]: (node: Block | Inline, children: React.ReactNode) => {
+        // Si TODOS los hijos son embedded-entry-inline (por className), NO renderices <p>
+
+
+        // Aplanar fragments y filtrar nulos, con tipado seguro
+        type InlineElement = React.ReactElement<{ className?: string; children?: React.ReactNode }>;
+        function flatten(children: React.ReactNode): InlineElement[] {
+          const out: InlineElement[] = [];
+          React.Children.forEach(children, child => {
+            if (!child) return;
+            if (React.isValidElement(child) && child.type === React.Fragment) {
+              out.push(...flatten((child as InlineElement).props.children));
+            } else if (React.isValidElement(child)) {
+              out.push(child as InlineElement);
+            }
+          });
+          return out;
+        }
+
+        const flatChildren = flatten(children);
+        const isAllEmbeddedInline = flatChildren.length > 0 && flatChildren.every(el => {
+          return (
+            typeof el.props.className === 'string' &&
+            el.props.className.includes('embeedded-entry-inline')
+          );
+        });
+
+        if (isAllEmbeddedInline) {
+          return <div className="embedded-inline-group">{flatChildren}</div>;
+        }
+
+        // Si no, renderiza el <p> normalmente
+        return <p className="text-base ">{children}</p>;
+      },
       [BLOCKS.HEADING_1]: (_node: Block | Inline, children: React.ReactNode) => (
         <h1 className="text-4xl ">{children}</h1>
       ),
@@ -162,7 +193,8 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
 
               return(  
                 <div className='embeedded-entry-inline'>
-                    <Component {...entry.fields} />
+                    <Component {...entry.fields}
+                    data-embedded-entry-inline />
                 </div>
               )
 
