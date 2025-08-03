@@ -2,8 +2,9 @@ import React from 'react'
 import Image from 'next/image'
 import ButtonGhost from '../atoms/ButtonGhost'
 import { contentfulClient } from '@/services/contentful/client';
-import { Entry, EntrySkeletonType, Asset } from 'contentful';
+import { Asset, AssetDetails } from 'contentful';
 import { CardPropType } from '@/types/CarouselCardsTypes';
+import ButtonModal from '../atoms/ButtonModal';
 
 
 
@@ -31,9 +32,9 @@ const CardHomeComponent = async({card}:CardPropType) => {
           width={384}
           height={216}
           priority
-          className="w-full object-cover h-auto rounded-t-md border-b-[1px solid linear-gradient(#FF6C07, #4DA9A7)]"
+          className="w-full object-cover h-auto rounded-t-md border-b border-orange-500"
         />
-        <div className='px-4 md:px-6 py-8 bg-(--color-gray-450) h-[calc(740px-208px)] md:h-[calc(785px-216px)] flex flex-col text-white'>
+        <div className='px-4 md:px-6 py-8 bg-[color:var(--color-gray-450)] h-[calc(740px-208px)] md:h-[calc(785px-216px)] flex flex-col text-white'>
             <p className='font-bold text-2xl leading-8 mb-4 '>
                    {card?.fields?.title as string || 'Título del Card'}
             </p>
@@ -54,18 +55,27 @@ const CardHomeComponent = async({card}:CardPropType) => {
                                 key={index}
                                 src={`https:${assetAdd.fields?.file?.url}` as string}
                                 alt={`Add ${index + 1}`}
-                                width={56}
-                                height={14}
+                                width={assetAdd.fields?.file?.details && 'image' in assetAdd.fields.file.details ? (assetAdd.fields.file.details as AssetDetails).image?.width || 100 : 100}
+                                height={assetAdd.fields?.file?.details && 'image' in assetAdd.fields.file.details ? (assetAdd.fields.file.details as AssetDetails).image?.height || 25 : 25}
                                 priority
-                                className='w-auto'/>
+                                className='w-auto h-full'/>
                         ) : null;
                     })
                 }
             </div>
             <div className='mt-auto'>
-                <ButtonGhost classStyles='w-full mb-4 border-[1px solid (--color-gray-250)] rounded-md text-(--color-gray-100) text-[16px] md:text-[18px] font-bold'
-                 text={card?.fields?.textBtn1 as string} href={card?.fields?.urlBtn1 as string} />
-                <ButtonGhost classStyles='w-full rounded-md bg-white text-black border-none font-bold text-[16px] md:text-[18px]'
+                {
+                    card?.fields.isModal == 'si' ? (
+                        <ButtonModal
+                            classStyles='w-full mb-4 border h-[48px] border-[color:var(--color-gray-250)] rounded-md text-[color:var(--color-gray-100)] text-[16px] md:text-[18px] font-bold bg-transparent'
+                            textBtn={card?.fields?.textBtn1 as string}
+                            idModal={typeof card?.fields?.modal === 'object' && card?.fields?.modal !== null && 'sys' in card.fields.modal ? (card.fields.modal as { sys: { id: string } }).sys.id : ''}
+                        />
+                    ) : <ButtonGhost classStyles='w-full mb-4 border h-[48px] border-[color:var(--color-gray-250)] rounded-md text-[color:var(--color-gray-100)] text-[16px] md:text-[18px] font-bold'
+                        text={card?.fields?.textBtn1 as string} href={card?.fields?.urlBtn1 as string} />
+                }
+
+                <ButtonGhost classStyles='w-full h-[48px] rounded-md bg-white text-black border-none font-bold text-[16px] md:text-[18px]'
                 text={card?.fields?.textBtn2 as string} href={card?.fields?.urlBtn2 as string} />
             </div>
         </div>
