@@ -20,9 +20,7 @@ export type RecomendadorSugestionsProps = {
 export type EntryDataFields = {
     steps: EntrySkeletonType<StepsDataFields>[],
     titlePropuestas: string,
-    subTitlePropuestas: string,
     ctaTextPropuestas?: string,
-    ctaUrlPropuestas?: string,
 }
 
 export type AnswersGroup = {
@@ -57,13 +55,14 @@ export type CardDataFields = {
     };
 }
 
-// Provider Props
-
-export type ProviderProps = {
-    children: ReactNode,
-    value: DataFields
-}
+// Provider
 
 export type DataFields = {
-    recomendadorEntry: Entry<EntrySkeletonType, undefined> | null
+    contentfulEntry: Entry<EntrySkeletonType, undefined> | null,
+    userAnswers: UserAnswers,
+    setUserAnswers: React.Dispatch<React.SetStateAction<UserAnswers>>
 }
+
+export type UserAnswers = {
+    [questionTitle: string] : string[];
+};

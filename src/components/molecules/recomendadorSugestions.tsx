@@ -7,9 +7,9 @@ export default function RecomendadorSugestions({newSelectionAction}: Recomendado
 
     const context = useRecomendadorContent();
 
-    const title = context.recomendadorEntry?.fields.titlePropuestas as string;
-    const subTitle = context.recomendadorEntry?.fields.subTitlePropuestas as string;
-    const buttonText = context.recomendadorEntry?.fields.ctaTextPropuestas as string;
+    const title = context.contentfulEntry?.fields.titlePropuestas as string;
+    const subTitle = context.contentfulEntry?.fields.subTitlePropuestas as string;
+    const buttonText = context.contentfulEntry?.fields.ctaTextPropuestas as string;
 
     function resetSugestions() {
         newSelectionAction()

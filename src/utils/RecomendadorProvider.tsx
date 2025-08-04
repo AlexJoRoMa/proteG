@@ -1,13 +1,10 @@
 'use client'
 
-import { DataFields, ProviderProps } from "@/types/Recomendador";
-import { createContext, useContext } from "react"
+import { DataFields, UserAnswers } from "@/types/Recomendador";
+import { Entry, EntrySkeletonType } from "contentful";
+import { createContext, ReactNode, useContext, useState } from "react"
 
-const initialCtx = {
-    recomendadorEntry: null
-}
-
-const recomendadorContext = createContext<DataFields>(initialCtx);
+const recomendadorContext = createContext<DataFields | undefined>(undefined);
 
 export const useRecomendadorContent = () => {
     const ctx = useContext(recomendadorContext);
@@ -19,9 +16,12 @@ export const useRecomendadorContent = () => {
     return ctx;
 }
 
-export const RecomendadorProvider = ({ children, value }: ProviderProps) => {
+export const RecomendadorProvider = ({ children, contentfulEntry }: { children: ReactNode, contentfulEntry: Entry<EntrySkeletonType, undefined> | null}) => {
+
+    const [userAnswers, setUserAnswers] = useState<UserAnswers>({});
+
     return (
-        <recomendadorContext.Provider value={value}>
+        <recomendadorContext.Provider value={{contentfulEntry, userAnswers, setUserAnswers}}>
             {children}
         </recomendadorContext.Provider>
     )

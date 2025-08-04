@@ -17,7 +17,7 @@ export default async function Recomendador({ id }: RecomendadorProps) {
     console.log('data', recomendadorEntry)
 
     return (
-        <RecomendadorProvider value={{recomendadorEntry}}>
+        <RecomendadorProvider contentfulEntry={recomendadorEntry}>
             <div className="flex flex-col w-full bg-gray-50 py-[64px] px-[16px] md:px-0">
                 <RecomendadorQuestionary />
             </div>

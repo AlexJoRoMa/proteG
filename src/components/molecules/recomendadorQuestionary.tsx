@@ -5,7 +5,7 @@ import { useRecomendadorContent } from "@/utils/RecomendadorProvider";
 import { Card, CardBody, CardFooter } from "@heroui/react";
 import { Entry, EntrySkeletonType } from "contentful";
 import Image from "next/image";
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import RecomendadorSugestions from "./recomendadorSugestions";
 
 export const CheckIcon = (props: any) => {
@@ -33,12 +33,12 @@ export default function RecomendadorQuestionary() {
     const context = useRecomendadorContent();
     console.log('context', context)
 
-    const stepsInfo = context.recomendadorEntry?.fields.steps as unknown as EntrySkeletonType<StepsDataFields>[];
-    const title = context.recomendadorEntry?.fields.titleInicial as string;
+    const stepsInfo = context.contentfulEntry?.fields.steps as unknown as EntrySkeletonType<StepsDataFields>[];
+    const title = context.contentfulEntry?.fields.titleInicial as string;
 
     const [actualStep, setActualStep] = useState<number>(0);
     const [isComplete, setIsComplete] = useState<boolean>(false);
-    const [userAnswers, setUserAnswers] = useState<AnswersGroup>({});
+    const { userAnswers, setUserAnswers } = useRecomendadorContent();
 
     function handleNextStep(step: number) {
         let stepsMax = stepsInfo.length - 1;
@@ -85,7 +85,7 @@ export default function RecomendadorQuestionary() {
         const questionTitle = step.fields.title;
         const selected = userAnswers[questionTitle];
 
-        return Array.isArray(selected) ? selected.length > 0 : typeof selected === 'string' && selected.trim() !== '';
+        return Array.isArray(selected) && selected.some(answ => answ.trim() !== '');
     }
 
     const currentStep = stepsInfo[actualStep];
