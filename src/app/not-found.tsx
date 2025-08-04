@@ -23,7 +23,6 @@ export default async function Error() {
                     className="w-full h-auto"
                     src={`https:${errorEntry.image.fields.image.fields.file.url}`}
                     alt={errorEntry.image.fields.altText}
-                    loading="eager"
                     width={1600}
                     height={438}
                     priority
