@@ -103,6 +103,7 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                             src={`https:${ imgURL || movilURL}`}
                             width={370}
                             height={280}
+                            priority
                             />
                         )}
 
