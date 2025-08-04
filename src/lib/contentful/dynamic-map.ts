@@ -11,7 +11,7 @@ import CoberturaModel from '@/components/organisms/cobertura-model';
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
   tabs: PagesTabsTile,
-  homeCarousel: HomeCarouselCardComponent,
+  homeCarousel: CarouselCardComponent,
   benefits: BenefitsComponent,
   carouselCards: CarouselCardComponent,
   cardTodoEnUno: TodoEnUnoComp,
