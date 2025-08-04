@@ -10,7 +10,7 @@ export default function IzziFooterContent({FooterData}: FooterComponentProps) {
     const contactSection = FooterData?.fields.footerContactSection as Array<Contact>;
     const links = FooterData?.fields as IzziFooterLinks;
     const copyright = FooterData?.fields?.copyrightSection as IzziCopyright
-    console.log(contactSection)
+
     const itemClasses = {
         title: "font-normal text-[20px] text-white-0",
         content: "text-[20px] px-2",
