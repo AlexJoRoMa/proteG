@@ -1,9 +1,11 @@
 import { Entry, EntrySkeletonType } from "contentful"
 
 export type IzziNavbar = {
-    internalName: string;
-    brandLogo?: Logo;
-    navigation: Array<Navigation>;
+    fields: {
+        internalName: string;
+        brandLogo?: Logo;
+        navigation: Array<Navigation>;
+    }
 }
 
 export type Logo = {
@@ -22,13 +24,11 @@ export type File = {
 export type Navigation = {
     fields: {
         navigationTitle: string,
-        navigationUrl: string
+        navigationUrl: string,
+        linkIcon?: Logo
     }
 }
 
 export type HeaderComponentProps = {
-    navbarData: Entry<EntrySkeletonType, undefined, string> | null,
-    topNavbarData: Entry<EntrySkeletonType, undefined, string> | null,
-    navbarButtonsData: Entry<EntrySkeletonType, undefined, string> | null,
-    mobileNavbarButton: Entry<EntrySkeletonType, undefined, string> | null
+    navbarData: Entry<EntrySkeletonType, undefined, string>[] | null,
 }
