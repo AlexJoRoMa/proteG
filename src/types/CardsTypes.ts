@@ -26,4 +26,3 @@ export interface StepTabEntrySkeleton extends EntrySkeletonType{
   contentTypeId: 'stepTabEntry';
   fields: StepTabEntryFields;
 }
-
