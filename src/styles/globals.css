@@ -124,6 +124,8 @@
    --gradient-bar-vertical-5-verde: linear-gradient( to bottom,#00C1B5,#99EAE5,#00877F,#99EAE5,#00C1B5);
    --gradient-bar-horizontal-5-amarillo: linear-gradient(to right,#FF6C07,#FCD116,#FFB066,#FCD116,#FF6C07);
    --gradient-bar-vertical-5-amarillo: linear-gradient( to bottom,#FF6C07,#FCD116,#FFB066,#FCD116,#FF6C07);
+   --gradient-bar-horizontal-5-magenta: linear-gradient(to right,#D60270,#F9C1DB,#ED418D,#F9C1DB,#D60270);
+   --gradient-bar-vertical-5-magenta: linear-gradient( to bottom,#D60270,#F9C1DB,#ED418D,#F9C1DB,#D60270);
 }
 
 body {

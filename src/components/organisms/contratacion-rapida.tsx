@@ -20,15 +20,17 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
   const tipoGradiante: string | undefined = callCardsContent?.[0]?.fields.typeGradient as unknown as string | undefined;
 
 
-   const setHorizontalColor = tipoGradiante == 'naranja/verde/rosa/amarillo' ? 'bg-[image:var(--gradient-bar-horizontal-4-naranverderosaamarillo)]' 
-   : tipoGradiante == 'verde' ? 'bg-[image:var(--gradient-bar-horizontal-5-verde)]' : 'bg-[image:var(--gradient-bar-horizontal-5-amarillo)]';
-   const setVerticalColor = tipoGradiante == 'naranja/verde/rosa/amarillo' ? 'bg-[image:var(--gradient-bar-vertical-4-naranverderosaamarillo)]' 
-   : tipoGradiante == 'verde' ? 'bg-[image:var(--gradient-bar-vertical-5-verde)]' : 'bg-[image:var(--gradient-bar-vertical-5-amarillo)]';
+  const setHorizontalColor = tipoGradiante == 'naranja/verde/rosa/amarillo' ? 'bg-[image:var(--gradient-bar-horizontal-4-naranverderosaamarillo)]' 
+   : tipoGradiante == 'verde' ? 'bg-[image:var(--gradient-bar-horizontal-5-verde)]' 
+   : tipoGradiante == 'amarillo' ? 'bg-[image:var(--gradient-bar-horizontal-5-amarillo)]' : 'bg-[image:var(--gradient-bar-horizontal-5-magenta)]';
+   
+  const setVerticalColor = tipoGradiante == 'naranja/verde/rosa/amarillo' ? 'bg-[image:var(--gradient-bar-vertical-4-naranverderosaamarillo)]' 
+   : tipoGradiante == 'verde' ? 'bg-[image:var(--gradient-bar-vertical-5-verde)]' 
+   : tipoGradiante == 'amarillo' ? 'bg-[image:var(--gradient-bar-vertical-5-amarillo)]' : 'bg-[image:var(--gradient-bar-vertical-5-magenta)]';
 
-  
 
-   const setHorizontalBar = `${setHorizontalColor} xl:mx-23 lg:mx-22 md:mx-15 top-[82px] left-0 right-0 h-[1px] z-0 hidden md:block absolute`;
-   const setVerticalBar = `${setVerticalColor} top-8 bottom-8 block left-[24.3%]  w-[1px] z-0 md:hidden absolute`;
+  const setHorizontalBar = `${setHorizontalColor} xl:mx-23 lg:mx-22 md:mx-15 top-[82px] left-0 right-0 h-[1px] z-0 hidden md:block absolute`;
+  const setVerticalBar = `${setVerticalColor} top-8 bottom-8 block left-[24.3%]  w-[1px] z-0 md:hidden absolute`;
   
   
   return (
