@@ -16,12 +16,20 @@ export const useRecomendadorContent = () => {
     return ctx;
 }
 
-export const RecomendadorProvider = ({ children, contentfulEntry }: { children: ReactNode, contentfulEntry: Entry<EntrySkeletonType, undefined> | null}) => {
+export const RecomendadorProvider = ({ 
+    children, 
+    contentfulEntry, 
+    casosRecomendador 
+}: { 
+    children: ReactNode, 
+    contentfulEntry: Entry<EntrySkeletonType, undefined> | null, 
+    casosRecomendador: Entry<EntrySkeletonType, undefined>[] | null
+}) => {
 
     const [userAnswers, setUserAnswers] = useState<UserAnswers>({});
 
     return (
-        <recomendadorContext.Provider value={{contentfulEntry, userAnswers, setUserAnswers}}>
+        <recomendadorContext.Provider value={{contentfulEntry, casosRecomendador, userAnswers, setUserAnswers}}>
             {children}
         </recomendadorContext.Provider>
     )

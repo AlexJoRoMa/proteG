@@ -14,10 +14,15 @@ export default async function Recomendador({ id }: RecomendadorProps) {
         return entriesResponse.items[0]
     });
 
-    console.log('data', recomendadorEntry)
+    const casosRecomendadorEntry: Entry<EntrySkeletonType, undefined>[] | null = await contentfulClient.getEntries({
+        content_type: 'casosRecomendador',
+        include: 5
+    }).then((entriesResponse) => {
+        return entriesResponse.items
+    });
 
     return (
-        <RecomendadorProvider contentfulEntry={recomendadorEntry}>
+        <RecomendadorProvider contentfulEntry={recomendadorEntry} casosRecomendador={casosRecomendadorEntry}>
             <div className="flex flex-col w-full bg-gray-50 py-[64px] px-[16px] md:px-0">
                 <RecomendadorQuestionary />
             </div>

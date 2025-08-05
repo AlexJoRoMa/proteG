@@ -1,6 +1,6 @@
 'use client'
 
-import { AnswersGroup, CardDataFields, StepsDataFields } from "@/types/Recomendador";
+import { AnswersGroup, CardDataFields, RecomendationCaseFields, StepsDataFields, UserAnswers } from "@/types/Recomendador";
 import { useRecomendadorContent } from "@/utils/RecomendadorProvider";
 import { Card, CardBody, CardFooter } from "@heroui/react";
 import { Entry, EntrySkeletonType } from "contentful";
@@ -31,14 +31,16 @@ export const CheckIcon = (props: any) => {
 export default function RecomendadorQuestionary() {
 
     const context = useRecomendadorContent();
-    console.log('context', context)
 
     const stepsInfo = context.contentfulEntry?.fields.steps as unknown as EntrySkeletonType<StepsDataFields>[];
     const title = context.contentfulEntry?.fields.titleInicial as string;
 
+    const casosNegocio = context.casosRecomendador as unknown as EntrySkeletonType<RecomendationCaseFields>[];
+
     const [actualStep, setActualStep] = useState<number>(0);
     const [isComplete, setIsComplete] = useState<boolean>(false);
     const { userAnswers, setUserAnswers } = useRecomendadorContent();
+    const [response, setResponse] = useState<string | null>('')
 
     function handleNextStep(step: number) {
         let stepsMax = stepsInfo.length - 1;
@@ -46,8 +48,8 @@ export default function RecomendadorQuestionary() {
             setActualStep(step + 1);
             setIsComplete(false);
         } else if (step === stepsMax) {
+            setResponse(validacionCasos(userAnswers, casosNegocio))
             setIsComplete(true);
-            console.log('respuestas', userAnswers)
         }
     }
 
@@ -79,6 +81,30 @@ export default function RecomendadorQuestionary() {
         setUserAnswers({})
         setActualStep(0)
         setIsComplete(false)
+    }
+
+    function validacionCasos(userAnswers: UserAnswers, casos: EntrySkeletonType<RecomendationCaseFields>[]): string | null {
+        for (const caso of casos) {
+            const condicionesCumplidas = caso.fields.condiciones.every((condicion) => {
+                const pregunta = condicion.fields.pregunta.trim().toLowerCase();
+                const respuestasEsperadas = condicion.fields.respuestasEsperadas.map((res) => res.trim().toLowerCase());
+                const respuestasUsuario = userAnswers[pregunta]?.map((res) => res.trim().toLowerCase()) || [];
+                console.log('respuesta', respuestasUsuario)
+
+                if (respuestasUsuario.length !== respuestasEsperadas.length) {
+                    return false;
+                }
+
+                return respuestasEsperadas.every((resp, i) => resp === respuestasUsuario[i]);
+            });
+
+            if (condicionesCumplidas) {
+                console.log('casos cumplidos para: ', caso.fields.resultado)
+                return caso.fields.resultado
+            }
+        }
+        console.log('no se cumplieron los casos')
+        return null;
     }
 
     function isStepAnswered(step: EntrySkeletonType<StepsDataFields>): boolean {
@@ -158,7 +184,7 @@ export default function RecomendadorQuestionary() {
                     </div>
                 </div>
 
-                : <RecomendadorSugestions newSelectionAction={userNewSelection}/>
+                : <RecomendadorSugestions newSelectionAction={userNewSelection} />
             }
         </>
     )

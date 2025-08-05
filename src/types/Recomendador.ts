@@ -55,10 +55,23 @@ export type CardDataFields = {
     };
 }
 
+// Sugestions
+
+export type ConditionQuestionFields = {
+    pregunta: string,
+    respuestasEsperadas: string[]
+}
+
+export type RecomendationCaseFields = {
+    condiciones: EntrySkeletonType<ConditionQuestionFields>[],
+    resultado: string
+}
+
 // Provider
 
 export type DataFields = {
     contentfulEntry: Entry<EntrySkeletonType, undefined> | null,
+    casosRecomendador: Entry<EntrySkeletonType, undefined>[] | null
     userAnswers: UserAnswers,
     setUserAnswers: React.Dispatch<React.SetStateAction<UserAnswers>>
 }
