@@ -67,6 +67,29 @@ export type RecomendationCaseFields = {
     resultado: string
 }
 
+// export type ComponentEntry = Entry<EntrySkeletonType<ComponentFields>>
+
+export type CarouselFields = {
+    cardsCarousel: Entry<EntrySkeletonType<PlanCardDataFields>>[]
+}
+
+export type PlanCardDataFields = {
+    description: string,
+    esModal: boolean,
+    internalName: string,
+    price: string,
+    priceBefore: string,
+    recomendadorId: string,
+    textAfterPrice: string,
+    textBeforePrice: string,
+    textBtn1: string,
+    textBtn2: string,
+    title: string,
+    type: string,
+    urlBtn1: string,
+    urlBtn2: string
+}
+
 // Provider
 
 export type DataFields = {
