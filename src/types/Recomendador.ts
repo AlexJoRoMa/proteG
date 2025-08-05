@@ -73,7 +73,9 @@ export type DataFields = {
     contentfulEntry: Entry<EntrySkeletonType, undefined> | null,
     casosRecomendador: Entry<EntrySkeletonType, undefined>[] | null
     userAnswers: UserAnswers,
-    setUserAnswers: React.Dispatch<React.SetStateAction<UserAnswers>>
+    setUserAnswers: React.Dispatch<React.SetStateAction<UserAnswers>>,
+    recomendation: string | null,
+    setRecomendation: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 export type UserAnswers = {

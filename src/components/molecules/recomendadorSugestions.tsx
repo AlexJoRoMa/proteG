@@ -12,6 +12,32 @@ export default function RecomendadorSugestions({ newSelectionAction }: Recomenda
     const subTitle = context.contentfulEntry?.fields.subTitlePropuestas as string;
     const buttonText = context.contentfulEntry?.fields.ctaTextPropuestas as string;
 
+    const entryCards = context.contentfulEntry?.fields.cardPropuestas;
+    const recomendationVel = context.recomendation;
+
+    const cardsSugestion = filterCards(entryCards, recomendationVel);
+
+    console.log('res', entryCards)
+
+    function filterCards(data: any, velRecomendada: string | null) {
+
+        if(!Array.isArray(data.fields.cardsCarousel)) {
+            console.error("data.fields.cardsCarousel no es un array")
+            return [];
+        }
+
+        if (!velRecomendada) {
+            return 'no hay data';
+        }
+
+        const filteredCards = data.fields.cardsCarousel.filter((card: any) =>
+            card.fields.velocityMin?.toLowerCase() === velRecomendada.toLowerCase()
+        );
+        console.log('filtered', filteredCards)
+        return filteredCards;
+
+    }
+
     return (
         <>
             <div className="flex flex-col gap-[40px] items-center text-center md:mx-md 2xl:mx-xl">

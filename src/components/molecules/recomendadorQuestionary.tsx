@@ -39,8 +39,8 @@ export default function RecomendadorQuestionary() {
 
     const [actualStep, setActualStep] = useState<number>(0);
     const [isComplete, setIsComplete] = useState<boolean>(false);
-    const { userAnswers, setUserAnswers } = useRecomendadorContent();
-    const [response, setResponse] = useState<string | null>('')
+    const { userAnswers, setUserAnswers, setRecomendation } = useRecomendadorContent();
+
 
     function handleNextStep(step: number) {
         let stepsMax = stepsInfo.length - 1;
@@ -48,7 +48,7 @@ export default function RecomendadorQuestionary() {
             setActualStep(step + 1);
             setIsComplete(false);
         } else if (step === stepsMax) {
-            setResponse(validacionCasos(userAnswers, casosNegocio))
+            setRecomendation(validacionCasos(userAnswers, casosNegocio))
             setIsComplete(true);
         }
     }
@@ -85,17 +85,13 @@ export default function RecomendadorQuestionary() {
 
     function validacionCasos(userAnswers: UserAnswers, casos: EntrySkeletonType<RecomendationCaseFields>[]): string | null {
         for (const caso of casos) {
+
             const condicionesCumplidas = caso.fields.condiciones.every((condicion) => {
                 const pregunta = condicion.fields.pregunta.trim().toLowerCase();
-                const respuestasEsperadas = condicion.fields.respuestasEsperadas.map((res) => res.trim().toLowerCase());
-                const respuestasUsuario = userAnswers[pregunta]?.map((res) => res.trim().toLowerCase()) || [];
-                console.log('respuesta', respuestasUsuario)
+                const respuestasEsperadas = condicion.fields.respuestasEsperadas;
+                const respuestasUsuario = userAnswers[pregunta] || [];
 
-                if (respuestasUsuario.length !== respuestasEsperadas.length) {
-                    return false;
-                }
-
-                return respuestasEsperadas.every((resp, i) => resp === respuestasUsuario[i]);
+                return respuestasIguales(respuestasEsperadas, respuestasUsuario);
             });
 
             if (condicionesCumplidas) {
@@ -105,6 +101,19 @@ export default function RecomendadorQuestionary() {
         }
         console.log('no se cumplieron los casos')
         return null;
+    }
+
+    function respuestasIguales(respuestasA: string[], respuestasB: string[]): boolean {
+        const normalizar = (arr: string[]) => arr.map((r) => r.trim().toLowerCase()).sort();
+
+        const a = normalizar(respuestasA);
+        const b = normalizar(respuestasB);
+
+        if (a.length !== b.length) {
+            return false
+        }
+        
+        return a.every((val, i) => val === b[i]);
     }
 
     function isStepAnswered(step: EntrySkeletonType<StepsDataFields>): boolean {

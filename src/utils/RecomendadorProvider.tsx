@@ -27,9 +27,10 @@ export const RecomendadorProvider = ({
 }) => {
 
     const [userAnswers, setUserAnswers] = useState<UserAnswers>({});
+    const [recomendation, setRecomendation] = useState<string | null>(null)
 
     return (
-        <recomendadorContext.Provider value={{contentfulEntry, casosRecomendador, userAnswers, setUserAnswers}}>
+        <recomendadorContext.Provider value={{contentfulEntry, casosRecomendador, userAnswers, setUserAnswers, recomendation, setRecomendation}}>
             {children}
         </recomendadorContext.Provider>
     )
