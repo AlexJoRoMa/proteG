@@ -10,7 +10,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
   const callCardsContent:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
       content_type: "cardsContentModel",
       'sys.id': id,
-      select: ['fields.cardsContent', 'fields.namePage'],
+      select: ['fields.cardsContent', 'fields.title', 'fields.namePage'],
       include: 2,
     }).then((entriesResponse) => {
       return entriesResponse.items
@@ -18,33 +18,35 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
 
   const getCardsContent: Array<Entry<StepTabEntrySkeleton>> | undefined = callCardsContent?.[0]?.fields.cardsContent as unknown as Array<Entry<StepTabEntrySkeleton>>;
   const pageName: string | undefined = callCardsContent?.[0]?.fields.namePage as unknown as string | undefined;
+  const getTitle: string | undefined = callCardsContent?.[0]?.fields.title as unknown as string | undefined;
 
-  const getTitle = await getCopyForComponent('contratacion-rapida');
-  const setTitle = getTitle.contratacion as unknown as configuradoCopyFields;
+  const setHorizontalColor =  pageName == 'home' ? 'bg-[image:var(--gradient-bar-horizontal-4-arcoiris)]' : 'bg-[image:var(--gradient-bar-horizontal-5-verde)]';
+  const setVerticalColor =  pageName == 'home' ? 'bg-[image:var(--gradient-bar-vertical-4-arcoiris)]' : 'bg-[image:var(--gradient-bar-vertical-5-verde)]';
 
-  const setHorizontalColor =  pageName == 'home' ? 'bg-[image:var(--gradient-bar-horizontal)]' : 'bg-[image:var(--gradient-bar-horizontal-tv)]';
-  const setVerticalColor =  pageName == 'home' ? 'bg-[image:var(--gradient-bar-vertical)]' : 'bg-[image:var(--gradient-bar-vertical-tv)]';
-
-  const setHorizontalWidth = pageName == 'home' ? 'mx-[12.5%]' : 'mx-[17%]'; 
   
 
-  const setHorizontalBar = `${setHorizontalColor} ${setHorizontalWidth} hidden md:block absolute top-[118px] left-0 right-0 h-[1px] z-0 `;
+  const setHorizontalBar = `${setHorizontalColor} 
+  
+  xl:mx-23
+  lg:mx-22
+  md:mx-15 hidden md:block absolute top-[82px] left-0 right-0 h-[1px] z-0 `;
   const setVerticalBar = `${setVerticalColor} top-17 bottom-17 block md:hidden absolute left-[86px]  w-[1px] z-0`;
   
   
   return (
-      <div className=" md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content h-full  relative">
+      <div className=" md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content lg:h-auto md:h-[449px] xsm:h-[640px]  relative">
   
-        <div className="  lg:mb-3 lg:pt-4 md:pt-5 md:mb-1 xsm:mt-7">
-        <h1 className=" font-bold md:text-[25px] xsm:text-[25px]">{setTitle.titulo}</h1>
+        <div className=" md:mt-15 xsm:mt-7">
+        <h1 className=" font-bold md:text-[25px] xsm:text-[25px]">{getTitle}</h1>
         </div>
   
-        <div className=" relative w-full  justify-center md:flex md:flex-row xsm:flex-col xsm:flex xsm:justify-between">
-  
-          {/* barra radiante_> top-[px] left-[] maneja la posicion...md:mx-[] top-[] bottom-[] manejan el ancho/altura de la barra  */}
-          <div className={setHorizontalBar} />
-          <div className={setVerticalBar} />
+        <div className=" md:mt-10 md:mb-15 w-full relative flex md:flex-row xsm:flex-col justify-between md:gap-x-8">
             
+            <div className={setHorizontalBar} />
+          {/* 
+          
+          <div className={setVerticalBar} />
+           */}
   
           {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
             const { entryBody, image, dot } = card.fields as StepTabEntryFields;
@@ -54,11 +56,12 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
             const dotURL = (dot as unknown as Asset)?.fields?.file?.url;
 
             return (
-              <div key={card.sys.id} className=" relative z-10 w-full xsm:w-[95%] 
-              md:h-50 xsm:my-6 md:p-1 flex md:flex-col sm:flex-row items-center xsm:flex-grow ">
+              <div key={card.sys.id} className="
+              relative  flex md:flex-col sm:flex-row items-center 
+               xl:w-[192px] lg:w-[184px] md:w-[128px]  ">
                 
-                <div className=" items-center md:flex xsm:flex md:flex-col xsm:flex-row flex-shrink-0">
-                  <div className=" w-20 h-20 flex items-center justify-center">
+                <div className=" items-center flex flex md:flex-col xsm:flex-row flex-shrink-0">
+                  <div className=" flex items-center justify-center">
                     {imgURL && (
                       <Image
                         className=" w-[72px] h-[72px] xsm:w-[56px] xsm:h-[56px]"
@@ -70,10 +73,11 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
                       />
                     )}
                   </div>
-                  <div className=" md:mt-1 md:mb-6 ">
+                  
+                  <div className="md:mt-5">
                     {dotURL && (
                       <Image
-                        className=" md:w-[12px] md:h-[12px] xsm:w-[12px] xsm:h-[12px]"
+                        className=" w-[12px] h-[12px] "
                         alt={'Images'}
                         src={`https:${dotURL}`}
                         loading="lazy"
@@ -83,10 +87,11 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
                     )}
                   </div>
                 </div>
-                <div className=" text-[12px] md:text-center xsm:text-left 
-                  md:pl-0 xsm:pl-7  align-middle flex items-center justify-center ">
+                <div className=" md:text-[16px] xsm:text-[14px] md:text-center xsm:text-left 
+                  md:pl-0 xsm:pl-7 md:mt-6 xsm:mt-0  align-middle flex items-center justify-center ">
                   <p>{entryBody}</p>
                 </div>
+                
               </div>
             );
           })}
