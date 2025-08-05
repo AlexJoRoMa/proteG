@@ -9,17 +9,15 @@ const TVBeneficiosProductos = async ({id} : TVBeneficiosProductosID) => {
     const callCardsContent:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
         content_type: "izziTvModelBeneficios",
         'sys.id': id,
-        select: ['fields.cardsContent'],
+        select: ['fields.cardsContent', 'fields.title'],
         include: 2,
     }).then((entriesResponse) => {
         return entriesResponse.items
     })
     
     const getCardsContent: Array<Entry<StepTabEntrySkeleton>> | undefined = callCardsContent?.[0]?.fields.cardsContent as unknown as Array<Entry<StepTabEntrySkeleton>>;
+    const getTitle: string | undefined = callCardsContent?.[0]?.fields.title as unknown as string | undefined;
     
-    
-    const getTitle = await getCopyForComponent('TVBeneficios-Producto');
-    const setTitle = getTitle.tvbenprod as unknown as configuradoCopyFields;
     
     
     return(
@@ -28,7 +26,7 @@ const TVBeneficiosProductos = async ({id} : TVBeneficiosProductosID) => {
         
         {/* titulo */}
         <div className="  md:mt-20 xsm:mt-10 md:w-full xsm:w-[95%] flex justify-center items-center">
-            <h1 className="font-bold md:text-[36px] xsm:text-[30px] text-center">{setTitle.titulo}</h1>
+            <h1 className="font-bold md:text-[36px] xsm:text-[30px] text-center">{getTitle}</h1>
         </div>
     
 
