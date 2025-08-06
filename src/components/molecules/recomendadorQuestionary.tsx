@@ -1,11 +1,11 @@
 'use client'
 
-import { AnswersGroup, CardDataFields, RecomendationCaseFields, StepsDataFields, UserAnswers } from "@/types/Recomendador";
+import { CardDataFields, RecomendationCaseFields, StepsDataFields, UserAnswers } from "@/types/Recomendador";
 import { useRecomendadorContent } from "@/utils/RecomendadorProvider";
 import { Card, CardBody, CardFooter } from "@heroui/react";
 import { Entry, EntrySkeletonType } from "contentful";
 import Image from "next/image";
-import { useReducer, useState } from "react";
+import { useState } from "react";
 import RecomendadorSugestions from "./recomendadorSugestions";
 
 export const CheckIcon = (props: any) => {

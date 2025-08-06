@@ -10,11 +10,11 @@ import {CARDHOMECOMPONENT, CARDTVINTERNETMOVILCOMPONENT} from '@/constants/CardC
 import CardTVInternetMovilComponent from '../molecules/CardTVInternetMovilComponent'
 import { colorPickerType } from '@/types/ColorPickerType'
 
-const CarouselCardComponent = async ({id}:CarouselCardProps) => {
+const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
 
   // Obtener informacion de los carruseles desde contentful
 
-   const entryCarousel:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
+    const entryCarousel:Entry<EntrySkeletonType, undefined, string>[] | null = recomendador ? recomendador : await contentfulClient.getEntries({
       content_type: "carouselCardHomeModel",
       'sys.id': id,
       select: ['fields.backgroundImage', 'fields.backgroundImageMobile' , 'fields.cardsCarousel', 'fields.bgColor', 'fields.colorArrow'],

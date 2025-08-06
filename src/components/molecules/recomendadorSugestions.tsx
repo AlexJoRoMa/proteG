@@ -1,13 +1,16 @@
 'use client'
 
-import { CarouselFields, RecomendadorSugestionsProps } from "@/types/Recomendador";
+import { CarouselFields, PlanCardDataFields, RecomendadorSugestionsProps } from "@/types/Recomendador";
 import { useRecomendadorContent } from "@/utils/RecomendadorProvider"
 import { Entry, EntrySkeletonType } from "contentful";
-import CarouselCardComponent from "../organisms/CarouselCardComponent";
+import { Suspense, useEffect, useState } from "react";
+import { carouselServerAction } from "../organisms/carouselServerAction";
 
 export default function RecomendadorSugestions({ newSelectionAction }: RecomendadorSugestionsProps) {
 
     const context = useRecomendadorContent();
+
+    const [renderedComponent, setRenderedComponent] = useState<React.ReactNode | null>(null)
 
     const title = context.contentfulEntry?.fields.titlePropuestas as string;
     const subTitle = context.contentfulEntry?.fields.subTitlePropuestas as string;
@@ -16,38 +19,62 @@ export default function RecomendadorSugestions({ newSelectionAction }: Recomenda
     const entryCards = [context.contentfulEntry?.fields.cardPropuestas] as Entry<EntrySkeletonType<CarouselFields>>[] | null;
     const recomendationVel = context.recomendation;
 
-    const filterData = filterCards(entryCards, recomendationVel);
 
-    const cardsSugestion = filterData as unknown as Entry<EntrySkeletonType, undefined, string>[] | null
-    console.log('sugestion', cardsSugestion)
+    useEffect(() => {
+        function renderCarousel() {
+            const filterData = filterCards(entryCards, recomendationVel);
+            const rendered = carouselServerAction(filterData as unknown as Entry<EntrySkeletonType, undefined, string>[] | null);
+            setRenderedComponent(rendered)
+        }
+        renderCarousel();
+    }, []);
 
-    function filterCards(data: Entry<EntrySkeletonType<CarouselFields>>[] | null, velRecomendada: string | null): Entry<EntrySkeletonType, undefined, string>[] | null {
 
-        if(!data?.[0] || !Array.isArray(data[0]?.fields.cardsCarousel)) {
-            console.error("data.fields.cardsCarousel no es un array")
+    function filterCards(data: unknown, velRecomendada: string | null): Entry<EntrySkeletonType>[] {
+
+        if (!Array.isArray(data) || !data[0] || !velRecomendada) {
             return [];
         }
 
-        if (!velRecomendada) {
-            return [];
-        }
+        const typedData = data as Entry<
+            EntrySkeletonType<{
+                cardsCarousel: Entry<
+                    EntrySkeletonType<PlanCardDataFields>
+                >[];
+            }>
+        >[]
 
-        const filteredCards = data[0]?.fields.cardsCarousel.filter((card) =>
-            card?.fields.recomendadorId?.toLowerCase() === velRecomendada.toLowerCase()
+        const carousel = typedData[0];
+        const cards = carousel.fields.cardsCarousel;
+
+        if (!Array.isArray(cards)) {
+            return []
+        }
+        const filteredCards = cards.filter(
+            (card) => card.fields.recomendadorId?.toLowerCase() === velRecomendada.toLowerCase()
         );
-        console.log('filtered', filteredCards)
-        return filteredCards;
 
+        const modifiedEntry = {
+            ...carousel,
+            fields: {
+                ...carousel.fields,
+                cardsCarousel: filteredCards,
+            },
+        };
+
+        return [modifiedEntry];
     }
 
     return (
         <>
-            <div className="flex flex-col gap-[40px] items-center text-center md:mx-md 2xl:mx-xl">
-                <h1 className="font-bold leading-[48px] text-4xl text-black-0">{title}</h1>
-                <h3 className="font-normal leading-[24px] text-xl text-black-0">{subTitle}</h3>
-                {/* <CarouselCardComponent recomendador={cardsSugestion}/> */}
+            <div className="flex flex-col gap-[40px] items-center">
+                <h1 className="font-bold leading-[48px] text-4xl text-black-0 text-center md:mx-md 2xl:mx-xl">{title}</h1>
+                <h3 className="font-normal leading-[24px] text-xl text-black-0 text-center md:mx-md 2xl:mx-xl">{subTitle}</h3>
+                <Suspense fallback={'cargando...'}>
+                    {renderedComponent && <div className="w-full h-auto">{renderedComponent}</div>}
+                </Suspense>
                 <button
-                    className="w-[320px] h-auto rounded-md border-1 border-black-0 py-[14px] px-[16px] font-bold leading-[24px] text-lg text-black-0"
+                    className="w-[320px] h-auto rounded-md border-1 border-black-0 py-[14px] px-[16px] font-bold leading-[24px] text-lg text-black-0 text-center md:mx-md 2xl:mx-xl"
                     onClick={() => newSelectionAction()}
                 >
                     {buttonText}

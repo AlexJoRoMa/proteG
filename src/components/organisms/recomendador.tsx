@@ -23,7 +23,6 @@ export default async function Recomendador({ id }: RecomendadorProps) {
     }).then((entriesResponse) => {
         return entriesResponse.items
     });
-    console.log('casos', casosRecomendadorEntry)
 
     return (
         <RecomendadorProvider contentfulEntry={recomendadorEntry} casosRecomendador={casosRecomendadorEntry}>

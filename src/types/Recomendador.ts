@@ -67,11 +67,17 @@ export type RecomendationCaseFields = {
     resultado: string
 }
 
-// export type ComponentEntry = Entry<EntrySkeletonType<ComponentFields>>
+export type CardSkeleton = EntrySkeletonType<PlanCardDataFields>
 
-export type CarouselFields = {
-    cardsCarousel: Entry<EntrySkeletonType<PlanCardDataFields>>[]
+export type CardEntry = Entry<CardSkeleton>
+
+export interface CarouselFields {
+    cardsCarousel: CardEntry[];
 }
+export type CarouselSkeleton = EntrySkeletonType<CarouselFields>
+
+export type CarouselEntry = Entry<CarouselSkeleton>
+
 
 export type PlanCardDataFields = {
     description: string,
