@@ -53,28 +53,31 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                             <span className="md:text-[56px] xsm:text-[48px] ml-4">{precio} </span>
                             <span className="md:text-[16px] xsm:text-[14px]">{textTiempo}</span></p>
                     </div>
+                    
                     <div  className=" flex w-full text-white text-[16px] mt-1">
                         <p className="whitespace-nonwrap">{incluye}</p>
+                        
                         {adicionales && (
-                            <div className=" flex flex-wrap items-start ml-4 mt-[6px] gap-x-2 gap-y-2">
-                                { adicionales?.map((assets: Asset) => {
-                            const url = assets.fields?.file?.url;
-                             
-                            return (
-                                <div key={assets.sys.id} className=" w-[100px] h-[14px] flex overflow-hidden ">
-                                    <Image
-                                    className="h-full object-contain"
-                                    src={`https:${url}`}
-                                    alt={'adicional'}
-                                    priority
-                                    width={100}
-                                    height={14}
-                                    />
-                                </div>
-                            );
-                        })}
+                            <div className="  grid grid-cols-4 grid-rows-2 gap-4">
+                                {adicionales.map((asset: Asset, index: number) => {
+                                    const url = asset.fields?.file?.url;
+                                    return url ? (
+                                        <div key={asset.sys.id || index}>
+                                            <Image
+                                            src={`https:${url}`}
+                                            alt={`Adicional ${index + 1}`}
+                                            width={56}
+                                            height={14}
+                                            priority
+                                            className='w-auto'
+                                            />
+                                        </div>
+                                    ) : null;
+                                })}
                             </div>
                         )}
+
+
                     </div>
 
                     <div className=" flex md:justify-start md:items-start xsm:justify-center xsm:items-center">
