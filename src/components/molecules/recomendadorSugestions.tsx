@@ -3,7 +3,7 @@
 import { CarouselFields, PlanCardDataFields, RecomendadorSugestionsProps } from "@/types/Recomendador";
 import { useRecomendadorContent } from "@/utils/RecomendadorProvider"
 import { Entry, EntrySkeletonType } from "contentful";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { carouselServerAction } from "../organisms/carouselServerAction";
 
 export default function RecomendadorSugestions({ newSelectionAction }: RecomendadorSugestionsProps) {
@@ -19,16 +19,17 @@ export default function RecomendadorSugestions({ newSelectionAction }: Recomenda
     const entryCards = [context.contentfulEntry?.fields.cardPropuestas] as Entry<EntrySkeletonType<CarouselFields>>[] | null;
     const recomendationVel = context.recomendation;
 
+    const filterData = useMemo(() => {
+        return filterCards(entryCards, recomendationVel)
+    }, [entryCards, recomendationVel])
 
     useEffect(() => {
         function renderCarousel() {
-            const filterData = filterCards(entryCards, recomendationVel);
             const rendered = carouselServerAction(filterData as unknown as Entry<EntrySkeletonType, undefined, string>[] | null);
             setRenderedComponent(rendered)
         }
         renderCarousel();
     }, []);
-
 
     function filterCards(data: unknown, velRecomendada: string | null): Entry<EntrySkeletonType>[] {
 
