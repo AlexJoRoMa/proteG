@@ -1,3 +1,4 @@
+import BenefitsComponent from "@/components/organisms/benefitsComponent";
 import ChannelPromoBannerComponent from "@/components/organisms/ChannelPromoBannerComponent";
 import PagesTabsTile from "@/components/organisms/pagesTabsTile";
 import CarouselCardComponent from "@/components/organisms/CarouselCardComponent";
@@ -11,6 +12,8 @@ import Recomendador from "@/components/organisms/recomendador";
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
   tabs: PagesTabsTile,
+  homeCarousel: CarouselCardComponent,
+  benefits: BenefitsComponent,
   carouselCards: CarouselCardComponent,
   cardTodoEnUno: TodoEnUnoComp,
   modeloAccesoConfigurador: AccesoConfigurador,
