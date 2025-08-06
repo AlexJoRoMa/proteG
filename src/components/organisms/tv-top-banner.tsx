@@ -22,7 +22,7 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
     return(
     <div className=" bg-black flex md:w-full xsm:w-full md:h-[489px] xsm:h-[781px] overflow-hidden">
         {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
-        const { titulo, tituloResaltado, body, desde, precio, textTiempo, incluye,  textBoton1, linkBoton1, adicionales ,imagen, imagenMovil }= card.fields as StepTabEntryFields;
+        const { titulo, tituloResaltado, body, textoPrecio, precio, textTiempo, incluye,  textBoton1, linkBoton1, adicionales ,imagen, imagenMovil }= card.fields as StepTabEntryFields;
           
         const assetImage = imagen?.fields?.image as Asset | undefined;
         const imgURL = assetImage?.fields?.file?.url;
@@ -49,7 +49,7 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                     </div>
                     <div  className="text-white">
                         <p>
-                            <span className="md:text-[16px] xsm:text-[14px]">{desde}</span>
+                            <span className="md:text-[16px] xsm:text-[14px]">{textoPrecio}</span>
                             <span className="md:text-[56px] xsm:text-[48px] ml-4">{precio} </span>
                             <span className="md:text-[16px] xsm:text-[14px]">{textTiempo}</span></p>
                     </div>
