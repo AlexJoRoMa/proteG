@@ -1,4 +1,4 @@
-    import Image from "next/image";
+import Image from "next/image";
 import { ConIzziTvID, StepTabEntryFields, StepTabEntrySkeleton } from '@/types/ConIzziTypes';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
@@ -33,8 +33,6 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
 
         return(
             <div key={card.sys.id} className=" relative w-full flex flex-col md:flex-row">
-                
-                
 
                 {/* imagen izquierdo */}
                 <div className=" relative md:order-none xsm:order-1  z-10 md:mx-md 2xl:mx-xl md:pl-[1%] xsm:ml-4 md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[360px] md:mt-15  xsm:mt-15">
@@ -69,8 +67,9 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                                     src={`https:${url}`}
                                     alt={'adicional'}
                                     priority
-                                    width={100}
+                                    width={150}
                                     height={14}
+                                    quality={80}
                                     />
                                 </div>
                             );
@@ -92,21 +91,22 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                 </div>
                 
                 {/* imagen responsiva */}
-                <div className="  fill 
-                md:absolute md:inset-0 md:z-0 md:mt-0 xsm:mt-7
-                xsm:relative xsm:z-10 md:order-none xsm:order-2  ">
+                <div className=" md:w-full xsm:w-[92%] md:h-full xsm:h-[280px]
+                md:absolute md:inset-0 md:z-0 md:mt-0 xsm:mt-7 md:ml-0 xsm:ml-4
+                xsm:relative xsm:z-10 md:order-none xsm:order-2">
                     
-                    <picture className="block w-full h-full">
+                    <picture className="block ">
                         <source media="(max-width:576px)" srcSet={`https:${movilURL}`}/>
                         
                         {( imgURL && movilURL ) && (
                             <Image
-                            className="md:w-full md:h-full xsm:w-[92%] xsm:ml-4"
+                            className=" "
                             alt={'Images'}
                             src={`https:${ imgURL || movilURL}`}
-                            width={1600}
-                            height={518}
+                            fill
                             priority
+                            sizes=" 100vw"
+                            quality={75}
                             />
                         )}
                     </picture>

@@ -28,7 +28,7 @@ export interface StepTabEntryFields extends EntrySkeletonType{
   titulo?: string;
   tituloResaltado?: string;
   body?: string;
-  desde?: string
+  textoPrecio?: string
   precio?: string
   textTiempo?: string
   incluye?: string;
