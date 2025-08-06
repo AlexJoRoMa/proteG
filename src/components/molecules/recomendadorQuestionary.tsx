@@ -99,7 +99,6 @@ export default function RecomendadorQuestionary() {
                 return caso.fields.resultado
             }
         }
-        console.log('no se cumplieron los casos')
         return null;
     }
 
@@ -129,12 +128,12 @@ export default function RecomendadorQuestionary() {
         <>
             {!isComplete ?
                 <div className="flex flex-col md:mx-md 2xl:mx-xl">
-                    <div className="flex flex-col self-center items-center text-center pb-[24px]">
-                        <h1 className="font-bold leading-[40px] md:leading-[48px] text-[32px] md:text-4xl">{title}</h1>
+                    <div className="flex flex-col self-center items-center text-center pb-[40px] md:pb-[24px]">
+                        <h1 className="font-semibold leading-[40px] md:leading-[48px] text-[32px] md:text-4xl">{title}</h1>
                     </div>
                     <div className="flex flex-col gap-[40px]">
                         <h1 className="font-normal leading-[24px] text-xl self-center text-center">{currentStep.fields.title}</h1>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-[24px]">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-[24px]">
                             {currentStep.fields.components.map((card: EntrySkeletonType<CardDataFields>) => {
 
                                 const cardId = card as unknown as Entry<EntrySkeletonType<CardDataFields>>;
@@ -145,19 +144,19 @@ export default function RecomendadorQuestionary() {
                                 return (
                                     <div
                                         key={cardId.sys.id}
-                                        className={`w-auto h-fit rounded-md p-[2px] ${isSelected ? 'bg-[image:var(--gradient-card-border)]' : 'border border-gray-150'}`}
+                                        className={`w-auto h-full rounded-md p-[2px] flex-col flex ${isSelected ? 'bg-[image:var(--gradient-card-border)]' : 'border border-gray-150'}`}
                                     >
                                         <Card
                                             isPressable
                                             onPress={() => userSelection(currentStep, card)}
                                             classNames={{
-                                                base: "w-full h-fit bg-gray-50 rounded-sm shadow-none",
+                                                base: "w-full h-full bg-gray-50 rounded-sm shadow-none",
                                                 header: "pb-[16px]",
                                                 footer: "justify-end"
                                             }}
                                         >
                                             <CardBody>
-                                                <div className="flex flex-row gap-[8px]">
+                                                <div className="flex flex-row items-stretch flex-1 h-full gap-[8px]">
                                                     <Image
                                                         className="w-[24px] h-[24px]"
                                                         src={`https:${card.fields.icon.fields.image.fields.file.url}`}
@@ -166,7 +165,7 @@ export default function RecomendadorQuestionary() {
                                                         width={24}
                                                         height={24}
                                                     />
-                                                    <h1 className="font-normal leading-[24px] text-base line-clamp-3 md:line-clamp-2 min-h-[72px] md:min-h-[30px]">{card.fields.title}</h1>
+                                                    <h1 className="font-normal leading-[24px] text-base">{card.fields.title}</h1>
                                                 </div>
                                             </CardBody>
                                             <CardFooter>
