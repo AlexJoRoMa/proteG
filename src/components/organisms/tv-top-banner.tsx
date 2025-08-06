@@ -20,7 +20,7 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
 
 
     return(
-    <div className=" bg-black flex md:w-full xsm:w-full md:h-[489px] xsm:h-[781px] overflow-hidden">
+    <div className=" bg-black flex md:w-full xsm:w-full md:h-[489px] xsm:h-[770px] overflow-hidden">
         {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
         const { titulo, tituloResaltado, body, textoPrecio, precio, textTiempo, incluye,  textBoton1, linkBoton1, adicionales ,imagen, imagenMovil }= card.fields as StepTabEntryFields;
           
@@ -54,29 +54,29 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                             <span className="md:text-[16px] xsm:text-[14px]">{textTiempo}</span></p>
                     </div>
                     
-                    <div  className=" flex w-full text-white text-[16px] mt-1">
+                    <div  className="  flex w-full text-white text-[16px] mt-1 h-[24px]">
                         <p className="whitespace-nonwrap">{incluye}</p>
                         
                         {adicionales && (
-                            <div className="  grid grid-cols-4 grid-rows-2 gap-4">
-                                {adicionales.map((asset: Asset, index: number) => {
-                                    const url = asset.fields?.file?.url;
-                                    return url ? (
-                                        <div key={asset.sys.id || index}>
-                                            <Image
-                                            src={`https:${url}`}
-                                            alt={`Adicional ${index + 1}`}
-                                            width={56}
-                                            height={14}
-                                            priority
-                                            className='w-auto'
-                                            />
-                                        </div>
-                                    ) : null;
-                                })}
+                            <div className="  grid grid-cols-4 grid-rows-2 gap-2 ml-4 mt-[6px]">
+                                { adicionales?.map((assets: Asset) => {
+                            const url = assets.fields?.file?.url;
+                             
+                            return (
+                                <div key={assets.sys.id} >
+                                    <Image
+                                    className="w-auto h-[14px] "
+                                    src={`https:${url}`}
+                                    alt={'adicional'}
+                                    priority
+                                    width={100}
+                                    height={14}
+                                    />
+                                </div>
+                            );
+                        })}
                             </div>
                         )}
-
 
                     </div>
 
@@ -92,26 +92,25 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                 </div>
                 
                 {/* imagen responsiva */}
-                    <div className="  fill 
-                    md:absolute md:inset-0 md:z-0
-                    xsm:relative xsm:z-10 md:order-none xsm:order-2  ">
-                        <picture className="block w-full h-full">
-                            <source media="(min-width:768px)" srcSet={`https:${imgURL}`}/>
-                            <source media="(min-width:320px)" srcSet={`https:${movilURL}`}/>
-
-                            {( imgURL && movilURL ) && (
+                <div className="  fill 
+                md:absolute md:inset-0 md:z-0 md:mt-0 xsm:mt-7
+                xsm:relative xsm:z-10 md:order-none xsm:order-2  ">
+                    
+                    <picture className="block w-full h-full">
+                        <source media="(max-width:576px)" srcSet={`https:${movilURL}`}/>
+                        
+                        {( imgURL && movilURL ) && (
                             <Image
                             className="md:w-full md:h-full xsm:w-[92%] xsm:ml-4"
                             alt={'Images'}
                             src={`https:${ imgURL || movilURL}`}
-                            width={370}
-                            height={280}
+                            width={1600}
+                            height={518}
                             priority
                             />
                         )}
-
-                        </picture>
-                    </div>
+                    </picture>
+                </div>
                 
             </div>
         );
