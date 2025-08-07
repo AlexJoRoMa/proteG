@@ -27,6 +27,15 @@ export type ButtonModalProps = {
     modalContentClassName?: string; // Clases adicionales para el ModalContent
 }
 
+export type LinkModalProps = {
+    text: string | React.ReactNode;
+    classNames?: string;
+    idModal: string;
+    children?: React.ReactNode;
+    closeButtonStroke?: string; // Color del stroke del botón de cerrar
+    modalContentClassName?: string; // Clases adicionales para el ModalContent
+}
+
 export type ButtonModalComponentProps = {
   url?: string;
   text?: string;
