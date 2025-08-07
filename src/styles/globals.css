@@ -119,6 +119,8 @@
    --gradient-bar-horizontal: linear-gradient(to right,#FF6C07,#4DA9A7,#D31772,#FCD116);
    --gradient-bar-vertical: linear-gradient( to bottom,#FF6C07,#4DA9A7,#D31772,#FCD116);
    --gradient-background: linear-gradient(to right,#DCEFF0,#F4F4F6,#F3E6EE);
+   --gradient-button-fixed: linear-gradient(90deg,#FF6C07 0%,#4DA9A7 33%, #D31772 66%, #FCD116 100%);
+   
 }
 
 body {
