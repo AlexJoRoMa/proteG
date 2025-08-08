@@ -39,11 +39,11 @@ export default function ProductCard({color, borderColor, icon, altIcon, cardData
             </CardBody>
             <CardFooter>
                 <div className='flex flex-col w-full'>
-                    <Button as={Link} className="w-[92%] bg-color-trasparent h-[48px] border-[1px] border-solid rounded-md text-[18px] lg:text-[16px] xl:mx-[12px] 3xl:text-[18px] mx-[20px] mb-[16px]"
+                    <Button as={Link} className="w-[92%] bg-color-trasparent h-[48px] border-[1px] border-solid rounded-md text-[18px] lg:text-[16px] xl:mx-[12px] 3xl:text-[18px] mx-[15px] mb-[16px]"
                         href={card.secondaryButtonUrl}>
                             {card.secondaryButtonCopy}
                     </Button>
-                    <Button as={Link} className="w-[92%] bg-black-0 h-[48px] border-[2px] border-solid rounded-md text-white-0 text-[18px] xl:mx-[12px] lg:text-[16px] 3xl:text-[18px] mx-[20px] mb-[32px]"
+                    <Button as={Link} className="w-[92%] bg-black-0 h-[48px] border-[2px] border-solid rounded-md text-white-0 text-[18px] xl:mx-[12px] lg:text-[16px] 3xl:text-[18px] mx-[15px] mb-[32px]"
                         href={card.primaryButtonUrl}>
                             {card.primaryButtonCopy}
                     </Button>
