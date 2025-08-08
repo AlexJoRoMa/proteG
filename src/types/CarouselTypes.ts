@@ -18,6 +18,8 @@ export type CarouselContextType = {
   syncAllCarouselsToSlide: (slideIndex: number) => void,
 
   pauseAllAutoplay: () => void,
+
+  colorArrow: string
 }
 
 
@@ -29,9 +31,20 @@ export type CarouselThumbsButtonsType = {
 
 export type CarouselComponentType = {
     children: React.ReactNode,
-    carouselIndex?: number
+    carouselIndex?: number,
+    buttons?: boolean,
+    dots?: boolean
 }
 
 export type ChannelPromoBannerProps = {
   id: string;
+}
+
+
+export type CarouselArrowsComponentProps = {
+    scrollPrev: () => void
+    scrollNext: () => void
+    classPrevButton?: string
+    classNextButton?: string,
+    emblaApi?: EmblaCarouselType
 }
