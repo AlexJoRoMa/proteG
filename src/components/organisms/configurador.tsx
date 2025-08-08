@@ -7,6 +7,7 @@ import CoberturaCP from "../molecules/configurador/coberturaCP";
 import PlanesMovil from "../molecules/configurador/planesMovil";
 import { getCopyForComponent } from "@/services/contentful/components";
 import { ConfiguradorProvider } from "@/utils/ConfiguradorProvider";
+import { componentMap } from "@/lib/configurador/dynamic-map";
 
 export default async function Configurador({ id }: ConfiguradorProps) {
 
@@ -21,33 +22,33 @@ export default async function Configurador({ id }: ConfiguradorProps) {
         return entriesResponse.items[0]
     });
 
+
     const entryTitle = pageEntry?.fields.title as string;
     const entryHelp = pageEntry?.fields.helpText as string;
     const entryCTA = pageEntry?.fields.ctaText as string;
 
+    const components = pageEntry?.fields.steps as unknown as EntrySkeletonType<ConfigDataFields>[] | null;
+
     return (
-        <ConfiguradorProvider value={{coberturaCopy, pageEntry}}>
+        <ConfiguradorProvider value={{ coberturaCopy, pageEntry }}>
             <div className="grid px-[16px] pb-20 sm:p-20 font-[family-name:var(--lato)]">
                 <div className='my-[24px]'>
                     <h4 className='font-normal text-lg leading-[24px]'>{entryTitle}</h4>
                 </div>
 
                 <div className='grid gap-[24px]'>
-                    <div className='w-full py-[10px]'>
-                        <CoberturaCP data={coberturaCopy} />
-                    </div>
+                    {
+                        components && components !== null && Array.isArray(components) && components.length > 0 ? (
+                            (components.map((component: EntrySkeletonType<ConfigDataFields> | null, index) => {
+                                const componentType = component?.fields?.type;
+                                const Component = typeof componentType === 'string' && componentType in componentMap ? componentMap[componentType as keyof typeof componentMap] : null;
 
-                    <div className='w-full py-[10px]'>
-                        <PlanesInternet />
-                    </div>
-
-                    <div className='w-full py-[10px]'>
-                        <PlanesTv />
-                    </div>
-
-                    <div className='w-full py-[10px]'>
-                        <PlanesMovil />
-                    </div>
+                                return Component ? <Component key={index} /> : null;
+                            }))
+                        ) : (
+                            <p>No existen componentes cargados.</p>
+                        )
+                    }
                 </div>
 
                 <div className='flex flex-col my-[24px] gap-[10px]'>

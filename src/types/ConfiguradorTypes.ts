@@ -24,7 +24,8 @@ export interface ConfigDataFields {
     description: string,
     stepNumber: number,
     internalName: string,
-    components: ComponentsFields[] | ConfigTabsFields[]
+    components: ComponentsFields[] | ConfigTabsFields[],
+    type: string
 }
 
 export interface ComponentsFields {
