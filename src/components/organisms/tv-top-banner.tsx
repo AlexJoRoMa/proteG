@@ -34,18 +34,21 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
         return(
             <div key={card.sys.id} className=" relative w-full flex flex-col md:flex-row">
 
-                {/* imagen izquierdo */}
-                <div className=" relative md:order-none xsm:order-1  z-10 md:mx-md 2xl:mx-xl md:pl-[1%] xsm:ml-4 md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[360px] md:mt-15  xsm:mt-15">
+                {/* contenido texto */}
+                <div className=" relative md:order-none xsm:order-1  z-10 md:mx-md 2xl:mx-xl 
+                md:pl-[1%] xsm:ml-4 
+                md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[360px] 
+                md:mt-10  xsm:mt-15">
                     <div  className=" text-white md:text-[64px] xsm:text-[56px]">
                         <h1>
                             <span>{titulo} </span>
                             <span className="font-bold">{tituloResaltado}</span>
                         </h1>
                     </div>
-                    <div  className="  text-white md:text-[32px] xsm:text-[24px] w-[80%]">
+                    <div  className="  text-white md:text-[32px] xsm:text-[24px] xsm:w-[80%] md:w-full ">
                         <h1>{body}</h1>
                     </div>
-                    <div  className="text-white">
+                    <div  className=" text-white">
                         <p>
                             <span className="md:text-[16px] xsm:text-[14px]">{textoPrecio}</span>
                             <span className="md:text-[56px] xsm:text-[48px] ml-4">{precio} </span>
