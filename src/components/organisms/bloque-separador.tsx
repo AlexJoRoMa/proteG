@@ -19,7 +19,7 @@ const BloqueSeparador = async ({id}: BloqueSeparadorID) => {
     
     const getModelContent: Array<Entry<StepTabEntrySkeleton>> | undefined = callModelContent?.[0]?.fields.cardsContent as unknown as Array<Entry<StepTabEntrySkeleton>>;
 
-    console.log('>>>> getModelContent ', getModelContent)
+    
 
     return(
         <div className=" bg-gray-450 relative md:h-[181px] xsm:h-[273px]">
@@ -34,11 +34,9 @@ const BloqueSeparador = async ({id}: BloqueSeparadorID) => {
             return(
                 <div key={card.sys.id} className=" flex md:flex-row xsm:flex-col text-white relative justify-between md:gap-4 xsm:gap-8 items-center">
                     
-                {/* logica de texto e imagen, solo uno puede existir, de momento 
-                se harcodea el mensaje de error por que contentful no tiene 
-                logica condicional para sus campos, por eso se hace de este lado */}
+                {/* logica de texto e imagen */}
 
-                {imgURL && !textoTitulo && (
+                {imgURL && (
                     <div className=" relative  ">
                         {imgURL && (
                             <Image
@@ -60,14 +58,9 @@ const BloqueSeparador = async ({id}: BloqueSeparadorID) => {
                     </div>
                 )}
 
-                {imgURL && textoTitulo && (
-                    <h1>Solo el campo de texto titulo o image puede estar a la vez. Elija solo una</h1>
-                )}
-
                 {!imgURL && !textoTitulo && (
-                    <h1>Debe de llenar el campo texto titulo o image. Elija alguno</h1>
+                    <div className=" w-[283px]"/>
                 )}
-                    
 
 
                 {/* Aqui va el texto del centro */}
@@ -77,12 +70,19 @@ const BloqueSeparador = async ({id}: BloqueSeparadorID) => {
                 </div>
                 
                 {/* Aqui va el boton */}
-                <div className="">
-                    <ButtonGhost classStyles="border-white text-white text-[18px] leading-6 font-bold hover:!bg-white hover:!text-black w-full rounded-md
-                    h-[48px]
-                    3xl:w-[320px] xl:w-[250px] md:w-[170px] xsm:w-[320px] "
+                <div>
+                    {isModal === "si" && (
+                        <ButtonGhost classStyles="border-white text-white text-[18px] leading-6 font-bold hover:!bg-white hover:!text-black 
+                        w-full rounded-md h-[48px] 3xl:w-[320px] xl:w-[250px] md:w-[170px] xsm:w-[320px] "
                     text={textBoton1 as string} href={urlBtn1 as string}
                     />
+                    )}
+                    {isModal === "no" && (
+                        <ButtonGhost classStyles="border-white text-white text-[18px] leading-6 font-bold hover:!bg-white hover:!text-black 
+                        w-full rounded-md h-[48px] 3xl:w-[320px] xl:w-[250px] md:w-[170px] xsm:w-[320px] "
+                    text={textBoton1 as string}
+                    />
+                    )}
                 </div>
 
                 </div>

@@ -18,7 +18,7 @@ export interface StepTabEntryFields extends EntrySkeletonType{
   image?: Entry<MediaEntrySkeleton>;
   textoTitulo?: Document;
   bodyText?: string;
-  isModal?: boolean;
+  isModal?: string;
   textBoton1?: string;
   urlBtn1?: string;
 }
