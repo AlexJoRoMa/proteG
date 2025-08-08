@@ -1,6 +1,6 @@
 'use client'
 
-import { ComponentsFields, ConfigCardsFields, ConfigDataFields, PlansCardProps } from "@/types/ConfiguradorTypes";
+import { ComponentsFields, ConfigCardsFields, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { Card, CardBody, CardHeader, Tab, Tabs } from "@heroui/react";
 import { Entry, EntrySkeletonType } from "contentful";
@@ -26,14 +26,11 @@ export const CheckIcon = (props: any) => {
     );
 };
 
-export default function PlanesMovil() {
+export default function PlanesMovil({step}: StepProps) {
 
     const content = useContent();
-    const entryContent = content.pageEntry?.fields.steps as unknown as EntrySkeletonType<ConfigDataFields>[];
-    const plans = entryContent[3];
+    const plans = content.dataEntry?.movil && content.dataEntry?.movil;
 
-
-    const plansStep = plans?.fields.stepNumber;
     const plansTitle = plans?.fields.title;
     const plansComponents = plans?.fields.components[0] as unknown as Entry<EntrySkeletonType, undefined, string> | null;
 
@@ -65,7 +62,7 @@ export default function PlanesMovil() {
     return (
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
-                <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>{plansStep}</p>
+                <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>{step}</p>
                 <h3 className='font-semibold text-xl leading-[24px]'>{plansTitle}</h3>
             </div>
             <div>

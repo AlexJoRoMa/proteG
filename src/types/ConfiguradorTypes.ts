@@ -6,6 +6,9 @@ export type ConfiguradorProps = {
     id: string;
 }
 
+export type StepProps = {
+    step: number
+}
 export interface ConfiguradorCopyFields {
     cobertura: string;
     internet: string;
@@ -56,21 +59,6 @@ export interface ConfigTabsFields {
     tabs: ConfigCardsFields[]
 }
 
-//cardPlanes
-
-export type PlansCardProps = {
-    data?: CodigoPostalProps
-}
-
-//copy CP
-export type CodigoPostalProps = {
-    codigoPostal: {
-        button: string,
-        label: string,
-        placeHolder: string
-    }
-}
-
 //Provider Props
 
 export type ProviderProps = {
@@ -79,6 +67,6 @@ export type ProviderProps = {
 }
 
 export type DataFields = {
-    coberturaCopy: CodigoPostalProps,
-    pageEntry: Entry<EntrySkeletonType, undefined> | null
+    pageEntry?: Entry<EntrySkeletonType, undefined> | null,
+    dataEntry?: Record<string, EntrySkeletonType<ConfigDataFields>>
 }

@@ -4,13 +4,6 @@ import { DataFields, ProviderProps } from "@/types/ConfiguradorTypes";
 import { createContext, useContext } from "react";
 
 const initialCtx = {
-    coberturaCopy: {
-        codigoPostal: {
-            button: "",
-            label: "",
-            placeHolder: ""
-        }
-    },
     pageEntry: null
 }
 const configuradorContext = createContext<DataFields>(initialCtx);

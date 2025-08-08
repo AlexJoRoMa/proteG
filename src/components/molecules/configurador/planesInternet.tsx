@@ -1,6 +1,6 @@
 'use client'
 
-import { ComponentsFields, ConfigDataFields, PlansCardProps } from "@/types/ConfiguradorTypes";
+import { ComponentsFields, ConfigDataFields, StepProps} from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { EntrySkeletonType } from "contentful";
@@ -26,14 +26,12 @@ export const CheckIcon = (props: any) => {
     );
 };
 
-export default function PlanesInternet() {
+export default function PlanesInternet({step}: StepProps) {
 
     const content = useContent();
-    const entryContent = content.pageEntry?.fields.steps as unknown as EntrySkeletonType<ConfigDataFields>[];
-    const plans = entryContent[1];
+    const plans = content.dataEntry?.internet && content.dataEntry?.internet;
 
 
-    const plansStep = plans?.fields.stepNumber;
     const plansTitle = plans?.fields.title;
     const plansInfo = plans?.fields.components as unknown as ComponentsFields[];
 
@@ -50,7 +48,7 @@ export default function PlanesInternet() {
     return (
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
-                <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>{plansStep}</p>
+                <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>{step}</p>
                 <h3 className='font-semibold text-xl leading-[24px]'>{plansTitle}</h3>
             </div>
 

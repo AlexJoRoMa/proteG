@@ -1,10 +1,9 @@
 'use client'
 
 import AccordionPlanesExtras from "@/components/atoms/accordionPlanesExtras";
-import { ComponentsFields, ConfigDataFields, PlansCardProps } from "@/types/ConfiguradorTypes";
+import { ComponentsFields, StepProps} from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { Card, CardBody, CardHeader } from "@heroui/react";
-import { EntrySkeletonType } from "contentful";
 import { useState } from "react";
 
 export const CheckIcon = (props: any) => {
@@ -28,14 +27,12 @@ export const CheckIcon = (props: any) => {
 };
 
 
-export default function PlanesTv() {
+export default function PlanesTv({step}: StepProps) {
 
     const content = useContent();
-    const entryContent = content.pageEntry?.fields.steps as unknown as EntrySkeletonType<ConfigDataFields>[];
-    const plans = entryContent[2];
+    const plans = content.dataEntry?.tv && content.dataEntry?.tv;
 
 
-    const plansStep = plans?.fields.stepNumber;
     const plansTitle = plans?.fields.title;
     const plansSubTitle = plans?.fields.subTitle;
     const plansDescription = plans?.fields.description;
@@ -54,7 +51,7 @@ export default function PlanesTv() {
     return (
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
-                <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>{plansStep}</p>
+                <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>{step}</p>
                 <h3 className='font-semibold text-xl leading-[24px]'>{plansTitle}</h3>
             </div>
 
