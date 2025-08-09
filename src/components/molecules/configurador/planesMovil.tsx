@@ -2,7 +2,7 @@
 
 import { ComponentsFields, ConfigCardsFields, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
-import { Card, CardBody, CardHeader, Tab, Tabs } from "@heroui/react";
+import { Card, CardBody, CardFooter, CardHeader, Tab, Tabs } from "@heroui/react";
 import { Entry, EntrySkeletonType } from "contentful";
 import { useState } from "react";
 
@@ -26,12 +26,11 @@ export const CheckIcon = (props: any) => {
     );
 };
 
-export default function PlanesMovil({step}: StepProps) {
+export default function PlanesMovil({ step }: StepProps) {
 
     const content = useContent();
     const plans = content.dataEntry?.movil && content.dataEntry?.movil;
 
-    const plansTitle = plans?.fields.title;
     const plansComponents = plans?.fields.components[0] as unknown as Entry<EntrySkeletonType, undefined, string> | null;
 
     const plansInfo = plansComponents?.fields.tabs as unknown as EntrySkeletonType<ConfigCardsFields>[];
@@ -63,8 +62,9 @@ export default function PlanesMovil({step}: StepProps) {
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
                 <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>{step}</p>
-                <h3 className='font-semibold text-xl leading-[24px]'>{plansTitle}</h3>
+                <h3 className='font-semibold text-xl leading-[24px]'>{plans?.fields.title}</h3>
             </div>
+            <h5 className="font-normal leading-[24px] text-base text-black-0">{plans?.fields.subTitle}</h5>
             <div>
                 <div className="flex w-full flex-col">
                     <Tabs
@@ -92,7 +92,7 @@ export default function PlanesMovil({step}: StepProps) {
                             />
                         )}
                     </Tabs>
-                    <div className="grid grid-cols-2 gap-[16px]">
+                    <div className="grid grid-cols-2 gap-[16px] auto-rows-fr">
                         {plansInfo.find((tab) => tab.fields.entryTitle === selectedTabKey)?.fields.cards.map((card: ComponentsFields, index) => {
                             const cardId = card.sys.id;
                             const isSelected = selectedCardsByTab[selectedTabKey]?.includes(cardId);
@@ -100,26 +100,33 @@ export default function PlanesMovil({step}: StepProps) {
                             return (
                                 <div
                                     key={`card-${index}`}
-                                    className={`w-auto h-fit rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
+                                    className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
                                 >
                                     <Card
                                         isPressable
                                         onPress={() => handleSelect(selectedTabKey, cardId)}
                                         classNames={{
-                                            base: "flex flex-col gap-[65px] rounded-xs shadow-none h-auto w-full",
-                                            header: "px-[16px] pt-[16px] pb-0",
-                                            body: "px-[16px] pb-[16px] pt-0"
+                                            base: "flex flex-col rounded-xs shadow-none h-auto w-full",
+                                            header: "pt-[16px] pb-0",
+                                            body: "py-0 h-[48px]",
+                                            footer: "pb-[16px] mt-[16px] pt-0"
                                         }}>
                                         <CardHeader>
-                                            <div className="flex flex-col">
+                                            <div className="flex flex-col text-start">
                                                 <h1 className="text-2xl font-extrabold leading-[27px]">{card.fields.title}</h1>
                                             </div>
                                         </CardHeader>
                                         <CardBody>
-                                            <div className="flex flex-col">
-                                                <div>
-                                                    <span className="text-lg font-bold">{`$${card.fields.price}`}</span>
-                                                    <span className="text-sm font-normal">{" /mes"}</span>
+                                        </CardBody>
+                                        <CardFooter>
+                                            <div className="flex flex-col w-full gap-[8px]">
+                                                <div className="flex flex-row items-baseline text-start gap-[4px]">
+                                                    {card.fields.discountPrice && <p className="font-normal text-sm text-gray-200 line-through">{`$${card.fields.discountPrice}`}</p>}
+                                                    {card.fields.beforePrice && <p className="text-sm font-normal">{card.fields.beforePrice}</p>}
+                                                    <div className="flex flex-row items-baseline">
+                                                        <p className="text-lg font-bold">{`$${card.fields.price}`}</p>
+                                                        <p className="text-sm font-normal">{card.fields.afterPrice}</p>
+                                                    </div>
                                                 </div>
                                                 <div className="flex flex-row gap-[16px] items-center justify-between">
                                                     <p
@@ -137,7 +144,8 @@ export default function PlanesMovil({step}: StepProps) {
                                                     </span>
                                                 </div>
                                             </div>
-                                        </CardBody>
+
+                                        </CardFooter>
                                     </Card>
                                 </div>
                             )

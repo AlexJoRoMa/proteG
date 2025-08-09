@@ -39,7 +39,10 @@ export interface ComponentsFields {
     internalName: string,
     maxCapacityInternet: string,
     minCapacityInternet: string,
+    discountPrice: string,
+    beforePrice: string,
     price: number,
+    afterPrice: string,
     subTitle: string,
     title: string,
     ctaText: string

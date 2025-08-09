@@ -1,8 +1,8 @@
 'use client'
 
-import { ComponentsFields, ConfigDataFields, StepProps} from "@/types/ConfiguradorTypes";
+import { ComponentsFields, ConfigDataFields, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
-import { Card, CardBody, CardHeader } from "@heroui/react";
+import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { EntrySkeletonType } from "contentful";
 import { useState } from "react";
 
@@ -26,14 +26,13 @@ export const CheckIcon = (props: any) => {
     );
 };
 
-export default function PlanesInternet({step}: StepProps) {
+export default function PlanesInternet({ step }: StepProps) {
 
     const content = useContent();
-    const plans = content.dataEntry?.internet && content.dataEntry?.internet;
+    const entryData = content.dataEntry?.internet && content.dataEntry?.internet;
+    const plans = entryData?.fields;
 
-
-    const plansTitle = plans?.fields.title;
-    const plansInfo = plans?.fields.components as unknown as ComponentsFields[];
+    const plansInfo = plans?.components as unknown as ComponentsFields[];
 
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const [selectedCard, setSelectedCard] = useState<ComponentsFields>();
@@ -49,10 +48,10 @@ export default function PlanesInternet({step}: StepProps) {
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
                 <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>{step}</p>
-                <h3 className='font-semibold text-xl leading-[24px]'>{plansTitle}</h3>
+                <h3 className='font-semibold text-xl leading-[24px]'>{plans?.title}</h3>
             </div>
 
-            <div className="grid grid-cols-2 gap-[16px]">
+            <div className="grid grid-cols-2 gap-[16px] auto-rows-fr">
                 {
                     plansInfo.map((card: ComponentsFields, index) => {
                         const isSelected = selectedIndex === index;
@@ -60,32 +59,40 @@ export default function PlanesInternet({step}: StepProps) {
                         return (
                             <div
                                 key={index}
-                                className={`w-auto h-fit rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
+                                className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
                             >
                                 <Card
                                     isPressable
                                     onPress={() => handleSelect(index, card)}
                                     classNames={{
-                                        base: "flex flex-col gap-[40px] rounded-xs shadow-none h-auto w-full",
-                                        header: "px-[16px] pt-[16px] pb-0",
-                                        body: "px-[16px] pb-[16px] pt-0"
+                                        base: "flex flex-col rounded-xs shadow-none h-full w-full",
+                                        header: "pt-[16px] pb-[8px]",
+                                        body: "py-0",
+                                        footer: "pb-[16px] mt-[16px] pt-0"
                                     }}>
                                     <CardHeader>
-                                        <div className="flex flex-col">
-                                            <span className="text-base font-normal leading-[27px]">{`de ${card.fields.minCapacityInternet} a`}</span>
-                                            <span className="leading-[27px] font-extrabold text-2xl">{card.fields.maxCapacityInternet}</span>
+                                        <div className="flex flex-col text-start">
+                                            <p className="text-base font-normal leading-[27px]">{`de ${card.fields.minCapacityInternet} a`}</p>
+                                            <p className="leading-[27px] font-extrabold text-2xl">{card.fields.maxCapacityInternet}</p>
                                         </div>
                                     </CardHeader>
                                     <CardBody>
-                                        <div className="flex flex-col">
-                                            <div>
-                                                <span className="text-sm font-normal">{"Desde "}</span>
-                                                <span className="text-lg font-bold">{`$${card.fields.price}`}</span>
-                                                <span className="text-sm font-normal">{" /mes"}</span>
+                                        <div className="flex items-stretch">
+                                            <p className="leading-[18px] font-normal text-sm text-gray-300">{card.fields.subTitle}</p>
+                                        </div>
+                                    </CardBody>
+                                    <CardFooter>
+                                        <div className="flex flex-col w-full gap-[8px]">
+                                            <div className="flex flex-row items-baseline gap-[4px]">
+                                                <span className="text-sm font-normal">{card.fields.beforePrice}</span>
+                                                <div className="flex flex-row items-baseline">
+                                                    <span className="text-lg font-bold">{`$${card.fields.price}`}</span>
+                                                    <span className="text-sm font-normal">{card.fields.afterPrice}</span>
+                                                </div>
                                             </div>
                                             <div className="flex flex-row gap-[16px] items-center justify-between">
-                                                <p 
-                                                    className="underline pointer-events-auto" 
+                                                <p
+                                                    className="underline pointer-events-auto"
                                                     onClick={(e) => {
                                                         e.stopPropagation()
                                                         console.log('click!!!')
@@ -99,7 +106,7 @@ export default function PlanesInternet({step}: StepProps) {
                                                 </span>
                                             </div>
                                         </div>
-                                    </CardBody>
+                                    </CardFooter>
                                 </Card>
                             </div>
                         )

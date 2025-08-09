@@ -32,14 +32,6 @@ export default function AccordionPlanesExtras() {
             >
                 {defaultContent}
             </AccordionItem>
-            <AccordionItem
-                key="2"
-                aria-label="Accordion 2"
-                title="Incluye canales a la carta"
-                indicator={<DropIcon />}
-            >
-                {defaultContent}
-            </AccordionItem>
         </Accordion>
         //TODO: **agregar tarjetas de canales a los selectores */ 
 

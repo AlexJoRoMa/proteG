@@ -1,9 +1,9 @@
 'use client'
 
 import AccordionPlanesExtras from "@/components/atoms/accordionPlanesExtras";
-import { ComponentsFields, StepProps} from "@/types/ConfiguradorTypes";
+import { ComponentsFields, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
-import { Card, CardBody, CardHeader } from "@heroui/react";
+import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { useState } from "react";
 
 export const CheckIcon = (props: any) => {
@@ -27,15 +27,11 @@ export const CheckIcon = (props: any) => {
 };
 
 
-export default function PlanesTv({step}: StepProps) {
+export default function PlanesTv({ step }: StepProps) {
 
     const content = useContent();
     const plans = content.dataEntry?.tv && content.dataEntry?.tv;
 
-
-    const plansTitle = plans?.fields.title;
-    const plansSubTitle = plans?.fields.subTitle;
-    const plansDescription = plans?.fields.description;
     const plansInfo = plans?.fields.components as unknown as ComponentsFields[];
 
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -52,10 +48,10 @@ export default function PlanesTv({step}: StepProps) {
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
                 <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>{step}</p>
-                <h3 className='font-semibold text-xl leading-[24px]'>{plansTitle}</h3>
+                <h3 className='font-semibold text-xl leading-[24px]'>{plans?.fields.title}</h3>
             </div>
 
-            <div className="grid grid-cols-1">
+            <div className="grid grid-cols-2 gap-[16px] auto-rows-fr">
                 {
                     plansInfo.map((card: ComponentsFields, index) => {
                         const isSelected = selectedIndex === index;
@@ -63,35 +59,41 @@ export default function PlanesTv({step}: StepProps) {
                         return (
                             <div
                                 key={index}
-                                className={`w-auto h-fit rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
+                                className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
                             >
                                 <Card
                                     isPressable
                                     onPress={() => handleSelect(index, card)}
                                     classNames={{
-                                        base: "flex flex-col gap-[40px] rounded-xs shadow-none h-auto w-full",
-                                        header: "px-[16px] pt-[16px] pb-0",
-                                        body: "px-[16px] pb-[16px] pt-0"
+                                        base: "flex flex-col rounded-xs shadow-none h-full w-full",
+                                        header: "pt-[16px] pb-[8px]",
+                                        body: "py-0",
+                                        footer: "pb-[16px] mt-[16px] pt-0"
                                     }}>
                                     <CardHeader>
                                         <div className="flex flex-col text-start">
-                                            <div className="flex flex-col gap-[8px]">
-                                                <h1 className="text-2xl font-extrabold leading-[24px]">{card.fields.title}</h1>
-                                                <p className="leading-[27px] font-normal text-base">{card.fields.subTitle}</p>
-                                            </div>
-                                            {isSelected &&
-                                                <div>
-                                                    <p className="leading-[27px] font-normal text-base mt-[16px]">{plansDescription}</p>
-                                                </div>
-                                            }
-
+                                            <h1 className="text-2xl font-extrabold leading-[24px]">{card.fields.title}</h1>
                                         </div>
                                     </CardHeader>
                                     <CardBody>
-                                        <div className="flex flex-col gap-[4px]">
-                                            <div>
-                                                <span className="text-lg font-bold">{`$${card.fields.price}`}</span>
-                                                <span className="text-sm font-normal">{" /mes"}</span>
+                                        <div className="flex flex-col gap-[8px]">
+                                            <p className="leading-[18px] font-normal text-sm text-gray-300">{card.fields.subTitle}</p>
+                                            {isSelected &&
+                                                <div>
+                                                    <p className="font-normal text-sm mb-[24px]">{plans?.fields.description}</p>
+                                                </div>
+                                            }
+                                        </div>
+                                    </CardBody>
+                                    <CardFooter>
+                                        <div className="flex flex-col gap-[8px] w-full">
+                                            <div className="flex flex-row items-baseline text-start gap-[4px]">
+                                                {card.fields.discountPrice && <p className="font-normal text-sm text-gray-200 line-through">{`$${card.fields.discountPrice}`}</p>}
+                                                {card.fields.beforePrice && <p className="text-sm font-normal">{card.fields.beforePrice}</p>}
+                                                <div className="flex flex-row items-baseline">
+                                                    <p className="text-lg font-bold">{`$${card.fields.price}`}</p>
+                                                    <p className="text-sm font-normal">{card.fields.afterPrice}</p>
+                                                </div>
                                             </div>
                                             <div className="flex flex-row gap-[16px] items-center justify-between">
                                                 <p
@@ -109,7 +111,7 @@ export default function PlanesTv({step}: StepProps) {
                                                 </span>
                                             </div>
                                         </div>
-                                    </CardBody>
+                                    </CardFooter>
                                 </Card>
                             </div>
                         )
@@ -118,7 +120,7 @@ export default function PlanesTv({step}: StepProps) {
             </div>
             <div>
                 {selectedIndex === null ?
-                    <h5 className="font-normal leading-[24px] text-base">{plansSubTitle}</h5> :
+                    <h5 className="font-normal leading-[24px] text-base">{plans?.fields.subTitle}</h5> :
                     <AccordionPlanesExtras />
                 }
             </div>
