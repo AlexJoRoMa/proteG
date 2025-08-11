@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Lato } from 'next/font/google';
 import "../styles/globals.css";
 import Navigation from "@/components/molecules/navigation";
+import Footer from "@/components/molecules/footer";
 
 const lato = Lato({
   weight: '400',
@@ -27,6 +28,7 @@ export default function RootLayout({
       <body>
         <Navigation />
         {children}
+        <Footer />
       </body>
     </html>
   );
