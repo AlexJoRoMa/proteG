@@ -92,7 +92,7 @@ export default function PlanesMovil({ step }: StepProps) {
                             />
                         )}
                     </Tabs>
-                    <div className="grid grid-cols-2 gap-[16px] auto-rows-fr">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-[16px] md:gap-[24px] auto-rows-fr">
                         {plansInfo.find((tab) => tab.fields.entryTitle === selectedTabKey)?.fields.cards.map((card: ComponentsFields, index) => {
                             const cardId = card.sys.id;
                             const isSelected = selectedCardsByTab[selectedTabKey]?.includes(cardId);

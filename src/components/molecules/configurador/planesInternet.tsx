@@ -1,9 +1,8 @@
 'use client'
 
-import { ComponentsFields, ConfigDataFields, StepProps } from "@/types/ConfiguradorTypes";
+import { ComponentsFields, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
-import { EntrySkeletonType } from "contentful";
 import { useState } from "react";
 
 export const CheckIcon = (props: any) => {
@@ -51,7 +50,7 @@ export default function PlanesInternet({ step }: StepProps) {
                 <h3 className='font-semibold text-xl leading-[24px]'>{plans?.title}</h3>
             </div>
 
-            <div className="grid grid-cols-2 gap-[16px] auto-rows-fr">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-[16px] md:gap-[24px] auto-rows-fr">
                 {
                     plansInfo.map((card: ComponentsFields, index) => {
                         const isSelected = selectedIndex === index;
@@ -68,7 +67,7 @@ export default function PlanesInternet({ step }: StepProps) {
                                         base: "flex flex-col rounded-xs shadow-none h-full w-full",
                                         header: "pt-[16px] pb-[8px]",
                                         body: "py-0",
-                                        footer: "pb-[16px] mt-[16px] pt-0"
+                                        footer: "pb-[16px] mt-[16px] md:mt-[40px] pt-0"
                                     }}>
                                     <CardHeader>
                                         <div className="flex flex-col text-start">
