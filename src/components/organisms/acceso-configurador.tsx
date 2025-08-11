@@ -25,7 +25,6 @@ const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
         return null;
     }
 
-    console.log('>>>> callComponents ', callComponents)
     
     const getComponentContent= callComponents[0] as unknown as Entry<StepTabEntrySkeleton>;
     const { entryTitle, entryBodyLongText, textBoton1, linkBoton1, image } = getComponentContent.fields as StepTabEntryFields;
