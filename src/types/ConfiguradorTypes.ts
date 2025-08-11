@@ -72,4 +72,28 @@ export type ProviderProps = {
 export type DataFields = {
     pageEntry?: Entry<EntrySkeletonType, undefined> | null,
     dataEntry?: Record<string, EntrySkeletonType<ConfigDataFields>>
+    dataResumen?: {}
+}
+
+// Resumen de Compra
+
+export type ResumenData = {
+    titulo: string,
+    pagoPosterior: string,
+    ahorro: {
+        domicilio: string,
+        pagoAnticipado: string,
+        paquete: string
+    },
+    boton: {
+        comprobarPromociones: string,
+        contratar: {
+            titulo: string,
+            url: string
+        }
+    },
+    total: {
+        sinDescuentos: string,
+        titulo: string
+    }
 }
