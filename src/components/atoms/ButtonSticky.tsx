@@ -2,8 +2,9 @@ import React from 'react'
 import ButtonModal from './ButtonModal';
 import { getAllCopy, getMicroCopy } from '@/services/contentful/components';
 import { ContactIcon } from './ModalIcons';
-import TeLlamamosModalComponent from '../layouts/TeLlamamosModalComponent';
+import TeLlamamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 import { ResourceType } from '@/types/ButtonTypes';
+import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 
 const ButtonFixed = async() => {
 
@@ -67,7 +68,7 @@ const ButtonFixed = async() => {
           <ButtonModal
             idModal=''
             closeButtonStroke='black'
-            modalContentClassName='2xl:w-[62vw] 2xl:h-[52vh] xl:w-[90vw] xl:h-[52vh]'
+            modalContentClassName='2xl:w-[62vw] 2xl:h-[52vh] xl:w-[90vw] xl:h-[52vh] h-[98vh]'
             textBtn={
               <>
                 {textBtn?.[0]?.fields?.value || '¿Te ayudamos?'}
@@ -80,7 +81,7 @@ const ButtonFixed = async() => {
              [background-origin:padding-box,border-box]
              [background-clip:padding-box,border-box]'
           >
-              <TeLlamamosModalComponent modalData={modalData} />
+              <TeAyudamosModalComponent modalData={modalData} />
           </ButtonModal>
       </>
     );

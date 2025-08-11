@@ -1,13 +1,13 @@
 "use client";
 import React from 'react'
-import { CallMeIcon, HeadPhonesIcon, WhatsAppIcon } from '../atoms/ModalIcons'
+import { CallMeIcon, HeadPhonesIcon, WhatsAppIcon } from '../../atoms/ModalIcons'
 import { Button, Link } from '@heroui/react'
 import { TeLlamamosModalComponentProps } from '@/types/ModalComponentTypes';
-import LinkModal from '../atoms/LinkModal';
+import LinkModal from '../../atoms/LinkModal';
 
 
 
-const TeLlamamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlamamosModalComponentProps) => {
+const TeAyudamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlamamosModalComponentProps) => {
   if (!isOpen) return null;
 
   // Valores por defecto en caso de que no se pasen datos
@@ -37,7 +37,11 @@ const TeLlamamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlama
             <div className='flex flex-col'>
                 <strong className='mb-6'>{data.column1.title}</strong>
                 <p className='flex xl:mb-3.5 mb-4 gap-3'><CallMeIcon/>{data.column1.row1.text}<b>{data.column1.row1.tel}</b></p>
-                <LinkModal classNames='flex xl:mb-3.5 mb-4 gap-3 underline text-black font-bold text-[16px] cursor-pointer' text={<CallMeIcon/>${data.column1.row2.link}}></LinkModal>
+                <LinkModal 
+                  classNames='flex xl:mb-3.5 mb-4 gap-3 underline text-black font-bold text-[16px] cursor-pointer' 
+                  text={<><CallMeIcon/>{data.column1.row2.link}</>}
+                  idModal='te-llamamos-modal'
+                />
                 <a target='_blank' className='flex gap-3' href={`https://wa.me/${data.column1.row3.wpp.tel}?text=${data.column1.row3.wpp.promoText}`}><WhatsAppIcon />{data.column1.row3.wpp.text}</a>
             </div>
             <hr className='w-full xl:mb-10 mb-6 mt-8 block xl:hidden border-0 h-[1px] [background-image:var(--gradient-button-fixed)]' />
@@ -47,15 +51,15 @@ const TeLlamamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlama
                 <Link className='flex xl:mb-3.5 mb-4 gap-3 underline text-black font-bold text-[16px]' href={data.column2.row2.link.url}><HeadPhonesIcon/>{data.column2.row2.link.text}</Link>
                 <a target='_blank' className='flex gap-3' href={`https://wa.me/${data.column2.row3.wpp.tel}?text=${data.column2.row3.wpp.promoText}`}><WhatsAppIcon />{data.column2.row3.wpp.text}</a>
             </div>
-      </div>
-      <Button
-        className='bg-black text-white font-bold h-[48px] text-[16px] leading-[24px] w-[256px] rounded-none xl:mt-10 mt-8 mx-auto block'
-        onPress={onClose}
-      >
-        Aceptar
-      </Button>
+        </div>
+        <Button
+          className='bg-black text-white font-bold h-[48px] text-[16px] leading-[24px] w-[256px] rounded-none xl:mt-10 mt-8 mx-auto block'
+          onPress={onClose}
+        >
+          Aceptar
+        </Button>
     </div>
   )
 }
 
-export default TeLlamamosModalComponent
+export default TeAyudamosModalComponent

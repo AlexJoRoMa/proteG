@@ -22,6 +22,7 @@ const ButtonModal = ({
     children,
     closeButtonStroke,
     modalContentClassName,
+    startContent
 }: ButtonModalProps) => {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -42,7 +43,7 @@ const ButtonModal = ({
 
     return (
         <>
-            <Button className={classStyles} onPress={onOpen} isLoading={isLoading && !data && !error}>
+            <Button className={classStyles} onPress={onOpen} isLoading={isLoading && !data && !error} startContent={startContent}>
                 {textBtn}
             </Button>
             <ModalComponent isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} closeButtonStroke={closeButtonStroke} modalContentClassName={modalContentClassName}>
