@@ -37,22 +37,12 @@ export default function PlanesMovil({ step }: StepProps) {
     const defaultKey = plansInfo[0]?.fields.entryTitle;
 
     const [selectedTabKey, setSelectedTabKey] = useState<string>(defaultKey);
-    const [selectedCardsByTab, setSelectedCardsByTab] = useState<Record<string, string[]>>({});
+    const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+    const [selectedCard, setSelectedCard] = useState<ComponentsFields>();
 
-    function handleSelect(tabKey: string, cardId: string) {
-        setSelectedCardsByTab((prev) => {
-            const currentSelected = prev[tabKey] || []
-            const isAlreadySelected = currentSelected.includes(cardId);
-
-            const updateSelected = isAlreadySelected ?
-                currentSelected.filter((id) => id !== cardId) :
-                [...currentSelected, cardId]
-
-            return {
-                ...prev,
-                [tabKey]: updateSelected
-            }
-        });
+    function handleSelect(cardId: string, card: ComponentsFields) {
+        setSelectedCardId((prev) => (prev === cardId ? null : cardId));
+        setSelectedCard(card)
     }
 
     //TODO: const data = contenfulData || integracionData || seleccion del usuario ;  <- data base, de integracion o del usuario
@@ -95,16 +85,16 @@ export default function PlanesMovil({ step }: StepProps) {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-[16px] md:gap-[24px] auto-rows-fr">
                         {plansInfo.find((tab) => tab.fields.entryTitle === selectedTabKey)?.fields.cards.map((card: ComponentsFields, index) => {
                             const cardId = card.sys.id;
-                            const isSelected = selectedCardsByTab[selectedTabKey]?.includes(cardId);
+                            const isSelected = selectedCardId === cardId;
 
                             return (
                                 <div
-                                    key={`card-${index}`}
+                                    key={index}
                                     className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
                                 >
                                     <Card
                                         isPressable
-                                        onPress={() => handleSelect(selectedTabKey, cardId)}
+                                        onPress={() => handleSelect(cardId, card)}
                                         classNames={{
                                             base: "flex flex-col rounded-xs shadow-none h-auto w-full",
                                             header: "pt-[16px] pb-0",
@@ -137,7 +127,7 @@ export default function PlanesMovil({ step }: StepProps) {
                                                         }}
                                                     >{card.fields.ctaText}</p>
                                                     <span
-                                                        className={`w-[24px] h-[24px] rounded-sm border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
+                                                        className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
                                                         aria-pressed={isSelected}
                                                     >
                                                         {isSelected && <CheckIcon className="w-[16px] h-[16px] text-white-0" />}
