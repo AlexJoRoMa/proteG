@@ -21,10 +21,11 @@ export type PriceComponentProps = {
 export type ButtonModalProps = {
     textBtn: string | React.ReactNode;
     classStyles?: string;
-    idModal: string;
+    idModal?: string;
     children?: React.ReactNode;
     closeButtonStroke?: string; // Color del stroke del botón de cerrar
     modalContentClassName?: string; // Clases adicionales para el ModalContent
+    startContent?: React.ReactNode; // Contenido que se muestra al inicio del botón
 }
 
 export type LinkModalProps = {
@@ -92,6 +93,21 @@ export interface TeLlamamosModalComponentProps {
           promoText: string;
         };
       };
+    };
+  };
+}
+
+export interface TeLlamamosFormModalProps {
+  modalData?: {
+    title: string;
+    subtitle?: string;
+    placeholder: string;
+    buttonText: string;
+    checkboxText: string;
+    telephoneLabel: string;
+    privacyLink: {
+      text: string;
+      url: string;
     };
   };
 }
