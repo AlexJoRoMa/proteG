@@ -7,35 +7,39 @@ import ButtonGhost from "../atoms/ButtonGhost";
 
 const BloqueSeparador = async ({id}: BloqueSeparadorID) => {
     
-    const callModelContent:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
-        content_type: "izziTvModeloSeparador",
+    const callComponents:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
+        content_type: "izziTvModelSeparador",
         'sys.id': id,
-        select: ['fields.cardsContent'],
+        select: ['fields.textoTitulo',
+            'fields.bodyText',
+            'fields.isModal',
+            'fields.textBoton1',
+            'fields.urlBtn1',
+            'fields.image',
+             ],
         include: 2,
     }).then((entriesResponse) => {
         return entriesResponse.items
     });
     
+    if(!callComponents){
+        return null;
+    }
     
-    const getModelContent: Array<Entry<StepTabEntrySkeleton>> | undefined = callModelContent?.[0]?.fields.cardsContent as unknown as Array<Entry<StepTabEntrySkeleton>>;
+    const getComponentContent= callComponents[0] as unknown as Entry<StepTabEntrySkeleton>;
 
+    const { textoTitulo, bodyText, isModal, textBoton1, urlBtn1, image } = getComponentContent.fields as StepTabEntryFields;
     
+    const assetImage = image?.fields?.image as Asset | undefined;
+    const imgURL = assetImage?.fields?.file?.url;
 
     return(
         <div className=" bg-gray-450 relative md:h-[181px] xsm:h-[273px]">
         <div className=" md:mx-md 2xl:mx-xl h-full content-center ">
-
-           {getModelContent && getModelContent.map((card: Entry<StepTabEntrySkeleton>) => {
-            const { textoTitulo, bodyText, isModal, textBoton1, urlBtn1, image } = card.fields as StepTabEntryFields;
             
-            const assetImage = image?.fields?.image as Asset | undefined;
-            const imgURL = assetImage?.fields?.file?.url;
-
-            return(
-                <div key={card.sys.id} className=" flex md:flex-row xsm:flex-col text-white relative justify-between md:gap-4 xsm:gap-8 items-center">
-                    
+            <div key={getComponentContent.sys.id} className=" flex md:flex-row xsm:flex-col text-white relative justify-between md:gap-4 xsm:gap-8 items-center">
+                
                 {/* logica de texto e imagen */}
-
                 {imgURL && (
                     <div className=" relative  ">
                         {imgURL && (
@@ -86,8 +90,8 @@ const BloqueSeparador = async ({id}: BloqueSeparadorID) => {
                 </div>
 
                 </div>
-            );
-           })}
+            
+           
         </div>
         </div>
     )
