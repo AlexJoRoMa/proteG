@@ -62,18 +62,22 @@ export interface ConfigTabsFields {
     tabs: ConfigCardsFields[]
 }
 
-//Provider Props
+//Provider
 
 export type ProviderProps = {
     children: ReactNode,
-    value: DataFields
+    value: DataFields,
 }
 
 export type DataFields = {
     pageEntry?: Entry<EntrySkeletonType, undefined> | null,
     dataEntry?: Record<string, EntrySkeletonType<ConfigDataFields>>
-    dataResumen?: {}
+    dataResumen?: {},
+    userAnswers?: Record<string, ComponentsFields>,
+    setUserAnswers?: React.Dispatch<React.SetStateAction<Record<string, ComponentsFields>>>
 }
+
+export type UserAnswers = Record<string, ComponentsFields>
 
 // Resumen de Compra
 
