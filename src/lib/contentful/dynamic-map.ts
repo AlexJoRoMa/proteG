@@ -7,6 +7,7 @@ import TodoEnUnoComp from '@/components/organisms/todo-uno';
 import AccesoConfigurador from '@/components/organisms/acceso-configurador';
 import CoberturaModel from '@/components/organisms/cobertura-model';
 import TVBeneficiosProductos from '@/components/organisms/tv-beneficios-productos';
+import BloqueSeparador from '@/components/organisms/bloque-separador';
 
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
@@ -18,5 +19,6 @@ export const componentMap = {
   modeloAccesoConfigurador: AccesoConfigurador,
   cardCobertura: CoberturaModel,
   modelTvBeneficios: TVBeneficiosProductos,
+  tvBloqueSeparador: BloqueSeparador,
   cardsContratacionRapida: ContratacionRapida
 };
