@@ -45,10 +45,10 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
 
 
     return(
-        <div className="ring ring-red-500 bg-black relative  lg:h-[466px] md:h-[850px] xsm:h-[768px]">
+        <div className=" bg-black relative  lg:h-[466px] md:h-[850px] xsm:h-[768px]">
         <div className=" md:mx-md 2xl:mx-xl h-full content-center ">
             
-            <div key={getComponentContent.sys.id} className="ring ring-purple-500 flex lg:flex-row xsm:flex-col relative justify-between items-center">
+            <div key={getComponentContent.sys.id} className=" flex lg:flex-row xsm:flex-col relative justify-between items-center">
                 {/* logica de imagen */}
                 <div className=" lg:w-1/2 relative">
                 {imgURL && (
@@ -65,11 +65,11 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
 
 
                 {/* Aqui va la logica del parrafo y botones  */}
-                <div className="ring ring-blue-500 lg:w-1/2">
+                <div className=" lg:w-1/2">
                     <div className=" lg:text-left xsm:text-center lg:mt-0 xsm:mt-8 text-white lg:text-[36px] xsm:text-[32px]">
                         {textoTitulo && documentToReactComponents(textoTitulo)}
                     </div>
-                    <div className="lg:mt-5 xsm:mt-5">
+                    <div className=" lg:w-full lg: xsm:w-[90%] xsm:mx-auto lg:mt-5 xsm:mt-5 ">
                         <p className=" lg:text-left xsm:text-center text-gray-200 lg:text-[18px] xsm:text-[16px]">
                             {bodyText}
                         </p>
