@@ -40,6 +40,11 @@ export default function PlanesTv({ step }: StepProps) {
     function handleSelect(index: number, card: ComponentsFields) {
         setSelectedIndex(index);
         setSelectedCard(card);
+        content.setUserAnswers &&
+            content.setUserAnswers(prev => ({
+                ...prev,
+                tv: card
+            }))
     }
 
     //TODO: const data = contenfulData || integracionData || seleccion del usuario ;  <- data base, de integracion o del usuario

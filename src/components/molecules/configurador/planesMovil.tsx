@@ -42,7 +42,12 @@ export default function PlanesMovil({ step }: StepProps) {
 
     function handleSelect(cardId: string, card: ComponentsFields) {
         setSelectedCardId((prev) => (prev === cardId ? null : cardId));
-        setSelectedCard(card)
+        setSelectedCard(card);
+        content.setUserAnswers &&
+            content.setUserAnswers(prev => ({
+                ...prev,
+                movil: card
+            }))
     }
 
     //TODO: const data = contenfulData || integracionData || seleccion del usuario ;  <- data base, de integracion o del usuario

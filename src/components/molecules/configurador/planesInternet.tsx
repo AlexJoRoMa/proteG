@@ -39,6 +39,11 @@ export default function PlanesInternet({ step }: StepProps) {
     function handleSelect(index: number, card: ComponentsFields) {
         setSelectedIndex(index);
         setSelectedCard(card);
+        content.setUserAnswers &&
+            content.setUserAnswers(prev => ({
+                ...prev,
+                internet: card
+            }))
     }
 
     //TODO: const data = contenfulData || integracionData || seleccion del usuario ;  <- data base, de integracion o del usuario
