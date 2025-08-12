@@ -42,20 +42,13 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
     
     const assetImageStore3 = image3?.fields?.image as Asset | undefined;
     const imageStore2 = assetImageStore3?.fields?.file?.url;
-/* 
-ring ring-blue-500
-ring ring-yellow-500
-ring ring-orange-500
-ring ring-green-500
 
-
-     */
 
     return(
-        <div className=" bg-black relative  lg:h-[466px] xsm:h-[768px]">
+        <div className="ring ring-red-500 bg-black relative  lg:h-[466px] md:h-[850px] xsm:h-[768px]">
         <div className=" md:mx-md 2xl:mx-xl h-full content-center ">
             
-            <div key={getComponentContent.sys.id} className=" flex lg:flex-row xsm:flex-col relative justify-between items-center">
+            <div key={getComponentContent.sys.id} className="ring ring-purple-500 flex lg:flex-row xsm:flex-col relative justify-between items-center">
                 {/* logica de imagen */}
                 <div className=" lg:w-1/2 relative">
                 {imgURL && (
@@ -72,63 +65,64 @@ ring ring-green-500
 
 
                 {/* Aqui va la logica del parrafo y botones  */}
-                <div className=" lg:w-1/2">
-                    <div className=" lg:text-left xsm:text-center text-white lg:text-[36px] xsm:text-[32px]">
+                <div className="ring ring-blue-500 lg:w-1/2">
+                    <div className=" lg:text-left xsm:text-center lg:mt-0 xsm:mt-8 text-white lg:text-[36px] xsm:text-[32px]">
                         {textoTitulo && documentToReactComponents(textoTitulo)}
                     </div>
-                    <div className="lg:mt-5 xsm:mt-0">
+                    <div className="lg:mt-5 xsm:mt-5">
                         <p className=" lg:text-left xsm:text-center text-gray-200 lg:text-[18px] xsm:text-[16px]">
                             {bodyText}
                         </p>
                     </div>
 
-                    {/* Logica del boton y las imagenes de store */}
-                    <div className="ring ring-blue-500 flex flex-row lg:justify-between xsm:justify-center ">
-                    {/* Boton de SABER MAS que siempre estara visible  */}
-                    <div className="ring ring-red-500 flex lg:flex-row lg:items-end xsm:flex-col ">
-                    {esModal === "si" && (
-                        <ButtonGhost classStyles="border-white text-white text-[18px] leading-6 font-bold hover:!bg-white hover:!text-black 
-                        w-full rounded-md h-[48px] w-[256px]"
-                        text={textBoton1 as string}
-                        />
-                    )}
-                    {/* Boton de DESCARGAR LA APP que solo sera visible en pantallas pequeñas  */}
-                        <ButtonGhost classStyles="border-white text-black bg-white text-[18px] leading-6 font-bold hover:!bg-black hover:!text-white 
-                        lg:hidden    w-full rounded-md h-[48px] w-[256px]  "
-                        text={textBoton2 as string} href={linkBoton2 as string}
-                        />
-                    </div>
-
-                    {/* Logica de texto e imagenes en pantallas pequeñas */}
-                    <div className="ring ring-green-500 hidden lg:block">
-                        <p className="text-white">{textoDescarga}</p>
-
-                        <div className="flex flex-row">
-                        {imageStore1 && (
-                            <Image
-                            className=" object-contain"
-                            alt={'Images'}
-                            src={`https:${imageStore1}`}
-                            loading="lazy"
-                            width={135}
-                            height={40}
+                    {/* Logica de los botones y las imagenes de store */}
+                    <div className=" lg:mt-5 xsm:mt-0 flex flex-row lg:justify-between xsm:justify-center  md:gap-4 xsm:gap-0">
+                       
+                        {/* Boton de SABER MAS siempre estara visible  */}
+                        <div className=" flex lg:flex-row lg:items-end xsm:flex-col lg:mt-0 xsm:mt-10">
+                        {esModal === "si" && (
+                            <ButtonGhost classStyles="border-white text-white text-[18px] leading-6 font-bold hover:!bg-white hover:!text-black 
+                            w-full rounded-md h-[48px] 3xl:w-[256px] 2xl:w-[200px] xsm:w-[256px]"
+                            text={textBoton1 as string}
                             />
                         )}
-
-                        {imageStore2 && (
-                            <Image
-                            className=" object-contain"
-                            alt={'Images'}
-                            src={`https:${imageStore2}`}
-                            loading="lazy"
-                            width={120}
-                            height={40}
+                        {/* Boton de DESCARGAR LA APP que solo sera visible en pantallas pequeñas  */}
+                            <ButtonGhost classStyles="border-white text-black bg-white text-[18px] leading-6 font-bold hover:!bg-black hover:!text-white 
+                            lg:hidden    w-full rounded-md h-[48px] w-[256px]  mt-5"
+                            text={textBoton2 as string} href={linkBoton2 as string}
                             />
-                        )}
                         </div>
-                    </div>
 
-                </div>
+                        {/* Imagenes y texto en pantallas pequeñas se esconde */}
+                        <div className=" hidden lg:block">
+                            <p className="text-white">{textoDescarga}</p>
+
+                            <div className="mt-2 flex flex-row">
+                            {imageStore1 && (
+                                <Image
+                                className=" object-contain"
+                                alt={'Images'}
+                                src={`https:${imageStore1}`}
+                                loading="lazy"
+                                width={135}
+                                height={40}
+                                />
+                            )}
+
+                            {imageStore2 && (
+                                <Image
+                                className=" object-contain"
+                                alt={'Images'}
+                                src={`https:${imageStore2}`}
+                                loading="lazy"
+                                width={120}
+                                height={40}
+                                />
+                            )}
+                            </div>
+                        </div>
+
+                    </div>
 
 
                 </div>
