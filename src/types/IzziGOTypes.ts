@@ -1,7 +1,7 @@
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import { Document } from '@contentful/rich-text-types';
 
-export type BloqueSeparadorID = {
+export type IzziGoBloqueID = {
     id: string;
 }
 
