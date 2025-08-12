@@ -44,10 +44,10 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
     const imageStore2 = assetImageStore3?.fields?.file?.url;
 
     return(
-        <div className="ring ring-blue-500 bg-black relative md:h-[466px] xsm:h-[768px]">
+        <div className="ring ring-blue-500 bg-black relative  md:h-[466px] xsm:h-[768px]">
         <div className="ring ring-yellow-500 md:mx-md 2xl:mx-xl h-full content-center ">
             
-            <div key={getComponentContent.sys.id} className=" flex md:flex-row xsm:flex-col text-white relative justify-between md:gap-4 xsm:gap-8 items-center">
+            <div key={getComponentContent.sys.id} className=" flex md:flex-row xsm:flex-col relative justify-between items-center">
                 {/* logica de imagen */}
                 <div className="ring ring-red-500 md:w-1/2 relative">
                 {imgURL && (
@@ -65,27 +65,56 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
 
                 {/* Aqui va la logica del parrafo y botones  */}
                 <div className="ring ring-green-500 md:w-1/2">
-                <div className="text-white md:text-[36px] xsm:text-[32px]">
+                <div className=" md:text-left xsm:text-center text-white md:text-[36px] xsm:text-[32px]">
                     {textoTitulo && documentToReactComponents(textoTitulo)}
                 </div>
                 <div className="md:mt-5 xsm:mt-0">
-                    <p className="text-gray-200 md:text-[18px] xsm:text-[16px]">
+                    <p className=" md:text-left xsm:text-center text-gray-200 md:text-[18px] xsm:text-[16px]">
                         {bodyText}
                     </p>
                 </div>
                 <div className="">
                     {/* Boton de SABER MAS que siempre estara visible  */}
+                    <div>
                     {esModal === "si" && (
                         <ButtonGhost classStyles="border-white text-white text-[18px] leading-6 font-bold hover:!bg-white hover:!text-black 
-                        w-full rounded-md h-[48px] 3xl:w-[320px] xl:w-[250px] md:w-[170px] xsm:w-[320px] "
+                        w-full rounded-md h-[48px] w-[256px] "
                     text={textBoton1 as string}
                     />
                     )}
                     {/* Boton de DESCARGAR LA APP que solo sera visible en pantallas pequeñas  */}
                     <ButtonGhost classStyles="border-white text-black bg-white text-[18px] leading-6 font-bold hover:!bg-black hover:!text-white 
-                        w-full rounded-md h-[48px] 3xl:w-[320px] xl:w-[250px] md:w-[170px] xsm:w-[320px] "
+                    md:hidden    w-full rounded-md h-[48px] w-[256px]  "
                     text={textBoton2 as string} href={linkBoton2 as string}
                     />
+                    </div>
+
+                    {/* Logica del texto */}
+                    <div className="">
+                    <p className="text-white">{textoDescarga}</p>
+
+                    {imageStore1 && (
+                        <Image
+                        className=" object-contain"
+                        alt={'Images'}
+                        src={`https:${imageStore1}`}
+                        loading="lazy"
+                        width={135}
+                        height={40}
+                        />
+                    )}
+
+                    {imageStore2 && (
+                        <Image
+                        className=" object-contain"
+                        alt={'Images'}
+                        src={`https:${imageStore2}`}
+                        loading="lazy"
+                        width={120}
+                        height={40}
+                        />
+                    )}
+                    </div>
 
                 </div>
 
