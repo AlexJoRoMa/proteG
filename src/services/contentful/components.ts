@@ -61,3 +61,11 @@ export async function getCopyForComponent(componentName: string): Promise<Record
 
 
 }
+
+export async function fetchComponentByTypeModal(type: string, content_type: string) {
+    
+       return await contentfulClient.getEntries({
+          content_type: content_type,
+          'fields.type': type
+        });
+}
