@@ -106,6 +106,8 @@ if (Array.isArray(footerCarruselField) && footerCarruselField.length > 0) {
       // Crear el array de imágenes para este item
       const imageUrls = (carouselFooterRaw as Asset[]).map((img) => ({
         url: 'https:' + img?.fields?.file?.url,
+        width: (img?.fields?.file?.details && 'image' in img.fields.file.details && (img.fields.file.details as { image: { width?: number } }).image?.width) || 88,
+        height: (img?.fields?.file?.details && 'image' in img.fields.file.details && (img.fields.file.details as { image: { height?: number } }).image?.height) || 40,
       }));
       
       // Retornar un objeto con las imágenes y la leyenda
@@ -157,8 +159,8 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                   alt={`Banner ${index + 1}`}
                   className="select-none pointer-events-none transition-all w-full h-full md:h-[590px]"
                   loading="eager"
-                  width={402}
-                  height={328}
+                  width={image.width || 384}
+                  height={image.height || 216}
                   sizes="(max-width: 768px) 100vw, 80vw"
                 />
               </picture> 
@@ -212,8 +214,8 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                   {thumbnailImages.map((item, index) => (
                 <div key={index} className="relative">
                   <Image 
-                    width={88} 
-                    height={40} 
+                    width={item.width || 88} 
+                    height={item.height || 40} 
                     src={item.url} 
                     alt={`Imagen del carrusel ${index + 1}`} 
                     className="min-w-max"
@@ -254,8 +256,8 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                     {footerData.images.map((image, imgIndex) => (
                       <Image 
                         key={imgIndex}
-                        width={88} 
-                        height={40} 
+                        width={image.width || 88} 
+                        height={image.height || 40} 
                         src={image.url} 
                         alt={`Logo del footer ${heroIndex + 1}-${imgIndex + 1}`}  
                         loading="eager"
