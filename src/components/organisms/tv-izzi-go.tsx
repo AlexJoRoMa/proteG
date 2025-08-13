@@ -48,10 +48,12 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
         <div className=" bg-black relative  lg:h-[466px] md:h-[850px] xsm:h-[768px]">
         <div className=" md:mx-md 2xl:mx-xl h-full content-center ">
             
-            <div key={getComponentContent.sys.id} className=" flex lg:flex-row xsm:flex-col relative justify-between items-center">
+            <div key={getComponentContent.sys.id} className="  lg:h-full flex lg:flex-row xsm:flex-col relative justify-between items-center">
                 {/* logica de imagen */}
-                <div className=" lg:w-1/2 relative">
+                <div className=" lg:w-1/2 lg:h-full flex justify-center items-center">
+                
                 {imgURL && (
+                    <div className=" lg:max-w-[580px] lg:max-h-[465px]  xsm:max-w-[402px] xsm:max-h-[318px] xsm:min-w-[320px] xsm:min-h-[252px]">
                     <Image
                     className=" object-contain"
                     alt={'Images'}
@@ -60,6 +62,7 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
                     width={589}
                     height={466}
                     />
+                    </div>
                 )}
                 </div>
 
@@ -76,13 +79,13 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
                     </div>
 
                     {/* Logica de los botones y las imagenes de store */}
-                    <div className=" lg:mt-5 xsm:mt-0 flex flex-row lg:justify-between xsm:justify-center  md:gap-4 xsm:gap-0">
+                    <div className=" lg:mt-5 xsm:mt-0 flex flex-row lg:justify-between xsm:justify-center lg:gap-4 xsm:gap-0">
                        
                         {/* Boton de SABER MAS siempre estara visible  */}
                         <div className=" flex lg:flex-row lg:items-end xsm:flex-col lg:mt-0 xsm:mt-10">
                         {esModal === "si" && (
                             <ButtonGhost classStyles="border-white text-white text-[18px] leading-6 font-bold hover:!bg-white hover:!text-black 
-                            w-full rounded-md h-[48px] 3xl:w-[256px] 2xl:w-[200px] xsm:w-[256px]"
+                            w-full rounded-md h-[48px] 3xl:w-[256px] lg:w-[200px] xsm:w-[256px]"
                             text={textBoton1 as string}
                             />
                         )}
@@ -99,25 +102,26 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
 
                             <div className="mt-2 flex flex-row">
                             {imageStore1 && (
+                                <div className="relative 3xl:w-30 2xl:w-23 lg:w-25 h-10">
                                 <Image
                                 className=" object-contain"
                                 alt={'Images'}
                                 src={`https:${imageStore1}`}
-                                loading="lazy"
-                                width={135}
-                                height={40}
+                                fill
                                 />
+                                </div>
                             )}
 
                             {imageStore2 && (
+                                <div className="relative 3xl:w-30 2xl:w-23 lg:w-25 h-10">
                                 <Image
                                 className=" object-contain"
                                 alt={'Images'}
                                 src={`https:${imageStore2}`}
                                 loading="lazy"
-                                width={120}
-                                height={40}
+                                fill
                                 />
+                                </div>
                             )}
                             </div>
                         </div>
