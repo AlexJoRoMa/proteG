@@ -6,8 +6,9 @@ import { CarouselProvider } from '@/utils/CarouselProvider'
 import { CarouselCardProps } from '@/types/CarouselCardTypes'
 import { contentfulClient } from '@/services/contentful/client'
 import { Asset, Entry, EntrySkeletonType } from 'contentful'
-import {CARDHOMECOMPONENT, CARDTVINTERNETMOVILCOMPONENT} from '@/constants/CardComponent';
+import {CARDHOMECOMPONENT, CARDTVINTERNETMOVILCOMPONENT, CARDTVPAQUETESCOMPONENT} from '@/constants/CardComponent';
 import CardTVInternetMovilComponent from '../molecules/CardTVInternetMovilComponent'
+import CardTvPaquetesComponent from '../molecules/CardTVPaquetesComponente';
 import { colorPickerType } from '@/types/ColorPickerType'
 
 const CarouselCardComponent = async ({id}:CarouselCardProps) => {
@@ -63,6 +64,9 @@ const CarouselCardComponent = async ({id}:CarouselCardProps) => {
                     }
                     else if (typeof card.fields.type === 'string' && CARDTVINTERNETMOVILCOMPONENT.includes(card.fields.type)) {
                       return <CardTVInternetMovilComponent key={index} card={card} />
+                    }
+                    else if (typeof card.fields.type === 'string' && CARDTVPAQUETESCOMPONENT.includes(card.fields.type)) {
+                      return <CardTvPaquetesComponent key={index} card={card} />
                     }
                     return null;
                   })
