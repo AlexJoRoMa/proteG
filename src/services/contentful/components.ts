@@ -1,3 +1,4 @@
+import { Entry, EntrySkeletonType } from 'contentful';
 import {contentfulClient} from './client';
 import { FilteredData } from "@/types/MicrocopyTypes";
     
@@ -8,6 +9,15 @@ export async function getAllCopy(componentName : string): Promise<FilteredData[]
         content_type: 'resourceSet',
         'fields.name': componentName,
         include: 2
+    });
+
+    return copy.items;
+}
+
+export async function getMicroCopy(key : string): Promise<Entry<EntrySkeletonType, undefined, string>[]> {
+    const copy = await contentfulClient.getEntries({
+        content_type: 'resource',
+        'fields.key': key
     });
 
     return copy.items;
@@ -50,4 +60,12 @@ export async function getCopyForComponent(componentName: string): Promise<Record
     return entries;
 
 
+}
+
+export async function fetchComponentByTypeModal(type: string, content_type: string) {
+    
+       return await contentfulClient.getEntries({
+          content_type: content_type,
+          'fields.type': type
+        });
 }
