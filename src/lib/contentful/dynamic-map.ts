@@ -9,6 +9,7 @@ import AccesoConfigurador from '@/components/organisms/acceso-configurador';
 import CoberturaModel from '@/components/organisms/cobertura-model';
 import TVBeneficiosProductos from '@/components/organisms/tv-beneficios-productos';
 import BloqueSeparador from '@/components/organisms/bloque-separador';
+import ConIzziTv from '@/components/organisms/tv-top-banner';
 
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
@@ -22,5 +23,6 @@ export const componentMap = {
   modelTvBeneficios: TVBeneficiosProductos,
   cardContainer: GenericProductCard,
   tvBloqueSeparador: BloqueSeparador,
+   modelIzziTV: ConIzziTv,
   cardsContratacionRapida: ContratacionRapida
 };
