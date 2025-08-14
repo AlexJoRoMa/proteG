@@ -95,7 +95,6 @@ export default function RecomendadorQuestionary() {
             });
 
             if (condicionesCumplidas) {
-                console.log('casos cumplidos para: ', caso.fields.resultado)
                 return caso.fields.resultado
             }
         }
@@ -111,7 +110,7 @@ export default function RecomendadorQuestionary() {
         if (a.length !== b.length) {
             return false
         }
-        
+
         return a.every((val, i) => val === b[i]);
     }
 

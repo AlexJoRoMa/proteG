@@ -10,7 +10,7 @@ export const useRecomendadorContent = () => {
     const ctx = useContext(recomendadorContext);
 
     if (!ctx) {
-        throw new Error('useRecomendadorContent se debe usar dentro del ConfiguradorProvider')
+        throw new Error('useRecomendadorContent se debe usar dentro del RecomendadorProvider')
     }
 
     return ctx;
@@ -19,18 +19,20 @@ export const useRecomendadorContent = () => {
 export const RecomendadorProvider = ({ 
     children, 
     contentfulEntry, 
-    casosRecomendador 
+    casosRecomendador,
+    casosError
 }: { 
     children: ReactNode, 
     contentfulEntry: Entry<EntrySkeletonType, undefined> | null, 
-    casosRecomendador: Entry<EntrySkeletonType, undefined>[] | null
+    casosRecomendador: Entry<EntrySkeletonType, undefined>[] | null,
+    casosError: {}
 }) => {
 
     const [userAnswers, setUserAnswers] = useState<UserAnswers>({});
     const [recomendation, setRecomendation] = useState<string | null>(null)
 
     return (
-        <recomendadorContext.Provider value={{contentfulEntry, casosRecomendador, userAnswers, setUserAnswers, recomendation, setRecomendation}}>
+        <recomendadorContext.Provider value={{contentfulEntry, casosRecomendador, casosError, userAnswers, setUserAnswers, recomendation, setRecomendation}}>
             {children}
         </recomendadorContext.Provider>
     )

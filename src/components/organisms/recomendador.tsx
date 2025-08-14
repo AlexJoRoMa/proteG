@@ -3,6 +3,7 @@ import RecomendadorQuestionary from "../molecules/recomendadorQuestionary"
 import { contentfulClient } from "@/services/contentful/client";
 import { RecomendadorProps } from "@/types/Recomendador";
 import { RecomendadorProvider } from "@/utils/RecomendadorProvider";
+import { getCopyForComponent } from "@/services/contentful/components";
 
 export default async function Recomendador({ id }: RecomendadorProps) {
 
@@ -24,8 +25,12 @@ export default async function Recomendador({ id }: RecomendadorProps) {
         return entriesResponse.items
     });
 
+    const errorRecomendador = await getCopyForComponent('Recomendador').then((entry) => {
+        return entry.recomendador;
+    });
+
     return (
-        <RecomendadorProvider contentfulEntry={recomendadorEntry} casosRecomendador={casosRecomendadorEntry}>
+        <RecomendadorProvider contentfulEntry={recomendadorEntry} casosRecomendador={casosRecomendadorEntry} casosError={errorRecomendador}>
             <div className="flex flex-col w-full bg-gray-50 py-[64px] px-[16px] md:px-0">
                 <RecomendadorQuestionary />
             </div>

@@ -96,11 +96,23 @@ export type PlanCardDataFields = {
     urlBtn2: string
 }
 
+export type ErrorData = {
+    error: {
+        button: {
+            text: string
+        },
+        subTitle1: string,
+        subTitle2: string,
+        title: string
+    }
+}
+
 // Provider
 
 export type DataFields = {
     contentfulEntry: Entry<EntrySkeletonType, undefined> | null,
-    casosRecomendador: Entry<EntrySkeletonType, undefined>[] | null
+    casosRecomendador: Entry<EntrySkeletonType, undefined>[] | null,
+    casosError: {}
     userAnswers: UserAnswers,
     setUserAnswers: React.Dispatch<React.SetStateAction<UserAnswers>>,
     recomendation: string | null,
