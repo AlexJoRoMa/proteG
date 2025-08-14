@@ -2,7 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import ButtonGhost from '../atoms/ButtonGhost'
 import { contentfulClient } from '@/services/contentful/client';
-import { Entry, EntrySkeletonType, Asset } from 'contentful';
+import { Asset } from 'contentful';
 import { CardPropType } from '@/types/CarouselCardsTypes';
 
 

@@ -4,9 +4,9 @@ import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import { notFound } from "next/navigation";
 
 interface DynamicPageProps {
-  params: {
+  params: Promise<{
     slugs: string[];
-  };
+  }>;
 }
 
 export default async function DynamicPage({ params }: DynamicPageProps) {
