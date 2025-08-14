@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
+    "build:stage": "cp .env.stage .env && next build",
+    "build:prod": "cp .env.production .env && next build",
     "start": "next start",
+    "start:stage": "cp .env.stage .env && next start",
+    "start:prod": "cp .env.production .env && next start",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "next lint"
