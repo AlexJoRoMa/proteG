@@ -23,6 +23,7 @@ export async function getMicroCopy(key : string): Promise<Entry<EntrySkeletonTyp
     return copy.items;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function setNestedValue(obj: any, path: string, value: string) {
     const keys = path.split('.');
     let current = obj;
