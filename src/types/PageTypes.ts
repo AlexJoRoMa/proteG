@@ -3,9 +3,9 @@ import { EntrySkeletonType } from "contentful";
 //dynamic page
 
 export type PageProps = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
 //not-found page

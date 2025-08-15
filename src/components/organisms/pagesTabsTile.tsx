@@ -1,6 +1,6 @@
 import { contentfulClient } from "@/services/contentful/client";
 import PageTabContent from "../molecules/pageTabContent";
-import { tabsTileProps, TabsDataFields, TabsContainerFields } from "@/types/TabsTypes";
+import { tabsTileProps, TabsDataFields } from "@/types/TabsTypes";
 import { Entry, EntrySkeletonType } from "contentful";
 
 export default async function PagesTabsTile({ id }: tabsTileProps) {
