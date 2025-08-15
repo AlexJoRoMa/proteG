@@ -29,7 +29,7 @@ export const CheckIcon = (props: any) => {
 export default function PlanesMovil({ step }: StepProps) {
 
     const content = useContent();
-    const plans = content.dataEntry?.movil && content.dataEntry?.movil;
+    const plans = content.configuradorEntry?.movil && content.configuradorEntry?.movil;
 
     const plansComponents = plans?.fields.components[0] as unknown as Entry<EntrySkeletonType, undefined, string> | null;
 
@@ -41,13 +41,13 @@ export default function PlanesMovil({ step }: StepProps) {
     const [selectedCard, setSelectedCard] = useState<ComponentsFields>();
 
     function handleSelect(cardId: string, card: ComponentsFields) {
-        setSelectedCardId((prev) => (prev === cardId ? null : cardId));
+        setSelectedCardId(cardId);
         setSelectedCard(card);
-        content.setUserAnswers &&
-            content.setUserAnswers(prev => ({
-                ...prev,
-                movil: card
-            }))
+        content.setUserAnswers(prev => ({
+            ...prev,
+            movil: card,
+            total: prev.total || 0 + card.fields.price|| 0
+        }))
     }
 
     //TODO: const data = contenfulData || integracionData || seleccion del usuario ;  <- data base, de integracion o del usuario

@@ -3,13 +3,7 @@
 import { ComponentsFields, DataFields, ProviderProps, UserAnswers } from "@/types/ConfiguradorTypes";
 import { createContext, useContext, useState } from "react";
 
-const initialCtx = {
-    pageEntry: null,
-    userAnswers: {},
-    setUserAnswers: () => {}
-
-}
-const configuradorContext = createContext<DataFields>(initialCtx);
+const configuradorContext = createContext<DataFields | undefined>(undefined);
 
 export const useContent = () => {
     const ctx = useContext(configuradorContext);
@@ -19,18 +13,30 @@ export const useContent = () => {
     return ctx;
 }
 
-export const ConfiguradorProvider = ({ children, value }: ProviderProps) => {
+export const ConfiguradorProvider = ({
+    children,
+    configuradorEntry,
+    copysResumen,
+    resumenIcon,
+    ottsImages
+}: ProviderProps) => {
 
-    const serviceKeys = Object.keys(value.dataEntry ?? {});
+    const [userAnswers, setUserAnswers] = useState<UserAnswers>({})
+    const [checkedPromotions, setCheckedPromotions] = useState<boolean>(false);
 
-    const initialUserAnswers: UserAnswers = serviceKeys.reduce((acc, key) => {
-        acc[key] = {} as ComponentsFields;
-        return acc;
-    }, {} as UserAnswers);
-
-    const [userAnswers, setUserAnswers] = useState<UserAnswers>(initialUserAnswers)
     return (
-        <configuradorContext.Provider value={{...value, userAnswers, setUserAnswers}}>
+        <configuradorContext.Provider 
+            value={{ 
+                configuradorEntry, 
+                copysResumen, 
+                resumenIcon, 
+                userAnswers, 
+                setUserAnswers, 
+                checkedPromotions, 
+                setCheckedPromotions, 
+                ottsImages }
+            }
+        >
             {children}
         </configuradorContext.Provider>
     )

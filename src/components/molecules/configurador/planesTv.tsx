@@ -1,6 +1,6 @@
 'use client'
 
-import AccordionPlanesExtras from "@/components/atoms/accordionPlanesExtras";
+import AccordionPlanesExtras from "@/components/molecules/configurador/accordionPlanesExtras";
 import { ComponentsFields, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
@@ -30,7 +30,7 @@ export const CheckIcon = (props: any) => {
 export default function PlanesTv({ step }: StepProps) {
 
     const content = useContent();
-    const plans = content.dataEntry?.tv && content.dataEntry?.tv;
+    const plans = content.configuradorEntry?.tv && content.configuradorEntry?.tv;
 
     const plansInfo = plans?.fields.components as unknown as ComponentsFields[];
 
@@ -40,11 +40,14 @@ export default function PlanesTv({ step }: StepProps) {
     function handleSelect(index: number, card: ComponentsFields) {
         setSelectedIndex(index);
         setSelectedCard(card);
-        content.setUserAnswers &&
-            content.setUserAnswers(prev => ({
-                ...prev,
-                tv: card
-            }))
+        content.setUserAnswers(prev => ({
+            ...prev,
+            tv: {
+                ...prev.tv,
+                paquete: card,
+            },
+            total: prev.total || 0 + card.fields.price || 0
+        }))
     }
 
     //TODO: const data = contenfulData || integracionData || seleccion del usuario ;  <- data base, de integracion o del usuario

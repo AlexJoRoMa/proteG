@@ -28,7 +28,7 @@ export const CheckIcon = (props: any) => {
 export default function PlanesInternet({ step }: StepProps) {
 
     const content = useContent();
-    const entryData = content.dataEntry?.internet && content.dataEntry?.internet;
+    const entryData = content.configuradorEntry?.internet && content.configuradorEntry?.internet;
     const plans = entryData?.fields;
 
     const plansInfo = plans?.components as unknown as ComponentsFields[];
@@ -39,14 +39,12 @@ export default function PlanesInternet({ step }: StepProps) {
     function handleSelect(index: number, card: ComponentsFields) {
         setSelectedIndex(index);
         setSelectedCard(card);
-        content.setUserAnswers &&
-            content.setUserAnswers(prev => ({
-                ...prev,
-                internet: card
-            }))
+        content.setUserAnswers(prev => ({
+            ...prev,
+            internet: card,
+            total: prev.total || 0 + card.fields.price || 0
+        }))
     }
-
-    //TODO: const data = contenfulData || integracionData || seleccion del usuario ;  <- data base, de integracion o del usuario
 
     return (
         <div className="flex flex-col gap-[24px]">

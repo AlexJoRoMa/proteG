@@ -32,6 +32,7 @@ export interface ConfigDataFields {
 }
 
 export interface ComponentsFields {
+    paquete: ComponentsFields;
     fields: ComponentsFields,
     sys: {
         id: string
@@ -46,6 +47,37 @@ export interface ComponentsFields {
     subTitle: string,
     title: string,
     ctaText: string
+}
+
+export interface ResumenIcon {
+    altText: string,
+    internalName: string,
+    image: {
+        fields: {
+            title: string,
+            description: string,
+            file: {
+                url: string
+            }
+        }
+    }
+}
+
+export interface OttsImages {
+    internalName: string,
+    type: string,
+    ottImage: {
+        fields: {
+            altText: string,
+            image: {
+                fields: {
+                    file: {
+                        url: string
+                    }
+                }
+            }
+        }
+    }
 }
 
 //entryTabs
@@ -66,18 +98,41 @@ export interface ConfigTabsFields {
 
 export type ProviderProps = {
     children: ReactNode,
-    value: DataFields,
+    configuradorEntry: Record<string, EntrySkeletonType<ConfigDataFields>>,
+    copysResumen: {},
+    resumenIcon:EntrySkeletonType<ResumenIcon>,
+    ottsImages: Entry<EntrySkeletonType<OttsImages>>[]
+
 }
 
 export type DataFields = {
-    pageEntry?: Entry<EntrySkeletonType, undefined> | null,
-    dataEntry?: Record<string, EntrySkeletonType<ConfigDataFields>>
-    dataResumen?: {},
-    userAnswers?: Record<string, ComponentsFields>,
-    setUserAnswers?: React.Dispatch<React.SetStateAction<Record<string, ComponentsFields>>>
+    configuradorEntry?: Record<string, EntrySkeletonType<ConfigDataFields>>
+    copysResumen?: {},
+    userAnswers: UserAnswers,
+    setUserAnswers: React.Dispatch<React.SetStateAction<UserAnswers>>,
+    checkedPromotions: boolean,
+    setCheckedPromotions: React.Dispatch<React.SetStateAction<boolean>>,
+    resumenIcon: EntrySkeletonType<ResumenIcon>,
+    ottsImages: Entry<EntrySkeletonType<OttsImages>>[]
 }
 
-export type UserAnswers = Record<string, ComponentsFields>
+export interface UserAnswers {
+    total?: number,
+    internet?: ComponentsFields,
+    movil?: ComponentsFields,
+    tv?: {
+        seleccion?: ComponentsFields,
+        ott?: OttProps[]
+    }
+}
+
+export type OttProps = {
+    id: string,
+    title: string,
+    description: string,
+    price: number,
+    term: string
+}
 
 // Resumen de Compra
 
@@ -99,5 +154,9 @@ export type ResumenData = {
     total: {
         sinDescuentos: string,
         titulo: string
+    },
+    promociones: {
+        titulo: string,
+        textoAhorro: string
     }
 }

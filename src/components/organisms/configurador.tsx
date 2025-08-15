@@ -1,5 +1,5 @@
 import { contentfulClient } from "@/services/contentful/client";
-import { ConfigDataFields, ConfiguradorProps } from "@/types/ConfiguradorTypes";
+import { ConfigDataFields, ConfiguradorProps, OttsImages, ResumenIcon } from "@/types/ConfiguradorTypes";
 import { Entry, EntrySkeletonType } from "contentful";
 import { ConfiguradorProvider } from "@/utils/ConfiguradorProvider";
 import { componentMap } from "@/lib/configurador/dynamic-map";
@@ -22,10 +22,24 @@ export default async function Configurador({ id }: ConfiguradorProps) {
         return entriesResponse.items[0]
     });
 
-    const dataResumen = await getCopyForComponent('Resumen-de-Compra').then((entry) => {
+    const resumenIcon = await contentfulClient.getEntries({
+        content_type: 'media',
+        'fields.internalName': 'Resumen-Icono-Promociones',
+        include: 5,
+    }).then((entriesResponse) => {
+        return entriesResponse.items[0]
+    }) as unknown as EntrySkeletonType<ResumenIcon>;
+
+        const ottImages: Entry<EntrySkeletonType<OttsImages>>[] = await contentfulClient.getEntries({
+        content_type: 'OttsImagesContainer',
+        include: 5
+    }).then((entriesResponse) => {
+        return entriesResponse.items
+    }) as unknown as Entry<EntrySkeletonType<OttsImages>>[];
+
+    const copysResumen = await getCopyForComponent('Resumen-de-Compra').then((entry) => {
         return entry.resumen
     });
-    console.log('resumen', dataResumen)
 
     const entryBackButton = pageEntry?.fields.backText as string;
     const entryBackButtonUrl = pageEntry?.fields.backTextUrl as string;
@@ -35,16 +49,23 @@ export default async function Configurador({ id }: ConfiguradorProps) {
 
     const components = pageEntry?.fields.steps as unknown as EntrySkeletonType<ConfigDataFields>[] | null;
 
-    const dataEntry: Record<string, EntrySkeletonType<ConfigDataFields>> = {};
+    const configuradorEntry: Record<string, EntrySkeletonType<ConfigDataFields>> = {};
 
     if (components && components !== null) {
         for (const item of components) {
-            dataEntry[item.fields.type] = item
+            configuradorEntry[item.fields.type] = item
         }
     }
+    console.log('entry', configuradorEntry)
+    console.log('otts', ottImages)
 
     return (
-        <ConfiguradorProvider value={{ dataEntry, dataResumen }}>
+        <ConfiguradorProvider 
+            configuradorEntry={configuradorEntry} 
+            copysResumen={copysResumen} 
+            resumenIcon={resumenIcon} 
+            ottsImages ={ottImages}
+        >
             <div className="flex flex-col md:grid md:grid-cols-3 gap-[24px] md:mx-md 2xl:mx-xl">
                 <div className="md:col-span-2">
                     <div className="flex flex-col pb-[16px] md:pb-[24px] mx-[16px] md:mx-0 font-[family-name:var(--lato)]">
@@ -79,7 +100,6 @@ export default async function Configurador({ id }: ConfiguradorProps) {
                             <h4 className='font-normal text-lg leading-[24px]'>{entryHelp}</h4>
                             <h5 className="text-base leading-[24px] font-bold underline">{entryCTA}</h5>
                         </div>
-                        {/* //TODO: Agregar sticky al final con boton contratar (mobile) */}
                         {/* //TODO: Abrir drawer al hacer click en botón "¿Te ayudamos?" */}
                     </div>
                 </div>
