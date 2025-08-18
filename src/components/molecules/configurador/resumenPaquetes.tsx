@@ -1,33 +1,80 @@
-import { ComponentsFields } from "@/types/ConfiguradorTypes";
+import { ComponentsFields, internetComponentFields, movilComponentFields, ResumenData, tvComponentFields } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider"
+import { useEffect, useState } from "react";
 
 export default function ResumenPaquetes() {
 
     const content = useContent();
+    const [seleccionUsuario, setSeleccionUsuario] = useState("");
 
     const paquetes = content.userAnswers as unknown as Record<string, ComponentsFields>;
     console.log('paquetes', paquetes)
 
-    const internet = paquetes.internet;
-    const tv = paquetes.tv;
-    const movil = paquetes.movil;
+    const resumenCopys = content.copysResumen as ResumenData;
+    const internet = paquetes.internet as unknown as internetComponentFields;
+    const tv = paquetes.tv as unknown as tvComponentFields;
+    const movil = paquetes.movil as unknown as movilComponentFields;
+
+    useEffect(() => {
+        setSeleccionUsuario(seleccionPaquetes(paquetes));
+    }, [paquetes])
+
+    function seleccionPaquetes(obj: any) {
+        switch (true) {
+            case !!obj?.internet && !!obj.tv && !!obj.movil:
+                return resumenCopys.seleccionPaquetes["4p"]
+
+            case !!obj?.internet && !!obj?.tv:
+                return resumenCopys.seleccionPaquetes["internet&tv"]
+
+            case !!obj?.internet && !!obj?.movil:
+                return resumenCopys.seleccionPaquetes["internet&movil"]
+
+            case !!obj?.tv && !!obj?.movil:
+                return resumenCopys.seleccionPaquetes["tv&movil"]
+
+            case !!obj?.internet:
+                return resumenCopys.seleccionPaquetes.internet
+
+            case !!obj?.tv:
+                return resumenCopys.seleccionPaquetes.tv
+
+            case !!obj?.movil:
+                return resumenCopys.seleccionPaquetes.movil
+
+            default:
+                return ""
+        }
+    }
+
+    // console.log('seleccion', seleccionUsuario)
+
 
     return (
         <>
             {
+                <div className="flex justify-between w-full font-bold leading-[24px] text-lg pt-[24px]">
+                    <h5>{seleccionUsuario}</h5>
+                    <h5>$XXXX</h5>
+                </div>
+            }
+            {
                 (internet && internet !== null && Object.keys(internet).length > 0) &&
                 <div className="flex flex-col gap-[24px] border-b-1 border-b-gray-150 pt-[24px]">
                     <div className="flex justify-between w-full font-bold leading-[24px] text-lg">
-                        <h5>Internet</h5>
-                        <h5>Precio promocional</h5>
+                        <h5>{resumenCopys.paquetes.internet.titulo}</h5>
+                        <h5>$XXXX</h5>
                     </div>
 
-                    <div className="flex-flex-col gap-[8px] pb-[8px] w-[90%] font-normal leading-[24px] text-base text-gray-250">
+                    <div className="flex-flex-col gap-[8px] mb-[24px] w-[90%] font-normal leading-[24px] text-base text-gray-250">
                         <p>
-                            {`Internet de ${internet.fields.minCapacityInternet}MB`}
+                            {`${resumenCopys.paquetes.internet.prevCapacidad} ${internet.paquete.fields.minCapacityInternet}${resumenCopys.paquetes.internet.postCapacidad}`}
                         </p>
                         <p>
-                            {`Durante los 6 primeros meses contarás con ${internet.fields.maxCapacityInternet}`}
+                            {`${resumenCopys.paquetes.internet.infoAdicional} ${internet.paquete.fields.maxCapacityInternet.trim()}`}
+                        </p>
+                        <p>
+                            {internet.paquete.fields.subTitle}
                         </p>
                     </div>
                 </div>
@@ -36,48 +83,57 @@ export default function ResumenPaquetes() {
             {
                 (tv && tv !== null && Object.keys(tv).length > 0) &&
                 <div className="flex flex-col">
-                    <div className="flex flex-col gap-[24px] border-b-1 border-b-gray-150 pt-[24px]">
+                    <div className="flex flex-col gap-[8px] border-b-1 border-b-gray-150 pt-[24px]">
                         <div className="flex justify-between w-full font-bold leading-[24px] text-lg">
                             <h5>{tv.paquete.fields.title}</h5>
                             <h5>{`$${tv.paquete.fields.discountPrice ? tv.paquete.fields.discountPrice : tv.paquete.fields.price}`}</h5>
                         </div>
 
-                        <div className="flex-flex-col gap-[8px] pb-[8px] w-[90%] font-normal leading-[24px] text-base text-gray-250">
-                            <p>
-                                {`Incluye ${tv.paquete.fields.subTitle}`}
-                            </p>
-                            <p>
-                                {"Entrega a domicilio"}
-                            </p>
-                            <p>
-                                {"Contrato a 12 meses"}
-                            </p>
-                        </div>
+                        <p className="mb-[24px] w-full font-normal leading-[24px] text-base text-gray-250">
+                            {`${resumenCopys.paquetes.tv.preCanales} ${tv.paquete.fields.subTitle} ${resumenCopys.paquetes.tv.postCanales}`}
+                        </p>
                     </div>
 
-                    <div className="py-[24px] border-b-1 border-b-gray-150">
-                        <div className="flex justify-between items-center w-full font-bold leading-[24px] text-lg">
-                            <h5>{"OTTS"}</h5>
-                            <h5>$XXXX</h5>
+                    {(tv.ott?.planes && tv.ott?.planes.length > 0) &&
+                        <div className="flex flex-col gap-[8px] pt-[24px] border-b-1 border-b-gray-150">
+                            <div className="flex justify-between items-center w-full font-bold leading-[24px] text-lg">
+                                <h5>{resumenCopys.paquetes.tv.ott.titulo}</h5>
+                                <h5>{`$${tv.ott?.total}`}</h5>
+                            </div>
+                            <div className="flex flex-col gap-[8px] pb-[24px]">
+                                {tv.ott?.planes.map((item, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex justify-between w-full font-normal leading-[24px] text-lg"
+                                    >
+                                        <h5>
+                                            {`+ ${item.id} (${item.title})`}
+                                        </h5>
+                                        <h5>
+                                            {`$${item.price}`}
+                                        </h5>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
             }
 
             {
                 (movil && movil !== null && Object.keys(movil).length > 0) &&
-                <div className="flex flex-col gap-[24px] border-b-1 border-b-gray-150 pt-[24px]">
+                <div className="flex flex-col gap-[8px] border-b-1 border-b-gray-150 pt-[24px]">
                     <div className="flex justify-between w-full font-bold leading-[24px] text-lg">
-                        <h5>{`Línea móvil ${movil.fields.title}`}</h5>
-                        <h5>{`$${tv.fields.discountPrice ? tv.fields.discountPrice : tv.fields.price}`}</h5>
+                        <h5>{resumenCopys.paquetes.movil.titulo}</h5>
+                        <h5>{`$${movil.paquete.fields.discountPrice ? movil.paquete.fields.discountPrice : movil.paquete.fields.price}`}</h5>
                     </div>
 
-                    <div className="flex-flex-col gap-[8px] pb-[8px] w-[90%] font-normal leading-[24px] text-base text-gray-250">
+                    <div className="flex-flex-col gap-[8px] pb-[24px] w-full font-normal leading-[24px] text-base text-gray-250">
                         <p>
-                            {"Sin portabilidad"}
+                            {movil.paquete.fields.title.toLowerCase()}
                         </p>
                         <p>
-                            {"Entrega a domicilio"}
+                            {movil.contrato}
                         </p>
                     </div>
                 </div>

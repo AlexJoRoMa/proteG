@@ -45,7 +45,10 @@ export default function PlanesMovil({ step }: StepProps) {
         setSelectedCard(card);
         content.setUserAnswers(prev => ({
             ...prev,
-            movil: card,
+            movil: {
+                paquete: card,
+                contrato: selectedTabKey,
+            },
             total: prev.total || 0 + card.fields.price|| 0
         }))
     }
@@ -101,7 +104,7 @@ export default function PlanesMovil({ step }: StepProps) {
                                         isPressable
                                         onPress={() => handleSelect(cardId, card)}
                                         classNames={{
-                                            base: "flex flex-col rounded-xs shadow-none h-auto w-full",
+                                            base: "flex flex-col rounded-xs shadow-none h-full w-full",
                                             header: "pt-[16px] pb-0",
                                             body: "py-0 h-[48px]",
                                             footer: "pb-[16px] mt-[16px] pt-0"

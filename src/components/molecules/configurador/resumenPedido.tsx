@@ -27,9 +27,7 @@ export default function ResumenPedido() {
 
     const content = useContent();
     const userAnswers = content.userAnswers;
-    const resumenCopys = content.copysResumen as ResumenData;
-
-    
+    const resumenCopys = content.copysResumen as ResumenData;    
 
     useEffect(() => {
         content.setCheckedPromotions(false)

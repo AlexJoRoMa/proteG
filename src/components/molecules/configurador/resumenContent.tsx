@@ -49,14 +49,14 @@ export default function ResumenContent() {
 
             {content.checkedPromotions &&
                 <>
-                    <div className="py-[12px] border-b-1 border-b-gray-150">
+                    <div className="py-[24px] border-b-1 border-b-gray-150">
                         <div className="flex justify-between items-center w-full font-normal leading-[24px] text-lg">
                             <h5>{resumenCopys.total.sinDescuentos}</h5>
                             <h5 className="font-bold">$XXXX</h5>
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-[24px] py-[12px] border-b-1 border-b-gray-150">
+                    <div className="flex flex-col gap-[8px] py-[24px] border-b-1 border-b-gray-150">
                         <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
                             <h5>{resumenCopys.ahorro.paquete}</h5>
                             <h5>-$XXXX</h5>
@@ -65,17 +65,9 @@ export default function ResumenContent() {
                             <h5>{resumenCopys.ahorro.domicilio}</h5>
                             <h5>-$XXXX</h5>
                         </div>
-                        <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
-                            <h5>{resumenCopys.ahorro.pagoAnticipado}</h5>
-                            <h5>-$XXXX</h5>
-                        </div>
-                    </div>
-
-                    <div className="py-[12px] border-b-1 border-b-gray-150">
-                        <div className="flex justify-between items-center w-full font-normal leading-[24px] text-lg">
-                            <h5>{resumenCopys.pagoPosterior}</h5>
-                            <h5 className="font-bold">$XXXX</h5>
-                        </div>
+                        <h5 className="w-full font-normal leading-[24px] text-base text-gray-250">
+                            {resumenCopys.ahorro.infoAdicional}
+                        </h5>
                     </div>
                 </>
             }

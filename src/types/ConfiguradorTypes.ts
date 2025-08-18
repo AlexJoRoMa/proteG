@@ -118,11 +118,19 @@ export type DataFields = {
 
 export interface UserAnswers {
     total?: number,
-    internet?: ComponentsFields,
-    movil?: ComponentsFields,
+    internet?: {
+        paquete?: ComponentsFields
+    },
+    movil?: {
+        paquete?: ComponentsFields,
+        contrato?: string,
+    },
     tv?: {
-        seleccion?: ComponentsFields,
-        ott?: OttProps[]
+        paquete?: ComponentsFields,
+        ott?: {
+            planes: OttProps[],
+            total: number
+        }
     }
 }
 
@@ -142,7 +150,8 @@ export type ResumenData = {
     ahorro: {
         domicilio: string,
         pagoAnticipado: string,
-        paquete: string
+        paquete: string,
+        infoAdicional: string
     },
     boton: {
         comprobarPromociones: string,
@@ -158,5 +167,61 @@ export type ResumenData = {
     promociones: {
         titulo: string,
         textoAhorro: string
+    },
+    paquetes: {
+        internet: {
+            infoAdicional: string,
+            postCapacidad: string,
+            prevCapacidad: string,
+            titulo: string
+        },
+        tv: {
+            titulo: string,
+            preCanales: string,
+            postCanales: string,
+            ott: {
+                titulo: string
+            }
+        },
+        movil: {
+            titulo: string
+        }
+    },
+    seleccionPaquetes: {
+        '4p': string,
+        internet: string,
+        'internet&movil': string,
+        'internet&tv': string,
+        movil: string,
+        tv: string,
+        'tv&movil': string
     }
+}
+
+export type internetComponentFields = {
+    paquete: EntrySkeletonType<ComponentsFields>,
+    total: number
+}
+
+export type tvComponentFields = {
+    ott?: {
+        planes: ottFields[],
+        total: number,
+    },
+    paquete: EntrySkeletonType<ComponentsFields>,
+    total: number
+}
+
+export type movilComponentFields = {
+    paquete: EntrySkeletonType<ComponentsFields>,
+    contrato: string,
+    total: number
+}
+
+export type ottFields = {
+    description: string,
+    id: string,
+    price: number,
+    term: string,
+    title: string
 }

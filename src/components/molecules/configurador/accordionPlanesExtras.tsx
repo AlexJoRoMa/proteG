@@ -101,18 +101,23 @@ export default function AccordionPlanesExtras() {
 
         content.setUserAnswers(prev => {
 
-            const prevOTT = prev.tv?.ott ?? [];
+            const prevOTT = prev.tv?.ott?.planes ?? [];
             const isAlreadySelected = prevOTT.includes(card) || prevOTT.some(item => item?.id === card?.id);
 
             const updateOTT = isAlreadySelected ?
                 prevOTT.filter(item => item !== card && item.title !== card.title) :
                 [...prevOTT, card]
 
+            const complementTotal = updateOTT.reduce((acc, item) => acc + Number(item.price), 0)
+
             return {
                 ...prev,
                 tv: {
                     ...prev.tv,
-                    ott: updateOTT,
+                    ott: {
+                        planes: updateOTT,
+                        total: complementTotal,
+                    }
                 },
             }
         }
