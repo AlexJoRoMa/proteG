@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "env:local": "node scripts/load-env.js local",
+    "env:development": "node scripts/load-env.js development", 
     "env:stage": "node scripts/load-env.js stage",
     "env:prod": "node scripts/load-env.js production",
     "build:dev": "npm run env:local && next build --turbopack",
