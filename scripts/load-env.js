@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const environment = process.argv[2] || 'local';
 const envFile = `.env.${environment}`;
-const targetFile = '.env';
+const targetFile = '.env.local'; // Cambiado para tener mayor prioridad
 
 // Función para verificar si el archivo existe
 if (!fs.existsSync(envFile)) {
@@ -25,7 +25,7 @@ try {
   // Copiar el archivo
   fs.copyFileSync(envFile, targetFile);
   console.log(`✅ Variables de entorno cargadas desde ${envFile}`);
-  console.log(`📄 Archivo copiado a ${targetFile}`);
+  console.log(`📄 Archivo copiado a ${targetFile} (alta prioridad)`);
   
   // Mostrar las variables que se cargaron (sin valores por seguridad)
   const envContent = fs.readFileSync(targetFile, 'utf8');
