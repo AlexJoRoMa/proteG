@@ -90,9 +90,9 @@ export default function AccordionPlanesExtras() {
     function handleSelect(card: OttProps) {
 
         setSelectedCard((prev) => {
-            const filtered = prev.some(item => item.id === card.id && item.title === card.title);
+            const cardSelected = prev.find(item => item.id === card.id);
 
-            if (filtered) {
+            if (cardSelected?.title === card.title) {
                 return prev.filter(item => !(item.id === card.id && item.title === card.title))
             }
 
@@ -107,9 +107,10 @@ export default function AccordionPlanesExtras() {
 
             let updateOTT: typeof prevOTT;
 
-            if (isAlreadySelected !== -1) {
-                updateOTT = [...prevOTT];
-                updateOTT[isAlreadySelected] = card;
+            if (isAlreadySelected !== -1 && prevOTT[isAlreadySelected].title === card.title) {
+                updateOTT = prevOTT.filter((_, i) => i !== isAlreadySelected);
+            } else if (isAlreadySelected !== -1) {
+                updateOTT = prevOTT.map((item, i) => i === isAlreadySelected ? card : item);
             } else {
                 updateOTT = [...prevOTT, card];
             }
