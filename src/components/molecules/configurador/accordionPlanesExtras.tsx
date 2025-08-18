@@ -85,28 +85,34 @@ export default function AccordionPlanesExtras() {
     const content = useContent();
     const ottsImages = content.ottsImages as unknown as EntrySkeletonType<OttsImages>[];
 
-    const [selectedCardId, setSelectedCardId] = useState<number[]>([]);
+    const [selectedCard, setSelectedCard] = useState<OttProps[]>([]);
 
-    function handleSelect(index: number, card: OttProps) {
+    function handleSelect(card: OttProps) {
 
-        setSelectedCardId((prev) => {
-            const alreadySelected = prev.includes(index);
+        setSelectedCard((prev) => {
+            const filtered = prev.some(item => item.id === card.id && item.title === card.title);
 
-            const updatePrev = alreadySelected ?
-                prev.filter(id => id !== index) :
-                [...prev, index]
+            if (filtered) {
+                return prev.filter(item => !(item.id === card.id && item.title === card.title))
+            }
 
-            return updatePrev
+            const newSelection = prev.filter(item => item.id !== card.id);
+            return [...newSelection, card];
         });
 
         content.setUserAnswers(prev => {
 
             const prevOTT = prev.tv?.ott?.planes ?? [];
-            const isAlreadySelected = prevOTT.includes(card) || prevOTT.some(item => item?.id === card?.id);
+            const isAlreadySelected = prevOTT.findIndex(item => item?.id === card?.id);
 
-            const updateOTT = isAlreadySelected ?
-                prevOTT.filter(item => item !== card && item.title !== card.title) :
-                [...prevOTT, card]
+            let updateOTT: typeof prevOTT;
+
+            if (isAlreadySelected !== -1) {
+                updateOTT = [...prevOTT];
+                updateOTT[isAlreadySelected] = card;
+            } else {
+                updateOTT = [...prevOTT, card];
+            }
 
             const complementTotal = updateOTT.reduce((acc, item) => acc + Number(item.price), 0)
 
@@ -142,13 +148,13 @@ export default function AccordionPlanesExtras() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-[16px] md:gap-[24px] auto-rows-fr">
 
                     {DUMMY_OTTS.map((ott, index) => {
-                        const isSelected = selectedCardId.includes(index);
+                        const isSelected = selectedCard.some(item => item.id === ott.id && item.title === ott.title);
 
                         return (
                             <Card
                                 key={index}
                                 isPressable
-                                onPress={() => handleSelect(index, ott)}
+                                onPress={() => handleSelect(ott)}
                                 classNames={{
                                     base: "flex flex-row gap-[8px] rounded-md shadow-none h-full w-full bg-[#F5F6F8] py-[17px] px-[16px] items-center justify-between",
                                     header: "p-0 w-[96px] h-auto",
