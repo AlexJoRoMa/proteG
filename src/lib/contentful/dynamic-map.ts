@@ -27,6 +27,6 @@ export const componentMap = {
   tvBloqueSeparador: BloqueSeparador,
   modelIzziTV: ConIzziTv,
   IzziGoBloque: IzziGoBloque,
-  canalesTV: TVCanalesSegmento,
+  tabCanalesTV: TVCanalesSegmento,
   cardsContratacionRapida: ContratacionRapida
 };
