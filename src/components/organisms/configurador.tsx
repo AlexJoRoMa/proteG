@@ -6,6 +6,7 @@ import { componentMap } from "@/lib/configurador/dynamic-map";
 import Link from "next/link";
 import { getCopyForComponent } from "@/services/contentful/components";
 import ResumenPedido from "../molecules/configurador/resumenPedido";
+import ResumenInfo from "../molecules/configurador/resumenInfo";
 
 export const Arrow =
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -30,7 +31,7 @@ export default async function Configurador({ id }: ConfiguradorProps) {
         return entriesResponse.items[0]
     }) as unknown as EntrySkeletonType<ResumenIcon>;
 
-        const ottImages: Entry<EntrySkeletonType<OttsImages>>[] = await contentfulClient.getEntries({
+    const ottImages: Entry<EntrySkeletonType<OttsImages>>[] = await contentfulClient.getEntries({
         content_type: 'OttsImagesContainer',
         include: 5
     }).then((entriesResponse) => {
@@ -56,15 +57,14 @@ export default async function Configurador({ id }: ConfiguradorProps) {
             configuradorEntry[item.fields.type] = item
         }
     }
-    console.log('entry', configuradorEntry)
-    console.log('otts', ottImages)
+    console.log('copy', copysResumen)
 
     return (
-        <ConfiguradorProvider 
-            configuradorEntry={configuradorEntry} 
-            copysResumen={copysResumen} 
-            resumenIcon={resumenIcon} 
-            ottsImages ={ottImages}
+        <ConfiguradorProvider
+            configuradorEntry={configuradorEntry}
+            copysResumen={copysResumen}
+            resumenIcon={resumenIcon}
+            ottsImages={ottImages}
         >
             <div className="flex flex-col md:grid md:grid-cols-3 gap-[24px] md:mx-md 2xl:mx-xl">
                 <div className="md:col-span-2">
@@ -103,8 +103,16 @@ export default async function Configurador({ id }: ConfiguradorProps) {
                         {/* //TODO: Abrir drawer al hacer click en botón "¿Te ayudamos?" */}
                     </div>
                 </div>
-                <div className="md:mt-[34px] sticky z-10 bottom-0 md:static md:top-auto md:z-0 shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)] md:shadow-none">
-                    <ResumenPedido />
+                <div className="md:mt-[34px] sticky z-10 bottom-0 md:static md:top-auto md:z-0">
+                    <div className="block md:hidden mx-[16px] mb-[16px] md:mx-0">
+                        <ResumenInfo />
+                    </div>
+                    <div className="shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)] md:shadow-none">
+                        <ResumenPedido />
+                    </div>
+                    <div className="hidden md:block mx-[16px] md:mx-0 md:mt-[24px]">
+                        <ResumenInfo />
+                    </div>
                 </div>
             </div>
         </ConfiguradorProvider>

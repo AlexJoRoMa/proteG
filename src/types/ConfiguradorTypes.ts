@@ -195,6 +195,34 @@ export type ResumenData = {
         movil: string,
         tv: string,
         'tv&movil': string
+    },
+    info: {
+        combinacion: {
+            prevPrice: string,
+            postPrice: string
+        },
+        existeCobertura: string,
+        portabilidad: string,
+        sinCobertura: {
+            titulo: string,
+            subtitulo: string
+        }
+    },
+    copyMobile: {
+        nuevoFlujo: string,
+        combinación:{
+            prePrice: string,
+            postPrice: string
+        },
+        paquetes: {
+            'internet&tv&movil': string,
+            internet: string,
+            'internet&movil': string,
+            'internet&tv': string,
+            movil: string,
+            tv: string,
+            'tv&movil': string
+        }
     }
 }
 
