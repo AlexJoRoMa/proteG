@@ -1,39 +1,34 @@
 import { Asset, Entry, EntrySkeletonType } from "contentful";
-import { Document } from '@contentful/rich-text-types';
+
+//CardData
+export interface CardSegmentoFields {
+  fields: CardSegmentoFields;
+  titulo?: string;
+  segmentoCanal?: Asset[];
+}
+
+//TabsData
+export interface TabsDataFields {
+  entryTitle: string;
+  cards: CardSegmentoFields[];
+}
+
+//TabsContainer
+export interface TabsContainerFields {
+  internalName: string;
+  tabs: TabsDataFields[];
+}
+
+//----Prop
+export type PageTabContentProps = {
+    tabsData: TabsDataFields[];
+}
 
 export type TVCanalesSegmentoID = {
-    id: string;
+    id: string,
 }
 
-interface MediaEntryFields {
-  image?: Asset;
+export type TabsContentProps = {
+    tabsData: EntrySkeletonType<TabsDataFields> | null
 }
 
-interface MediaEntrySkeleton extends EntrySkeletonType{
-  contentTypeId: 'media';
-  fields: MediaEntryFields;
-}
-
-export interface TVCanalesSegmentosFields {
-    titulo?: string;
-    segmentoCanal?: Entry<MediaEntrySkeleton>[];
-}
-
-export interface TVCanalesSegmentoSkeleton extends EntrySkeletonType{
-    contentTypeId: 'TVCanalesSegmentos';
-    fields: TVCanalesSegmentosFields;
-}
-
-export interface CanalesContenedorFields extends EntrySkeletonType{
-  tituloResaltado?: Document;
-  textoBoton1?: string;
-  linkBoton1?: string;
-  textoBoton2?: string;
-  linkBoton2?: string;
-  segmentosCanales?: Entry<TVCanalesSegmentoSkeleton>[];
-}
-
-export interface TVCanalesSkeleton extends EntrySkeletonType{
-  contentTypeId: 'tvCanalesContenedor';
-  fields: CanalesContenedorFields;
-}
