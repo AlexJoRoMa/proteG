@@ -22,7 +22,7 @@ const TVCanalesSegmento = async ({id} : TVCanalesSegmentoID) =>{
 
     return(
     <div className="bg-white">
-        <div className="ring ring-blue-500 md:mx-md 2xl:mx-xl mt-15 flex justify-between">
+        <div className=" md:mx-md 2xl:mx-xl mt-15 flex justify-between">
             <ButtonGhost classStyles="border-black text-black text-[18px] leading-6 font-bold hover:!bg-black hover:!text-white 
             w-full rounded-md h-[48px] w-[144px]"
             text="Text_Test" href="/"
@@ -35,10 +35,12 @@ const TVCanalesSegmento = async ({id} : TVCanalesSegmentoID) =>{
         
         
         
-        <div className="ring ring-red-500  flex flex-col w-full mt-10 self-center items-center">
-            <h1 className=" text-[36px] font-bold">{entryTitle}</h1>
-
+        <div className=" flex flex-col w-full mt-10 self-center items-center">
+            
+            <h1 className=" text-[36px] font-bold mb-10">{entryTitle}</h1>
+            
             <SegmentosCanales tabsData={entryData} />
+            
         </div>
     </div>
     );

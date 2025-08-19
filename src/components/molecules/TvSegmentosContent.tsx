@@ -19,12 +19,12 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
         fullWidth={true}
         defaultSelectedKey={defaultKey}
         classNames={{
-                tabContent: "group-data-[selected=true]:font-medium group-data-[selected=true]:text-black text-black lg:py-[20px] px-auto lg:w-[246px] whitespace-normal font-medium font-bold !rounded-t-sm leading-[24px] text-base",
+                tabContent: " group-data-[selected=true]:font-medium group-data-[selected=true]:text-black group-data-[selected=true]:font-bold  text-black lg:py-[20px] px-auto lg:w-[246px] whitespace-normal font-medium !rounded-t-sm leading-[24px] text-base",
                 panel: "bg-white w-full p-0",
-                tabList: "w-auto flex items-center pb-0 rounded-none overflow-y-hidden",
+                tabList: " w-auto flex items-center pb-0 rounded-none overflow-y-hidden",
                 cursor: "bg-white rounded-none rounded-t-sm",
-                base: "m-auto flex items-center justify-around",
-                tab: "h-[56px] lg:h-[48px] w-[118px] lg:w-full rounded-none"
+                base: "m-auto flex items-center justify-around ",
+                tab: "h-[56px] lg:h-[48px] w-[118px] lg:w-[400px] rounded-none"
             }}
         >
         {(item: EntrySkeletonType<TabsDataFields>) => (
@@ -38,7 +38,7 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
                             console.log('>>>>>> segmentoData', segmentoData);
                             return(
                                 <div key={segmentoItem.sys.id}>
-                                    <div>
+                                    <div className="border-gradient-verde">
                                         {/* titulo del segmento */}
                                         <div className="text-[20px] leading-[24px] font-bold">
                                             <p>{segmentoData.titulo}</p>
