@@ -36,8 +36,8 @@ export default function PageTabContent({ tabsData }: TabsContentProps) {
                                 const cardData = card?.fields as CardDataFields;
 
                                     return (
-                                        <div key={cardItem.sys.id} className="flex flex-col gap-[32px] items-center text-center lg:w-auto lg:py-[8px] flex-grow h-full">
-                                            <div className="flex flex-col flex-grow w-full gap-[32px]">
+                                        <div key={cardItem.sys.id} className="flex flex-col gap-[32px] items-center text-center lg:w-auto lg:py-[8px] grow h-full">
+                                            <div className="flex flex-col grow w-full gap-[32px]">
                                                 <div className=" flex justify-center w-full">
                                                     <Image
                                                         className="w-[64px] h-[64px] lg:w-[86px] lg:h-[86px]"

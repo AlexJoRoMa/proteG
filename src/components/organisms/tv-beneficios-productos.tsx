@@ -1,9 +1,8 @@
 import Image from "next/image";
-import { TVBeneficiosProductosID, configuradoCopyFields, StepTabEntrySkeleton, StepTabEntryFields } from '@/types/TVBeneficiosProductosTypes';
+import { TVBeneficiosProductosID, StepTabEntrySkeleton, StepTabEntryFields } from '@/types/TVBeneficiosProductosTypes';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
-import { getCopyForComponent } from '../../services/contentful/components';
 
 const TVBeneficiosProductos = async ({id} : TVBeneficiosProductosID) => {
     const callCardsContent:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
@@ -37,7 +36,7 @@ const TVBeneficiosProductos = async ({id} : TVBeneficiosProductosID) => {
             
             {/* componentes cards */}
             {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
-                const { titulo, botonText, esModal, linkBoton, imagen } = card.fields as StepTabEntryFields;
+                const { titulo, botonText, linkBoton, imagen } = card.fields as StepTabEntryFields;
                 
                 const assetImage = imagen?.fields?.image as Asset | undefined;
                 const imgURL = assetImage?.fields?.file?.url;
