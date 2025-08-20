@@ -2,15 +2,14 @@ import { Asset, Entry, EntrySkeletonType } from "contentful";
 
 //CardData
 export interface CardSegmentoFields {
-  fields: CardSegmentoFields;
   titulo?: string;
-  segmentoCanal?: Asset[];
+  segmentoCanal?: Entry<EntrySkeletonType<any>>[]
 }
 
 //TabsData
 export interface TabsDataFields {
   entryTitle: string;
-  cards: CardSegmentoFields[];
+  cards: Entry<EntrySkeletonType<CardSegmentoFields>>[];
 }
 
 //TabsContainer

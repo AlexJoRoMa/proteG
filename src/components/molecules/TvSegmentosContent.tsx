@@ -3,14 +3,15 @@
 import { Tabs, Tab, Card, CardBody } from "@heroui/react";
 import { TabsContentProps, TabsDataFields, CardSegmentoFields } from '@/types/TvCanalesSegmentosTypes';
 import Image from "next/image";
-import { Entry, EntrySkeletonType } from "contentful";
+import { Asset, Entry, EntrySkeletonType } from "contentful";
 
 export default function SegmentosCanales({ tabsData }: TabsContentProps) {
 
-    const cardsInfo = tabsData as unknown as EntrySkeletonType<TabsDataFields>[];
-    const defaultKey = cardsInfo?.[0]?.fields.entryTitle;
+    const cardsInfo = tabsData as unknown as Entry<EntrySkeletonType<TabsDataFields>>[] | undefined;
+    const defaultKey = cardsInfo?.[0]?.fields.entryTitle as string | undefined;
 
-    /* console.log('>>>>>> cardsInfo', cardsInfo); */
+
+    console.log('>>>>>> cardsInfo', cardsInfo);
     return(
         <Tabs
         aria-label="Dynamic tabs"
@@ -27,17 +28,19 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
                 tab: "h-[56px] lg:h-[48px] w-[118px] lg:w-[400px] rounded-none"
             }}
         >
-        {(item: EntrySkeletonType<TabsDataFields>) => (
-            <Tab key={item.fields.entryTitle} title={item.fields.entryTitle}>
+        {(item: Entry<EntrySkeletonType<TabsDataFields>>) => {
+            const tabTittle = item.fields.entryTitle as unknown as string ;
+            return(
+            <Tab key={tabTittle} title={tabTittle}>
                 <Card className="rounded-none  shadow-none md:mx-md 2xl:mx-xl">
                     <CardBody className="">
-                        {item.fields.cards.map((card) => {
-                            const segmentoItem = card as unknown as Entry<EntrySkeletonType<CardSegmentoFields>>;
+                        {Array.isArray(item.fields.cards) && item.fields.cards.map((card: Entry<EntrySkeletonType<CardSegmentoFields>>) => {
+                            
                             const segmentoData = card?.fields as CardSegmentoFields; 
 
                             console.log('>>>>>> segmentoData', segmentoData);
                             return(
-                                <div key={segmentoItem.sys.id}>
+                                <div key={card.sys.id}>
                                     <div className="border-gradient-verde">
                                         {/* titulo del segmento */}
                                         <div className="text-[20px] leading-[24px] font-bold">
@@ -46,7 +49,21 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
 
                                         {/* Grid de iconos */}
                                         <div className="ring ring-red-500">
+                                            {segmentoData.segmentoCanal && segmentoData.segmentoCanal.map((canalEntry: Entry<EntrySkeletonType>) =>{
+                                                const asset = canalEntry?.fields?.image as unknown as Asset;
+                                                const imgURL = asset?.fields?.file?.url;
 
+                                                return(
+                                                    <div key={canalEntry.sys.id}>
+                                                        <Image 
+                                                        src={`https:${imgURL}`}
+                                                        alt="algo"
+                                                        width={20}
+                                                        height={20}
+                                                        />
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
@@ -56,7 +73,7 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
                     </CardBody>
                 </Card>
             </Tab>
-        )}
+        );}}
         </Tabs>
     );
 }
