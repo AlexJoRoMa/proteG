@@ -6,6 +6,7 @@ export default function ResumenPaquetes() {
 
     const content = useContent();
     const [seleccionUsuario, setSeleccionUsuario] = useState("");
+    const [precioSeleccion, setPrecioSeleccion] = useState<number | undefined>(undefined)
 
     const paquetes = content.userAnswers as unknown as Record<string, ComponentsFields>;
     console.log('paquetes', paquetes)
@@ -17,6 +18,9 @@ export default function ResumenPaquetes() {
 
     useEffect(() => {
         setSeleccionUsuario(seleccionPaquetes(paquetes));
+        setPrecioSeleccion(
+            (internet?.total || 0) + (tv?.total || 0) + (tv?.ott?.total || 0) + (movil?.total || 0)
+        )
     }, [paquetes])
 
     function seleccionPaquetes(obj: any) {
@@ -55,7 +59,7 @@ export default function ResumenPaquetes() {
             {
                 <div className="flex justify-between w-full font-bold leading-[24px] text-lg pt-[24px]">
                     <h5>{seleccionUsuario}</h5>
-                    <h5>$XXXX</h5>
+                    <h5>{`$${precioSeleccion}`}</h5>
                 </div>
             }
             {
@@ -63,7 +67,9 @@ export default function ResumenPaquetes() {
                 <div className="flex flex-col gap-[24px] border-b-1 border-b-gray-150 pt-[24px]">
                     <div className="flex justify-between w-full font-bold leading-[24px] text-lg">
                         <h5>{resumenCopys.paquetes.internet.titulo}</h5>
-                        <h5>$XXXX</h5>
+                        <h5>
+                            {`$${internet.total}`}
+                        </h5>
                     </div>
 
                     <div className="flex-flex-col gap-[8px] mb-[24px] w-[90%] font-normal leading-[24px] text-base text-gray-250">

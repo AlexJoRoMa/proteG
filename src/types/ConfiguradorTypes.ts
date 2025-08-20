@@ -119,14 +119,17 @@ export type DataFields = {
 export interface UserAnswers {
     total?: number,
     internet?: {
-        paquete?: ComponentsFields
+        paquete?: ComponentsFields,
+        total?: number
     },
     movil?: {
         paquete?: ComponentsFields,
         contrato?: string,
+        total?: number,
     },
     tv?: {
         paquete?: ComponentsFields,
+        total?: number,
         ott?: {
             planes: OttProps[],
             total: number
@@ -210,6 +213,7 @@ export type ResumenData = {
     },
     copyMobile: {
         nuevoFlujo: string,
+        plazo: string,
         combinación:{
             prePrice: string,
             postPrice: string

@@ -48,8 +48,8 @@ export default function PlanesMovil({ step }: StepProps) {
             movil: {
                 paquete: card,
                 contrato: selectedTabKey,
+                total: card.fields.discountPrice ? Number(card.fields.discountPrice) || 0 : Number(card.fields.price) || 0
             },
-            total: prev.total || 0 + card.fields.price|| 0
         }))
     }
 
@@ -119,12 +119,23 @@ export default function PlanesMovil({ step }: StepProps) {
                                         <CardFooter>
                                             <div className="flex flex-col w-full gap-[8px]">
                                                 <div className="flex flex-row items-baseline text-start gap-[4px]">
-                                                    {card.fields.discountPrice && <p className="font-normal text-sm text-gray-200 line-through">{`$${card.fields.discountPrice}`}</p>}
-                                                    {card.fields.beforePrice && <p className="text-sm font-normal">{card.fields.beforePrice}</p>}
-                                                    <div className="flex flex-row items-baseline">
-                                                        <p className="text-lg font-bold">{`$${card.fields.price}`}</p>
-                                                        <p className="text-sm font-normal">{card.fields.afterPrice}</p>
-                                                    </div>
+                                                    {card.fields.discountPrice ?
+                                                        <>
+                                                            <p className="font-normal text-sm line-through text-gray-200">{`$${card.fields.price}`}</p>
+                                                            <div className="flex flex-row items-baseline">
+                                                                <p className="text-lg font-bold">{`$${card.fields.discountPrice}`}</p>
+                                                                <p className="text-sm font-normal">{card.fields.afterPrice}</p>
+                                                            </div>
+                                                        </>
+                                                        :
+                                                        <>
+                                                            {card.fields.beforePrice && <p className="text-sm font-normal">{card.fields.beforePrice}</p>}
+                                                            <div className="flex flex-row items-baseline">
+                                                                <p className="text-lg font-bold">{`$${card.fields.price}`}</p>
+                                                                <p className="text-sm font-normal">{card.fields.afterPrice}</p>
+                                                            </div>
+                                                        </>}
+
                                                 </div>
                                                 <div className="flex flex-row gap-[16px] items-center justify-between">
                                                     <p

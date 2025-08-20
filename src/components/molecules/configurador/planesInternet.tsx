@@ -42,9 +42,10 @@ export default function PlanesInternet({ step }: StepProps) {
         content.setUserAnswers(prev => ({
             ...prev,
             internet: {
-                paquete: card
-            },
-            total: prev.total || 0 + card.fields.price || 0
+                paquete: card,
+                total: Number(card.fields.price) || 0
+            }
+            
         }))
     }
 
