@@ -3,7 +3,7 @@
 import { ComponentsFields, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const CheckIcon = (props: any) => {
     return (
@@ -27,33 +27,45 @@ export const CheckIcon = (props: any) => {
 
 export default function PlanesInternet({ step }: StepProps) {
 
-    const content = useContent();
-    const entryData = content.configuradorEntry?.internet && content.configuradorEntry?.internet;
+    const { configuradorEntry, setUserAnswers, disabled, userAnswers } = useContent();
+    const entryData = configuradorEntry?.internet && configuradorEntry?.internet;
     const plans = entryData?.fields;
 
     const plansInfo = plans?.components as unknown as ComponentsFields[];
 
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-    const [selectedCard, setSelectedCard] = useState<ComponentsFields>();
 
     function handleSelect(index: number, card: ComponentsFields) {
         setSelectedIndex(index);
-        setSelectedCard(card);
-        content.setUserAnswers(prev => ({
+        setUserAnswers(prev => ({
             ...prev,
             internet: {
                 paquete: card,
                 total: Number(card.fields.price) || 0
             }
-            
+
         }))
     }
+
+    useEffect(() => {
+        if (disabled && (userAnswers.internet?.paquete !== null)) {
+            setSelectedIndex(null);
+            setUserAnswers(prev => ({
+                ...prev,
+                internet: undefined
+            }))
+        }
+    }, [disabled])
 
     return (
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
-                <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>{step}</p>
-                <h3 className='font-semibold text-xl leading-[24px]'>{plans?.title}</h3>
+                <p className={`w-[40px] h-[40px] ${!disabled ? 'text-white-0 bg-black-0' : 'text-gray-200 bg-gray-50'} rounded-full font-semibold text-base leading-[24px] flex justify-center items-center`}>
+                    {step}
+                </p>
+                <h3 className={`font-semibold text-xl leading-[24px] ${!disabled ? 'text-black-0' : 'text-gray-200'}`}>
+                    {plans?.title}
+                </h3>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-[16px] md:gap-[24px] auto-rows-fr">
@@ -67,8 +79,9 @@ export default function PlanesInternet({ step }: StepProps) {
                                 className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
                             >
                                 <Card
-                                    isPressable
+                                    isPressable={!disabled}
                                     onPress={() => handleSelect(index, card)}
+                                    isDisabled={disabled}
                                     classNames={{
                                         base: "flex flex-col rounded-xs shadow-none h-full w-full",
                                         header: "pt-[16px] pb-[8px]",

@@ -29,18 +29,16 @@ export const CheckIcon = (props: any) => {
 
 export default function PlanesTv({ step }: StepProps) {
 
-    const content = useContent();
-    const plans = content.configuradorEntry?.tv && content.configuradorEntry?.tv;
+    const { configuradorEntry, setUserAnswers, setDisabled } = useContent();
+    const plans = configuradorEntry?.tv && configuradorEntry?.tv;
 
     const plansInfo = plans?.fields.components as unknown as ComponentsFields[];
 
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-    const [selectedCard, setSelectedCard] = useState<ComponentsFields>();
 
     function handleSelect(index: number, card: ComponentsFields) {
         setSelectedIndex(index);
-        setSelectedCard(card);
-        content.setUserAnswers(prev => ({
+        setUserAnswers(prev => ({
             ...prev,
             tv: {
                 ...prev.tv,
@@ -48,6 +46,11 @@ export default function PlanesTv({ step }: StepProps) {
                 total: card.fields.discountPrice ? Number(card.fields.discountPrice) || 0 : Number(card.fields.price) || 0
             },
         }))
+        if (card.fields.title.includes('light')) {
+            setDisabled(true);
+        } else {
+            setDisabled(false);
+        }
     }
 
     //TODO: const data = contenfulData || integracionData || seleccion del usuario ;  <- data base, de integracion o del usuario
@@ -98,7 +101,7 @@ export default function PlanesTv({ step }: StepProps) {
                                             <div className="flex flex-row items-baseline text-start gap-[4px]">
                                                 {card.fields.discountPrice ?
                                                     <>
-                                                    <p className="font-normal text-sm line-through text-gray-200">{`$${card.fields.price}`}</p>
+                                                        <p className="font-normal text-sm line-through text-gray-200">{`$${card.fields.price}`}</p>
                                                         <div className="flex flex-row items-baseline">
                                                             <p className="text-lg font-bold">{`$${card.fields.discountPrice}`}</p>
                                                             <p className="text-sm font-normal">{card.fields.afterPrice}</p>

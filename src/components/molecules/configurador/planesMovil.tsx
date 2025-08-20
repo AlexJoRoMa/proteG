@@ -4,7 +4,7 @@ import { ComponentsFields, ConfigCardsFields, StepProps } from "@/types/Configur
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { Card, CardBody, CardFooter, CardHeader, Tab, Tabs } from "@heroui/react";
 import { Entry, EntrySkeletonType } from "contentful";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const CheckIcon = (props: any) => {
     return (
@@ -28,8 +28,8 @@ export const CheckIcon = (props: any) => {
 
 export default function PlanesMovil({ step }: StepProps) {
 
-    const content = useContent();
-    const plans = content.configuradorEntry?.movil && content.configuradorEntry?.movil;
+    const { configuradorEntry, setUserAnswers, disabled, userAnswers } = useContent();
+    const plans = configuradorEntry?.movil && configuradorEntry?.movil;
 
     const plansComponents = plans?.fields.components[0] as unknown as Entry<EntrySkeletonType, undefined, string> | null;
 
@@ -38,12 +38,10 @@ export default function PlanesMovil({ step }: StepProps) {
 
     const [selectedTabKey, setSelectedTabKey] = useState<string>(defaultKey);
     const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
-    const [selectedCard, setSelectedCard] = useState<ComponentsFields>();
 
     function handleSelect(cardId: string, card: ComponentsFields) {
         setSelectedCardId(cardId);
-        setSelectedCard(card);
-        content.setUserAnswers(prev => ({
+        setUserAnswers(prev => ({
             ...prev,
             movil: {
                 paquete: card,
@@ -53,16 +51,29 @@ export default function PlanesMovil({ step }: StepProps) {
         }))
     }
 
-    //TODO: const data = contenfulData || integracionData || seleccion del usuario ;  <- data base, de integracion o del usuario
-
+    useEffect(() => {
+        if (disabled && (userAnswers.internet?.paquete !== null)) {
+            setSelectedCardId(null);
+            setUserAnswers(prev => ({
+                ...prev,
+                movil: undefined
+            }))
+        }
+    }, [disabled])
 
     return (
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
-                <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>{step}</p>
-                <h3 className='font-semibold text-xl leading-[24px]'>{plans?.fields.title}</h3>
+                <p className={`w-[40px] h-[40px]  ${!disabled ? 'text-white-0 bg-black-0' : 'text-gray-200 bg-gray-50'} rounded-full font-semibold text-base leading-[24px] flex justify-center items-center`}>
+                    {step}
+                </p>
+                <h3 className={`font-semibold text-xl leading-[24px] ${!disabled ? 'text-black-0' : 'text-gray-200'}`}>
+                    {plans?.fields.title}
+                </h3>
             </div>
-            <h5 className="font-normal leading-[24px] text-base text-black-0">{plans?.fields.subTitle}</h5>
+            <h5 className={`font-normal leading-[24px] text-base ${!disabled ? 'text-black-0' : 'text-gray-200'}`}>
+                {plans?.fields.subTitle}
+            </h5>
             <div>
                 <div className="flex w-full flex-col">
                     <Tabs
@@ -73,6 +84,7 @@ export default function PlanesMovil({ step }: StepProps) {
                         fullWidth={true}
                         defaultSelectedKey={defaultKey}
                         selectedKey={selectedTabKey}
+                        isDisabled={disabled}
                         onSelectionChange={(key) => setSelectedTabKey(key as string)}
                         classNames={{
                             tabContent: "group-data-[selected=true]:font-semibold group-data-[selected=true]:text-black-0 text-black-0 px-auto whitespace-normal font-medium leading-[24px] text-base",
@@ -101,8 +113,9 @@ export default function PlanesMovil({ step }: StepProps) {
                                     className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
                                 >
                                     <Card
-                                        isPressable
+                                        isPressable={!disabled}
                                         onPress={() => handleSelect(cardId, card)}
+                                        isDisabled={disabled}
                                         classNames={{
                                             base: "flex flex-col rounded-xs shadow-none h-full w-full",
                                             header: "pt-[16px] pb-0",

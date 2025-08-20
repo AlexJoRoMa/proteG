@@ -115,22 +115,24 @@ export type DataFields = {
     resumenIcon: EntrySkeletonType<ResumenIcon>,
     ottsImages: Entry<EntrySkeletonType<OttsImages>>[],
     infoDrawerContent: string,
-    setInfoDrawerContent: React.Dispatch<React.SetStateAction<string>>
+    setInfoDrawerContent: React.Dispatch<React.SetStateAction<string>>,
+    disabled: boolean,
+    setDisabled: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export interface UserAnswers {
     total?: number,
     internet?: {
-        paquete?: ComponentsFields,
+        paquete?: ComponentsFields | {},
         total?: number
     },
     movil?: {
-        paquete?: ComponentsFields,
+        paquete?: ComponentsFields | null,
         contrato?: string,
         total?: number,
     },
     tv?: {
-        paquete?: ComponentsFields,
+        paquete?: ComponentsFields | null,
         total?: number,
         ott?: {
             planes: OttProps[],

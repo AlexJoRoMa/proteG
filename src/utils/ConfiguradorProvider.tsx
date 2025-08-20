@@ -24,6 +24,7 @@ export const ConfiguradorProvider = ({
     const [userAnswers, setUserAnswers] = useState<UserAnswers>({})
     const [checkedPromotions, setCheckedPromotions] = useState<boolean>(false);
     const [infoDrawerContent, setInfoDrawerContent] = useState<string>("");
+    const [disabled, setDisabled] = useState<boolean>(false);
 
     return (
         <configuradorContext.Provider
@@ -37,7 +38,9 @@ export const ConfiguradorProvider = ({
                 setCheckedPromotions,
                 ottsImages,
                 infoDrawerContent,
-                setInfoDrawerContent
+                setInfoDrawerContent,
+                disabled, 
+                setDisabled
             }
             }
         >
