@@ -23,18 +23,22 @@ export const ConfiguradorProvider = ({
 
     const [userAnswers, setUserAnswers] = useState<UserAnswers>({})
     const [checkedPromotions, setCheckedPromotions] = useState<boolean>(false);
+    const [infoDrawerContent, setInfoDrawerContent] = useState<string>("");
 
     return (
-        <configuradorContext.Provider 
-            value={{ 
-                configuradorEntry, 
-                copysResumen, 
-                resumenIcon, 
-                userAnswers, 
-                setUserAnswers, 
-                checkedPromotions, 
-                setCheckedPromotions, 
-                ottsImages }
+        <configuradorContext.Provider
+            value={{
+                configuradorEntry,
+                copysResumen,
+                resumenIcon,
+                userAnswers,
+                setUserAnswers,
+                checkedPromotions,
+                setCheckedPromotions,
+                ottsImages,
+                infoDrawerContent,
+                setInfoDrawerContent
+            }
             }
         >
             {children}

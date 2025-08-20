@@ -113,7 +113,9 @@ export type DataFields = {
     checkedPromotions: boolean,
     setCheckedPromotions: React.Dispatch<React.SetStateAction<boolean>>,
     resumenIcon: EntrySkeletonType<ResumenIcon>,
-    ottsImages: Entry<EntrySkeletonType<OttsImages>>[]
+    ottsImages: Entry<EntrySkeletonType<OttsImages>>[],
+    infoDrawerContent: string,
+    setInfoDrawerContent: React.Dispatch<React.SetStateAction<string>>
 }
 
 export interface UserAnswers {
@@ -211,10 +213,10 @@ export type ResumenData = {
             subtitulo: string
         }
     },
-    copyMobile: {
+    infoDrawer: {
         nuevoFlujo: string,
         plazo: string,
-        combinación:{
+        combinacion:{
             prePrice: string,
             postPrice: string
         },

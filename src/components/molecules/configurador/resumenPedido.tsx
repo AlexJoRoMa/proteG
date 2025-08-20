@@ -1,6 +1,6 @@
 'use client'
 
-import { ResumenData } from "@/types/ConfiguradorTypes";
+import { internetComponentFields, movilComponentFields, ResumenData, tvComponentFields } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider"
 import ResumenContent from "./resumenContent";
 import { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, useDisclosure } from "@heroui/react";
@@ -23,14 +23,45 @@ export const ArrowDownIcon = (props: any) => {
     )
 }
 
+function hasData(obj: unknown): boolean {
+    return !!obj && typeof obj === "object" && Object.keys(obj as object).length > 0;
+}
+
 export default function ResumenPedido() {
 
-    const content = useContent();
-    const userAnswers = content.userAnswers;
-    const resumenCopys = content.copysResumen as ResumenData;    
+    const { userAnswers, copysResumen, setCheckedPromotions, checkedPromotions, infoDrawerContent } = useContent();
+    const [infoPaquetes, setInfoPaquetes] = useState<string>("");
+
+    const resumenCopys = copysResumen as ResumenData;
+    const internet = userAnswers.internet as unknown as internetComponentFields | undefined;
+    const tv = userAnswers.tv as unknown as tvComponentFields | undefined;
+    const movil = userAnswers.movil as unknown as movilComponentFields | undefined;
+
 
     useEffect(() => {
-        content.setCheckedPromotions(false)
+        setCheckedPromotions(false);
+
+        if (hasData(internet) && !hasData(tv) && !hasData(movil)) {
+            setInfoPaquetes(resumenCopys.infoDrawer.paquetes.internet);
+        }
+        if (!hasData(internet) && !hasData(movil) && hasData(tv)) {
+            setInfoPaquetes(resumenCopys.infoDrawer.paquetes.tv);
+        }
+        if (!hasData(internet) && hasData(movil) && !hasData(tv)) {
+            setInfoPaquetes(resumenCopys.infoDrawer.paquetes.movil);
+        }
+        if (hasData(internet) && !hasData(movil) && hasData(tv)) {
+            setInfoPaquetes(resumenCopys.infoDrawer.paquetes["internet&tv"]);
+        }
+        if (hasData(internet) && hasData(movil) && !hasData(tv)) {
+            setInfoPaquetes(resumenCopys.infoDrawer.paquetes["internet&movil"]);
+        }
+        if (!hasData(internet) && hasData(movil) && hasData(tv)) {
+            setInfoPaquetes(resumenCopys.infoDrawer.paquetes["tv&movil"]);
+        }
+        if (hasData(internet) && hasData(movil) && hasData(tv)) {
+            setInfoPaquetes(resumenCopys.infoDrawer.paquetes["internet&tv&movil"]);
+        }
     }, [userAnswers])
 
     const newSelection = (userAnswers && userAnswers !== null && Object.keys(userAnswers).length > 0)
@@ -38,7 +69,7 @@ export default function ResumenPedido() {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     function CheckPromotions() {
-        content.setCheckedPromotions(true);
+        setCheckedPromotions(true);
         onOpen()
     }
 
@@ -61,12 +92,14 @@ export default function ResumenPedido() {
                             <div className="flex justify-between mb-[16px]">
                                 <div className="flex flex-col gap-[8px]">
                                     <div className="flex gap-[4px] font-normal text-base leading-[24px] text-gray-500 items-baseline">
-                                        <h3 className="font-extrabold text-[32px] leading-[32px] text-black-0">$XXXX</h3>
-                                        <h5>/mes</h5>
+                                        <h3 className="font-extrabold text-[32px] leading-[32px] text-black-0">
+                                            $XXXX
+                                        </h3>
+                                        <h5>{resumenCopys.infoDrawer.plazo}</h5>
                                         <p>|</p>
-                                        <h5 className="font-bold">Internet</h5>
+                                        <h5 className="font-bold">{infoPaquetes}</h5>
                                     </div>
-                                    <div className="font-bold">¡Combina para conseguir ahorros!</div>
+                                    <div className="font-bold">{infoDrawerContent}</div>
                                 </div>
                                 <button
                                     className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
@@ -75,7 +108,7 @@ export default function ResumenPedido() {
                                     <ArrowUpIcon />
                                 </button>
                             </div>
-                            {!content.checkedPromotions ?
+                            {!checkedPromotions ?
                                 <button
                                     className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
                                     onClick={() => CheckPromotions()}
@@ -124,7 +157,7 @@ export default function ResumenPedido() {
 
                                     <DrawerFooter>
                                         <div className="flex flex-col w-full">
-                                            {!content.checkedPromotions ?
+                                            {!checkedPromotions ?
                                                 <button
                                                     className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
                                                     onClick={() => CheckPromotions()}
