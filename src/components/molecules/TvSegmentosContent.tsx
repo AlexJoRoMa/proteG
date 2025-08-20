@@ -11,7 +11,6 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
     const defaultKey = cardsInfo?.[0]?.fields.entryTitle as string | undefined;
 
 
-    console.log('>>>>>> cardsInfo', cardsInfo);
     return(
         <Tabs
         aria-label="Dynamic tabs"
@@ -38,7 +37,6 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
                             
                             const segmentoData = card?.fields as CardSegmentoFields; 
 
-                            console.log('>>>>>> segmentoData', segmentoData);
                             return(
                                 <div key={card.sys.id}>
                                     <div className="border-gradient-verde">
