@@ -65,11 +65,11 @@ export const CarouselProvider = ({
   }
 
   const carousel1 = useEmblaCarousel(carouselConfigs[0]?.options || OPTIONS, resolvePlugins(carouselConfigs[0]?.plugins))
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  // eslint-disable-next-line react-hooks/rules-of-hooks, react-hooks/exhaustive-deps
   const carousel2 = qtyCarousels >= 2 ? useEmblaCarousel(carouselConfigs[1]?.options || OPTIONS, resolvePlugins(carouselConfigs[1]?.plugins)) : [null, undefined]
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  // eslint-disable-next-line react-hooks/rules-of-hooks, react-hooks/exhaustive-deps
   const carousel3 = qtyCarousels >= 3 ? useEmblaCarousel(carouselConfigs[2]?.options || OPTIONS, resolvePlugins(carouselConfigs[2]?.plugins)) : [null, undefined]
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  // eslint-disable-next-line react-hooks/rules-of-hooks, react-hooks/exhaustive-deps
   const carousel4 = qtyCarousels >= 4 ? useEmblaCarousel(carouselConfigs[3]?.options || OPTIONS, resolvePlugins(carouselConfigs[3]?.plugins)) : [null, undefined]
   
   // El carrusel activo se maneja con un índice

@@ -59,7 +59,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
               relative  flex md:flex-col xsm:flex-row items-center xsm:justify-center
                xl:w-[192px] lg:w-[184px] md:w-[128px] xsm:w-[355px] ">
                 
-                <div className=" items-center flex flex md:flex-col xsm:flex-row flex-shrink-0">
+                <div className=" items-center flex md:flex-col xsm:flex-row flex-shrink-0">
                   <div className=" flex items-center justify-center">
                     {imgURL && (
                       <Image
