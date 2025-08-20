@@ -45,6 +45,9 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
                                         </div>
 
                                         {/* Grid de iconos */}
+                                        <div className="ring ring-red-500">
+
+                                        </div>
                                     </div>
                                 </div>
                             )
