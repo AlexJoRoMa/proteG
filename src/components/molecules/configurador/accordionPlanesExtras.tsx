@@ -43,35 +43,40 @@ const DUMMY_OTTS = [
         title: "Estándar con anuncios",
         description: "1 pantalla HD",
         price: 119,
-        term: "al mes"
+        term: "al mes",
+        promo: true
     },
     {
         id: "Netflix",
         title: "Estándar",
         description: "2 pantalla FHD",
         price: 249,
-        term: "al mes"
+        term: "al mes",
+        promo: false
     },
     {
         id: "Netflix",
         title: "Premium",
         description: "4 pantalla 4K + HDR",
         price: 329,
-        term: "al mes"
+        term: "al mes",
+        promo: false
     },
     {
         id: "Disney",
         title: "Estándar",
         description: "Video HD",
         price: 249,
-        term: "al mes"
+        term: "al mes",
+        promo: false
     },
     {
         id: "Disney",
         title: "Disney + Premium Video",
         description: "UHD HDR",
         price: 319,
-        term: "al mes"
+        term: "al mes",
+        promo: false
     },
 ];
 
@@ -187,6 +192,18 @@ export default function AccordionPlanesExtras() {
                                 </CardBody>
                                 <CardFooter>
                                     <div className="flex flex-row gap-[8px] items-center justify-end">
+                                        {ott.promo && <span
+                                            className="
+                                                absolute top-0 right-0
+                                                w-5 h-5
+                                                bg-(--color--turquoise-450)
+                                                rounded-bl-[6px]
+                                                flex items-center justify-center
+                                                text-white text-sm
+                                                shadow-md">
+                                            %
+                                        </span>
+                                        }
                                         <div className="flex flex-col gap-[4px]">
                                             <h3 className="font-bold text-base leading-[24px]">{`+$${ott.price}`}</h3>
                                             <p className="font-normal text-sm leading-[16px]">{ott.term}</p>
