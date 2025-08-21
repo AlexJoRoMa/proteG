@@ -18,22 +18,22 @@ function hasData(obj: unknown): boolean {
 }
 
 export default function ResumenInfo() {
-    const { userAnswers, copysResumen, setInfoDrawerContent } = useContent();
+    const { userAnswers, copysResumen, setInfoDrawerContent, cobertura } = useContent();
     const resumenCopys = copysResumen as ResumenData;
 
     const internet = userAnswers.internet as unknown as internetComponentFields | undefined;
     const tv = userAnswers.tv as unknown as tvComponentFields | undefined;
     const movil = userAnswers.movil as unknown as movilComponentFields | undefined;
 
-    const cobertura = true;
     //TODO: tomar valor de cobertura del context
 
     const [notificationContent, setNotificationContent] = useState<{ title: string, description: string }>({ title: "", description: "" });
-    const [isFirstLoad, setIsFirstLoad] = useState({ configurador: true, tv: true });
+    const [isFirstLoad, setIsFirstLoad] = useState({ configurador: true, tv: true, tvLight: true, movil: true });
     const [isVisible, setIsVisible] = useState(false);
 
-    const showNotification = (title: string, description = "") => {
+    const showNotification = (title: string, description: string) => {
         setNotificationContent({ title, description });
+        console.log('info', title, description)
         setIsVisible(true);
 
         setTimeout(() => setIsVisible(false), 4000);
@@ -42,14 +42,19 @@ export default function ResumenInfo() {
     useEffect(() => {
         if (isFirstLoad.configurador) {
             if (cobertura) {
-                showNotification(resumenCopys.info.existeCobertura);
+                showNotification(resumenCopys.info.existeCobertura, "");
             } else {
                 showNotification(
                     resumenCopys.info.sinCobertura.titulo,
-                    resumenCopys.info.sinCobertura.subtitulo
+                    resumenCopys.info.sinCobertura.subTitulo
                 )
             }
-            setIsFirstLoad({ configurador: false, tv: true });
+            setIsFirstLoad((prev) => {
+                return {
+                    ...prev,
+                    configurador: false
+                }
+            });
             return;
         }
         if (cobertura) {
@@ -59,26 +64,87 @@ export default function ResumenInfo() {
             if (
                 (!hasData(internet) && !hasData(movil) && hasData(tv)) || (hasData(internet) && hasData(tv) && !hasData(movil))
             ) {
-                if (isFirstLoad.tv) {
-                    showNotification(`${resumenCopys.info.combinacion.prevPrice} $119 ${resumenCopys.info.combinacion.postPrice}`);
-                    setIsFirstLoad({ configurador: false, tv: false });
+                if (isFirstLoad.tv || isFirstLoad.tvLight) {
+                    if (tv?.paquete.fields.title.includes('light')) {
+                        isFirstLoad.tvLight &&
+                            showNotification(resumenCopys.info.tvLight, "");
+                        setIsFirstLoad((prev) => {
+                            return {
+                                ...prev,
+                                tvLight: false
+                            }
+                        });
+                    } else {
+                        isFirstLoad.tv &&
+                            showNotification(`${resumenCopys.info.combinacion.prevPrice} $XXXX ${resumenCopys.info.combinacion.postPrice}`, "");
+                        setIsFirstLoad((prev) => {
+                            return {
+                                ...prev,
+                                tv: false
+                            }
+                        });
+                    }
                 }
-                setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $119 ${resumenCopys.infoDrawer.combinacion.postPrice}`)
+                if (!(tv?.paquete.fields.title.includes('light'))) {
+                    setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $XXXX ${resumenCopys.infoDrawer.combinacion.postPrice}`)
+                } else {
+                    setInfoDrawerContent(resumenCopys.infoDrawer.nuevoFlujo)
+                }
             } else if (
                 hasData(internet) && hasData(tv) && hasData(movil)
             ) {
-                showNotification(resumenCopys.info.portabilidad);
-                setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $239 ${resumenCopys.infoDrawer.combinacion.postPrice}`)
+                if (isFirstLoad.movil) {
+                    showNotification(resumenCopys.info.portabilidad, "");
+                    setIsFirstLoad((prev) => {
+                        return {
+                            ...prev,
+                            movil: false
+                        }
+                    });
+                }
+                setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $XXXX ${resumenCopys.infoDrawer.combinacion.postPrice}`)
             } else {
                 setIsVisible(false);
             }
         } else {
             if ((!hasData(movil) && hasData(tv))) {
-                setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $90 ${resumenCopys.infoDrawer.combinacion.postPrice}`)
-                setInfoDrawerContent(resumenCopys.infoDrawer.nuevoFlujo)
-            } else if (hasData(tv) && hasData(movil)) {
-                showNotification(resumenCopys.info.portabilidad);
-                setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $90 ${resumenCopys.infoDrawer.combinacion.postPrice}`)
+                if (isFirstLoad.tv || isFirstLoad.tvLight) {
+                    if (tv?.paquete.fields.title.includes('light')) {
+                        isFirstLoad.tvLight &&
+                            showNotification(resumenCopys.info.tvLight, "")
+                        setIsFirstLoad((prev) => {
+                            return {
+                                ...prev,
+                                tvLight: false
+                            }
+                        });
+                        return;
+                    } else {
+                        isFirstLoad.tv &&
+                        setIsFirstLoad((prev) => {
+                            return {
+                                ...prev,
+                                tv: false
+                            }
+                        });
+                    }
+                }
+                if (!(tv?.paquete.fields.title.includes('light'))) {
+                    setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $XXXX ${resumenCopys.infoDrawer.combinacion.postPrice}`)
+                } else {
+                    setInfoDrawerContent(resumenCopys.infoDrawer.nuevoFlujo)
+                }
+            } else if ((hasData(tv) && hasData(movil)) || (!hasData(tv) && hasData(movil))) {
+                if (isFirstLoad.movil) {
+                    showNotification(resumenCopys.info.portabilidad, "");
+                    setIsFirstLoad((prev) => {
+                        return {
+                            ...prev,
+                            movil: false
+                        }
+                    });
+                }
+                setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $XXXX ${resumenCopys.infoDrawer.combinacion.postPrice}`)
             }
         }
 
