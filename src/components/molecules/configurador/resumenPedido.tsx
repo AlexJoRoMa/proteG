@@ -38,8 +38,6 @@ export default function ResumenPedido() {
     const movil = userAnswers.movil as unknown as movilComponentFields | undefined;
 
     const newSelection = (userAnswers && userAnswers !== null && Object.keys(userAnswers).length > 0)
-    console.log('newSelection', newSelection)
-    console.log('user', userAnswers)
 
     useEffect(() => {
         setCheckedPromotions(false);
@@ -76,7 +74,7 @@ export default function ResumenPedido() {
 
 
     return (
-        <div className="md:border md:rounded-md md:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 md:bg-white-0">
+        <div className="xl:border xl:rounded-md xl:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 xl:bg-white-0">
 
             {!newSelection ?
                 <button
@@ -88,7 +86,7 @@ export default function ResumenPedido() {
                 :
 
                 <>
-                    <div className="block md:hidden">
+                    <div className="block xl:hidden">
                         <div className="flex flex-col w-full">
                             <div className="flex justify-between mb-[16px]">
                                 <div className="flex flex-col gap-[8px]">
@@ -180,7 +178,7 @@ export default function ResumenPedido() {
                         </DrawerContent>
                     </Drawer>
 
-                    <div className="hidden md:block">
+                    <div className="hidden xl:block">
                         <ResumenContent />
                     </div>
                 </>

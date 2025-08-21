@@ -114,7 +114,7 @@ export default function PlanesMovil({ step }: StepProps) {
                             />
                         )}
                     </Tabs>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-[16px] md:gap-[24px] auto-rows-fr">
+                    <div className="grid grid-cols-2 2xl:grid-cols-4 gap-[16px] 2xl:gap-[24px] auto-rows-fr auto-cols-fr">
                         {plansInfo.find((tab) => tab.fields.entryTitle === selectedTabKey)?.fields.cards.map((card: ComponentsFields, index) => {
                             const cardId = card.sys.id;
                             const isSelected = selectedCardId === cardId;
@@ -136,7 +136,7 @@ export default function PlanesMovil({ step }: StepProps) {
                                         }}>
                                         <CardHeader>
                                             <div className="flex flex-col text-start">
-                                                <h1 className="text-2xl font-extrabold leading-[27px]">{card.fields.title}</h1>
+                                                <h1 className="text-2xl font-extrabold leading-[27px] 2xl:text-[21px] 3xl:text-2xl 4xl:leading-[32px]">{card.fields.title}</h1>
                                             </div>
                                         </CardHeader>
                                         <CardBody>

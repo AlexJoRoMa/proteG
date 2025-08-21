@@ -25,15 +25,12 @@ export default function ResumenInfo() {
     const tv = userAnswers.tv as unknown as tvComponentFields | undefined;
     const movil = userAnswers.movil as unknown as movilComponentFields | undefined;
 
-    //TODO: tomar valor de cobertura del context
-
     const [notificationContent, setNotificationContent] = useState<{ title: string, description: string }>({ title: "", description: "" });
     const [isFirstLoad, setIsFirstLoad] = useState({ configurador: true, tv: true, tvLight: true, movil: true });
     const [isVisible, setIsVisible] = useState(false);
 
     const showNotification = (title: string, description: string) => {
         setNotificationContent({ title, description });
-        console.log('info', title, description)
         setIsVisible(true);
 
         setTimeout(() => setIsVisible(false), 4000);

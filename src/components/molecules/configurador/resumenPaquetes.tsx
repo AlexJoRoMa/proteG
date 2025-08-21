@@ -9,7 +9,6 @@ export default function ResumenPaquetes() {
     const [precioSeleccion, setPrecioSeleccion] = useState<number | undefined>(undefined)
 
     const paquetes = content.userAnswers as unknown as Record<string, ComponentsFields>;
-    console.log('paquetes', paquetes)
 
     const resumenCopys = content.copysResumen as ResumenData;
     const internet = paquetes.internet as unknown as internetComponentFields;

@@ -48,7 +48,7 @@ export default async function Configurador({ id }: ConfiguradorProps) {
     const entryTitle = pageEntry?.fields.title as string;
     const entryHelp = pageEntry?.fields.helpText as string;
     const entryCTA = pageEntry?.fields.ctaText as string;
-    const cobertura: boolean = false;
+    const cobertura: boolean = true;
 
     const components = pageEntry?.fields.steps as unknown as EntrySkeletonType<ConfigDataFields>[] | null;
 
@@ -59,7 +59,6 @@ export default async function Configurador({ id }: ConfiguradorProps) {
             configuradorEntry[item.fields.type] = item
         }
     }
-    console.log('copy', copysResumen)
 
     return (
         <ConfiguradorProvider
@@ -70,19 +69,19 @@ export default async function Configurador({ id }: ConfiguradorProps) {
             cobertura={cobertura}
         >
             <section className="border-t-1 border-t-gray-150">
-                <div className="flex flex-col md:grid md:grid-cols-3 gap-[24px] md:mx-md 2xl:mx-xl">
-                    <div className="md:col-span-2">
-                        <div className="flex flex-col pb-[16px] md:pb-[24px] mx-[16px] md:mx-0 font-[family-name:var(--lato)]">
+                <div className="flex flex-col xl:grid xl:grid-cols-3 gap-[24px] xl:mx-md 4xl:mx-xl">
+                    <div className="xl:col-span-2">
+                        <div className="flex flex-col pb-[16px] xl:pb-[24px] mx-[16px] xl:mx-0 font-[family-name:var(--lato)]">
                             <div className='flex flex-col mt-[24px] mb-[34px] gap-[24px]'>
                                 <Link
                                     href={entryBackButtonUrl}
                                 >
                                     <div className="flex flex-row gap-[4px] items-center">
                                         <p>{Arrow}</p>
-                                        <h5 className="font-bold leading-[24px] text-base md:text-xl text-black-0">{entryBackButton}</h5>
+                                        <h5 className="font-bold leading-[24px] text-base xl:text-xl text-black-0">{entryBackButton}</h5>
                                     </div>
                                 </Link>
-                                <h4 className='font-bold text-xl md:text-[32px] leading-[24px] md:leading-[40px]'>{entryTitle}</h4>
+                                <h4 className='font-bold text-xl xl:text-[32px] leading-[24px] xl:leading-[40px]'>{entryTitle}</h4>
                             </div>
 
                             <div className='grid gap-[24px]'>
@@ -118,14 +117,14 @@ export default async function Configurador({ id }: ConfiguradorProps) {
                             {/* //TODO: Abrir drawer al hacer click en botón "¿Te ayudamos?" */}
                         </div>
                     </div>
-                    <div className="md:mt-[34px] sticky z-10 bottom-0 md:static md:top-auto md:z-0">
-                        <div className="block md:hidden mx-[16px] mb-[16px] md:mx-0">
+                    <div className="xl:mt-[34px] sticky z-10 bottom-0 xl:static xl:top-auto xl:z-0">
+                        <div className="block xl:hidden mx-[16px] mb-[16px] xl:mx-0">
                             <ResumenInfo />
                         </div>
-                        <div className="shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)] md:shadow-none">
+                        <div className="shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)] xl:shadow-none">
                             <ResumenPedido />
                         </div>
-                        <div className="hidden md:block mx-[16px] md:mx-0 md:mt-[24px]">
+                        <div className="hidden xl:block mx-[16px] xl:mx-0 xl:mt-[24px]">
                             <ResumenInfo />
                         </div>
                     </div>

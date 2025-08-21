@@ -21,7 +21,7 @@ export default function ResumenContent() {
 
     return (
         <>
-            <h1 className="hidden md:block font-bold leading-[24px] text-xl">{resumenCopys.titulo}</h1>
+            <h1 className="hidden xl:block font-bold leading-[24px] text-xl">{resumenCopys.titulo}</h1>
 
             {content.checkedPromotions &&
                 <div className="flex gap-[16px] w-full rounded-md py-[24px] px-[16px] mt-[24px] bg-gray-450">
@@ -72,12 +72,12 @@ export default function ResumenContent() {
                 </>
             }
             <div className="flex flex-col gap-[24px]">
-                <div className="flex justify-between w-full font-bold leading-[32px] md:leading-[40px] text-2xl md:text-[32px] pt-[24px]">
+                <div className="flex justify-between w-full font-bold leading-[32px] xl:leading-[40px] text-2xl xl:text-[32px] pt-[24px]">
                     <h2>{resumenCopys.total.titulo}</h2>
                     <h2>$XXXX</h2>
                 </div>
 
-                <div className="hidden md:block">
+                <div className="hidden xl:block">
                     {!content.checkedPromotions ?
                         <button
                             className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"

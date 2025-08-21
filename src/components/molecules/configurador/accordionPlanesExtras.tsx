@@ -151,7 +151,7 @@ export default function AccordionPlanesExtras() {
                 title="Añade más diversión"
                 indicator={<DropIcon />}
             >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-[16px] md:gap-[24px] auto-rows-fr">
+                <div className="grid grid-cols-1 2xl:grid-cols-2 gap-[16px] 2xl:gap-[24px] auto-rows-fr">
 
                     {DUMMY_OTTS.map((ott, index) => {
                         const isSelected = selectedCard.some(item => item.id === ott.id && item.title === ott.title);
@@ -162,10 +162,10 @@ export default function AccordionPlanesExtras() {
                                 isPressable
                                 onPress={() => handleSelect(ott)}
                                 classNames={{
-                                    base: "flex flex-row gap-[8px] rounded-md shadow-none h-full w-full bg-[#F5F6F8] py-[17px] px-[16px] items-center justify-between",
-                                    header: "p-0 w-[96px] h-auto",
-                                    body: "p-0 w-auto",
-                                    footer: "p-0 w-auto"
+                                    base: "relative flex flex-row gap-[8px] rounded-md shadow-none h-full w-full bg-[#F5F6F8] items-center",
+                                    header: "w-[96px] py-[17px] pl-[16px] pr-0",
+                                    body: "w-auto py-[17px] px-0",
+                                    footer: "w-fit py-[17px] pr-[16px] pl-0"
                                 }}
                             >
                                 <CardHeader>
@@ -191,13 +191,13 @@ export default function AccordionPlanesExtras() {
                                     </div>
                                 </CardBody>
                                 <CardFooter>
-                                    <div className="flex flex-row gap-[8px] items-center justify-end">
+                                    <div className="flex flex-row gap-[8px] items-center justify-end pr-[4px]">
                                         {ott.promo && <span
                                             className="
                                                 absolute top-0 right-0
                                                 w-5 h-5
                                                 bg-(--color--turquoise-450)
-                                                rounded-bl-[6px]
+                                                rounded-bl-md
                                                 flex items-center justify-center
                                                 text-white text-sm
                                                 shadow-md">
@@ -209,7 +209,7 @@ export default function AccordionPlanesExtras() {
                                             <p className="font-normal text-sm leading-[16px]">{ott.term}</p>
                                         </div>
                                         <div
-                                            className={`flex items-center justify-center w-[24px] h-[24px] rounded-md p-[1px] ${isSelected ? 'bg-conic-custom' : 'bg-gray-150'}`}
+                                            className={`shrink-0 flex items-center justify-center w-[24px] h-[24px] rounded-md p-[1px] ${isSelected ? 'bg-conic-custom' : 'bg-gray-150'}`}
                                         >
                                             <span
                                                 className={`w-full h-full rounded-md flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0' : 'bg-white-0'}`}

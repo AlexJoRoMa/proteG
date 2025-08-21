@@ -85,7 +85,7 @@ export default function PlanesTv({ step }: StepProps) {
                 <h3 className='font-semibold text-xl leading-[24px]'>{plans?.fields.title}</h3>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-[16px] md:gap-[24px] auto-rows-fr">
+            <div className="grid grid-cols-2 2xl:grid-cols-4 gap-[16px] 2xl:gap-[24px] auto-rows-fr">
                 {
                     plansInfo.map((card: ComponentsFields, index) => {
                         const isSelected = selectedIndex === index;
@@ -103,7 +103,7 @@ export default function PlanesTv({ step }: StepProps) {
                                         base: "flex flex-col rounded-xs shadow-none h-full w-full",
                                         header: "pt-[16px] pb-[8px]",
                                         body: "py-0",
-                                        footer: "pb-[16px] mt-[16px] md:mt-[40px] pt-0"
+                                        footer: "pb-[16px] mt-[16px] 2xl:mt-[40px] pt-0"
                                     }}>
                                     <CardHeader>
                                         <div className="flex flex-col text-start">
