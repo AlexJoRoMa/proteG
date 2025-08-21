@@ -18,7 +18,8 @@ export const ConfiguradorProvider = ({
     configuradorEntry,
     copysResumen,
     resumenIcon,
-    ottsImages
+    ottsImages,
+    cobertura
 }: ProviderProps) => {
 
     const [userAnswers, setUserAnswers] = useState<UserAnswers>({})
@@ -32,6 +33,7 @@ export const ConfiguradorProvider = ({
                 configuradorEntry,
                 copysResumen,
                 resumenIcon,
+                cobertura,
                 userAnswers,
                 setUserAnswers,
                 checkedPromotions,

@@ -102,12 +102,13 @@ export type ProviderProps = {
     copysResumen: {},
     resumenIcon:EntrySkeletonType<ResumenIcon>,
     ottsImages: Entry<EntrySkeletonType<OttsImages>>[]
-
+    cobertura: boolean
 }
 
 export type DataFields = {
     configuradorEntry?: Record<string, EntrySkeletonType<ConfigDataFields>>
     copysResumen?: {},
+    cobertura: boolean,
     userAnswers: UserAnswers,
     setUserAnswers: React.Dispatch<React.SetStateAction<UserAnswers>>,
     checkedPromotions: boolean,
@@ -212,8 +213,9 @@ export type ResumenData = {
         portabilidad: string,
         sinCobertura: {
             titulo: string,
-            subtitulo: string
-        }
+            subTitulo: string
+        },
+        tvLight: string
     },
     infoDrawer: {
         nuevoFlujo: string,

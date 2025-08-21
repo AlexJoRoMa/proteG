@@ -7,6 +7,7 @@ import Link from "next/link";
 import { getCopyForComponent } from "@/services/contentful/components";
 import ResumenPedido from "../molecules/configurador/resumenPedido";
 import ResumenInfo from "../molecules/configurador/resumenInfo";
+import { STEPSCOVERAGECOMPONENT, STEPSNOCOVERAGECOMPONENT } from "@/constants/ConfiguradorConstants";
 
 export const Arrow =
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -47,6 +48,7 @@ export default async function Configurador({ id }: ConfiguradorProps) {
     const entryTitle = pageEntry?.fields.title as string;
     const entryHelp = pageEntry?.fields.helpText as string;
     const entryCTA = pageEntry?.fields.ctaText as string;
+    const cobertura: boolean = false;
 
     const components = pageEntry?.fields.steps as unknown as EntrySkeletonType<ConfigDataFields>[] | null;
 
@@ -65,56 +67,70 @@ export default async function Configurador({ id }: ConfiguradorProps) {
             copysResumen={copysResumen}
             resumenIcon={resumenIcon}
             ottsImages={ottImages}
+            cobertura={cobertura}
         >
-            <div className="flex flex-col md:grid md:grid-cols-3 gap-[24px] md:mx-md 2xl:mx-xl">
-                <div className="md:col-span-2">
-                    <div className="flex flex-col pb-[16px] md:pb-[24px] mx-[16px] md:mx-0 font-[family-name:var(--lato)]">
-                        <div className='flex flex-col mt-[24px] mb-[34px] gap-[24px]'>
-                            <Link
-                                href={entryBackButtonUrl}
-                            >
-                                <div className="flex flex-row gap-[4px] items-center">
-                                    <p>{Arrow}</p>
-                                    <h5 className="font-bold leading-[24px] text-base md:text-xl text-black-0">{entryBackButton}</h5>
-                                </div>
-                            </Link>
-                            <h4 className='font-bold text-xl md:text-[32px] leading-[24px] md:leading-[40px]'>{entryTitle}</h4>
-                        </div>
+            <section className="border-t-1 border-t-gray-150">
+                <div className="flex flex-col md:grid md:grid-cols-3 gap-[24px] md:mx-md 2xl:mx-xl">
+                    <div className="md:col-span-2">
+                        <div className="flex flex-col pb-[16px] md:pb-[24px] mx-[16px] md:mx-0 font-[family-name:var(--lato)]">
+                            <div className='flex flex-col mt-[24px] mb-[34px] gap-[24px]'>
+                                <Link
+                                    href={entryBackButtonUrl}
+                                >
+                                    <div className="flex flex-row gap-[4px] items-center">
+                                        <p>{Arrow}</p>
+                                        <h5 className="font-bold leading-[24px] text-base md:text-xl text-black-0">{entryBackButton}</h5>
+                                    </div>
+                                </Link>
+                                <h4 className='font-bold text-xl md:text-[32px] leading-[24px] md:leading-[40px]'>{entryTitle}</h4>
+                            </div>
 
-                        <div className='grid gap-[24px]'>
-                            {
-                                components && components !== null && Array.isArray(components) && components.length > 0 ? (
-                                    (components.map((component: EntrySkeletonType<ConfigDataFields> | null, index) => {
-                                        const componentType = component?.fields?.type;
-                                        const Component = typeof componentType === 'string' && componentType in componentMap ? componentMap[componentType as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
+                            <div className='grid gap-[24px]'>
+                                {
+                                    cobertura ?
+                                        Array.isArray(STEPSCOVERAGECOMPONENT) && STEPSCOVERAGECOMPONENT.length > 0 ? (
+                                            (STEPSCOVERAGECOMPONENT.map((component, index) => {
+                                                const componentType = component;
+                                                const Component = typeof componentType === 'string' && componentType in componentMap ? componentMap[componentType as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
 
-                                        return Component ? <Component key={index} step={index + 1} /> : null;
-                                    }))
-                                ) : (
-                                    <p>No existen componentes cargados.</p>
-                                )
-                            }
-                        </div>
+                                                return Component ? <Component key={index} step={index + 1} /> : null;
+                                            }))
+                                        ) : (
+                                            <p>No existen componentes cargados.</p>
+                                        ) :
+                                        Array.isArray(STEPSNOCOVERAGECOMPONENT) && STEPSNOCOVERAGECOMPONENT.length > 0 ? (
+                                            (STEPSNOCOVERAGECOMPONENT.map((component, index) => {
+                                                const componentType = component;
+                                                const Component = typeof componentType === 'string' && componentType in componentMap ? componentMap[componentType as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
 
-                        <div className='flex flex-col my-[24px] gap-[10px]'>
-                            <h4 className='font-normal text-lg leading-[24px]'>{entryHelp}</h4>
-                            <h5 className="text-base leading-[24px] font-bold underline">{entryCTA}</h5>
+                                                return Component ? <Component key={index} step={index + 1} /> : null;
+                                            }))
+                                        ) : (
+                                            <p>No existen componentes cargados.</p>
+                                        )
+                                }
+                            </div>
+
+                            <div className='flex flex-col my-[24px] gap-[10px]'>
+                                <h4 className='font-normal text-lg leading-[24px]'>{entryHelp}</h4>
+                                <h5 className="text-base leading-[24px] font-bold underline">{entryCTA}</h5>
+                            </div>
+                            {/* //TODO: Abrir drawer al hacer click en botón "¿Te ayudamos?" */}
                         </div>
-                        {/* //TODO: Abrir drawer al hacer click en botón "¿Te ayudamos?" */}
+                    </div>
+                    <div className="md:mt-[34px] sticky z-10 bottom-0 md:static md:top-auto md:z-0">
+                        <div className="block md:hidden mx-[16px] mb-[16px] md:mx-0">
+                            <ResumenInfo />
+                        </div>
+                        <div className="shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)] md:shadow-none">
+                            <ResumenPedido />
+                        </div>
+                        <div className="hidden md:block mx-[16px] md:mx-0 md:mt-[24px]">
+                            <ResumenInfo />
+                        </div>
                     </div>
                 </div>
-                <div className="md:mt-[34px] sticky z-10 bottom-0 md:static md:top-auto md:z-0">
-                    <div className="block md:hidden mx-[16px] mb-[16px] md:mx-0">
-                        <ResumenInfo />
-                    </div>
-                    <div className="shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)] md:shadow-none">
-                        <ResumenPedido />
-                    </div>
-                    <div className="hidden md:block mx-[16px] md:mx-0 md:mt-[24px]">
-                        <ResumenInfo />
-                    </div>
-                </div>
-            </div>
+            </section>
         </ConfiguradorProvider>
     )
 }
