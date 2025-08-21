@@ -51,15 +51,12 @@ export default function ResumenPaquetes() {
         }
     }
 
-    // console.log('seleccion', seleccionUsuario)
-
-
     return (
         <>
             {
                 <div className="flex justify-between w-full font-bold leading-[24px] text-lg pt-[24px]">
                     <h5>{seleccionUsuario}</h5>
-                    <h5>{`$${precioSeleccion}`}</h5>
+                    <h5>{seleccionUsuario && `$${precioSeleccion}`}</h5>
                 </div>
             }
             {

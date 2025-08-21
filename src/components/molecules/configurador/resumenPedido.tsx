@@ -37,6 +37,9 @@ export default function ResumenPedido() {
     const tv = userAnswers.tv as unknown as tvComponentFields | undefined;
     const movil = userAnswers.movil as unknown as movilComponentFields | undefined;
 
+    const newSelection = (userAnswers && userAnswers !== null && Object.keys(userAnswers).length > 0)
+    console.log('newSelection', newSelection)
+    console.log('user', userAnswers)
 
     useEffect(() => {
         setCheckedPromotions(false);
@@ -63,8 +66,6 @@ export default function ResumenPedido() {
             setInfoPaquetes(resumenCopys.infoDrawer.paquetes["internet&tv&movil"]);
         }
     }, [userAnswers])
-
-    const newSelection = (userAnswers && userAnswers !== null && Object.keys(userAnswers).length > 0)
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
