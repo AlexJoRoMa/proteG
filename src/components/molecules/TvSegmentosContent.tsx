@@ -1,14 +1,14 @@
 'use client'
 
 import { Tabs, Tab, Card, CardBody } from "@heroui/react";
-import { TabsContentProps, TabsDataFields, CardSegmentoFields } from '@/types/TvCanalesSegmentosTypes';
+import { TabsContentProps, TabsDataFields, CardSegmentosFields, MediaEntryFields } from '@/types/TvCanalesSegmentosTypes';
 import Image from "next/image";
-import { Asset, Entry, EntrySkeletonType } from "contentful";
+import { Entry, EntrySkeletonType } from "contentful";
 
 export default function SegmentosCanales({ tabsData }: TabsContentProps) {
 
-    const cardsInfo = tabsData as unknown as Entry<EntrySkeletonType<TabsDataFields>>[] | undefined;
-    const defaultKey = cardsInfo?.[0]?.fields.entryTitle as string | undefined;
+    const cardsInfo = tabsData;
+    const defaultKey = cardsInfo?.[0]?.sys.id;
 
 
     return(
@@ -31,40 +31,36 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
             const tabTittle = item.fields.entryTitle as unknown as string ;
             return(
             <Tab key={tabTittle} title={tabTittle}>
-                <Card className="rounded-none  shadow-none md:mx-md 2xl:mx-xl">
+                <Card className="rounded-none  shadow-none md:mx-md 2xl:mx-xl ">
                     <CardBody className="">
-                        {Array.isArray(item.fields.cards) && item.fields.cards.map((card: Entry<EntrySkeletonType<CardSegmentoFields>>) => {
+                        {Array.isArray(item.fields.cards) && item.fields.cards.map((card: Entry<EntrySkeletonType<CardSegmentosFields>>) => {
                             
-                            const segmentoData = card?.fields as CardSegmentoFields; 
-
-                            console.log('>>>> segmentoData ', segmentoData)
+                            const segmentoData = card?.fields as CardSegmentosFields; 
 
                             return(
-                                <div key={card.sys.id}>
+                                <div key={card.sys.id} className="">
                                     <div className=" border-gradient-verde">
                                         {/* titulo del segmento */}
-                                        <div className="text-[20px] leading-[24px] font-bold">
+                                        <div className="text-[20px] leading-[24px] font-bold mt-5 mb-5">
                                             <p>{segmentoData.titulo}</p>
                                         </div>
 
                                         {/* Grid de iconos */}
-                                        <div className=" grid grid-cols-10 ">
-                                            {segmentoData.segmentoCanal && segmentoData.segmentoCanal.map((canalEntry: Entry<EntrySkeletonType>) =>{
+                                        <div className=" grid 3xl:grid-cols-10 xsm:grid-cols-4">
+                                            {segmentoData.segmentoCanal && segmentoData.segmentoCanal.map((canalEntry: Entry<EntrySkeletonType<MediaEntryFields>>) =>{
+                                                
                                                 const asset = canalEntry?.fields?.image;
                                                 const imgURL = asset?.fields?.file?.url;
-
                                                 const imgWidth = asset?.fields?.file?.details?.image?.width;
                                                 const imgHeight = asset?.fields?.file?.details?.image?.height;
-                                                
-
-                                                /* console.log('>>>> canalEntry ', canalEntry)
-                                                console.log('>>>> imgWidth ', imgWidth)
-                                                console.log('>>>> imgHeight ', imgHeight) */
 
                                                 return(
-                                                    <div key={canalEntry.sys.id} className=" w-full h-[100px] flex items-center justify-center">
+                                                    <div key={canalEntry.sys.id} className=" w-full h-[80px] md:h-[100px] flex items-center justify-center">
                                                         <Image 
-                                                        /* className="ring ring-red-500 " */
+                                                        className={`
+                                                            lg: w-[${imgWidth}]
+                                                            lg: h-[${imgHeight}]
+                                                            `}
                                                         src={`https:${imgURL}`}
                                                         alt="algo"
                                                         width={imgWidth}

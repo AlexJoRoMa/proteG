@@ -1,21 +1,36 @@
-import { Asset, AssetFile, Entry, EntrySkeletonType, UnresolvedLink } from "contentful";
+import { Asset, Entry, EntrySkeletonType} from "contentful";
+export interface MediaAssetFields {
+  file?: {
+    url: string;
+    details: {
+      image?: {
+        width: number;
+        height: number;
+      }
+    }
+    }
+  }
 
-export interface MediaEntryFields {
-  image?: Asset;
+ export interface MediaEntryFields {
+  image?: Asset<MediaAssetFields, 'es-MX'>;
 }
-
 export interface CardSegmentosFields {
+  fields: CardSegmentosFields;
   titulo?: string;
-  segmentoCanal?: Entry<MediaEntryFields>[];
+  segmentoCanal?: Entry<EntrySkeletonType<MediaEntryFields>>[];
 }
 export interface TabsDataFields {
   entryTitle: string;
-  cards: any[];
+  cards: CardSegmentosFields[];
 }
 
 export interface TabsDataContainerFields {
   title?: string;
-  tabs?: Entry<TabsDataFields>[];
+  tabs?: TabsDataFields[];
+}
+
+export interface TabsContentProps {
+  tabsData?: Entry<EntrySkeletonType<TabsDataFields>>[];
 }
 
 export type TVCanalesSegmentoID = {
