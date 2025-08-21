@@ -36,6 +36,18 @@ export default function PlanesInternet({ step }: StepProps) {
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
     function handleSelect(index: number, card: ComponentsFields) {
+
+        if (selectedIndex !== null) {
+            if (selectedIndex === index) {
+                setSelectedIndex(null);
+                setUserAnswers(prev => {
+                    const { internet, ...rest } = prev;
+                    return rest
+                });
+                return;
+            }
+        }
+
         setSelectedIndex(index);
         setUserAnswers(prev => ({
             ...prev,
@@ -47,13 +59,14 @@ export default function PlanesInternet({ step }: StepProps) {
         }))
     }
 
+
     useEffect(() => {
         if (disabled && (userAnswers.internet?.paquete !== null)) {
             setSelectedIndex(null);
-            setUserAnswers(prev => ({
-                ...prev,
-                internet: undefined
-            }))
+            setUserAnswers(prev => {
+                const { internet, ...rest } = prev;
+                return rest
+            });
         }
     }, [disabled])
 

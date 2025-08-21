@@ -40,6 +40,18 @@ export default function PlanesMovil({ step }: StepProps) {
     const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
 
     function handleSelect(cardId: string, card: ComponentsFields) {
+
+        if (selectedCardId !== null) {
+            if (selectedCardId === cardId) {
+                setSelectedCardId(null);
+                setUserAnswers(prev => {
+                    const { movil, ...rest } = prev;
+                    return rest
+                });
+                return;
+            }
+        }
+
         setSelectedCardId(cardId);
         setUserAnswers(prev => ({
             ...prev,
@@ -54,10 +66,10 @@ export default function PlanesMovil({ step }: StepProps) {
     useEffect(() => {
         if (disabled && (userAnswers.internet?.paquete !== null)) {
             setSelectedCardId(null);
-            setUserAnswers(prev => ({
-                ...prev,
-                movil: undefined
-            }))
+            setUserAnswers(prev => {
+                const { movil, ...rest } = prev;
+                return rest
+            });
         }
     }, [disabled])
 

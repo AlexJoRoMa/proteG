@@ -29,7 +29,7 @@ export const CheckIcon = (props: any) => {
 
 export default function PlanesTv({ step }: StepProps) {
 
-    const { configuradorEntry, setUserAnswers, setDisabled } = useContent();
+    const { configuradorEntry, setUserAnswers, setDisabled, userAnswers } = useContent();
     const plans = configuradorEntry?.tv && configuradorEntry?.tv;
 
     const plansInfo = plans?.fields.components as unknown as ComponentsFields[];
@@ -37,6 +37,19 @@ export default function PlanesTv({ step }: StepProps) {
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
     function handleSelect(index: number, card: ComponentsFields) {
+
+        if (selectedIndex !== null) {
+            if (selectedIndex === index) {
+                setSelectedIndex(null);
+                setUserAnswers(prev => {
+                    const { tv, ...rest } = prev;
+                    return rest
+                });
+                setDisabled(false);
+                return;
+            }
+        }
+
         setSelectedIndex(index);
         setUserAnswers(prev => ({
             ...prev,
@@ -45,13 +58,23 @@ export default function PlanesTv({ step }: StepProps) {
                 paquete: card,
                 total: card.fields.discountPrice ? Number(card.fields.discountPrice) || 0 : Number(card.fields.price) || 0
             },
-        }))
+        }));
+
         if (card.fields.title.includes('light')) {
             setDisabled(true);
         } else {
             setDisabled(false);
         }
     }
+
+    function handleIsPressable(card: ComponentsFields): boolean {
+
+        if (card.fields.title.includes('light') && (userAnswers.internet?.paquete || userAnswers.movil?.paquete)) {
+            return false
+        } else {
+            return true
+        }
+    };
 
     //TODO: const data = contenfulData || integracionData || seleccion del usuario ;  <- data base, de integracion o del usuario
 
@@ -73,8 +96,9 @@ export default function PlanesTv({ step }: StepProps) {
                                 className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
                             >
                                 <Card
-                                    isPressable
+                                    isPressable={handleIsPressable(card)}
                                     onPress={() => handleSelect(index, card)}
+                                    isDisabled={!handleIsPressable(card)}
                                     classNames={{
                                         base: "flex flex-col rounded-xs shadow-none h-full w-full",
                                         header: "pt-[16px] pb-[8px]",
