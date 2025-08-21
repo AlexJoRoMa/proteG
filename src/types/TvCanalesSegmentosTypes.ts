@@ -1,33 +1,23 @@
-import { Asset, Entry, EntrySkeletonType } from "contentful";
+import { Asset, AssetFile, Entry, EntrySkeletonType, UnresolvedLink } from "contentful";
 
-//CardData
-export interface CardSegmentoFields {
-  titulo?: string;
-  segmentoCanal?: Entry<EntrySkeletonType<any>>[]
+export interface MediaEntryFields {
+  image?: Asset;
 }
 
-//TabsData
+export interface CardSegmentosFields {
+  titulo?: string;
+  segmentoCanal?: Entry<MediaEntryFields>[];
+}
 export interface TabsDataFields {
   entryTitle: string;
-  cards: Entry<EntrySkeletonType<CardSegmentoFields>>[];
+  cards: any[];
 }
 
-//TabsContainer
-export interface TabsContainerFields {
-  internalName: string;
-  tabs: TabsDataFields[];
-}
-
-//----Prop
-export type PageTabContentProps = {
-    tabsData: TabsDataFields[];
+export interface TabsDataContainerFields {
+  title?: string;
+  tabs?: Entry<TabsDataFields>[];
 }
 
 export type TVCanalesSegmentoID = {
-    id: string,
+    id: string;
 }
-
-export type TabsContentProps = {
-    tabsData: EntrySkeletonType<TabsDataFields> | null
-}
-

@@ -37,7 +37,7 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
                             
                             const segmentoData = card?.fields as CardSegmentoFields; 
 
-                            
+                            console.log('>>>> segmentoData ', segmentoData)
 
                             return(
                                 <div key={card.sys.id}>
@@ -50,20 +50,25 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
                                         {/* Grid de iconos */}
                                         <div className=" grid grid-cols-10 ">
                                             {segmentoData.segmentoCanal && segmentoData.segmentoCanal.map((canalEntry: Entry<EntrySkeletonType>) =>{
-                                                const asset = canalEntry?.fields?.image as unknown as Asset;
+                                                const asset = canalEntry?.fields?.image;
                                                 const imgURL = asset?.fields?.file?.url;
+
+                                                const imgWidth = asset?.fields?.file?.details?.image?.width;
+                                                const imgHeight = asset?.fields?.file?.details?.image?.height;
                                                 
 
-                                                console.log('>>>> canalEntry ', canalEntry)
+                                                /* console.log('>>>> canalEntry ', canalEntry)
+                                                console.log('>>>> imgWidth ', imgWidth)
+                                                console.log('>>>> imgHeight ', imgHeight) */
 
                                                 return(
-                                                    <div key={canalEntry.sys.id} className="ring ring-blue-500 w-full h-[100px] flex items-center justify-center">
+                                                    <div key={canalEntry.sys.id} className=" w-full h-[100px] flex items-center justify-center">
                                                         <Image 
-                                                        className="ring ring-red-500 "
+                                                        /* className="ring ring-red-500 " */
                                                         src={`https:${imgURL}`}
                                                         alt="algo"
-                                                        width={40}
-                                                        height={40}
+                                                        width={imgWidth}
+                                                        height={imgHeight}
                                                         />
                                                     </div>
                                                 );

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { TVCanalesSegmentoID, TabsDataFields } from '@/types/TvCanalesSegmentosTypes';
+import { TVCanalesSegmentoID, TabsDataContainerFields } from '@/types/TvCanalesSegmentosTypes';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
@@ -16,9 +16,9 @@ const TVCanalesSegmento = async ({id} : TVCanalesSegmentoID) =>{
     });
     
     const entryTitle = tabsEntry?.fields.title as string;
-    const entryData = tabsEntry?.fields.tabs as unknown as EntrySkeletonType<TabsDataFields>;
+    const entryData = tabsEntry?.fields.tabs as unknown as EntrySkeletonType<TabsDataContainerFields>;
 
-
+/* console.log('>>>>>  entryData', entryData) */
 
     return(
     <div className="bg-white">
@@ -47,8 +47,3 @@ const TVCanalesSegmento = async ({id} : TVCanalesSegmentoID) =>{
 }
 
 export default TVCanalesSegmento;
-
-
-
-
-   
