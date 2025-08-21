@@ -105,7 +105,7 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
                     classStyles={`${index == 2 ? 'bg-black-0 text-white-0' :'bg-color-trasparent'} 
                         h-[48px] border-[2px] border-solid rounded-md text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[16px] min-[1150px]:text-[18px]`}
                     closeButtonStroke="black"
-                    modalContentClassName="w-full h-[59vh] sm:h-[50vh] xl:h-[52vh] xl:w-[80vw] 2xl:w-[52vw] 2xl:h-[52vh]"
+                    modalContentClassName="w-full h-[59vh] sm:h-[50vh] xl:h-[52vh] xl:w-[80vw] 2xl:w-[52vw] 2xl:h-[53vh]"
                     startContent={<Image className='max-w-[24px] h-auto' src={`https:${link.fields.linkIcon?.fields.file.url}`} alt={`${link.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />}
                   >
                     <TeLlamamosModalComponent />
@@ -151,7 +151,7 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
                     classStyles={`${index == 2 ? 'bg-black-0 text-white-0' :'bg-color-trasparent'} 
                         h-[48px] border-[2px] border-solid rounded-md text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[16px] min-[1150px]:text-[18px]`}
                     closeButtonStroke="black"
-                    modalContentClassName="w-full h-[50vh] 2xl:w-[52vw] 2xl:h-[52vh]"
+                    modalContentClassName="w-full h-[50vh] 2xl:w-[52vw] 2xl:h-[55vh]"
                     startContent={<Image className='max-w-[24px] h-auto' src={`https:${link.fields.linkIcon?.fields.file.url}`} alt={`${link.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />}
                   >
                     <TeLlamamosModalComponent />

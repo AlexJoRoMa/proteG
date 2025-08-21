@@ -18,6 +18,21 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['@heroui/react', 'embla-carousel-react'],
     cssChunking: true,
+  },
+
+  // Preload de recursos críticos para mejor performance
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Link',
+            value: '<https://www.google.com/recaptcha/api.js>; rel=preload; as=script; crossorigin=anonymous'
+          }
+        ]
+      }
+    ]
   }
 };
 

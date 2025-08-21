@@ -6,13 +6,6 @@ export interface RecaptchaVerificationResponse {
   hostname?: string;
   'error-codes'?: string[];
 }
-
-export interface RecaptchaVerificationRequest {
-  token: string;
-  action: string;
-  userIP?: string;
-}
-
 /**
  * Verifica un token de reCAPTCHA v3 con Google
  */

@@ -2,9 +2,12 @@
 "use client";
 
 import { Button, Checkbox, Form, Input, Link } from '@heroui/react'
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { TeLlamamosFormModalProps } from '@/types/ModalComponentTypes';
 import useSWR from 'swr';
+
+// Carga dinámica del componente ReCAPTCHA para mejor performance
+const ReCAPTCHA = lazy(() => import('react-google-recaptcha'));
 
 const fetchMicrocopies = async (key: string) => {
     const res = await fetch(`/api/microcopies?key=${key}`);
@@ -13,9 +16,20 @@ const fetchMicrocopies = async (key: string) => {
 };
 
 const TeLlamamosModalComponent = ({ modalData }: TeLlamamosFormModalProps) => {
+  return <TeLlamamosFormContent modalData={modalData} />;
+};
+
+const TeLlamamosFormContent = ({ modalData }: TeLlamamosFormModalProps) => {
 
     const [isSelected, setIsSelected] = useState(false);
     const [phoneValue, setPhoneValue] = useState('');
+    const [submitSuccess, setSubmitSuccess] = useState(false);
+    const [submitError, setSubmitError] = useState<string>('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+
+    // Site key directamente desde variable de entorno pública
+    const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
     // Usar SWR para el fetching con caché optimizado
     const { data: contentfulData, error, isLoading } = useSWR(
@@ -97,7 +111,7 @@ const TeLlamamosModalComponent = ({ modalData }: TeLlamamosFormModalProps) => {
 
     // Validar que solo se ingresen números
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        // Permitir teclas de control (backspace, delete, arrow keys, etc.)
+
         const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab'];
         
         if (allowedKeys.includes(e.key)) {
@@ -107,6 +121,68 @@ const TeLlamamosModalComponent = ({ modalData }: TeLlamamosFormModalProps) => {
         // Solo permitir números
         if (!/\d/.test(e.key)) {
             e.preventDefault();
+        }
+    };
+
+    // Manejar cambio de reCAPTCHA
+    const handleRecaptchaChange = (token: string | null) => {
+        setRecaptchaToken(token);
+    };
+
+    // Validar formulario (ahora incluye reCAPTCHA)
+    const isFormValid = () => {
+        const cleanPhone = phoneValue.replace(/\D/g, '');
+        return cleanPhone.length === 10 && isSelected && recaptchaToken;
+    };
+
+    // Manejar envío del formulario
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (!isFormValid()) {
+            setSubmitError('Por favor completa todos los campos correctamente');
+            return;
+        }
+
+        setIsSubmitting(true);
+        setSubmitError('');
+
+        try {
+            const cleanPhone = phoneValue.replace(/\D/g, '');
+            
+            const response = await fetch('/api/te-llamamos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nombre: '',
+                    telefono: cleanPhone,
+                    recaptchaToken
+                }),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Formulario enviado exitosamente:', result);
+                setSubmitSuccess(true);
+                setSubmitError('');
+                // Limpiar el formulario
+                setPhoneValue('');
+                setIsSelected(false);
+                setRecaptchaToken(null);
+                // Reset reCAPTCHA
+                if (window.grecaptcha) {
+                    window.grecaptcha.reset();
+                }
+            } else {
+                const error = await response.json();
+                throw new Error(error.message || 'Error al enviar formulario');
+            }
+        } catch (error) {
+            console.error('Error en formulario:', error);
+            setSubmitError(error instanceof Error ? error.message : 'Error desconocido');
+            setSubmitSuccess(false);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -127,7 +203,22 @@ const TeLlamamosModalComponent = ({ modalData }: TeLlamamosFormModalProps) => {
         {(!isLoading || modalData) && (
             <>
                 <h2 className='text-[20px] xl:text-[32px] mb-6 mr-auto w-[60%] xl:w-full xl:mr-0 xl:text-center font-bold xl:font-normal'>{finalData.title}</h2>
-                <Form>
+                
+                {/* Mensaje de éxito */}
+                {submitSuccess && (
+                    <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded text-center">
+                        ¡Gracias! Te contactaremos pronto.
+                    </div>
+                )}
+
+                {/* Mensaje de error */}
+                {submitError && (
+                    <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-center">
+                        {submitError}
+                    </div>
+                )}
+
+                <Form onSubmit={handleSubmit}>
                     <div className='flex items-center content-center mb-6 gap-1 text-[16px] '>
                         <Checkbox className='' radius='sm' color='primary' isSelected={isSelected} onValueChange={setIsSelected}>
                             {finalData.checkboxText}
@@ -148,9 +239,39 @@ const TeLlamamosModalComponent = ({ modalData }: TeLlamamosFormModalProps) => {
                         onKeyDown={handleKeyPress}
                         variant='bordered'
                         radius='sm'
+                        isDisabled={isSubmitting}
                     />
-                    <Button type='submit' className='bg-black w-[260px] mx-auto md:w-[340px] text-white font-bold h-[48px] text-[16px] leading-[24px] rounded-none mt-4 disabled:cursor-not-allowed disabled:opacity-30 disabled:pointer-events-none' disabled={!isSelected}>
-                        {finalData.buttonText}
+                    
+                    {/* reCAPTCHA v2 Visual - Con carga dinámica optimizada */}
+                    <div className="mb-4 flex justify-center">
+                        {recaptchaSiteKey ? (
+                            <Suspense fallback={
+                                <div className="bg-gray-50 h-[78px] w-[304px] rounded-sm border border-gray-300 flex items-center justify-center">
+                                    <div className="text-center">
+                                        <div className="animate-pulse w-6 h-6 bg-gray-400 rounded mx-auto mb-2"></div>
+                                        <div className="text-sm text-gray-500">Cargando reCAPTCHA...</div>
+                                    </div>
+                                </div>
+                            }>
+                                <ReCAPTCHA
+                                    sitekey={recaptchaSiteKey}
+                                    onChange={handleRecaptchaChange}
+                                    theme="light"
+                                />
+                            </Suspense>
+                        ) : (
+                            <div className="bg-red-50 h-[78px] w-[304px] rounded-sm border border-red-300 flex items-center justify-center">
+                                <p className="text-sm text-red-500">reCAPTCHA no configurado</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <Button 
+                        type='submit' 
+                        className='bg-black w-[260px] mx-auto md:w-[340px] text-white font-bold h-[48px] text-[16px] leading-[24px] rounded-none mt-4 disabled:cursor-not-allowed disabled:opacity-30 disabled:pointer-events-none' 
+                        disabled={!isFormValid() || isSubmitting}
+                    >
+                        {isSubmitting ? 'Enviando...' : finalData.buttonText}
                     </Button>
                 </Form>
             </>
