@@ -37,27 +37,33 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
                             
                             const segmentoData = card?.fields as CardSegmentoFields; 
 
+                            
+
                             return(
                                 <div key={card.sys.id}>
-                                    <div className="border-gradient-verde">
+                                    <div className=" border-gradient-verde">
                                         {/* titulo del segmento */}
                                         <div className="text-[20px] leading-[24px] font-bold">
                                             <p>{segmentoData.titulo}</p>
                                         </div>
 
                                         {/* Grid de iconos */}
-                                        <div className="ring ring-red-500">
+                                        <div className=" grid grid-cols-10 ">
                                             {segmentoData.segmentoCanal && segmentoData.segmentoCanal.map((canalEntry: Entry<EntrySkeletonType>) =>{
                                                 const asset = canalEntry?.fields?.image as unknown as Asset;
                                                 const imgURL = asset?.fields?.file?.url;
+                                                
+
+                                                console.log('>>>> canalEntry ', canalEntry)
 
                                                 return(
-                                                    <div key={canalEntry.sys.id}>
+                                                    <div key={canalEntry.sys.id} className="ring ring-blue-500 w-full h-[100px] flex items-center justify-center">
                                                         <Image 
+                                                        className="ring ring-red-500 "
                                                         src={`https:${imgURL}`}
                                                         alt="algo"
-                                                        width={20}
-                                                        height={20}
+                                                        width={40}
+                                                        height={40}
                                                         />
                                                     </div>
                                                 );
