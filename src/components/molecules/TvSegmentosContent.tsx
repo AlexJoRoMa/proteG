@@ -55,16 +55,16 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
                                                 const imgHeight = asset?.fields?.file?.details?.image?.height;
 
                                                 return(
-                                                    <div key={canalEntry.sys.id} className=" w-full h-[80px] md:h-[100px] flex items-center justify-center">
+                                                    <div key={canalEntry.sys.id} className="ring ring-blue-500 w-full h-[80px] md:h-[100px] flex items-center justify-center">
                                                         <Image 
-                                                        className={`
-                                                            lg: w-[${imgWidth}]
-                                                            lg: h-[${imgHeight}]
+                                                        className={`ring ring-red-500
+                                                            max-w-[70%] max-h-[70%] object-contain
                                                             `}
                                                         src={`https:${imgURL}`}
                                                         alt="algo"
                                                         width={imgWidth}
                                                         height={imgHeight}
+                                                        loading="lazy"
                                                         />
                                                     </div>
                                                 );
