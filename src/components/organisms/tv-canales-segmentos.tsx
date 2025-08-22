@@ -1,11 +1,11 @@
-import Image from "next/image";
-import { TVCanalesSegmentoID, TabsDataFields } from '@/types/TvCanalesSegmentosTypes';
 import { contentfulClient } from "@/services/contentful/client";
-import { Asset, Entry, EntrySkeletonType } from "contentful";
+import PageTabContent from "../molecules/pageTabContent";
+import { tabsTileProps, TabsDataFields } from "@/types/TvCanalesSegmentosTypes";
+import { Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
 import SegmentosCanales from '../molecules/TvSegmentosContent';
 
-const TVCanalesSegmento = async ({id} : TVCanalesSegmentoID) =>{
+export default async function TVCanalesSegmento({ id }: tabsTileProps) {
     
     const tabsEntry:Entry<EntrySkeletonType, undefined, string> | null = await contentfulClient.getEntries({
         content_type: 'tabsContainer',
@@ -16,7 +16,7 @@ const TVCanalesSegmento = async ({id} : TVCanalesSegmentoID) =>{
     });
     
     const entryTitle = tabsEntry?.fields.title as string;
-    const entryData = tabsEntry?.fields.tabs as unknown as Entry<EntrySkeletonType<TabsDataFields>> [] | undefined;
+    const entryData = tabsEntry?.fields.tabs as unknown as EntrySkeletonType<TabsDataFields>;
 
 
     return(
@@ -44,5 +44,3 @@ const TVCanalesSegmento = async ({id} : TVCanalesSegmentoID) =>{
     </div>
     );
 }
-
-export default TVCanalesSegmento;

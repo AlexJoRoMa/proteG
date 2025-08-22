@@ -1,38 +1,34 @@
-import { Asset, Entry, EntrySkeletonType} from "contentful";
-export interface MediaAssetFields {
-  file?: {
-    url: string;
-    details: {
-      image?: {
-        width: number;
-        height: number;
-      }
-    }
-    }
-  }
+import { Asset, Entry, EntrySkeletonType } from "contentful";
 
- export interface MediaEntryFields {
-  image?: Asset<MediaAssetFields, 'es-MX'>;
+export interface MediaEntryFields {
+    internalName: string;
+    image: Asset;
+    description?: string;
 }
-export interface CardSegmentosFields {
-  fields: CardSegmentosFields;
-  titulo?: string;
-  segmentoCanal?: Entry<EntrySkeletonType<MediaEntryFields>>[];
+
+export interface CardDataFields {
+    titulo: string;
+    segmentoCanal: Entry<EntrySkeletonType<MediaEntryFields>>[] | null;
 }
+
 export interface TabsDataFields {
-  entryTitle: string;
-  cards: CardSegmentosFields[];
+    entryTitle: string;
+    cards: Entry<EntrySkeletonType<CardDataFields>>[] | null;
 }
 
-export interface TabsDataContainerFields {
-  title?: string;
-  tabs?: TabsDataFields[];
+export interface TabsContainerFields {
+    internalName: string;
+    tabs: Entry<EntrySkeletonType<TabsDataFields>>[] | null;
 }
 
-export interface TabsContentProps {
-  tabsData?: Entry<EntrySkeletonType<TabsDataFields>>[];
+export type PageTabContentProps = {
+    tabsData: Entry<EntrySkeletonType<TabsDataFields>>[];
 }
 
-export type TVCanalesSegmentoID = {
-    id: string;
+export type tabsTileProps = {
+    id: string,
+}
+
+export type TabsContentProps = {
+    tabsData: EntrySkeletonType<TabsDataFields> | null
 }
