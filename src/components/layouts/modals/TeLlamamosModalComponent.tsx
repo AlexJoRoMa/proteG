@@ -1,10 +1,8 @@
-
 "use client";
 
 import { Button, Checkbox, Form, Input, Link } from '@heroui/react'
 import { useState, lazy, Suspense } from 'react'
 import { TeLlamamosFormModalProps } from '@/types/ModalComponentTypes';
-import { TeLlamamosSuccessModal } from './TeLlamamosSuccessModal';
 import useSWR from 'swr';
 
 // Carga dinámica del componente ReCAPTCHA para mejor performance
@@ -21,13 +19,12 @@ const TeLlamamosModalComponent = ({ modalData }: TeLlamamosFormModalProps) => {
 };
 
 const TeLlamamosFormContent = ({ modalData }: TeLlamamosFormModalProps) => {
-
     const [isSelected, setIsSelected] = useState(false);
     const [phoneValue, setPhoneValue] = useState('');
     const [submitError, setSubmitError] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false); // Estado para controlar la vista de éxito
 
     // Site key directamente desde variable de entorno pública
     const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
@@ -112,7 +109,6 @@ const TeLlamamosFormContent = ({ modalData }: TeLlamamosFormModalProps) => {
 
     // Validar que solo se ingresen números
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-
         const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab'];
         
         if (allowedKeys.includes(e.key)) {
@@ -134,6 +130,19 @@ const TeLlamamosFormContent = ({ modalData }: TeLlamamosFormModalProps) => {
     const isFormValid = () => {
         const cleanPhone = phoneValue.replace(/\D/g, '');
         return cleanPhone.length === 10 && isSelected && recaptchaToken;
+    };
+
+    // Función para resetear el formulario y volver al estado inicial
+    const resetForm = () => {
+        setPhoneValue('');
+        setIsSelected(false);
+        setRecaptchaToken(null);
+        setSubmitError('');
+        setIsSuccess(false);
+        // Reset reCAPTCHA
+        if (window.grecaptcha) {
+            window.grecaptcha.reset();
+        }
     };
 
     // Manejar envío del formulario
@@ -163,21 +172,11 @@ const TeLlamamosFormContent = ({ modalData }: TeLlamamosFormModalProps) => {
             });
 
             if (response.ok) {
-
                 console.log('Formulario enviado exitosamente');
                 setSubmitError('');
                 
-                // Mostrar modal de éxito en lugar del mensaje simple
-                setShowSuccessModal(true);
-                
-                // Limpiar el formulario
-                setPhoneValue('');
-                setIsSelected(false);
-                setRecaptchaToken(null);
-                // Reset reCAPTCHA
-                if (window.grecaptcha) {
-                    window.grecaptcha.reset();
-                }
+                // Cambiar a vista de éxito
+                setIsSuccess(true);
             } else {
                 const error = await response.json();
                 throw new Error(error.message || 'Error al enviar formulario');
@@ -190,97 +189,119 @@ const TeLlamamosFormContent = ({ modalData }: TeLlamamosFormModalProps) => {
         }
     };
 
-  return (
-    <div className='flex flex-col justify-center xl:items-center xl:p-14 py-6 px-4'>
-        {isLoading && !modalData && (
-            <div className="py-8 text-center">
-                <div className="text-gray-500">Cargando...</div>
-            </div>
-        )}
-        {error && !modalData && (
-            <div className="py-8 text-center">
-                <div className="bg-red-100 text-red-700 px-4 py-2 rounded">
-                    Ha surgido un error al traer la información solicitada.
+    // Renderizar vista de éxito
+    if (isSuccess) {
+        return (
+            <div className='flex flex-col justify-center xl:items-center xl:p-14 py-6 px-4 h-full'>
+                <div className="text-center">
+                    {/* Título de éxito */}
+                    <h2 className='text-[20px] xl:text-[32px] mb-6 font-bold xl:font-normal'>
+                        ¡Gracias!
+                    </h2>
+                    
+                    {/* Mensaje de éxito */}
+                    <p className="text-base font-normal text-black leading-6 font-lato mb-6">
+                        En breve nos comunicaremos contigo.
+                    </p>
+                    
+                    {/* Botón de aceptar */}
+                    <Button
+                        onPress={resetForm}
+                        className="bg-black text-white font-bold text-base h-12 px-4 py-3 rounded-md w-64 font-lato hover:bg-gray-800 transition-colors"
+                    >
+                        Aceptar
+                    </Button>
                 </div>
             </div>
-        )}
-        {(!isLoading || modalData) && (
-            <>
-                <h2 className='text-[20px] xl:text-[32px] mb-6 mr-auto w-[60%] xl:w-full xl:mr-0 xl:text-center font-bold xl:font-normal'>{finalData.title}</h2>
-                
-                {/* Modal de éxito */}
-                <TeLlamamosSuccessModal 
-                    isOpen={showSuccessModal}
-                    onClose={() => setShowSuccessModal(false)}
-                />
+        );
+    }
 
-                {/* Mensaje de error */}
-                {submitError && (
-                    <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-center">
-                        {submitError}
+    // Renderizar formulario normal
+    return (
+        <div className='flex flex-col justify-center xl:items-center xl:p-14 py-6 px-4'>
+            {isLoading && !modalData && (
+                <div className="py-8 text-center">
+                    <div className="text-gray-500">Cargando...</div>
+                </div>
+            )}
+            {error && !modalData && (
+                <div className="py-8 text-center">
+                    <div className="bg-red-100 text-red-700 px-4 py-2 rounded">
+                        Ha surgido un error al traer la información solicitada.
                     </div>
-                )}
+                </div>
+            )}
+            {(!isLoading || modalData) && (
+                <>
+                    <h2 className='text-[20px] xl:text-[32px] mb-6 mr-auto w-[60%] xl:w-full xl:mr-0 xl:text-center font-bold xl:font-normal'>{finalData.title}</h2>
 
-                <Form onSubmit={handleSubmit}>
-                    <div className='flex items-center content-center mb-6 gap-1 text-[16px] '>
-                        <Checkbox className='' radius='sm' color='primary' isSelected={isSelected} onValueChange={setIsSelected}>
-                            {finalData.checkboxText}
-                        </Checkbox>
-                        <Link target='_blank' className='text-black underline font-bold' href={finalData.privacyLink.url}>{finalData.privacyLink.text}</Link>
-                    </div>
+                    {/* Mensaje de error */}
+                    {submitError && (
+                        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-center">
+                            {submitError}
+                        </div>
+                    )}
 
-                    <Input 
-                        className='min-w-[340px] mb-6 text-[16px]' 
-                        maxLength={12} // Aumentado para incluir espacios en el formato "55 1234 5678"
-                        labelPlacement='outside-top' 
-                        isClearable 
-                        type='tel' 
-                        label={finalData.telephoneLabel} 
-                        placeholder={finalData.placeholder}
-                        value={phoneValue}
-                        onValueChange={handlePhoneChange}
-                        onKeyDown={handleKeyPress}
-                        variant='bordered'
-                        radius='sm'
-                        isDisabled={isSubmitting}
-                    />
-                    
-                    {/* reCAPTCHA v2 Visual - Con carga dinámica optimizada */}
-                    <div className="mb-4 flex justify-center">
-                        {recaptchaSiteKey ? (
-                            <Suspense fallback={
-                                <div className="bg-gray-50 h-[78px] w-[304px] rounded-sm border border-gray-300 flex items-center justify-center">
-                                    <div className="text-center">
-                                        <div className="animate-pulse w-6 h-6 bg-gray-400 rounded mx-auto mb-2"></div>
-                                        <div className="text-sm text-gray-500">Cargando reCAPTCHA...</div>
+                    <Form onSubmit={handleSubmit}>
+                        <div className='flex items-center content-center mb-6 gap-1 text-[16px] '>
+                            <Checkbox className='' radius='sm' color='primary' isSelected={isSelected} onValueChange={setIsSelected}>
+                                {finalData.checkboxText}
+                            </Checkbox>
+                            <Link target='_blank' className='text-black underline font-bold' href={finalData.privacyLink.url}>{finalData.privacyLink.text}</Link>
+                        </div>
+
+                        <Input 
+                            className='min-w-[340px] mb-6 text-[16px]' 
+                            maxLength={12} // Aumentado para incluir espacios en el formato "55 1234 5678"
+                            labelPlacement='outside-top' 
+                            isClearable 
+                            type='tel' 
+                            label={finalData.telephoneLabel} 
+                            placeholder={finalData.placeholder}
+                            value={phoneValue}
+                            onValueChange={handlePhoneChange}
+                            onKeyDown={handleKeyPress}
+                            variant='bordered'
+                            radius='sm'
+                            isDisabled={isSubmitting}
+                        />
+                        
+                        {/* reCAPTCHA v2 Visual - Con carga dinámica optimizada */}
+                        <div className="mb-4 flex justify-center">
+                            {recaptchaSiteKey ? (
+                                <Suspense fallback={
+                                    <div className="bg-gray-50 h-[78px] w-[304px] rounded-sm border border-gray-300 flex items-center justify-center">
+                                        <div className="text-center">
+                                            <div className="animate-pulse w-6 h-6 bg-gray-400 rounded mx-auto mb-2"></div>
+                                            <div className="text-sm text-gray-500">Cargando reCAPTCHA...</div>
+                                        </div>
                                     </div>
+                                }>
+                                    <ReCAPTCHA
+                                        sitekey={recaptchaSiteKey}
+                                        onChange={handleRecaptchaChange}
+                                        theme="light"
+                                    />
+                                </Suspense>
+                            ) : (
+                                <div className="bg-red-50 h-[78px] w-[304px] rounded-sm border border-red-300 flex items-center justify-center">
+                                    <p className="text-sm text-red-500">reCAPTCHA no configurado</p>
                                 </div>
-                            }>
-                                <ReCAPTCHA
-                                    sitekey={recaptchaSiteKey}
-                                    onChange={handleRecaptchaChange}
-                                    theme="light"
-                                />
-                            </Suspense>
-                        ) : (
-                            <div className="bg-red-50 h-[78px] w-[304px] rounded-sm border border-red-300 flex items-center justify-center">
-                                <p className="text-sm text-red-500">reCAPTCHA no configurado</p>
-                            </div>
-                        )}
-                    </div>
+                            )}
+                        </div>
 
-                    <Button 
-                        type='submit' 
-                        className='bg-black w-[260px] mx-auto md:w-[340px] text-white font-bold h-[48px] text-[16px] leading-[24px] rounded-none mt-4 disabled:cursor-not-allowed disabled:opacity-30 disabled:pointer-events-none' 
-                        disabled={!isFormValid() || isSubmitting}
-                    >
-                        {isSubmitting ? 'Enviando...' : finalData.buttonText}
-                    </Button>
-                </Form>
-            </>
-        )}
-    </div>
-  )
+                        <Button 
+                            type='submit' 
+                            className='bg-black w-[260px] mx-auto md:w-[340px] text-white font-bold h-[48px] text-[16px] leading-[24px] rounded-none mt-4 disabled:cursor-not-allowed disabled:opacity-30 disabled:pointer-events-none' 
+                            disabled={!isFormValid() || isSubmitting}
+                        >
+                            {isSubmitting ? 'Enviando...' : finalData.buttonText}
+                        </Button>
+                    </Form>
+                </>
+            )}
+        </div>
+    )
 }
 
 export default TeLlamamosModalComponent
