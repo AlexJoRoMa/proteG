@@ -14,11 +14,11 @@ const fetchMicrocopies = async (key: string) => {
     return res.json();
 };
 
-const TeLlamamosModalComponent = ({ modalData }: TeLlamamosFormModalProps) => {
-  return <TeLlamamosFormContent modalData={modalData} />;
+const TeLlamamosModalComponent = ({ modalData, onClose }: TeLlamamosFormModalProps & { onClose?: () => void }) => {
+  return <TeLlamamosFormContent modalData={modalData} onClose={onClose} />;
 };
 
-const TeLlamamosFormContent = ({ modalData }: TeLlamamosFormModalProps) => {
+const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps & { onClose?: () => void }) => {
     const [isSelected, setIsSelected] = useState(false);
     const [phoneValue, setPhoneValue] = useState('');
     const [submitError, setSubmitError] = useState<string>('');
@@ -139,9 +139,33 @@ const TeLlamamosFormContent = ({ modalData }: TeLlamamosFormModalProps) => {
         setRecaptchaToken(null);
         setSubmitError('');
         setIsSuccess(false);
-        // Reset reCAPTCHA
-        if (window.grecaptcha) {
-            window.grecaptcha.reset();
+        // Reset reCAPTCHA solo si existe y tiene métodos disponibles
+        try {
+            if (window.grecaptcha && typeof window.grecaptcha.reset === 'function') {
+                window.grecaptcha.reset();
+            }
+        } catch (error) {
+            // Ignorar errores de reCAPTCHA al resetear
+            console.warn('No se pudo resetear reCAPTCHA:', error);
+        }
+    };
+
+    // Función para cerrar el modal
+    const handleCloseModal = () => {
+        try {
+            resetForm(); // Resetear formulario antes de cerrar
+        } catch (error) {
+            // Si hay error al resetear, solo limpiar estados básicos
+            console.warn('Error al resetear formulario:', error);
+            setPhoneValue('');
+            setIsSelected(false);
+            setRecaptchaToken(null);
+            setSubmitError('');
+            setIsSuccess(false);
+        }
+        
+        if (onClose) {
+            onClose(); // Llamar la función de cierre del modal
         }
     };
 
@@ -206,7 +230,7 @@ const TeLlamamosFormContent = ({ modalData }: TeLlamamosFormModalProps) => {
                     
                     {/* Botón de aceptar */}
                     <Button
-                        onPress={resetForm}
+                        onPress={handleCloseModal}
                         className="bg-black text-white font-bold text-base h-12 px-4 py-3 rounded-md w-64 font-lato hover:bg-gray-800 transition-colors"
                     >
                         Aceptar
