@@ -4,6 +4,7 @@
 import { Button, Checkbox, Form, Input, Link } from '@heroui/react'
 import { useState, lazy, Suspense } from 'react'
 import { TeLlamamosFormModalProps } from '@/types/ModalComponentTypes';
+import { TeLlamamosSuccessModal } from './TeLlamamosSuccessModal';
 import useSWR from 'swr';
 
 // Carga dinámica del componente ReCAPTCHA para mejor performance
@@ -23,10 +24,10 @@ const TeLlamamosFormContent = ({ modalData }: TeLlamamosFormModalProps) => {
 
     const [isSelected, setIsSelected] = useState(false);
     const [phoneValue, setPhoneValue] = useState('');
-    const [submitSuccess, setSubmitSuccess] = useState(false);
     const [submitError, setSubmitError] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     // Site key directamente desde variable de entorno pública
     const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
@@ -154,17 +155,21 @@ const TeLlamamosFormContent = ({ modalData }: TeLlamamosFormModalProps) => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    nombre: '',
                     telefono: cleanPhone,
-                    recaptchaToken
+                    recaptchaToken,
+                    url: window.location.href,
+                    utm: null
                 }),
             });
 
             if (response.ok) {
-                const result = await response.json();
-                console.log('Formulario enviado exitosamente:', result);
-                setSubmitSuccess(true);
+
+                console.log('Formulario enviado exitosamente');
                 setSubmitError('');
+                
+                // Mostrar modal de éxito en lugar del mensaje simple
+                setShowSuccessModal(true);
+                
                 // Limpiar el formulario
                 setPhoneValue('');
                 setIsSelected(false);
@@ -180,7 +185,6 @@ const TeLlamamosFormContent = ({ modalData }: TeLlamamosFormModalProps) => {
         } catch (error) {
             console.error('Error en formulario:', error);
             setSubmitError(error instanceof Error ? error.message : 'Error desconocido');
-            setSubmitSuccess(false);
         } finally {
             setIsSubmitting(false);
         }
@@ -204,12 +208,11 @@ const TeLlamamosFormContent = ({ modalData }: TeLlamamosFormModalProps) => {
             <>
                 <h2 className='text-[20px] xl:text-[32px] mb-6 mr-auto w-[60%] xl:w-full xl:mr-0 xl:text-center font-bold xl:font-normal'>{finalData.title}</h2>
                 
-                {/* Mensaje de éxito */}
-                {submitSuccess && (
-                    <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded text-center">
-                        ¡Gracias! Te contactaremos pronto.
-                    </div>
-                )}
+                {/* Modal de éxito */}
+                <TeLlamamosSuccessModal 
+                    isOpen={showSuccessModal}
+                    onClose={() => setShowSuccessModal(false)}
+                />
 
                 {/* Mensaje de error */}
                 {submitError && (
