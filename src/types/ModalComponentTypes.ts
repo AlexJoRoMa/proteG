@@ -109,5 +109,9 @@ export interface TeLlamamosFormModalProps {
       text: string;
       url: string;
     };
+    // Propiedades para la vista de éxito
+    successTitle?: string;
+    successDescription?: string;
+    successButtonText?: string;
   };
 }

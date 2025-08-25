@@ -65,7 +65,11 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
         privacyLink: {
             text: 'Políticas de Privacidad',
             url: '#'
-        }
+        },
+        // Textos de la vista de éxito
+        successTitle: '¡Gracias!',
+        successDescription: 'En breve nos comunicaremos contigo.',
+        successButtonText: 'Aceptar'
     };
 
     const data = isLoading ? defaultData : {
@@ -77,7 +81,11 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
         privacyLink: {
             text: getValueByKey('modal.tellamamos.terminos.link.text') || defaultData.privacyLink.text,
             url: getValueByKey('modal.tellamamos.terminos.link.url') || defaultData.privacyLink.url
-        }
+        },
+        // Textos de la vista de éxito desde Contentful
+        successTitle: getValueByKey('modal.tellamamos.success.title') || defaultData.successTitle,
+        successDescription: getValueByKey('modal.tellamamos.success.description') || defaultData.successDescription,
+        successButtonText: getValueByKey('modal.tellamamos.success.btn.text') || defaultData.successButtonText
     };
 
     // Usar modalData si se pasa como prop, sino usar datos de Contentful
@@ -220,12 +228,12 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
                 <div className="text-center">
                     {/* Título de éxito */}
                     <h2 className='text-[20px] xl:text-[32px] mb-6 font-bold xl:font-normal'>
-                        ¡Gracias!
+                        {finalData.successTitle || defaultData.successTitle}
                     </h2>
                     
                     {/* Mensaje de éxito */}
                     <p className="text-base font-normal text-black leading-6 font-lato mb-6">
-                        En breve nos comunicaremos contigo.
+                        {finalData.successDescription || defaultData.successDescription}
                     </p>
                     
                     {/* Botón de aceptar */}
@@ -233,7 +241,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
                         onPress={handleCloseModal}
                         className="bg-black text-white font-bold text-base h-12 px-4 py-3 rounded-md w-64 font-lato hover:bg-gray-800 transition-colors"
                     >
-                        Aceptar
+                        {finalData.successButtonText || defaultData.successButtonText}
                     </Button>
                 </div>
             </div>
