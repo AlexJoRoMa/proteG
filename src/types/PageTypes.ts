@@ -8,7 +8,7 @@ export type PageProps = {
   }>;
 };
 
-//not-found page
+//error / not-found page
 
 export type ErrorTypeFields = {
     internalName: string,
@@ -27,7 +27,9 @@ export type ErrorTypeFields = {
             };
             altText: string;
         };
-    };
+    },
+    aditionalInfo: string,
+    contactNumber: string
 }
 
 export type ErrorButtonsFields = {
