@@ -1,7 +1,7 @@
 'use client'
 
 import { Tabs, Tab, Card, CardBody } from "@heroui/react";
-import { TabsDataFields, CardDataFields, TabsContentProps, MediaEntryFields } from "@/types/TvCanalesSegmentosTypes";
+import { TabsDataFields, CardSegmentoFields, TabsContentProps, MediaEntryFields } from "@/types/TvCanalesSegmentosTypes";
 import Image from "next/image";
 import { Entry, EntrySkeletonType } from "contentful";
 
@@ -34,7 +34,7 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
                         <CardBody className="">
                             {item.fields.cards && item.fields.cards.map((card) => {
                             
-                            const segmentoData = card?.fields as CardDataFields;
+                            const segmentoData = card?.fields as CardSegmentoFields;
 
                             
                             return(
@@ -48,12 +48,12 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
 
                                         {/* Grid de iconos */}
                                         <div className="grid 3xl:grid-cols-10 xsm:grid-cols-4">
-                                            {segmentoData.segmentoCanal && segmentoData.segmentoCanal.map((canalEntry) =>{
+                                            {segmentoData.segmentoCanal?.map((canalEntry) =>{
                                                 
                                                 const asset = canalEntry.fields.image;
                                                 const imgURL = asset?.fields?.file.url;
                                                 const imgWidth = asset?.fields?.file.details.image.width;
-                                                const imgHeight = asset.fields?.file.details.image.height;
+                                                const imgHeight = asset?.fields?.file.details.image.height;
 
                                                 return(
                                                     <div key={canalEntry.sys.id} className="w-full h-[80px] md:h-[100px] flex items-center justify-center">

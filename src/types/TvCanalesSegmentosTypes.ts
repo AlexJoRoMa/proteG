@@ -6,23 +6,24 @@ export interface MediaEntryFields {
     description?: string;
 }
 
-export interface CardDataFields {
-    titulo: string;
-    segmentoCanal: Entry<EntrySkeletonType<MediaEntryFields>>[] | null;
+export interface CardSegmentoFields {
+  titulo?: string;
+  segmentoCanal?: Entry<MediaEntryFields>[];
 }
 
+//TabsData
 export interface TabsDataFields {
-    entryTitle: string;
-    cards: Entry<EntrySkeletonType<CardDataFields>>[] | null;
+  entryTitle: string;
+  cards: Entry<CardSegmentoFields>[];
 }
 
 export interface TabsContainerFields {
     internalName: string;
-    tabs: Entry<EntrySkeletonType<TabsDataFields>>[] | null;
+    tabs: TabsDataFields[];
 }
 
 export type PageTabContentProps = {
-    tabsData: Entry<EntrySkeletonType<TabsDataFields>>[];
+    tabsData: TabsDataFields[];
 }
 
 export type tabsTileProps = {
