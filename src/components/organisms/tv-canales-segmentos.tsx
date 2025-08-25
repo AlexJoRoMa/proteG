@@ -1,5 +1,4 @@
 import { contentfulClient } from "@/services/contentful/client";
-import PageTabContent from "../molecules/pageTabContent";
 import { tabsTileProps, TabsDataFields } from "@/types/TvCanalesSegmentosTypes";
 import { Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
@@ -17,7 +16,8 @@ export default async function TVCanalesSegmento({ id }: tabsTileProps) {
     
     const entryTitle = tabsEntry?.fields.title as string;
     const entryData = tabsEntry?.fields.tabs as unknown as EntrySkeletonType<TabsDataFields>;
-
+/* 
+    console.log('entryData ', entryData) */
 
     return(
     <div className="bg-white mb-10">

@@ -1,20 +1,30 @@
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 
 export interface MediaEntryFields {
-    internalName: string;
-    image: Asset;
-    description?: string;
+    image: {
+        fields: {
+            file:{
+                url: string;
+                details: {
+                    image: {
+                        width: number;
+                        height: number;
+                    };
+                };
+            };
+        };  
+    };
 }
 
 export interface CardSegmentoFields {
   titulo?: string;
-  segmentoCanal?: Entry<MediaEntryFields>[];
+  segmentoCanal?: Entry<EntrySkeletonType<MediaEntryFields>>[];
 }
 
 //TabsData
 export interface TabsDataFields {
   entryTitle: string;
-  cards: Entry<CardSegmentoFields>[];
+  cards: Entry<EntrySkeletonType<CardSegmentoFields>>[];
 }
 
 export interface TabsContainerFields {

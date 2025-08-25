@@ -8,7 +8,7 @@ import { Entry, EntrySkeletonType } from "contentful";
 export default function SegmentosCanales({ tabsData }: TabsContentProps) {
 
     const cardsInfo = tabsData as unknown as EntrySkeletonType<TabsDataFields>[];
-
+/* console.log('>>>>>cardsInfo  ' , cardsInfo); */
     const defaultKey = cardsInfo?.[0]?.fields.entryTitle;
 
     return (
@@ -25,51 +25,56 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
                 tabList: " w-auto flex items-center pb-0 rounded-none overflow-y-hidden",
                 cursor: "bg-white rounded-none rounded-t-sm",
                 base: "m-auto flex items-center justify-around ",
-                tab: "h-[56px] lg:h-[48px] w-[118px] lg:w-[400px] rounded-none"
+                tab: "h-[56px]  lg:h-[48px] w-[118px] lg:w-[400px] rounded-none"
             }}
             >
             {(item) => (
                 <Tab key={item.fields.entryTitle} title={item.fields.entryTitle}>
                     <Card className="rounded-none  shadow-none md:mx-md 2xl:mx-xl">
                         <CardBody className="">
-                            {item.fields.cards && item.fields.cards.map((card) => {
+                            {item.fields.cards.map((card) => {
                             
-                            const segmentoData = card?.fields as CardSegmentoFields;
+                            const cardItem = card as unknown as Entry<EntrySkeletonType<MediaEntryFields>>;
+                            const cardData = card?.fields as CardSegmentoFields;
+                            
 
-                            
+                            /* console.log('cardData ', cardData) */
                             return(
-                                <div key={card.sys.id} className="">
-                                    <div className="border-gradient-verde">
-                                        
-                                        {/* titulo del segmento */}
-                                        <div className="text-[20px] leading-[24px] font-bold mt-5 mb-5">
-                                            <p>{segmentoData.titulo}</p>
-                                        </div>
-
-                                        {/* Grid de iconos */}
-                                        <div className="grid 3xl:grid-cols-10 xsm:grid-cols-4">
-                                            {segmentoData.segmentoCanal?.map((canalEntry) =>{
-                                                
-                                                const asset = canalEntry.fields.image;
-                                                const imgURL = asset?.fields?.file.url;
-                                                const imgWidth = asset?.fields?.file.details.image.width;
-                                                const imgHeight = asset?.fields?.file.details.image.height;
-
-                                                return(
-                                                    <div key={canalEntry.sys.id} className="w-full h-[80px] md:h-[100px] flex items-center justify-center">
-                                                        <Image
-                                                        className="max-w-[70%] max-h-[70%] object-contain"
-                                                        src={`https:${imgURL}`}
-                                                        alt="Logo de canal"
-                                                        width={imgWidth}
-                                                        height={imgHeight}
-                                                        loading="lazy"
-                                                        />
-                                                    </div>
-                                                    );
-                                            })}
-                                        </div>
+                                <div key={cardItem.sys.id} className="">
+                                   <div className="border-gradient-verde">
+                                    <div className="text-[20px] leading-[24px] font-bold mt-5 mb-5">
+                                        <p>{cardData.titulo}</p>
                                     </div>
+                                   </div>
+
+                                   <div className="grid 3xl:grid-cols-10 xsm:grid-cols-4">
+                                    {cardData.segmentoCanal?.map((canalEntry) => {
+
+                                        // cardData.image.fields.image.fields.file.url
+                                        const mediaEntry = canalEntry.fields as MediaEntryFields;
+
+                                        
+                                        const imgURL = mediaEntry.image.fields.file.url;
+                                        const imgWidth = mediaEntry.image.fields.file.details.image.width;
+                                        const imgHeight = mediaEntry.image.fields.file.details.image.height;
+                                        
+                                        /* console.log('asset ', asset) */
+                                        console.log('imgURL ', imgURL)
+
+                                        return(
+                                            <div key={canalEntry.sys.id} className="w-full h-[80px] md:h-[100px] flex items-center justify-center">
+                                                <Image
+                                                className="max-w-[70%] max-h-[70%] object-contain"
+                                                src={`https:${imgURL}`}
+                                                alt="Logo de canal"
+                                                width={imgWidth}
+                                                height={imgHeight}
+                                                loading="lazy"
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                                   </div>
                                 </div>
                             )
                             })
