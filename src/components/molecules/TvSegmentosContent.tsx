@@ -8,7 +8,7 @@ import { Entry, EntrySkeletonType } from "contentful";
 export default function SegmentosCanales({ tabsData }: TabsContentProps) {
 
     const cardsInfo = tabsData as unknown as EntrySkeletonType<TabsDataFields>[];
-/* console.log('>>>>>cardsInfo  ' , cardsInfo); */
+
     const defaultKey = cardsInfo?.[0]?.fields.entryTitle;
 
     return (
@@ -31,35 +31,30 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
             {(item) => (
                 <Tab key={item.fields.entryTitle} title={item.fields.entryTitle}>
                     <Card className="rounded-none  shadow-none md:mx-md 2xl:mx-xl">
-                        <CardBody className="">
+                        <CardBody >
                             {item.fields.cards.map((card) => {
                             
                             const cardItem = card as unknown as Entry<EntrySkeletonType<MediaEntryFields>>;
                             const cardData = card?.fields as CardSegmentoFields;
                             
-
-                            /* console.log('cardData ', cardData) */
                             return(
-                                <div key={cardItem.sys.id} className="">
+                                <div key={cardItem.sys.id} >
                                    <div className="border-gradient-verde">
+                                {/* Titulo de segmento */}
                                     <div className="text-[20px] leading-[24px] font-bold mt-5 mb-5">
                                         <p>{cardData.titulo}</p>
                                     </div>
-                                   </div>
+                                   
 
+                                {/* Grid de imagenes */}
                                    <div className="grid 3xl:grid-cols-10 xsm:grid-cols-4">
                                     {cardData.segmentoCanal?.map((canalEntry) => {
 
-                                        // cardData.image.fields.image.fields.file.url
                                         const mediaEntry = canalEntry.fields as MediaEntryFields;
-
                                         
                                         const imgURL = mediaEntry.image.fields.file.url;
                                         const imgWidth = mediaEntry.image.fields.file.details.image.width;
                                         const imgHeight = mediaEntry.image.fields.file.details.image.height;
-                                        
-                                        /* console.log('asset ', asset) */
-                                        console.log('imgURL ', imgURL)
 
                                         return(
                                             <div key={canalEntry.sys.id} className="w-full h-[80px] md:h-[100px] flex items-center justify-center">
@@ -74,6 +69,7 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
                                             </div>
                                         );
                                     })}
+                                   </div>
                                    </div>
                                 </div>
                             )
