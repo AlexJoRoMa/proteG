@@ -25,7 +25,9 @@ export type Navigation = {
     fields: {
         navigationTitle: string,
         navigationUrl: string,
-        linkIcon?: Logo
+        linkIcon?: Logo,
+        internalName?: string, // Para mantener compatibilidad con datos existentes
+        typeModal?: 'TeLlamamos' | 'TeAyudamos' // Nuevo campo para especificar el tipo de modal
     }
 }
 

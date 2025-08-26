@@ -15,10 +15,25 @@ import Image from "next/image";
 import { IzziNavbar, HeaderComponentProps } from "@/types/headerTypes";
 import ButtonModal from '../atoms/ButtonModal';
 import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
+import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 
 
 export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    
+    // Función helper para renderizar el modal correcto basado en typeModal
+    const renderModalComponent = (typeModal?: 'TeLlamamos' | 'TeAyudamos') => {
+        // Priorizar typeModal sobre internalName para retrocompatibilidad
+        if (typeModal === 'TeLlamamos') {
+            return <TeLlamamosModalComponent />;
+        }
+        if (typeModal === 'TeAyudamos') {
+            return <TeAyudamosModalComponent />;
+        }
+        // Fallback por defecto
+        return null;
+    };
+    
     const borderStyle = {
         'borderBottom': '2px solid',
         'borderImage': 'linear-gradient(90deg, #FF6C07 0%, #4DA9A7 33%, #D31772 66%, #FCD116 100%)',
@@ -35,6 +50,7 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
     const mobileNavbarButton = navbarContent?.filter((data) => data.fields.internalName == "MobileAccountButton");
     const mobileCoberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaMobile");
     const coberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaDesktop");
+
 
     // Normaliza URLs para que sean absolutas (agrega '/' si falta)
     const normalizeUrl = (url: string) => url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
@@ -99,7 +115,8 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
         {navbarButtons[0].fields?.navigation?.map((link, index) => (    
             <NavbarItem key={`${link}-${index}`} className="hidden xl:flex ">
               {
-                link.fields.internalName === 'teLlamamosHeader' ? (
+                // Usar typeModal preferentemente, fallback a internalName para retrocompatibilidad
+                (link.fields.typeModal === 'TeLlamamos' || link.fields.typeModal === 'TeAyudamos') ? (
                   <ButtonModal
                     textBtn={link.fields.navigationTitle}
                     classStyles={`${index == 2 ? 'bg-black-0 text-white-0' :'bg-color-trasparent'} 
@@ -108,7 +125,7 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
                     modalContentClassName="w-full h-[59vh] sm:h-[50vh] xl:h-[52vh] xl:w-[80vw] 2xl:w-[52vw] 2xl:h-[53vh]"
                     startContent={<Image className='max-w-[24px] h-auto' src={`https:${link.fields.linkIcon?.fields.file.url}`} alt={`${link.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />}
                   >
-                    <TeLlamamosModalComponent />
+                    {renderModalComponent(link.fields.typeModal)}
                   </ButtonModal>
                 ) : (
                   <Button as={Link} className={`${index == 2 ? 'bg-black-0 text-white-0' :'bg-color-trasparent'} 
@@ -119,7 +136,6 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
                   </Button>
                 )
               }
-         
             </NavbarItem>
         ))}
         {mobileNavbarButton[0].fields?.navigation?.map((link, index) => ( 
@@ -142,10 +158,12 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
             </Link>
           </NavbarMenuItem>
         ))}
-        {navbarButtons[0].fields?.navigation?.map((link, index) => (    
+        {navbarButtons[0].fields?.navigation?.map((link, index) => {
+            return (
             <NavbarMenuItem key={`${link}-${index}`}>
              {
-                link.fields.internalName === 'teLlamamosHeader' ? (
+                // Usar typeModal preferentemente, fallback a internalName para retrocompatibilidad
+                (link.fields.typeModal === 'TeLlamamos' || link.fields.typeModal === 'TeAyudamos') ? (
                   <ButtonModal
                     textBtn={link.fields.navigationTitle}
                     classStyles={`${index == 2 ? 'bg-black-0 text-white-0' :'bg-color-trasparent'} 
@@ -154,7 +172,7 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
                     modalContentClassName="w-full h-[50vh] 2xl:w-[52vw] 2xl:h-[55vh]"
                     startContent={<Image className='max-w-[24px] h-auto' src={`https:${link.fields.linkIcon?.fields.file.url}`} alt={`${link.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />}
                   >
-                    <TeLlamamosModalComponent />
+                    {renderModalComponent(link.fields.typeModal)}
                   </ButtonModal>
                 ) : (
                   <Button as={Link} className={`${index == 2 ? 'bg-black-0 text-white-0' :'bg-color-trasparent'} 
@@ -166,7 +184,8 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
                 )
               }
             </NavbarMenuItem>
-        ))}
+            );
+        })}
       </NavbarMenu>
     </Navbar>
     </>

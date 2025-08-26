@@ -4,6 +4,7 @@ import { CallMeIcon, HeadPhonesIcon, WhatsAppIcon } from '../../atoms/ModalIcons
 import { Button, Link } from '@heroui/react'
 import { TeLlamamosModalComponentProps } from '@/types/ModalComponentTypes';
 import LinkModal from '../../atoms/LinkModal';
+import TeLlamamosModalComponent from './TeLlamamosModalComponent';
 
 
 
@@ -37,11 +38,14 @@ const TeAyudamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlama
             <div className='flex flex-col'>
                 <strong className='mb-6'>{data.column1.title}</strong>
                 <p className='flex xl:mb-3.5 mb-4 gap-3'><CallMeIcon/>{data.column1.row1.text}<b>{data.column1.row1.tel}</b></p>
-                <LinkModal 
+                <LinkModal
                   classNames='flex xl:mb-3.5 mb-4 gap-3 underline text-black font-bold text-[16px] cursor-pointer' 
                   text={<><CallMeIcon/>{data.column1.row2.link}</>}
                   idModal='te-llamamos-modal'
-                />
+                  closeButtonStroke='black'
+                  modalContentClassName='w-full h-[50vh] 2xl:w-[52vw] 2xl:h-[55vh]'>
+                    <TeLlamamosModalComponent />
+                  </LinkModal>
                 <a target='_blank' className='flex gap-3' href={`https://wa.me/${data.column1.row3.wpp.tel}?text=${data.column1.row3.wpp.promoText}`}><WhatsAppIcon />{data.column1.row3.wpp.text}</a>
             </div>
             <hr className='w-full xl:mb-10 mb-6 mt-8 block xl:hidden border-0 h-[1px] [background-image:var(--gradient-button-fixed)]' />
