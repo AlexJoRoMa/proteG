@@ -17,8 +17,13 @@ export type RecaptchaErrorCode =
 export interface TeLlamamosFormData {
   nombre?: string;
   telefono: string;
+  email?: string;
+  mensaje?: string;
   recaptchaToken: string;
+  utm?: string;
+  url: string; // URL del navegador
 }
+
 
 export const RECAPTCHA_ERROR_MESSAGES: Record<RecaptchaErrorCode, string> = {
   'missing-input-secret': 'Falta la clave secreta',

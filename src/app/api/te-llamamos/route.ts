@@ -1,26 +1,7 @@
+import { TeLlamamosFormData } from '@/types/RecaptchaTypes';
+import { ExternalApiPayload } from '@/types/TeLlamamosRouteType';
 import { NextRequest, NextResponse } from 'next/server';
 
-export interface TeLlamamosFormData {
-  nombre?: string;
-  telefono: string;
-  email?: string;
-  mensaje?: string;
-  recaptchaToken: string;
-  utm?: string;
-  url: string; // URL del navegador
-}
-
-interface ExternalApiPayload {
-  nombre: string;
-  email: string;
-  telefono: string;
-  Tipo: string;
-  utm: string | null; // Puede ser null si no se proporciona
-  flujo: string | null;
-  canal: string;
-  captcha: string;
-  from: string;
-}
 
 async function sendToExternalApi(data: TeLlamamosFormData): Promise<boolean> {
   const apiEndpoint = process.env.API_TE_LLAMAMOS_ENDPOINT;
@@ -38,7 +19,7 @@ async function sendToExternalApi(data: TeLlamamosFormData): Promise<boolean> {
     Tipo: 'local',
     utm: data.utm || null,
     flujo: null,
-    canal: 'llamame', // Canal siempre será el mismo
+    canal: 'llamame',
     captcha: data.recaptchaToken,
     from: data.url
   };
@@ -88,7 +69,6 @@ export async function POST(request: NextRequest) {
 
     const { telefono, recaptchaToken, utm, url } = formData;
 
-    // Validaciones básicas
     if (!telefono || !recaptchaToken) {
       console.log('Validación fallida:', { telefono: !!telefono, recaptchaToken: !!recaptchaToken });
 

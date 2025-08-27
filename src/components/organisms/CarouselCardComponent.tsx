@@ -36,7 +36,6 @@ const CarouselCardComponent = async ({id}:CarouselCardProps) => {
           : '#000000' 
       }}
     >
-      {/* Imagen de fondo del carrusel con optimizaciones de performance */}
       {imgBackground?.fields?.file?.url && (
         <div className="absolute inset-0 z-0">
           <picture>
@@ -59,13 +58,11 @@ const CarouselCardComponent = async ({id}:CarouselCardProps) => {
         </div>
       )}
         
-        {/* Contenido del carousel con z-index para estar por encima de la imagen */}
         <div className="relative z-10 w-full h-full">
           <CarouselProvider qtyCarousels={1} carouselConfigs={[{ options: { align: 'start' } }]} colorArrow={colorArrow}>
              <CarouselComponent buttons={true} dots={true}>
                 {
                   entryCarousel && entryCarousel[0]?.fields.cardsCarousel && Array.isArray(entryCarousel[0].fields.cardsCarousel) && (entryCarousel[0].fields.cardsCarousel as Entry<EntrySkeletonType, undefined, string>[]).map((card:Entry<EntrySkeletonType, undefined, string>, index:number) => {
-                    // Renderizar el componente de cards dependiendo del tipo de card
                     if( card.fields.type === CARDHOMECOMPONENT) {
                       return <CardHomeComponent key={index} card={card} />
                     }

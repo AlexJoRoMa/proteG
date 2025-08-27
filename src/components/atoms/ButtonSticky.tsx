@@ -8,12 +8,13 @@ import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent
 
 const ButtonFixed = async() => {
 
-  // Obtener el texto del boton desde Contentful
+
   try {
+    // Obtener datos desde Contentful
     const textBtn = await getMicroCopy('btn.sticky.text');
     const modalTexts = await getAllCopy('stickyModal');
 
-    // Crear un helper para encontrar valores por key
+    // Encontrar valores por key
     const getValueByKey = (key: string) => {
 
       const item = modalTexts[0].fields?.resources?.find((item: ResourceType) => item.fields?.key === key);

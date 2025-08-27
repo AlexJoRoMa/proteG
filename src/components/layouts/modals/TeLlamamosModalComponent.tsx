@@ -24,14 +24,14 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
     const [submitError, setSubmitError] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
-    const [isSuccess, setIsSuccess] = useState(false); // Estado para controlar la vista de éxito
+    const [isSuccess, setIsSuccess] = useState(false);
 
     // Site key directamente desde variable de entorno pública
     const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
     // Usar SWR para el fetching con caché optimizado
     const { data: contentfulData, error, isLoading } = useSWR(
-        'TeLlamamos', // Key para el caché
+        'TeLlamamos',
         fetchMicrocopies,
         {
             dedupingInterval: 3600000, // 1 hora
@@ -43,7 +43,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
 
     // Helper para encontrar valores por key
     const getValueByKey = (key: string) => {
-        // El response es un array directo con el resourceSet
+       
         if (!contentfulData || !Array.isArray(contentfulData) || !contentfulData[0]?.fields?.resources) {
             return '';
         }
@@ -66,7 +66,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
             text: 'Políticas de Privacidad',
             url: '#'
         },
-        // Textos de la vista de éxito
+        
         successTitle: '¡Gracias!',
         successDescription: 'En breve nos comunicaremos contigo.',
         successButtonText: 'Aceptar'
@@ -82,24 +82,24 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
             text: getValueByKey('modal.tellamamos.terminos.link.text') || defaultData.privacyLink.text,
             url: getValueByKey('modal.tellamamos.terminos.link.url') || defaultData.privacyLink.url
         },
-        // Textos de la vista de éxito desde Contentful
+
         successTitle: getValueByKey('modal.tellamamos.success.title') || defaultData.successTitle,
         successDescription: getValueByKey('modal.tellamamos.success.description') || defaultData.successDescription,
         successButtonText: getValueByKey('modal.tellamamos.success.btn.text') || defaultData.successButtonText
     };
 
-    // Usar modalData si se pasa como prop, sino usar datos de Contentful
+
     const finalData = modalData || data;
 
     // Función para formatear el número de teléfono
     const formatPhoneNumber = (value: string) => {
-        // Remover todos los caracteres que no sean números
+
         const numbers = value.replace(/\D/g, '');
         
-        // Limitar a 10 dígitos
+
         const limitedNumbers = numbers.slice(0, 10);
         
-        // Aplicar formato según la cantidad de dígitos
+
         if (limitedNumbers.length <= 2) {
             return limitedNumbers;
         } else if (limitedNumbers.length <= 6) {
@@ -123,7 +123,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
             return;
         }
         
-        // Solo permitir números
+
         if (!/\d/.test(e.key)) {
             e.preventDefault();
         }
@@ -147,13 +147,12 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
         setRecaptchaToken(null);
         setSubmitError('');
         setIsSuccess(false);
-        // Reset reCAPTCHA solo si existe y tiene métodos disponibles
+
         try {
             if (window.grecaptcha && typeof window.grecaptcha.reset === 'function') {
                 window.grecaptcha.reset();
             }
         } catch (error) {
-            // Ignorar errores de reCAPTCHA al resetear
             console.warn('No se pudo resetear reCAPTCHA:', error);
         }
     };
@@ -161,9 +160,8 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
     // Función para cerrar el modal
     const handleCloseModal = () => {
         try {
-            resetForm(); // Resetear formulario antes de cerrar
+            resetForm(); 
         } catch (error) {
-            // Si hay error al resetear, solo limpiar estados básicos
             console.warn('Error al resetear formulario:', error);
             setPhoneValue('');
             setIsSelected(false);
@@ -173,7 +171,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
         }
         
         if (onClose) {
-            onClose(); // Llamar la función de cierre del modal
+            onClose();
         }
     };
 
@@ -206,8 +204,6 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
             if (response.ok) {
                 console.log('Formulario enviado exitosamente');
                 setSubmitError('');
-                
-                // Cambiar a vista de éxito
                 setIsSuccess(true);
             } else {
                 const error = await response.json();
@@ -226,17 +222,15 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
         return (
             <div className='flex flex-col justify-center xl:items-center xl:p-14 py-6 px-4 h-full'>
                 <div className="text-center">
-                    {/* Título de éxito */}
+
                     <h2 className='text-[20px] xl:text-[32px] mb-6 font-bold xl:font-normal'>
                         {finalData.successTitle || defaultData.successTitle}
                     </h2>
                     
-                    {/* Mensaje de éxito */}
                     <p className="text-base font-normal text-black leading-6 font-lato mb-6">
                         {finalData.successDescription || defaultData.successDescription}
                     </p>
                     
-                    {/* Botón de aceptar */}
                     <Button
                         onPress={handleCloseModal}
                         className="bg-black text-white font-bold text-base h-12 px-4 py-3 rounded-md w-64 font-lato hover:bg-gray-800 transition-colors"
@@ -267,7 +261,6 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
                 <>
                     <h2 className='text-[20px] xl:text-[32px] mb-6 mr-auto w-[60%] xl:w-full xl:mr-0 xl:text-center font-bold xl:font-normal'>{finalData.title}</h2>
 
-                    {/* Mensaje de error */}
                     {submitError && (
                         <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-center">
                             {submitError}
@@ -284,7 +277,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
 
                         <Input 
                             className='min-w-[340px] mb-6 text-[16px]' 
-                            maxLength={12} // Aumentado para incluir espacios en el formato "55 1234 5678"
+                            maxLength={12}
                             labelPlacement='outside-top' 
                             isClearable 
                             type='tel' 
@@ -298,7 +291,6 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
                             isDisabled={isSubmitting}
                         />
                         
-                        {/* reCAPTCHA v2 Visual - Con carga dinámica optimizada */}
                         <div className="mb-4 flex justify-center">
                             {recaptchaSiteKey ? (
                                 <Suspense fallback={

@@ -23,14 +23,14 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
     
     // Función helper para renderizar el modal correcto basado en typeModal
     const renderModalComponent = (typeModal?: 'TeLlamamos' | 'TeAyudamos') => {
-        // Priorizar typeModal sobre internalName para retrocompatibilidad
+
         if (typeModal === 'TeLlamamos') {
             return <TeLlamamosModalComponent />;
         }
         if (typeModal === 'TeAyudamos') {
             return <TeAyudamosModalComponent />;
         }
-        // Fallback por defecto
+
         return null;
     };
     
@@ -115,7 +115,6 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
         {navbarButtons[0].fields?.navigation?.map((link, index) => (    
             <NavbarItem key={`${link}-${index}`} className="hidden xl:flex ">
               {
-                // Usar typeModal preferentemente, fallback a internalName para retrocompatibilidad
                 (link.fields.typeModal === 'TeLlamamos' || link.fields.typeModal === 'TeAyudamos') ? (
                   <ButtonModal
                     textBtn={link.fields.navigationTitle}
@@ -162,7 +161,6 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
             return (
             <NavbarMenuItem key={`${link}-${index}`}>
              {
-                // Usar typeModal preferentemente, fallback a internalName para retrocompatibilidad
                 (link.fields.typeModal === 'TeLlamamos' || link.fields.typeModal === 'TeAyudamos') ? (
                   <ButtonModal
                     textBtn={link.fields.navigationTitle}
