@@ -7,10 +7,13 @@ import { getCopyForComponent } from "@/services/contentful/components";
 
 export default async function ExitGuard() {
 
-    const izziIcon = await contentfulClient.getAsset('5AhxzvJzSwpHKFCFR1cZaG').then((asset) => {
-        return asset
-    }) as unknown as EntrySkeletonType<IzziLogo>;
-
+    const izziIcon = await contentfulClient.getEntries({
+            content_type: 'media',
+            'fields.internalName': 'Izzi Logo',
+            include: 5,
+        }).then((entriesResponse) => {
+            return entriesResponse.items[0]
+        }) as unknown as EntrySkeletonType<IzziLogo>;
 
     const copysModalExit = await getCopyForComponent('Modal-salir-flujo').then((entry) => {
         return entry.modal

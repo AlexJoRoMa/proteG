@@ -163,10 +163,10 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
                                 <>
                                     <Image
                                         className="w-[148px] md:w-[240px] h-auto"
-                                        src={`https:${icon.fields.file.url}`}
-                                        alt={icon.fields.title}
-                                        width={icon.fields.file.details.image.width}
-                                        height={icon.fields.file.details.image.height}
+                                        src={`https:${icon.fields.image.fields.file.url}`}
+                                        alt={icon.fields.altText}
+                                        width={icon.fields.image.fields.file.details.image.width}
+                                        height={icon.fields.image.fields.file.details.image.height}
                                     />
                                 </>
                                 <div className="flex flex-col justify-center items-center text-center gap-[24px] w-full">

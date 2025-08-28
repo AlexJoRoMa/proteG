@@ -2,16 +2,22 @@
 //modalExit
 
 export type IzziLogo = {
-    title: string,
-    file: {
-        details: {
-            image: {
-                height: number,
-                width: number
+    altText: string,
+    image: {
+        fields: {
+            file: {
+                details: {
+                    image: {
+                        height: number,
+                        width: number
+                    }
+                },
+            url: string,
             }
-        },
-        url: string
+            title: string
+        }
     }
+
 }
 
 export type ModalCopys = {
