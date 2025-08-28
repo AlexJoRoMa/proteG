@@ -36,7 +36,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
     const pathName = usePathname();
     const pendingRouteRef = useRef<string | null>(null);
     const isMobile = useIsMobile(768);
-    const scopePrefix = "/configurador";
+    const scopePrefix = ["/configurador", "/contratacion"];
 
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -54,11 +54,8 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
         if (!isSameOrigin) return false;
 
         const destPath = destUrl.pathname;
-
-        if (scopePrefix) {
-            return !destPath.startsWith(scopePrefix);
-        }
-        return destPath !== window.location.pathname;
+        const isAllowed = scopePrefix.some((prefix) => destPath.startsWith(prefix));
+        return !isAllowed;
     };
 
     //Interceptar reload del navegador.
@@ -150,7 +147,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
                     body: "flex flex-col justify-center items-center gap-[40px] mx-[40px] md:mx-[56px] my-[138px] md:my-0 md:mb-[57px] p-0",
                     backdrop: "bg-black-0/80"
                 }}
-                size={'5xl'}
+                size={isMobile ? 'full' : '5xl'}
                 hideCloseButton
                 backdrop="opaque"
             >
