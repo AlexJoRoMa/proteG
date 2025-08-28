@@ -15,11 +15,27 @@ export const CloseIcon = (props: any) => {
     )
 }
 
+function useIsMobile(breakpoint = 768) {
+    const [isMobile, setIsMobile] = useState(() =>
+        typeof window === "undefined" ? true : window.innerWidth < breakpoint);
+
+    useEffect(() => {
+        function onResize() {
+            setIsMobile(window.innerWidth < breakpoint);
+        }
+        window.addEventListener("resize", onResize);
+        return () => window.removeEventListener("resize", onResize);
+    }, [breakpoint]);
+
+    return isMobile;
+}
+
 export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonType<IzziLogo>, text: ModalCopys }) {
 
     const router = useRouter();
     const pathName = usePathname();
     const pendingRouteRef = useRef<string | null>(null);
+    const isMobile = useIsMobile(768);
     const scopePrefix = "/configurador";
 
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -112,7 +128,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
     };
 
     //Cancelar salida del flujo.
-    
+
     const handleCancel = () => {
         pendingRouteRef.current = null;
         onClose();
