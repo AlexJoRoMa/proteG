@@ -8,6 +8,7 @@ import { getCopyForComponent } from "@/services/contentful/components";
 import ResumenPedido from "../molecules/configurador/resumenPedido";
 import ResumenInfo from "../molecules/configurador/resumenInfo";
 import { STEPSCOVERAGECOMPONENT, STEPSNOCOVERAGECOMPONENT } from "@/constants/ConfiguradorConstants";
+import ExitGuard from "./ExitGuard";
 
 export const Arrow =
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -68,6 +69,7 @@ export default async function Configurador({ id }: ConfiguradorProps) {
             ottsImages={ottImages}
             cobertura={cobertura}
         >
+            <ExitGuard />
             <section className="border-t-1 border-t-gray-150">
                 <div className="flex flex-col xl:grid xl:grid-cols-3 gap-[24px] xl:mx-md 4xl:mx-xl">
                     <div className="xl:col-span-2">
