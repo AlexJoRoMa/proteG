@@ -1,0 +1,43 @@
+version: 1
+applications:
+  - appRoot: .
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - echo "Installing dependencies..."
+            - npm ci
+            - echo "🔍 Current AWS_BRANCH:" $AWS_BRANCH
+            - echo "🔧 Setting up environment variables for" $AWS_BRANCH
+            - |
+              case "$AWS_BRANCH" in
+                "master"|"main")
+                  echo "📄 Copying .env.prod to .env.production"
+                  cp .env.prod .env.production
+                  ;;
+                "stage")
+                  echo "📄 Copying .env.stage to .env.production" 
+                  cp .env.stage .env.production
+                  ;;
+                "development"|"develop")
+                  echo "📄 Copying .env.development to .env.production"
+                  cp .env.development .env.production
+                  ;;
+                *)
+                  echo "📄 Using default .env.stage for unknown branch"
+                  cp .env.stage .env.production
+                  ;;
+              esac
+            - echo "✅ Environment variables configured for" $AWS_BRANCH
+        build:
+          commands:
+            - echo "Building application..."
+            - npm run build
+      artifacts:
+        baseDirectory: .next
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+          - .next/cache/**/*
