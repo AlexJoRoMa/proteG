@@ -31,11 +31,11 @@ export default async function TVCanalesSegmento({ id }: tabsTileProps) {
     return(
     <div className="bg-white mb-10">
         <div className=" md:mx-md 2xl:mx-xl xsm:mx-3 mt-15 flex justify-between">
-            <ButtonGhost classStyles="border-black text-black text-[18px] leading-6 font-bold hover:!bg-black hover:!text-white 
+            <ButtonGhost classStyles="border-black text-black text-[16px] md:text-[18px] leading-6 font-bold hover:!bg-black hover:!text-white 
             w-full rounded-md h-[48px] md:w-[144px] xsm:w-[120px]"
             text={setTextVolver as string} href={setURLVolver as string}
             />
-            <ButtonGhost classStyles="border-black text-white bg-black text-[18px] leading-6 font-bold hover:!bg-white hover:!text-black 
+            <ButtonGhost classStyles="border-black text-white bg-black text-[16px] md:text-[18px] leading-6 font-bold hover:!bg-white hover:!text-black 
             w-full rounded-md h-[48px] md:w-[205px] xsm:w-[180px]"
             text={setTextGuia as string} href={setURLGuia as string}
             />

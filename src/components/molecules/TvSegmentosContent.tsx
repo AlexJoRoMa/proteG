@@ -15,17 +15,17 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
         <Tabs
             aria-label="Dynamic tabs"
             items={cardsInfo}
-            variant="light"
+            variant="underlined"
             radius="md"
             fullWidth={true}
             defaultSelectedKey={defaultKey}
             classNames={{
-                tabContent: " group-data-[selected=true]:font-medium group-data-[selected=true]:text-black group-data-[selected=true]:font-bold  text-black lg:py-[20px] px-auto lg:w-[246px] whitespace-normal font-medium !rounded-t-sm leading-[24px] text-base",
+                tabContent: " leading-[24px] text-base group-data-[selected=true]:font-medium group-data-[selected=true]:text-black group-data-[selected=true]:font-bold  text-black lg:py-[20px] px-auto lg:w-[246px] whitespace-normal font-medium !rounded-t-sm ",
                 panel: "bg-white w-full p-0",
                 tabList: " w-auto flex items-center pb-0 rounded-none overflow-y-hidden",
-                cursor: "bg-white rounded-none rounded-t-sm",
+                cursor: "bg-black rounded-none rounded-t-sm",
                 base: "m-auto flex items-center justify-around ",
-                tab: "h-[56px]  lg:h-[48px] w-[118px] lg:w-[400px] rounded-none"
+                tab: "h-[56px]  lg:h-[48px] w-[300px] lg:w-[400px] rounded-none"
             }}
             >
             {(item) => (
@@ -41,7 +41,7 @@ export default function SegmentosCanales({ tabsData }: TabsContentProps) {
                                 <div key={cardItem.sys.id} >
                                    <div className="border-gradient-verde">
                                 {/* Titulo de segmento */}
-                                    <div className="text-[20px] leading-[24px] font-bold mt-5 mb-5">
+                                    <div className=" text-[18px] md:text-[20px] leading-[24px] font-bold mt-5 mb-5">
                                         <p>{cardData.titulo}</p>
                                     </div>
                                    
