@@ -14,17 +14,27 @@ interface MediaEntrySkeleton extends EntrySkeletonType{
   fields: MediaEntryFields;
 }
 
+export interface ColorPickerType {
+  name: string;
+  value: string;
+}
+
 export interface StepTabEntryFields extends EntrySkeletonType{
   textoTitulo?: Document;
   bodyText?: string;
+  button1Exist?: boolean;
   esModal?: string;
   textBoton1?: string;
+  linkBoton1?: string;
+  button2Exist?: boolean;
   textBoton2?: string;
   linkBoton2?: string;
+  assetsExist?: boolean;
   textoDescarga?: string;
   image?: Entry<MediaEntrySkeleton>;
   image2?: Entry<MediaEntrySkeleton>;
   image3?: Entry<MediaEntrySkeleton>;
+  bgColor?: ColorPickerType;
 }
 
 export interface StepTabEntrySkeleton extends EntrySkeletonType{
