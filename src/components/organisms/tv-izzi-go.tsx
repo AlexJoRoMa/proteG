@@ -11,6 +11,7 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
         content_type: "izziTvIzziGo",
         'sys.id': id,
         select: ['fields.image',
+            'fields.textOrder',
             'fields.textoTitulo',
             'fields.bodyText',
             'fields.button1Exist',
@@ -38,6 +39,7 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
     const getComponentContent= callComponents[0] as unknown as Entry<StepTabEntrySkeleton>;
 
     const { textoTitulo,
+        textOrder,
         bodyText,
         button1Exist,
         esModal, 
@@ -65,7 +67,11 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
     const valueColor = bgColor?.value;
     const setColorContent = valueColor === '#000000' ? 'white' : 'black';
     
+    const getOrderTittle = textOrder ? 'order-first' : 'order-last';
+    const getOrderBody = textOrder ? 'order-last' : 'order-first';
 
+    console.log('>>>> getOrderTittle ', getOrderTittle);
+    console.log('<<<< getOrderBody ', getOrderBody);
     return(
         <div className="relative  lg:h-[466px] md:h-[850px] xsm:h-[768px]" 
         style={{backgroundColor: valueColor ? valueColor : '#000000'}}>
@@ -93,15 +99,16 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
                 {/* Llogica de textos y botones  */}
                 {/* Titulo y text body */}
                 <div className=" lg:w-1/2 pl-5">
-                    <div className={` lg:text-left xsm:text-center lg:mt-0 xsm:mt-8 text-${setColorContent} lg:text-[36px] xsm:text-[32px] xsm:mx-5`}>
+                <div className="flex flex-col">
+                    <div className={` lg:text-left xsm:text-center lg:mt-0 xsm:mt-8 ${getOrderTittle} text-${setColorContent} lg:text-[36px] xsm:text-[32px] md:mx-0 xsm:mx-5`}>
                         {textoTitulo && documentToReactComponents(textoTitulo)}
                     </div>
-                    <div className=" lg:w-full lg: xsm:w-[90%] xsm:mx-auto lg:mt-5 xsm:mt-5 ">
+                    <div className={` lg:w-full lg: xsm:w-[90%] xsm:mx-auto lg:mt-5 xsm:mt-5 ${getOrderBody} `}>
                         <p className={` lg:text-left xsm:text-center text-${setColorContent} lg:text-[18px] xsm:text-[16px]`}>
                             {bodyText}
                         </p>
                     </div>
-
+                </div>
                     {/* Botones y las imagenes de store */}
                     <div className=" lg:mt-5 xsm:mt-0 flex flex-row lg:justify-between xsm:justify-center lg:gap-4 xsm:gap-0">
                        
