@@ -2,7 +2,6 @@
 import React, {useState} from 'react'
 import {Button, Form, Input} from '@heroui/react'
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import {googleMapsKey} from '@/services/google-maps/api';
 
 interface GeocodeType {
     results: AddressType[],
@@ -17,7 +16,7 @@ interface AddressType {
     }]
 }
 
-const mapsKey = googleMapsKey;
+const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
 const mapContainerStyle = { height: "400px"};
 
 const libraries: (
