@@ -22,6 +22,7 @@ const LinkModal = ({
     children,
     closeButtonStroke,
     modalContentClassName,
+    backdropColor,
 }: LinkModalProps) => {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -45,7 +46,7 @@ const LinkModal = ({
             <Link onPress={onOpen} className={`cursor-pointer underline text-black ${classNames}`}>
                 {text}
             </Link>
-            <ModalComponent isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} closeButtonStroke={closeButtonStroke} modalContentClassName={modalContentClassName}>
+            <ModalComponent isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} closeButtonStroke={closeButtonStroke} modalContentClassName={modalContentClassName} backdropColor={backdropColor}>
                 {isLoading && !children && <div className="py-8 text-center">Cargando...</div>}
                 {error && !children && (
                     <div className="py-8 text-center">

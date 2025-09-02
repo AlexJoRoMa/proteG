@@ -220,8 +220,8 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
     // Renderizar vista de éxito
     if (isSuccess) {
         return (
-            <div className='flex flex-col justify-center xl:items-center xl:p-14 py-6 px-4 h-full'>
-                <div className="text-center">
+            <div className='flex flex-col justify-start sm:justify-center xl:items-center xl:p-14 py-6 px-4 h-full'>
+                <div className="xl:text-center">
 
                     <h2 className='text-[20px] xl:text-[32px] mb-6 font-bold xl:font-normal'>
                         {finalData.successTitle || defaultData.successTitle}
@@ -233,7 +233,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
                     
                     <Button
                         onPress={handleCloseModal}
-                        className="bg-black text-white font-bold text-base h-12 px-4 py-3 rounded-md w-64 font-lato hover:bg-gray-800 transition-colors"
+                        className="bg-black flex mx-auto text-white font-bold text-base h-12 px-4 py-3 rounded-md w-64 font-lato hover:bg-gray-800 transition-colors"
                     >
                         {finalData.successButtonText || defaultData.successButtonText}
                     </Button>
@@ -291,7 +291,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
                             isDisabled={isSubmitting}
                         />
                         
-                        <div className="mb-4 flex justify-center">
+                        <div className="mb-4 flex justify-center w-full">
                             {recaptchaSiteKey ? (
                                 <Suspense fallback={
                                     <div className="bg-gray-50 h-[78px] w-[304px] rounded-sm border border-gray-300 flex items-center justify-center">
@@ -305,6 +305,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
                                         sitekey={recaptchaSiteKey}
                                         onChange={handleRecaptchaChange}
                                         theme="light"
+                                        
                                     />
                                 </Suspense>
                             ) : (

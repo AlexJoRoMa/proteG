@@ -26,6 +26,7 @@ export type ButtonModalProps = {
     closeButtonStroke?: string; // Color del stroke del botón de cerrar
     modalContentClassName?: string; // Clases adicionales para el ModalContent
     startContent?: React.ReactNode; // Contenido que se muestra al inicio del botón
+    backdropColor?: string; // Color del backdrop del modal, por defecto "black"
 }
 
 export type LinkModalProps = {
@@ -35,6 +36,7 @@ export type LinkModalProps = {
     children?: React.ReactNode;
     closeButtonStroke?: string; // Color del stroke del botón de cerrar
     modalContentClassName?: string; // Clases adicionales para el ModalContent
+    backdropColor?: string; // Color del backdrop del modal, por defecto "black"
 }
 
 export type ButtonModalComponentProps = {
@@ -50,6 +52,7 @@ export type ModalType = {
     onClose?: () => void; // Añadido para manejar el cierre del modal
     closeButtonStroke?: string; // Color del stroke del botón de cerrar, por defecto "white"
     modalContentClassName?: string; // Clases adicionales para el ModalContent
+    backdropColor?: string; // Color del backdrop del modal, por defecto "black"
 }
 
 export interface TeLlamamosModalComponentProps {

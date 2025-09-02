@@ -22,7 +22,8 @@ const ButtonModal = ({
     children,
     closeButtonStroke,
     modalContentClassName,
-    startContent
+    startContent,
+    backdropColor
 }: ButtonModalProps) => {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -46,7 +47,7 @@ const ButtonModal = ({
             <Button className={classStyles} onPress={onOpen} isLoading={isLoading && !data && !error} startContent={startContent}>
                 {textBtn}
             </Button>
-            <ModalComponent isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} closeButtonStroke={closeButtonStroke} modalContentClassName={modalContentClassName}>
+            <ModalComponent isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} closeButtonStroke={closeButtonStroke} modalContentClassName={modalContentClassName} backdropColor={backdropColor}>
                 {isLoading && !children && <div className="py-8 text-center">Cargando...</div>}
                 {error && !children && (
                     <div className="py-8 text-center">
