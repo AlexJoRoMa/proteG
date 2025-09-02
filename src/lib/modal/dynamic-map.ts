@@ -1,7 +1,7 @@
-import ButtonModalComponent from "@/components/layouts/modal/ButtonModalComponent";
-import FeatureListItemComponent from "@/components/layouts/modal/FeatureListItemComponent";
-import PriceComponent from "@/components/layouts/modal/PriceComponent";
-import TextAndImageComponent from "@/components/layouts/modal/TextAndImageComponent";
+import ButtonModalComponent from "@/components/layouts/modalComponents/ButtonModalComponent";
+import FeatureListItemComponent from "@/components/layouts/modalComponents/FeatureListItemComponent";
+import PriceComponent from "@/components/layouts/modalComponents/PriceComponent";
+import TextAndImageComponent from "@/components/layouts/modalComponents/TextAndImageComponent";
 
 export const componentMap = {
   textandimage: TextAndImageComponent,

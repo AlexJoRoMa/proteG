@@ -18,7 +18,8 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['@heroui/react', 'embla-carousel-react'],
     cssChunking: true,
-  }
+  },
+
 };
 
 export default nextConfig;

@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "env:local": "node scripts/load-env.js local",
-    "env:development": "node scripts/load-env.js development", 
+    "env:development": "node scripts/load-env.js development",
     "env:stage": "node scripts/load-env.js stage",
     "env:prod": "node scripts/load-env.js production",
     "build:dev": "npm run env:local && next build --turbopack",
@@ -26,6 +26,7 @@
     "@contentful/rich-text-types": "^17.1.0",
     "@heroui/react": "^2.8.1",
     "@react-google-maps/api": "^2.20.7",
+    "@types/react-google-recaptcha": "^2.1.9",
     "@uidotdev/usehooks": "^2.4.1",
     "contentful": "^11.6.0",
     "contentful-management": "^11.52.2",
@@ -38,6 +39,7 @@
     "next": "^15.4.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-google-recaptcha": "^3.1.0",
     "swr": "^2.3.3"
   },
   "devDependencies": {
