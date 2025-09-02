@@ -70,6 +70,7 @@ const ButtonFixed = async() => {
             idModal=''
             closeButtonStroke='black'
             modalContentClassName='2xl:w-[62vw] 2xl:h-[52vh] xl:w-[90vw] xl:h-[52vh] h-[98vh]'
+            backdropColor='black-0/80'
             textBtn={
               <>
                 {textBtn?.[0]?.fields?.value || '¿Te ayudamos?'}
