@@ -169,6 +169,7 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
                         h-[48px] border-[2px] border-solid rounded-md text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[16px] min-[1150px]:text-[18px]`}
                     closeButtonStroke="black"
                     modalContentClassName="w-full h-[52dvh] sm:h-[52vh] sm:w-[80vw] xl:h-auto xl:w-[80vw] 2xl:w-[52vw] 2xl:h-auto"
+                    backdropColor='black/80'
                     startContent={<Image className='max-w-[24px] h-auto' src={`https:${link.fields.linkIcon?.fields.file.url}`} alt={`${link.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />}
                   >
                     {renderModalComponent(link.fields.typeModal)}
