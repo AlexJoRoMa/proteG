@@ -32,7 +32,7 @@ const ChannelPromoBannerComponent = async({id}:ChannelPromoBannerProps) => {
 
   // Opciones de configuración para los carruseles
   const carouselOptions = [
-          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['autoheight', 'autoplay']}, // Carrusel de imágenes (default)
+          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['', 'autoplay']}, // Carrusel de imágenes (default)
           {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['fade', 'autoplay', 'autoheight']}, // Carrusel de logos (default)  
           { options: { dragFree:false, watchDrag: false, watchSlides: false, watchResize: true, breakpoints: {
             '(max-width: 420px)': { containScroll: false, slidesToScroll: 1},
@@ -137,7 +137,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
 };
       
   return (
-    <section className="relative min-h-[740px]  md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
+    <section className="channelPromoBanner relative  xl:min-h-[740px]  md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
       
       <CarouselProvider
         qtyCarousels={3} 
@@ -145,7 +145,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
       >
       {/* Carrusel Principal */}
 
-        <div className="w-full md:flex md:justify-center md:absolute md:inset-0 md:w-full md:h-full z-0 bg-black md:transparent">
+        <div className="w-full md:flex md:justify-center absolute inset-0 md:w-full md:h-full z-0">
           <CarouselComponent carouselIndex={0}>
 
             {heroImages.map((image, index) => (
@@ -157,7 +157,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                 <Image
                   src={heroImagesResponsive[index]?.url || image.url}
                   alt={`Banner ${index + 1}`}
-                  className="select-none pointer-events-none transition-all w-full h-full md:h-[590px]"
+                  className="select-none pointer-events-none transition-all w-full h-full"
                   loading="eager"
                   width={image.width || 384}
                   height={image.height || 216}
@@ -174,7 +174,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
 
               {carouselText.map((item, index) => (
               <div key={index} style={{height: '-webkit-fill-available'}} className="relative z-20 w-full pt-[56px] md:pt-0 2xl:ml-[200px] md:ml-[80px] pb-10
-                 md:w-2/5 flex flex-col items-center md:items-start bg-black md:bg-transparent">
+                 md:w-2/5 flex flex-col items-center justify-end md:justify-initial md:items-start">
                 
                 <p className="pl-4 md:pl-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
                 <h2 className="text-[32px] md:text-4xl pl-4 md:pl-0  font-bold text-white mb-6 w-screen md:w-auto">{item.title}</h2>
