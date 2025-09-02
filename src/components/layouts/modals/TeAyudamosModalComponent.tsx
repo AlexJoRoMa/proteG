@@ -44,7 +44,7 @@ const TeAyudamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlama
                   idModal='te-llamamos-modal'
                   closeButtonStroke='black'
                   modalContentClassName="w-full h-[52dvh] sm:h-[52vh] sm:w-[80vw] xl:h-auto xl:w-[80vw] 2xl:w-[52vw] 2xl:h-auto"
-                  backdropColor='black/80'>
+                  backdropColor='black-0/80'>
                     <TeLlamamosModalComponent />
                   </LinkModal>
                 <a target='_blank' className='flex gap-3' href={`https://wa.me/${data.column1.row3.wpp.tel}?text=${data.column1.row3.wpp.promoText}`}><WhatsAppIcon />{data.column1.row3.wpp.text}</a>
