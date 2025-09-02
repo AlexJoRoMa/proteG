@@ -70,8 +70,7 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
     const getOrderTittle = textOrder ? 'order-first' : 'order-last';
     const getOrderBody = textOrder ? 'order-last' : 'order-first';
 
-    console.log('>>>> getOrderTittle ', getOrderTittle);
-    console.log('<<<< getOrderBody ', getOrderBody);
+    
     return(
         <div className="relative  lg:h-[466px] md:h-[850px] xsm:h-[768px]" 
         style={{backgroundColor: valueColor ? valueColor : '#000000'}}>
