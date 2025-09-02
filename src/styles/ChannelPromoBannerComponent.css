@@ -10,3 +10,12 @@
         z-index: 5;
     }
 }
+
+.channelPromoBanner{
+    .embla__viewport{
+        height: 100%;
+        .embla__container{
+            height: 100%;
+        }
+    }
+}
