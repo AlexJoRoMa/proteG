@@ -1,5 +1,6 @@
 import BenefitsComponent from "@/components/organisms/benefitsComponent";
 import ChannelPromoBannerComponent from "@/components/organisms/ChannelPromoBannerComponent";
+import Configurador from "@/components/organisms/configurador";
 import PagesTabsTile from "@/components/organisms/pagesTabsTile";
 import CarouselCardComponent from "@/components/organisms/CarouselCardComponent";
 import GenericProductCard from "@/components/molecules/GenericProductComponent";
@@ -16,6 +17,7 @@ import TVCanalesSegmento from '@/components/organisms/tv-canales-segmentos';
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
   tabs: PagesTabsTile,
+  multyStepConfigurador: Configurador,
   homeCarousel: CarouselCardComponent,
   benefits: BenefitsComponent,
   carouselCards: CarouselCardComponent,
