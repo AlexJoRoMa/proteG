@@ -278,3 +278,10 @@ body {
   opacity: 0;
   cursor: not-allowed;
 }
+
+.border-gradient-verde{
+  border:none;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(to right, #00C1B5,#99EAE5,#00877F,#99EAE5,#00C1B5);
+  border-image-slice: 0 0 100% 0;
+}
