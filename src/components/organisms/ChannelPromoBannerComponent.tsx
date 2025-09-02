@@ -224,7 +224,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                   {carouselText[index]?.textPromo && (
                     <span
                       className="
-                        absolute md:-top-2.5 -top-4.5 right-0
+                        absolute md:-top-1 -top-[15px] right-0
                         w-5 h-5
                         bg-(--color--turquoise-450)
                         rounded-bl-[6px]
