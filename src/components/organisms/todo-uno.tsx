@@ -32,19 +32,20 @@ const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
           <div key={card.sys.id} className=" flex flex-col lg:flex-row md:flex-row w-full h-full text-white">
             {/*  div del contenido izq  */}
             <div className=" flex flex-col justify-center w-full lg:w-1/2 md:w-1/2  order-last lg:order-none md:order-none">
-            <div className=" md:mx-md 2xl:mx-xl md:w-[70%] xsm:w-full
-            flex flex-col lg:items-start lg:text-left md:items-start md:text-left xsm:items-center xsm:text-center">
+              <div className=" md:mx-md 2xl:mx-xl 3xl:w-[70%] 2xl:w-[60%] md:w-[70%] xsm:w-full
+              flex flex-col lg:items-start lg:text-left md:items-start md:text-left xsm:items-center xsm:text-center">
               
-              <div className=" lg:text-[36px] md:text-[22px] xsm:text-[32px] font-semibold 
-              lg:mb-4 md:mb-4 xsm:mb-2 xsm:mt-4 ">
-              <h2>{entryTitle}</h2>
-              </div>
-              <div className=" lg:text-[18px] md:text-[14px] lg:mt-6 lg:mb-6 md:mt-6 md:mb-6 md:mx-0 xsm:mt-4 xsm:mb-6 xsm:mx-8">
-              <p >{entryBody}</p>
+                <div className=" lg:text-[36px] md:text-[22px] xsm:text-[32px] font-semibold 
+                lg:mb-4 md:mb-4 xsm:mb-2 xsm:mt-4 ">
+                  <h2>{entryTitle}</h2>
+                </div>
+                <div className=" lg:text-[18px] md:text-[14px] lg:mt-6 lg:mb-6 md:mt-6 md:mb-6 md:mx-0 xsm:mt-4 xsm:mb-6 xsm:mx-8">
+                  <p >{entryBody}</p>
+                </div>
+              
               </div>
               
-            </div>
-            <div className="md:mx-md 2xl:mx-xl flex lg:justify-start md:justify-start xsm:justify-center">
+              <div className=" md:mx-md 2xl:mx-xl flex lg:justify-start md:justify-start xsm:justify-center">
                 {desactivarBoton === false && (
                   <ButtonGhost classStyles="border-white text-white text-[16px] leading-6 font-bold hover:!bg-white hover:!text-black w-full h-[48px] rounded-md
                    md:max-w-[320px] xsm:w-[256px]"
@@ -52,10 +53,11 @@ const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
                     />
                   )}
               </div>
+            
             </div>
 
             {/*  div del contenido derecho  */}
-            <div className="relative w-full lg:w-1/2 md:w-1/2 h-64 lg:h-auto xsm:h-1/2 md:h-auto order-first lg:order-none md:order-none overflow-hidden">
+            <div className=" relative w-full lg:w-1/2 md:w-1/2 h-64 lg:h-auto xsm:h-1/2 md:h-auto order-first lg:order-none md:order-none overflow-hidden">
             {imgURL && (
               <Image
               alt={'Images'}
