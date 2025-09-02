@@ -11,6 +11,7 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
         content_type: "izziTvIzziGo",
         'sys.id': id,
         select: ['fields.image',
+            'fields.sizeBlock',
             'fields.textOrder',
             'fields.textoTitulo',
             'fields.bodyText',
@@ -39,6 +40,7 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
     const getComponentContent= callComponents[0] as unknown as Entry<StepTabEntrySkeleton>;
 
     const { textoTitulo,
+        sizeBlock,
         textOrder,
         bodyText,
         button1Exist,
@@ -69,17 +71,20 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
     
     const getOrderTittle = textOrder ? 'order-first' : 'order-last';
     const getOrderBody = textOrder ? 'order-last' : 'order-first';
+    const getTopMargin = textOrder ? 'lg:mt-0' : 'lg:mt-8 lg:mb-0 xsm:mb-5';
 
+    const setParentSize = sizeBlock ? ' lg:h-[466px] md:h-[850px] xsm:h-[768px]' : 'lg:h-[347px] md:h-[600px] xsm:h-[550px]';
+    const setImgMargin = sizeBlock ? 'mt-0' : 'mt-8';
     
     return(
-        <div className="relative  lg:h-[466px] md:h-[850px] xsm:h-[768px]" 
+        <div className={` relative ${setParentSize} `}
         style={{backgroundColor: valueColor ? valueColor : '#000000'}}>
         <div className=" md:mx-md 2xl:mx-xl h-full content-center ">
             
-            <div key={getComponentContent.sys.id} className="  lg:h-full flex lg:flex-row xsm:flex-col relative gap-4 justify-between items-center">
+            <div key={getComponentContent.sys.id} className=" lg:h-full flex lg:flex-row xsm:flex-col relative gap-4 justify-between items-center">
                 
                 {/* logica de imagen */}
-                <div className=" lg:w-1/2 lg:h-full flex justify-center items-center">
+                <div className={` ${setImgMargin} lg:w-1/2 lg:h-full flex justify-center items-center`}>
                 {imgURL && (
                     <div className=" lg:max-w-[580px] lg:max-h-[465px]  xsm:max-w-[402px] xsm:max-h-[318px] xsm:min-w-[320px] xsm:min-h-[252px] xsm:mx-5">
                     <Image
@@ -97,9 +102,9 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
 
                 {/* Llogica de textos y botones  */}
                 {/* Titulo y text body */}
-                <div className=" lg:w-1/2 pl-5">
+                <div className=" lg:w-1/2 lg:h-[70%] pl-5">
                 <div className="flex flex-col">
-                    <div className={` lg:text-left xsm:text-center lg:mt-0 xsm:mt-8 ${getOrderTittle} text-${setColorContent} lg:text-[36px] xsm:text-[32px] md:mx-0 xsm:mx-5`}>
+                    <div className={` lg:text-left xsm:text-center ${getTopMargin} xsm:mt-8 ${getOrderTittle} text-${setColorContent} lg:text-[36px] xsm:text-[32px] md:mx-0 xsm:mx-5`}>
                         {textoTitulo && documentToReactComponents(textoTitulo)}
                     </div>
                     <div className={` lg:w-full lg: xsm:w-[90%] xsm:mx-auto lg:mt-5 xsm:mt-5 ${getOrderBody} `}>

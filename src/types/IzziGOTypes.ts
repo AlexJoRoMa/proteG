@@ -21,6 +21,7 @@ export interface ColorPickerType {
 
 export interface StepTabEntryFields extends EntrySkeletonType{
   textoTitulo?: Document;
+  sizeBlock?: boolean;
   textOrder?: boolean;
   bodyText?: string;
   button1Exist?: boolean;
