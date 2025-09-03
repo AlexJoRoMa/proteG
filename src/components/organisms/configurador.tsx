@@ -9,6 +9,7 @@ import ResumenPedido from "../molecules/configurador/resumenPedido";
 import ResumenInfo from "../molecules/configurador/resumenInfo";
 import { STEPSCOVERAGECOMPONENT, STEPSNOCOVERAGECOMPONENT } from "@/constants/ConfiguradorConstants";
 import ExitGuard from "./ExitGuard";
+import { getOfertas } from "@/services/izzi/configurador";
 
 export const Arrow =
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -16,6 +17,8 @@ export const Arrow =
     </svg>
 
 export default async function Configurador({ id }: ConfiguradorProps) {
+
+    const dataOffersEntry = await getOfertas();
 
     const pageEntry: Entry<EntrySkeletonType, undefined> | null = await contentfulClient.getEntries({
         content_type: 'multiStepContainer',
@@ -44,6 +47,10 @@ export default async function Configurador({ id }: ConfiguradorProps) {
         return entry.resumen
     });
 
+    const copysConfigurador = await getCopyForComponent('Configurador').then((entry) => {
+        return entry.configurador
+    })
+
     const entryBackButton = pageEntry?.fields.backText as string;
     const entryBackButtonUrl = pageEntry?.fields.backTextUrl as string;
     const entryTitle = pageEntry?.fields.title as string;
@@ -51,20 +58,21 @@ export default async function Configurador({ id }: ConfiguradorProps) {
     const entryCTA = pageEntry?.fields.ctaText as string;
     const cobertura: boolean = true;
 
-    const components = pageEntry?.fields.steps as unknown as EntrySkeletonType<ConfigDataFields>[] | null;
+    // const components = pageEntry?.fields.steps as unknown as EntrySkeletonType<ConfigDataFields>[] | null;
 
-    const configuradorEntry: Record<string, EntrySkeletonType<ConfigDataFields>> = {};
+    // const configuradorEntry: Record<string, EntrySkeletonType<ConfigDataFields>> = {};
 
-    if (components && components !== null) {
-        for (const item of components) {
-            configuradorEntry[item.fields.type] = item
-        }
-    }
+    // if (components && components !== null) {
+    //     for (const item of components) {
+    //         configuradorEntry[item.fields.type] = item
+    //     }
+    // }
 
     return (
         <ConfiguradorProvider
-            configuradorEntry={configuradorEntry}
+            configuradorEntry={dataOffersEntry.offers}
             copysResumen={copysResumen}
+            copysConfigurador={copysConfigurador}
             resumenIcon={resumenIcon}
             ottsImages={ottImages}
             cobertura={cobertura}

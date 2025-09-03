@@ -17,6 +17,7 @@ export const ConfiguradorProvider = ({
     children,
     configuradorEntry,
     copysResumen,
+    copysConfigurador,
     resumenIcon,
     ottsImages,
     cobertura
@@ -32,6 +33,7 @@ export const ConfiguradorProvider = ({
             value={{
                 configuradorEntry,
                 copysResumen,
+                copysConfigurador,
                 resumenIcon,
                 cobertura,
                 userAnswers,

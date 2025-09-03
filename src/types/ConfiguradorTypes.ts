@@ -32,21 +32,16 @@ export interface ConfigDataFields {
 }
 
 export interface ComponentsFields {
-    paquete: ComponentsFields;
-    fields: ComponentsFields,
-    sys: {
-        id: string
-    },
-    internalName: string,
-    maxCapacityInternet: string,
-    minCapacityInternet: string,
-    discountPrice: string,
-    beforePrice: string,
-    price: number,
-    afterPrice: string,
-    subTitle: string,
-    title: string,
-    ctaText: string
+    canales: string,
+    canalesHd: string,
+    descripcion: string,
+    extrasIncluidos: Array<string>,
+    idPaquete: number,
+    precioAhorro: string,
+    precioPaquete: string,
+    titulo: string,
+    velocidadMaxima: number,
+    velocidadMinima: number
 }
 
 export interface ResumenIcon {
@@ -100,7 +95,8 @@ export type ProviderProps = {
     children: ReactNode,
     configuradorEntry: Record<string, EntrySkeletonType<ConfigDataFields>>,
     copysResumen: {},
-    resumenIcon:EntrySkeletonType<ResumenIcon>,
+    copysConfigurador: {},
+    resumenIcon: EntrySkeletonType<ResumenIcon>,
     ottsImages: Entry<EntrySkeletonType<OttsImages>>[]
     cobertura: boolean
 }
@@ -108,6 +104,7 @@ export type ProviderProps = {
 export type DataFields = {
     configuradorEntry?: Record<string, EntrySkeletonType<ConfigDataFields>>
     copysResumen?: {},
+    copysConfigurador?: {},
     cobertura: boolean,
     userAnswers: UserAnswers,
     setUserAnswers: React.Dispatch<React.SetStateAction<UserAnswers>>,
@@ -220,7 +217,7 @@ export type ResumenData = {
     infoDrawer: {
         nuevoFlujo: string,
         plazo: string,
-        combinacion:{
+        combinacion: {
             prePrice: string,
             postPrice: string
         },
@@ -237,7 +234,7 @@ export type ResumenData = {
 }
 
 export type internetComponentFields = {
-    paquete: EntrySkeletonType<ComponentsFields>,
+    paquete: ComponentsFields,
     total: number
 }
 
@@ -262,4 +259,19 @@ export type ottFields = {
     price: number,
     term: string,
     title: string
+}
+
+// copys
+
+export type OffersCopys = {
+    internet: {
+        titulo: string,
+        cards: {
+            preVelocidad: string,
+            posVelocidad: string,
+            unidadVelocidad: string,
+            periodo: string,
+            info: string
+        }
+    }
 }
