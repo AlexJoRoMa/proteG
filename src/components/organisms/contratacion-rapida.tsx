@@ -19,7 +19,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
   const getTitle: string | undefined = callCardsContent?.[0]?.fields.title as unknown as string | undefined;
   const tipoGradiante: string | undefined = callCardsContent?.[0]?.fields.typeGradient as unknown as string | undefined;
 
-
+/* Fija el tipo de color del gradiante y el tamaño, se recibe desde contentful */
   const setHorizontalColor = tipoGradiante == 'naranja/verde/rosa/amarillo' ? 'bg-[image:var(--gradient-bar-horizontal-4-naranverderosaamarillo)]' 
    : tipoGradiante == 'verde' ? 'bg-[image:var(--gradient-bar-horizontal-5-verde)]' 
    : tipoGradiante == 'amarillo' ? 'bg-[image:var(--gradient-bar-horizontal-5-amarillo)]' : 'bg-[image:var(--gradient-bar-horizontal-5-magenta)]';
@@ -28,19 +28,21 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
    : tipoGradiante == 'verde' ? 'bg-[image:var(--gradient-bar-vertical-5-verde)]' 
    : tipoGradiante == 'amarillo' ? 'bg-[image:var(--gradient-bar-vertical-5-amarillo)]' : 'bg-[image:var(--gradient-bar-vertical-5-magenta)]';
 
-
-  const setHorizontalBar = `${setHorizontalColor} xl:mx-23 lg:mx-22 md:mx-15 top-[82px] left-0 right-0 h-[1px] z-0 hidden md:block absolute`;
+   const setHorizontalWidth = getCardsContent.length === 5 ? '4xl:mx-23 xl:mx-[8.5%] lg:mx-[8%] md:mx-[8%]' : 'xl:mx-23 lg:mx-22 md:mx-15';
+                                                                                                                  
+  const setHorizontalBar = `${setHorizontalColor} ${setHorizontalWidth} top-[82px] left-0 right-0 h-[1px] z-0 hidden md:block absolute`;
   const setVerticalBar = `${setVerticalColor} top-8 bottom-8 block left-[24.3%]  w-[1px] z-0 md:hidden absolute`;
   
   
-  return (
-      <div className=" md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content lg:h-auto md:h-[449px] xsm:h-[640px]  relative">
   
-        <div className=" md:mt-15 xsm:mt-12 text-center">
-          <h1 className=" font-bold md:text-[25px] xsm:text-[32px]">{getTitle}</h1>
+  return (
+      <div className="ring ring-red-100 md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content lg:h-auto md:h-[449px] xsm:h-[640px]  relative">
+  
+        <div className="ring ring-red-200 md:mt-15 xsm:mt-12 text-center">
+          <h1 className="xl:text-red-500 lg:text-blue-500 md:text-green-500 font-bold md:text-[25px] xsm:text-[32px]">{getTitle}</h1>
         </div>
   
-        <div className=" md:mt-10 md:mb-15 xsm:mt-7 md:w-full xsm:w-[373px] md:h-auto xsm:h-[420px] 
+        <div className="ring ring-blue-200 md:mt-10 md:mb-15 xsm:mt-7 md:w-full xsm:w-[373px] md:h-auto xsm:h-[420px] 
         relative flex md:flex-row xsm:flex-col justify-between md:items-start xsm:items-center md:gap-x-8 xsm:gap-x-0 ">
           
           <div className={setHorizontalBar} />
@@ -55,7 +57,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
             const dotURL = (dot as unknown as Asset)?.fields?.file?.url;
 
             return (
-              <div key={card.sys.id} className=" 
+              <div key={card.sys.id} className=" ring ring-red-500
               relative  flex md:flex-col xsm:flex-row items-center xsm:justify-center
                xl:w-[192px] lg:w-[184px] md:w-[128px] xsm:w-[355px] ">
                 
