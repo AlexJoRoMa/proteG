@@ -2,6 +2,8 @@ import Image from "next/image";
 import { ContratacionRapidaID, StepTabEntryFields, StepTabEntrySkeleton } from '@/types/CardsTypes';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import { Document } from "@contentful/rich-text-types";
 
 
 const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
@@ -9,7 +11,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
   const callCardsContent:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
       content_type: "cardsContentModel",
       'sys.id': id,
-      select: ['fields.cardsContent', 'fields.title', 'fields.typeGradient'],
+      select: ['fields.cardsContent', 'fields.tituloTexto', 'fields.title', 'fields.typeGradient'],
       include: 2,
     }).then((entriesResponse) => {
       return entriesResponse.items
@@ -18,6 +20,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
   const getCardsContent: Array<Entry<StepTabEntrySkeleton>> | undefined = callCardsContent?.[0]?.fields.cardsContent as unknown as Array<Entry<StepTabEntrySkeleton>>;
   const getTitle: string | undefined = callCardsContent?.[0]?.fields.title as unknown as string | undefined;
   const tipoGradiante: string | undefined = callCardsContent?.[0]?.fields.typeGradient as unknown as string | undefined;
+  const tituloTexto: Document | undefined = callCardsContent?.[0]?.fields.tituloTexto as unknown as Document | undefined;
 
 /* Fija el tipo de color del gradiante y el tamaño, se recibe desde contentful */
   const setHorizontalColor = tipoGradiante == 'naranja/verde/rosa/amarillo' ? 'bg-[image:var(--gradient-bar-horizontal-4-naranverderosaamarillo)]' 
@@ -38,8 +41,8 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
   return (
       <div className="ring ring-red-100 md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content lg:h-auto md:h-[449px] xsm:h-[640px]  relative">
   
-        <div className="ring ring-red-200 md:mt-15 xsm:mt-12 text-center">
-          <h1 className="xl:text-red-500 lg:text-blue-500 md:text-green-500 font-bold md:text-[25px] xsm:text-[32px]">{getTitle}</h1>
+        <div className="ring ring-red-200 md:mt-15 xsm:mt-12 text-center md:text-[25px] xsm:text-[32px]">
+          {tituloTexto && documentToReactComponents(tituloTexto)}
         </div>
   
         <div className="ring ring-blue-200 md:mt-10 md:mb-15 xsm:mt-7 md:w-full xsm:w-[373px] md:h-auto xsm:h-[420px] 
