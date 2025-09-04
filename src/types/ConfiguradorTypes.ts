@@ -21,16 +21,31 @@ export interface ConfiguradorCopyFields {
 }
 
 // entryData
-export interface ConfigDataFields {
-    title: string,
-    subTitle: string,
-    description: string,
-    stepNumber: number,
-    internalName: string,
-    components: ComponentsFields[] | ConfigTabsFields[],
-    type: string
+export interface ApiResponse {
+    coverageType: string[],
+    offers: Offers,
+    rptCode: string,
 }
 
+export interface Offers {
+    DOBLE_PLAY: OfferItem[],
+    TRIPLE_PLAY: OfferItem[],
+    MOVIL: OfferItem[],
+    TV: OfferItem[]
+}
+
+export interface OfferItem {
+    idPaquete: number,
+    titulo: string,
+    descripcion: string,
+    precioPaquete: string,
+    precioAhorro: string,
+    canales?: string,
+    canalesHd?: string,
+    velocidadMaxima?: number,
+    velocidadMinima?: number,
+    extrasIncluidos?: string[]
+}
 export interface ComponentsFields {
     canales: string,
     canalesHd: string,
@@ -42,6 +57,11 @@ export interface ComponentsFields {
     titulo: string,
     velocidadMaxima: number,
     velocidadMinima: number
+}
+
+export interface MovilPlansInfo {
+    tituloTab: string,
+    cards: ComponentsFields[]
 }
 
 export interface ResumenIcon {
@@ -93,7 +113,7 @@ export interface ConfigTabsFields {
 
 export type ProviderProps = {
     children: ReactNode,
-    configuradorEntry: Record<string, EntrySkeletonType<ConfigDataFields>>,
+    configuradorEntry: ApiResponse,
     copysResumen: {},
     copysConfigurador: {},
     resumenIcon: EntrySkeletonType<ResumenIcon>,
@@ -102,7 +122,7 @@ export type ProviderProps = {
 }
 
 export type DataFields = {
-    configuradorEntry?: Record<string, EntrySkeletonType<ConfigDataFields>>
+    configuradorEntry?: ApiResponse
     copysResumen?: {},
     copysConfigurador?: {},
     cobertura: boolean,
@@ -189,7 +209,8 @@ export type ResumenData = {
             }
         },
         movil: {
-            titulo: string
+            titulo: string,
+            unidad: string
         }
     },
     seleccionPaquetes: {
@@ -243,12 +264,12 @@ export type tvComponentFields = {
         planes: ottFields[],
         total: number,
     },
-    paquete: EntrySkeletonType<ComponentsFields>,
+    paquete: ComponentsFields,
     total: number
 }
 
 export type movilComponentFields = {
-    paquete: EntrySkeletonType<ComponentsFields>,
+    paquete: ComponentsFields,
     contrato: string,
     total: number
 }
@@ -263,6 +284,20 @@ export type ottFields = {
 
 // copys
 
+export type ConfiguradorCopys = {
+    page: {
+        titulo: string,
+        botonRegreso: {
+            titulo: string,
+            url: string
+        },
+        ayuda: {
+            textoInfo: string,
+            botonAyuda: string,
+        },
+    },
+}
+
 export type OffersCopys = {
     internet: {
         titulo: string,
@@ -270,6 +305,25 @@ export type OffersCopys = {
             preVelocidad: string,
             posVelocidad: string,
             unidadVelocidad: string,
+            periodo: string,
+            info: string
+        }
+    },
+    tv: {
+        titulo: string,
+        cards: {
+            periodo: string,
+            info: string
+        }
+    },
+    movil: {
+        titulo: string,
+        subTitulo: string,
+        tabs: {
+            contrato: string,
+            sinPlazo: string,
+        },
+        cards: {
             periodo: string,
             info: string
         }

@@ -1,5 +1,5 @@
 import { contentfulClient } from "@/services/contentful/client";
-import { ConfigDataFields, ConfiguradorProps, OttsImages, ResumenIcon } from "@/types/ConfiguradorTypes";
+import { ConfiguradorCopys, ConfiguradorProps, OttsImages, ResumenIcon } from "@/types/ConfiguradorTypes";
 import { Entry, EntrySkeletonType } from "contentful";
 import { ConfiguradorProvider } from "@/utils/ConfiguradorProvider";
 import { componentMap } from "@/lib/configurador/dynamic-map";
@@ -16,17 +16,9 @@ export const Arrow =
         <path d="M15 5L9 12L15 19" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 
-export default async function Configurador({ id }: ConfiguradorProps) {
+export default async function Configurador() {
 
     const dataOffersEntry = await getOfertas();
-
-    const pageEntry: Entry<EntrySkeletonType, undefined> | null = await contentfulClient.getEntries({
-        content_type: 'multiStepContainer',
-        'sys.id': id,
-        include: 5
-    }).then((entriesResponse) => {
-        return entriesResponse.items[0]
-    });
 
     const resumenIcon = await contentfulClient.getEntries({
         content_type: 'media',
@@ -49,28 +41,18 @@ export default async function Configurador({ id }: ConfiguradorProps) {
 
     const copysConfigurador = await getCopyForComponent('Configurador').then((entry) => {
         return entry.configurador
-    })
+    }) as unknown as ConfiguradorCopys;
 
-    const entryBackButton = pageEntry?.fields.backText as string;
-    const entryBackButtonUrl = pageEntry?.fields.backTextUrl as string;
-    const entryTitle = pageEntry?.fields.title as string;
-    const entryHelp = pageEntry?.fields.helpText as string;
-    const entryCTA = pageEntry?.fields.ctaText as string;
+    const entryBackButton = copysConfigurador.page.botonRegreso.titulo;
+    const entryBackButtonUrl = copysConfigurador.page.botonRegreso.url;
+    const entryTitle = copysConfigurador.page.titulo;
+    const entryHelp = copysConfigurador.page.ayuda.textoInfo;
+    const entryCTA = copysConfigurador.page.ayuda.botonAyuda;
     const cobertura: boolean = true;
-
-    // const components = pageEntry?.fields.steps as unknown as EntrySkeletonType<ConfigDataFields>[] | null;
-
-    // const configuradorEntry: Record<string, EntrySkeletonType<ConfigDataFields>> = {};
-
-    // if (components && components !== null) {
-    //     for (const item of components) {
-    //         configuradorEntry[item.fields.type] = item
-    //     }
-    // }
 
     return (
         <ConfiguradorProvider
-            configuradorEntry={dataOffersEntry.offers}
+            configuradorEntry={dataOffersEntry}
             copysResumen={copysResumen}
             copysConfigurador={copysConfigurador}
             resumenIcon={resumenIcon}
