@@ -1,9 +1,9 @@
 'use client'
 
-import { ComponentsFields, ConfigCardsFields, StepProps } from "@/types/ConfiguradorTypes";
+import { ComponentsFields, MovilPlansInfo, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
+import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader, Tab, Tabs } from "@heroui/react";
-import { Entry, EntrySkeletonType } from "contentful";
 import { useEffect, useState } from "react";
 
 export const CheckIcon = (props: any) => {
@@ -28,18 +28,32 @@ export const CheckIcon = (props: any) => {
 
 export default function PlanesMovil({ step }: StepProps) {
 
-    const { configuradorEntry, setUserAnswers, disabled, userAnswers } = useContent();
-    const plans = configuradorEntry?.movil && configuradorEntry?.movil;
+    const { configuradorEntry, setUserAnswers, disabled, userAnswers, copysConfigurador } = useContent();
+    const plans = configuradorEntry?.offers.MOVIL as unknown as ComponentsFields[];
+    const offersCopys = copysConfigurador as unknown as OffersCopys;
 
-    const plansComponents = plans?.fields.components[0] as unknown as Entry<EntrySkeletonType, undefined, string> | null;
+    const plansInfo = formatData(plans, offersCopys) as unknown as MovilPlansInfo[];
+    console.log('movil', plansInfo)
 
-    const plansInfo = plansComponents?.fields.tabs as unknown as EntrySkeletonType<ConfigCardsFields>[];
-    const defaultKey = plansInfo[0]?.fields.entryTitle;
+    const defaultKey = plansInfo[0].tituloTab;
 
     const [selectedTabKey, setSelectedTabKey] = useState<string>(defaultKey);
-    const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+    const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
-    function handleSelect(cardId: string, card: ComponentsFields) {
+    function formatData(data: ComponentsFields[], copys: OffersCopys) {
+
+        const contrato12 = data.filter(item => item.titulo.includes("12 meses"));
+        const sinPlazo = data.filter(item => !item.titulo.includes("12 meses"));
+
+        const resultado = [
+            { tituloTab: copys.movil.tabs.contrato, cards: contrato12 },
+            { tituloTab: copys.movil.tabs.sinPlazo, cards: sinPlazo }
+        ];
+
+        return resultado;
+    }
+
+    function handleSelect(cardId: number, card: ComponentsFields) {
 
         if (selectedCardId !== null) {
             if (selectedCardId === cardId) {
@@ -58,7 +72,7 @@ export default function PlanesMovil({ step }: StepProps) {
             movil: {
                 paquete: card,
                 contrato: selectedTabKey,
-                total: card.fields.discountPrice ? Number(card.fields.discountPrice) || 0 : Number(card.fields.price) || 0
+                total: card.precioAhorro ? Number(card.precioAhorro) || 0 : Number(card.precioPaquete) || 0
             },
         }))
     }
@@ -80,11 +94,11 @@ export default function PlanesMovil({ step }: StepProps) {
                     {step}
                 </p>
                 <h3 className={`font-semibold text-xl leading-[24px] ${!disabled ? 'text-black-0' : 'text-gray-200'}`}>
-                    {plans?.fields.title}
+                    {offersCopys.movil.titulo}
                 </h3>
             </div>
             <h5 className={`font-normal leading-[24px] text-base ${!disabled ? 'text-black-0' : 'text-gray-200'}`}>
-                {plans?.fields.subTitle}
+                {offersCopys.movil.subTitulo}
             </h5>
             <div>
                 <div className="flex w-full flex-col">
@@ -107,16 +121,16 @@ export default function PlanesMovil({ step }: StepProps) {
                             tab: "py-[8px] px-[12px] w-full h-[48px] rounded-none"
                         }}
                     >
-                        {(item: EntrySkeletonType<ConfigCardsFields>) => (
+                        {(item: MovilPlansInfo) => (
                             <Tab
-                                key={item.fields.entryTitle}
-                                title={item.fields.entryTitle}
+                                key={item.tituloTab}
+                                title={item.tituloTab}
                             />
                         )}
                     </Tabs>
                     <div className="grid grid-cols-2 2xl:grid-cols-4 gap-[16px] 2xl:gap-[24px] auto-rows-fr auto-cols-fr">
-                        {plansInfo.find((tab) => tab.fields.entryTitle === selectedTabKey)?.fields.cards.map((card: ComponentsFields, index) => {
-                            const cardId = card.sys.id;
+                        {plansInfo.find((tab) => tab.tituloTab === selectedTabKey)?.cards.map((card: ComponentsFields, index) => {
+                            const cardId = card.idPaquete;
                             const isSelected = selectedCardId === cardId;
 
                             return (
@@ -136,7 +150,7 @@ export default function PlanesMovil({ step }: StepProps) {
                                         }}>
                                         <CardHeader>
                                             <div className="flex flex-col text-start">
-                                                <h1 className="text-2xl font-extrabold leading-[27px] 2xl:text-[21px] 3xl:text-2xl 4xl:leading-[32px]">{card.fields.title}</h1>
+                                                <h1 className="text-2xl font-extrabold leading-[27px] 2xl:text-[21px] 3xl:text-2xl 4xl:leading-[32px]">{card.titulo}</h1>
                                             </div>
                                         </CardHeader>
                                         <CardBody>
@@ -144,20 +158,19 @@ export default function PlanesMovil({ step }: StepProps) {
                                         <CardFooter>
                                             <div className="flex flex-col w-full gap-[8px]">
                                                 <div className="flex flex-row items-baseline text-start gap-[4px]">
-                                                    {card.fields.discountPrice ?
+                                                    {card.precioAhorro ?
                                                         <>
-                                                            <p className="font-normal text-sm line-through text-gray-200">{`$${card.fields.price}`}</p>
+                                                            <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioPaquete)}</p>
                                                             <div className="flex flex-row items-baseline">
-                                                                <p className="text-lg font-bold">{`$${card.fields.discountPrice}`}</p>
-                                                                <p className="text-sm font-normal">{card.fields.afterPrice}</p>
+                                                                <p className="text-lg font-bold">{FormatCurrency(card.precioAhorro)}</p>
+                                                                <p className="text-sm font-normal">{offersCopys.movil.cards.periodo}</p>
                                                             </div>
                                                         </>
                                                         :
                                                         <>
-                                                            {card.fields.beforePrice && <p className="text-sm font-normal">{card.fields.beforePrice}</p>}
                                                             <div className="flex flex-row items-baseline">
-                                                                <p className="text-lg font-bold">{`$${card.fields.price}`}</p>
-                                                                <p className="text-sm font-normal">{card.fields.afterPrice}</p>
+                                                                <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
+                                                                <p className="text-sm font-normal">{offersCopys.movil.cards.periodo}</p>
                                                             </div>
                                                         </>}
 
@@ -169,7 +182,7 @@ export default function PlanesMovil({ step }: StepProps) {
                                                             e.stopPropagation()
                                                             console.log('click!!!')
                                                         }}
-                                                    >{card.fields.ctaText}</p>
+                                                    >{offersCopys.movil.cards.info}</p>
                                                     <span
                                                         className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
                                                         aria-pressed={isSelected}

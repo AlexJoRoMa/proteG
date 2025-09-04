@@ -1,7 +1,8 @@
 'use client'
 
-import { ComponentsFields, StepProps } from "@/types/ConfiguradorTypes";
+import { ComponentsFields, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
+import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { useEffect, useState } from "react";
 
@@ -27,11 +28,11 @@ export const CheckIcon = (props: any) => {
 
 export default function PlanesInternet({ step }: StepProps) {
 
-    const { configuradorEntry, setUserAnswers, disabled, userAnswers } = useContent();
-    const entryData = configuradorEntry?.internet && configuradorEntry?.internet;
-    const plans = entryData?.fields;
+    const { configuradorEntry, setUserAnswers, disabled, userAnswers, copysConfigurador } = useContent();
+    const plans = configuradorEntry?.offers?.DOBLE_PLAY;
+    const offersCopys = copysConfigurador as unknown as OffersCopys;
 
-    const plansInfo = plans?.components as unknown as ComponentsFields[];
+    const plansInfo = plans as unknown as ComponentsFields[];
 
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
@@ -53,7 +54,7 @@ export default function PlanesInternet({ step }: StepProps) {
             ...prev,
             internet: {
                 paquete: card,
-                total: Number(card.fields.price) || 0
+                total: Number(card.precioAhorro) || 0
             }
 
         }))
@@ -77,7 +78,7 @@ export default function PlanesInternet({ step }: StepProps) {
                     {step}
                 </p>
                 <h3 className={`font-semibold text-xl leading-[24px] ${!disabled ? 'text-black-0' : 'text-gray-200'}`}>
-                    {plans?.title}
+                    {offersCopys.internet.titulo}
                 </h3>
             </div>
 
@@ -103,22 +104,22 @@ export default function PlanesInternet({ step }: StepProps) {
                                     }}>
                                     <CardHeader>
                                         <div className="flex flex-col text-start">
-                                            <p className="text-base font-normal leading-[27px]">{`de ${card.fields.minCapacityInternet} a`}</p>
-                                            <p className="leading-[27px] font-extrabold text-2xl">{card.fields.maxCapacityInternet}</p>
+                                            <p className="text-base font-normal leading-[27px]">{`${offersCopys.internet.cards.preVelocidad} ${card.velocidadMinima} ${offersCopys.internet.cards.posVelocidad}`}</p>
+                                            <p className="leading-[27px] font-extrabold text-2xl">{`${card.velocidadMaxima} ${offersCopys.internet.cards.unidadVelocidad}`}</p>
                                         </div>
                                     </CardHeader>
                                     <CardBody>
                                         <div className="flex items-stretch">
-                                            <p className="leading-[18px] font-normal text-sm text-gray-300">{card.fields.subTitle}</p>
+                                            <p className="leading-[18px] font-normal text-sm text-gray-300">{card.extrasIncluidos[0]}</p>
                                         </div>
                                     </CardBody>
                                     <CardFooter>
                                         <div className="flex flex-col w-full gap-[8px]">
                                             <div className="flex flex-row items-baseline gap-[4px]">
-                                                <span className="text-sm font-normal">{card.fields.beforePrice}</span>
+                                                <span className="text-sm font-normal text-gray-200 line-through">{FormatCurrency(card.precioPaquete)}</span>
                                                 <div className="flex flex-row items-baseline">
-                                                    <span className="text-lg font-bold">{`$${card.fields.price}`}</span>
-                                                    <span className="text-sm font-normal">{card.fields.afterPrice}</span>
+                                                    <span className="text-lg font-bold">{FormatCurrency(card.precioAhorro)}</span>
+                                                    <span className="text-sm font-normal">{offersCopys.internet.cards.periodo}</span>
                                                 </div>
                                             </div>
                                             <div className="flex flex-row gap-[16px] items-center justify-between">
@@ -128,7 +129,7 @@ export default function PlanesInternet({ step }: StepProps) {
                                                         e.stopPropagation()
                                                         console.log('click!!!')
                                                     }}
-                                                >{card.fields.ctaText}</p>
+                                                >{offersCopys.internet.cards.info}</p>
                                                 <span
                                                     className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
                                                     aria-pressed={isSelected}

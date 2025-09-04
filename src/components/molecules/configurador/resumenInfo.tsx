@@ -62,7 +62,7 @@ export default function ResumenInfo() {
                 (!hasData(internet) && !hasData(movil) && hasData(tv)) || (hasData(internet) && hasData(tv) && !hasData(movil))
             ) {
                 if (isFirstLoad.tv || isFirstLoad.tvLight) {
-                    if (tv?.paquete.fields.title.includes('light')) {
+                    if (tv?.paquete.titulo.includes('light')) {
                         isFirstLoad.tvLight &&
                             showNotification(resumenCopys.info.tvLight, "");
                         setIsFirstLoad((prev) => {
@@ -82,7 +82,7 @@ export default function ResumenInfo() {
                         });
                     }
                 }
-                if (!(tv?.paquete.fields.title.includes('light'))) {
+                if (!(tv?.paquete.titulo.includes('light'))) {
                     setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $XXXX ${resumenCopys.infoDrawer.combinacion.postPrice}`)
                 } else {
                     setInfoDrawerContent(resumenCopys.infoDrawer.nuevoFlujo)
@@ -106,7 +106,7 @@ export default function ResumenInfo() {
         } else {
             if ((!hasData(movil) && hasData(tv))) {
                 if (isFirstLoad.tv || isFirstLoad.tvLight) {
-                    if (tv?.paquete.fields.title.includes('light')) {
+                    if (tv?.paquete.titulo.includes('light')) {
                         isFirstLoad.tvLight &&
                             showNotification(resumenCopys.info.tvLight, "")
                         setIsFirstLoad((prev) => {
@@ -126,7 +126,7 @@ export default function ResumenInfo() {
                         });
                     }
                 }
-                if (!(tv?.paquete.fields.title.includes('light'))) {
+                if (!(tv?.paquete.titulo.includes('light'))) {
                     setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $XXXX ${resumenCopys.infoDrawer.combinacion.postPrice}`)
                 } else {
                     setInfoDrawerContent(resumenCopys.infoDrawer.nuevoFlujo)

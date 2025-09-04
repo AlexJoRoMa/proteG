@@ -1,8 +1,9 @@
 'use client'
 
 import AccordionPlanesExtras from "@/components/molecules/configurador/accordionPlanesExtras";
-import { ComponentsFields, StepProps } from "@/types/ConfiguradorTypes";
+import { ComponentsFields, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
+import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { useState } from "react";
 
@@ -29,10 +30,12 @@ export const CheckIcon = (props: any) => {
 
 export default function PlanesTv({ step }: StepProps) {
 
-    const { configuradorEntry, setUserAnswers, setDisabled, userAnswers } = useContent();
-    const plans = configuradorEntry?.tv && configuradorEntry?.tv;
+    const { configuradorEntry, setUserAnswers, setDisabled, userAnswers, copysConfigurador } = useContent();
+    const plans = configuradorEntry?.offers.TV;
+    const offersCopys = copysConfigurador as unknown as OffersCopys;
+    console.log('offersCopys', offersCopys)
 
-    const plansInfo = plans?.fields.components as unknown as ComponentsFields[];
+    const plansInfo = plans as unknown as ComponentsFields[];
 
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
@@ -56,11 +59,11 @@ export default function PlanesTv({ step }: StepProps) {
             tv: {
                 ...prev.tv,
                 paquete: card,
-                total: card.fields.discountPrice ? Number(card.fields.discountPrice) || 0 : Number(card.fields.price) || 0
+                total: card.precioAhorro ? Number(card.precioAhorro) || 0 : Number(card.precioPaquete) || 0
             },
         }));
 
-        if (card.fields.title.includes('light')) {
+        if (card.titulo.includes('light')) {
             setDisabled(true);
         } else {
             setDisabled(false);
@@ -69,20 +72,18 @@ export default function PlanesTv({ step }: StepProps) {
 
     function handleIsPressable(card: ComponentsFields): boolean {
 
-        if (card.fields.title.includes('light') && (userAnswers.internet?.paquete || userAnswers.movil?.paquete)) {
+        if (card.titulo.includes('light') && (userAnswers.internet?.paquete || userAnswers.movil?.paquete)) {
             return false
         } else {
             return true
         }
     };
 
-    //TODO: const data = contenfulData || integracionData || seleccion del usuario ;  <- data base, de integracion o del usuario
-
     return (
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
                 <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>{step}</p>
-                <h3 className='font-semibold text-xl leading-[24px]'>{plans?.fields.title}</h3>
+                <h3 className='font-semibold text-xl leading-[24px]'>{offersCopys.tv.titulo}</h3>
             </div>
 
             <div className="grid grid-cols-2 2xl:grid-cols-4 gap-[16px] 2xl:gap-[24px] auto-rows-fr">
@@ -107,15 +108,15 @@ export default function PlanesTv({ step }: StepProps) {
                                     }}>
                                     <CardHeader>
                                         <div className="flex flex-col text-start">
-                                            <h1 className="text-2xl font-extrabold leading-[24px]">{card.fields.title}</h1>
+                                            <h1 className="text-2xl font-extrabold leading-[24px]">{card.titulo}</h1>
                                         </div>
                                     </CardHeader>
                                     <CardBody>
                                         <div className="flex flex-col gap-[8px]">
-                                            <p className="leading-[18px] font-normal text-sm text-gray-300">{card.fields.subTitle}</p>
+                                            <p className="leading-[18px] font-normal text-sm text-gray-300">{`${card.canales} canales`}</p>
                                             {isSelected &&
                                                 <div>
-                                                    <p className="font-normal text-sm mb-[24px]">{plans?.fields.description}</p>
+                                                    <p className="font-normal text-sm mb-[24px]">Envío a domicilio</p>
                                                 </div>
                                             }
                                         </div>
@@ -123,20 +124,20 @@ export default function PlanesTv({ step }: StepProps) {
                                     <CardFooter>
                                         <div className="flex flex-col gap-[8px] w-full">
                                             <div className="flex flex-row items-baseline text-start gap-[4px]">
-                                                {card.fields.discountPrice ?
+                                                {card.precioAhorro ?
                                                     <>
-                                                        <p className="font-normal text-sm line-through text-gray-200">{`$${card.fields.price}`}</p>
+                                                        <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioPaquete)}</p>
                                                         <div className="flex flex-row items-baseline">
-                                                            <p className="text-lg font-bold">{`$${card.fields.discountPrice}`}</p>
-                                                            <p className="text-sm font-normal">{card.fields.afterPrice}</p>
+                                                            <p className="text-lg font-bold">{FormatCurrency(card.precioAhorro)}</p>
+                                                            <p className="text-sm font-normal">{offersCopys.tv.cards.periodo}</p>
                                                         </div>
                                                     </>
                                                     :
                                                     <>
-                                                        {card.fields.beforePrice && <p className="text-sm font-normal">{card.fields.beforePrice}</p>}
+                                                        {/* {card.fields.beforePrice && <p className="text-sm font-normal">{card.fields.beforePrice}</p>} */}
                                                         <div className="flex flex-row items-baseline">
-                                                            <p className="text-lg font-bold">{`$${card.fields.price}`}</p>
-                                                            <p className="text-sm font-normal">{card.fields.afterPrice}</p>
+                                                            <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
+                                                            <p className="text-sm font-normal">{offersCopys.tv.cards.periodo}</p>
                                                         </div>
                                                     </>}
 
@@ -148,7 +149,7 @@ export default function PlanesTv({ step }: StepProps) {
                                                         e.stopPropagation()
                                                         console.log('click!!!')
                                                     }}
-                                                >{card.fields.ctaText}</p>
+                                                >{offersCopys.tv.cards.info}</p>
                                                 <span
                                                     className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
                                                     aria-pressed={isSelected}
@@ -164,12 +165,12 @@ export default function PlanesTv({ step }: StepProps) {
                     })
                 }
             </div>
-            <div>
+            {/* <div>
                 {selectedIndex === null ?
                     <h5 className="font-normal leading-[24px] text-base">{plans?.fields.subTitle}</h5> :
                     <AccordionPlanesExtras />
                 }
-            </div>
+            </div> */}
         </div >
 
     )
