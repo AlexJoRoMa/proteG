@@ -20,7 +20,9 @@ interface MediaEntrySkeleton extends EntrySkeletonType{
 export interface StepTabEntryFields extends EntrySkeletonType{
   image?: Entry<MediaEntrySkeleton>;
   dot?: Asset;
+  entryTitle?: string;
   entryBody?: string;
+  richText?: Document;
 }
 
 export interface StepTabEntrySkeleton extends EntrySkeletonType{
