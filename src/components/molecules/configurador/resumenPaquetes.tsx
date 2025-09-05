@@ -86,7 +86,7 @@ export default function ResumenPaquetes() {
                 <div className="flex flex-col">
                     <div className="flex flex-col gap-[8px] border-b-1 border-b-gray-150 pt-[24px]">
                         <div className="flex justify-between w-full font-bold leading-[24px] text-lg">
-                            <h5>{resumenCopys.paquetes.tv.titulo}</h5>
+                            <h5>{tv.paquete.titulo}</h5>
                             <h5>{FormatCurrency(tv.total)}</h5>
                         </div>
 
