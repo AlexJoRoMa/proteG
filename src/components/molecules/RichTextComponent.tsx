@@ -1,8 +1,8 @@
 import React from 'react';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, MARKS, INLINES, Block, Inline } from '@contentful/rich-text-types';
-import { 
-  RichTextComponentProps, 
+import {
+  RichTextComponentProps,
   ContentfulAssetNode,
   ContentfulEntryNode,
   ContentfulHyperlinkNode
@@ -11,6 +11,7 @@ import Image from 'next/image';
 import '@/styles/RichTextComponent.css';
 import Link from 'next/link';
 import { componentMap } from '@/lib/modal/dynamic-map';
+import CloseButtonModalComponent from '../layouts/modalComponents/CloseButtonModalComponent';
 
 /**
  * RichTextComponent - Renders Contentful rich text content
@@ -18,9 +19,11 @@ import { componentMap } from '@/lib/modal/dynamic-map';
  * This component takes a Contentful rich text document and renders it as React components
  * with custom styling and support for embedded assets and entries.
  */
-const RichTextComponent: React.FC<RichTextComponentProps> = ({ 
-  document, 
-  className = ''
+const RichTextComponent: React.FC<RichTextComponentProps> = ({
+  document,
+  className = '',
+  onClose,
+  variables = {}
 }) => {
   // Custom rendering options for different node types
   const options = {
@@ -38,6 +41,12 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
         <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono">{text}</code>
       ),
     },
+    renderText: (text: string) => {
+      return text.replace(/\$\{(\w+)\}/g, (_, key) => {
+        return variables[key] ?? `\${${key}}`;
+      });
+    },
+
     renderNode: {
       [BLOCKS.PARAGRAPH]: (node: Block | Inline, children: React.ReactNode) => {
         // Si TODOS los hijos son embedded-entry-inline (por className), NO renderices <p>
@@ -111,10 +120,10 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
       [INLINES.HYPERLINK]: (node: Block | Inline, children: React.ReactNode) => {
         const linkNode = node as unknown as ContentfulHyperlinkNode;
         return (
-          <Link 
-            href={linkNode.data.uri} 
+          <Link
+            href={linkNode.data.uri}
             className="text-black hover:text-gray-200 hover:font-normal font-bold underline transition-colors duration-200"
-            target="_blank" 
+            target="_blank"
             rel="noopener noreferrer"
           >
             {children}
@@ -129,24 +138,24 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
 
         if (file?.contentType?.startsWith('image/')) {
           return (
-              <Image
-                src={imageUrl}
-                alt={alt}
-                width={file.details?.image?.width || 800}
-                height={file.details?.image?.height || 600}
-                className="max-w-full h-auto inline"
-                priority={false}
-              />
+            <Image
+              src={imageUrl}
+              alt={alt}
+              width={file.details?.image?.width || 800}
+              height={file.details?.image?.height || 600}
+              className="max-w-full h-auto inline"
+              priority={false}
+            />
           );
         }
 
         // For non-image assets, show a download link
         return (
           <div className="border border-gray-300 rounded-lg bg-gray-50">
-            <a 
-              href={imageUrl} 
+            <a
+              href={imageUrl}
               className="text-blue-600 hover:text-blue-800 underline"
-              target="_blank" 
+              target="_blank"
               rel="noopener noreferrer"
             >
               📎 {title || 'Download file'}
@@ -165,48 +174,51 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
         const Component = typeof entry?.fields?.type === 'string' && entry?.fields?.type in componentMap ? componentMap[entry?.fields?.type as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
 
         if (Component) {
-         
-          return (
-            <Component
-              {...entry.fields}
-            />
-          );
-    
+
+          if (entry?.fields?.type === 'closeButton') {
+            return <CloseButtonModalComponent onClose={onClose} {...entry.fields}/>
+          } else {
+            return (
+              <Component
+                {...entry.fields}
+              />
+            );
+          }
         }
 
 
         return (
-            <div className="bg-gray-100 p-4 rounded">
-                <p>Embedded resource of type {contentType} is not supported.</p>
-            </div>
+          <div className="bg-gray-100 p-4 rounded">
+            <p>Embedded resource of type {contentType} is not supported.</p>
+          </div>
         );
       },
 
       ["embedded-entry-inline"]: (node: Block | Inline) => {
 
-            const resourceNode = node as unknown as ContentfulEntryNode;
-            const entry = resourceNode.data.target;
-            const contentType = entry?.sys.contentType.sys.id;
-            const Component = typeof entry?.fields?.type === 'string' && entry?.fields?.type in componentMap ? componentMap[entry?.fields?.type as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
+        const resourceNode = node as unknown as ContentfulEntryNode;
+        const entry = resourceNode.data.target;
+        const contentType = entry?.sys.contentType.sys.id;
+        const Component = typeof entry?.fields?.type === 'string' && entry?.fields?.type in componentMap ? componentMap[entry?.fields?.type as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
 
-            if (Component) {
+        if (Component) {
 
-              return(  
-                <div className='embeedded-entry-inline'>
-                    <Component {...entry.fields}
-                    data-embedded-entry-inline />
-                </div>
-              )
-
-            }
-
-
-            return (
-            <div className="bg-gray-100 p-4 rounded">
-                <p>Embedded resource of type {contentType} is not supported.</p>
+          return (
+            <div className='embeedded-entry-inline'>
+              <Component {...entry.fields}
+                data-embedded-entry-inline />
             </div>
-            );
+          )
+
         }
+
+
+        return (
+          <div className="bg-gray-100 p-4 rounded">
+            <p>Embedded resource of type {contentType} is not supported.</p>
+          </div>
+        );
+      }
     },
   };
 
