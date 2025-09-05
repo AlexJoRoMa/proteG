@@ -141,7 +141,7 @@ export type DataFields = {
 export interface UserAnswers {
     total?: number,
     internet?: {
-        paquete?: ComponentsFields | {},
+        paquete?: ComponentsFields | null,
         total?: number
     },
     movil?: {
@@ -313,7 +313,9 @@ export type OffersCopys = {
         titulo: string,
         cards: {
             periodo: string,
-            info: string
+            info: string,
+            titulo: string,
+            tituloPlus: string
         }
     },
     movil: {

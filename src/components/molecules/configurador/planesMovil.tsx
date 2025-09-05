@@ -33,7 +33,6 @@ export default function PlanesMovil({ step }: StepProps) {
     const offersCopys = copysConfigurador as unknown as OffersCopys;
 
     const plansInfo = formatData(plans, offersCopys) as unknown as MovilPlansInfo[];
-    console.log('movil', plansInfo)
 
     const defaultKey = plansInfo[0].tituloTab;
 
@@ -57,11 +56,7 @@ export default function PlanesMovil({ step }: StepProps) {
 
         if (selectedCardId !== null) {
             if (selectedCardId === cardId) {
-                setSelectedCardId(null);
-                setUserAnswers(prev => {
-                    const { movil, ...rest } = prev;
-                    return rest
-                });
+                clearSelection();
                 return;
             }
         }
@@ -75,6 +70,14 @@ export default function PlanesMovil({ step }: StepProps) {
                 total: card.precioAhorro ? Number(card.precioAhorro) || 0 : Number(card.precioPaquete) || 0
             },
         }))
+    }
+
+    function clearSelection() {
+        setSelectedCardId(null);
+        setUserAnswers(prev => {
+            const { movil, ...rest } = prev;
+            return rest
+        });
     }
 
     useEffect(() => {

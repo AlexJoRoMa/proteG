@@ -1,5 +1,6 @@
 'use client'
 
+import LinkModal from "@/components/atoms/LinkModal";
 import { ComponentsFields, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
@@ -40,11 +41,7 @@ export default function PlanesInternet({ step }: StepProps) {
 
         if (selectedIndex !== null) {
             if (selectedIndex === index) {
-                setSelectedIndex(null);
-                setUserAnswers(prev => {
-                    const { internet, ...rest } = prev;
-                    return rest
-                });
+                clearSelection();
                 return;
             }
         }
@@ -60,6 +57,13 @@ export default function PlanesInternet({ step }: StepProps) {
         }))
     }
 
+    function clearSelection() {
+        setSelectedIndex(null);
+        setUserAnswers(prev => {
+            const { internet, ...rest } = prev;
+            return rest
+        });
+    }
 
     useEffect(() => {
         if (disabled && (userAnswers.internet?.paquete !== null)) {
@@ -123,13 +127,18 @@ export default function PlanesInternet({ step }: StepProps) {
                                                 </div>
                                             </div>
                                             <div className="flex flex-row gap-[16px] items-center justify-between">
-                                                <p
+                                                <LinkModal
+                                                    text={offersCopys.internet.cards.info}
+                                                    idModal={"5bk4i5bhd03JSYExrFXcu7"}
+                                                    backdropColor="black-0/80"
+                                                />
+                                                {/* <p
                                                     className="underline pointer-events-auto"
                                                     onClick={(e) => {
                                                         e.stopPropagation()
                                                         console.log('click!!!')
                                                     }}
-                                                >{offersCopys.internet.cards.info}</p>
+                                                >{offersCopys.internet.cards.info}</p> */}
                                                 <span
                                                     className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
                                                     aria-pressed={isSelected}

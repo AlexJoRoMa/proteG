@@ -1,11 +1,11 @@
 'use client'
 
 import AccordionPlanesExtras from "@/components/molecules/configurador/accordionPlanesExtras";
-import { ComponentsFields, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
+import { ComponentsFields, OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const CheckIcon = (props: any) => {
     return (
@@ -31,24 +31,63 @@ export const CheckIcon = (props: any) => {
 export default function PlanesTv({ step }: StepProps) {
 
     const { configuradorEntry, setUserAnswers, setDisabled, userAnswers, copysConfigurador } = useContent();
-    const plans = configuradorEntry?.offers.TV;
-    const offersCopys = copysConfigurador as unknown as OffersCopys;
-    console.log('offersCopys', offersCopys)
-
-    const plansInfo = plans as unknown as ComponentsFields[];
-
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+    const [tvPlans, setTvPlans] = useState<OfferItem[] | undefined>(configuradorEntry?.offers.TV);
+
+    const offersCopys = copysConfigurador as unknown as OffersCopys;
+
+    const plansInfo = tvPlans as unknown as ComponentsFields[];
+
+    useEffect(() => {
+        let internet = userAnswers.internet;
+
+        if (internet && internet !== null) {
+            clearSelection();
+
+            const tvLight = configuradorEntry?.offers.TV.filter(item => item.titulo.includes("light")) as OfferItem[];
+            const triplePlay = configuradorEntry?.offers.TRIPLE_PLAY.filter(item => item.velocidadMinima === internet.paquete?.velocidadMinima)
+                .map((item) => ({
+                    ...item,
+                    titulo: offersCopys.tv.cards.titulo,
+                })) as unknown as OfferItem[];
+
+            const tvOffers = [...triplePlay, ...tvLight]
+
+            setTvPlans(tvOffers);
+
+        } else {
+            clearSelection();
+            const tvOffers = configuradorEntry?.offers.TV.map((item) => {
+                if (!item.titulo.includes("light")) {
+                    return {
+                        ...item,
+                        titulo: offersCopys.tv.cards.tituloPlus
+                    }
+                } else {
+                    return item
+                }
+            }) as unknown as OfferItem[];
+
+            setTvPlans(tvOffers);
+        }
+
+    }, [userAnswers.internet]);
+
+    function clearSelection() {
+        setSelectedIndex(null);
+        setUserAnswers(prev => {
+            const { tv, ...rest } = prev;
+            return rest
+        });
+        setDisabled(false);
+    }
+
 
     function handleSelect(index: number, card: ComponentsFields) {
 
         if (selectedIndex !== null) {
             if (selectedIndex === index) {
-                setSelectedIndex(null);
-                setUserAnswers(prev => {
-                    const { tv, ...rest } = prev;
-                    return rest
-                });
-                setDisabled(false);
+                clearSelection();
                 return;
             }
         }
