@@ -20,11 +20,32 @@
 
 .embeedded-entry-inline{
     display: inline-block;
+}
 
-    @media screen and (max-width: 565px) {
-        display: block;
-    }
-    >div{
-        width: fit-content;
-    }
+.rich-text-hr-triple_play {
+  background: linear-gradient(90deg, #FF6C07 0%, #4DA9A7 33%, #D31772 66%, #FCD116 100%);
+}
+
+.rich-text-hr-internet_tv {
+  background: linear-gradient(90deg, #FF6C07 0%, #4DA9A7 100%);
+}
+
+.rich-text-hr-movil_tv {
+  background: linear-gradient(90deg, #D31772 0%, #4DA9A7 100%);
+}
+
+.rich-text-hr-internet_movil {
+  background: linear-gradient(90deg, #FF6C07 0%, #D31772 100%);
+}
+
+.rich-text-hr-internet {
+  background: linear-gradient(90deg, #FF6C07 0%, #FF6C07 100%);
+}
+
+.rich-text-hr-tv {
+  background: linear-gradient(90deg, #4DA9A7 0%, #4DA9A7 100%);
+}
+
+.rich-text-hr-movil {
+  background: linear-gradient(90deg, #D31772 0%, #D31772 100%);
 }

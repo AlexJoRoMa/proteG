@@ -1,4 +1,5 @@
 import { Document } from '@contentful/rich-text-types';
+import { ColorOption } from '@/constants/ColorModalConstants';
 
 export interface RichTextComponentProps {
   /**
@@ -9,6 +10,10 @@ export interface RichTextComponentProps {
    * Optional CSS classes for styling the container
    */
   className?: string;
+  /**
+   * Optional color option for HR elements
+   */
+  hrColor?: ColorOption;
 }
 
 export interface RichTextRendererOptions {

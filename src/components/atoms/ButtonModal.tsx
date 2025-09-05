@@ -23,7 +23,8 @@ const ButtonModal = ({
     closeButtonStroke,
     modalContentClassName,
     startContent,
-    backdropColor
+    backdropColor,
+    hrColor
 }: ButtonModalProps) => {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -67,6 +68,7 @@ const ButtonModal = ({
                                 <RichTextComponent 
                                     document={data.items[0].fields.modalContent}
                                     className="prose prose-lg"
+                                    hrColor={hrColor}
                                 />
                             </div>
                             <div className='xl:ml-auto order-1 md:order-0'>

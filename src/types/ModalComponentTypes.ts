@@ -1,4 +1,5 @@
 import { Asset } from "contentful";
+import { ColorOption } from "@/constants/ColorModalConstants";
 
 export type FeatureListItemComponentProps = {
   title?: string;
@@ -10,12 +11,14 @@ export type TextAndImageComponentProps = {
   text?: string;
   image?: Asset
   fontSize?: string;
+  orientation?: 'horizontal' | 'vertical';
 };
 
 export type PriceComponentProps = {
   textBeforePrice?: string;
   textAfterPrice?: string;
   price?: string;
+  align?: 'horizontal' | 'vertical';
 };
 
 export type ButtonModalProps = {
@@ -27,6 +30,7 @@ export type ButtonModalProps = {
     modalContentClassName?: string; // Clases adicionales para el ModalContent
     startContent?: React.ReactNode; // Contenido que se muestra al inicio del botón
     backdropColor?: string; // Color del backdrop del modal, por defecto "black"
+    hrColor?: ColorOption; // Opción de color para el HR del RichTextComponent
 }
 
 export type LinkModalProps = {
@@ -37,6 +41,7 @@ export type LinkModalProps = {
     closeButtonStroke?: string; // Color del stroke del botón de cerrar
     modalContentClassName?: string; // Clases adicionales para el ModalContent
     backdropColor?: string; // Color del backdrop del modal, por defecto "black"
+    hrColor?: ColorOption; // Opción de color para el HR del RichTextComponent
 }
 
 export type ButtonModalComponentProps = {
@@ -53,6 +58,7 @@ export type ModalType = {
     closeButtonStroke?: string; // Color del stroke del botón de cerrar, por defecto "white"
     modalContentClassName?: string; // Clases adicionales para el ModalContent
     backdropColor?: string; // Color del backdrop del modal, por defecto "black"
+    hrColor?: ColorOption; // Opción de color para el HR del RichTextComponent
 }
 
 export interface TeLlamamosModalComponentProps {

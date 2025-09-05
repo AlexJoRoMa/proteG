@@ -20,7 +20,8 @@ import { componentMap } from '@/lib/modal/dynamic-map';
  */
 const RichTextComponent: React.FC<RichTextComponentProps> = ({ 
   document, 
-  className = ''
+  className = '',
+  hrColor
 }) => {
   // Custom rendering options for different node types
   const options = {
@@ -71,7 +72,7 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
         }
 
         // Si no, renderiza el <p> normalmente
-        return <p className="text-base ">{children}</p>;
+        return <p className="text-base w-full">{children}</p>;
       },
       [BLOCKS.HEADING_1]: (_node: Block | Inline, children: React.ReactNode) => (
         <h1 className="text-4xl ">{children}</h1>
@@ -105,9 +106,15 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
           {children}
         </blockquote>
       ),
-      [BLOCKS.HR]: () => (
-        <hr className="border-t border-gray-300" />
-      ),
+      [BLOCKS.HR]: () => {
+        const hrClasses = hrColor 
+          ? `border-none h-0.5 rich-text-hr-${hrColor.toLowerCase()}`
+          : "border-t border-gray-300";
+        
+        return (
+          <hr className={hrClasses} />
+        );
+      },
       [INLINES.HYPERLINK]: (node: Block | Inline, children: React.ReactNode) => {
         const linkNode = node as unknown as ContentfulHyperlinkNode;
         return (
