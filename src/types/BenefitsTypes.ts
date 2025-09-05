@@ -23,10 +23,18 @@ export type BenefitsDataFields = {
 export type CardDataFields = {
     cards: CardDataFields[],
     ctaText: string,
+    ctaLink?: string,
     description: string,
     internalName: string,
     title: string,
     type: string,
+    isModal?: string,
+    modal?: {
+        sys: {
+            id: string;
+        };
+    },
+    colorHr?: string,
     image: {
         fields: {
             image: {
