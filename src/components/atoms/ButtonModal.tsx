@@ -7,6 +7,7 @@ import useSWR from 'swr'
 import Image from 'next/image'
 import RichTextComponent from '../molecules/RichTextComponent';
 import { ButtonModalProps } from '@/types/ModalComponentTypes';
+import '@/styles/Modals.css';
 
 
 const fetchEntry = async ([id]: [string]) => {
@@ -64,7 +65,7 @@ const ButtonModal = ({
                 ) : (
                     data && !isLoading && !error && (
                         <div className='flex h-full flex-col xl:flex-row'>                   
-                            <div className='px-4 xl:px-14 py-5 w-full order-2 xl:order-0 h-full'>
+                            <div className='px-4 xl:px-14 py-5 w-full order-2 xl:order-0 h-auto'>
                                 <RichTextComponent 
                                     document={data.items[0].fields.modalContent}
                                     className="prose prose-lg"
@@ -78,9 +79,9 @@ const ButtonModal = ({
                                     <Image
                                       src={`https:${data.items[0].fields.sideImage.fields.file.url}`}
                                       alt={data.items[0].fields.sideImage.fields.title}
-                                      width={384}
-                                      height={937}
-                                      className="h-auto max-w-none mb-0 w-full xl:w-auto xl:h-full object-fit "
+                                      width={data.items[0].fields.sideImage.fields.file.details.image.width}
+                                      height={data.items[0].fields.sideImage.fields.file.details.image.height}
+                                      className="h-auto xl:w-auto max-w-none max-h-none mb-0 w-full"
                                     />
                                   </picture>
                                 )}

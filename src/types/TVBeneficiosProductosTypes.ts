@@ -23,6 +23,13 @@ export interface StepTabEntryFields extends EntrySkeletonType{
   esModal?: boolean;
   botonText?: string;
   linkBoton?: string;
+  isModal?: string;
+  modal?: {
+    sys: {
+      id: string;
+    };
+  };
+  colorHr?: string;
 }
 
 export interface StepTabEntrySkeleton extends EntrySkeletonType{

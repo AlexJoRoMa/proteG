@@ -1,0 +1,74 @@
+.benefits-modal{
+
+    @media screen and (max-width: 768px) {
+
+        .embedded-inline-group{
+            text-align: center;
+            }
+        }
+
+        .embedded-inline-group{
+            display: inline-flex;
+
+             @media screen and (max-width: 768px) {
+                display:initial
+             }
+        }
+
+        .textandimagecomponent{
+
+            span{
+                font-size: 16px;
+                width: 80%;
+                text-align: center;
+
+                @media screen and (max-width: 768px) {
+                width: 100%;
+                }
+            }
+        }
+
+    picture img{
+        margin-top: 57px;
+          @media screen and (max-width: 768px) {
+            margin-top: 0px;
+        }
+    }
+    
+}
+
+.tv-beneficios-productos{
+
+    .rich-text-content{
+        img{
+        margin: auto;
+        order: 0;
+        }
+
+    .buttonmodalcomponent{
+        justify-content: center;
+
+        &:first-of-type{
+            a{
+                background-color: transparent;
+                border: 1px solid black;
+                color: black;
+                font-weight: normal;
+            }
+        }
+    }
+    @media screen and (max-width: 768px) {
+                *:not(img){
+                    order:1;
+                }
+
+                img{
+                    width: auto;
+                    height: 402px;
+                    object-fit: cover;
+                }
+        }
+    }
+
+    
+}

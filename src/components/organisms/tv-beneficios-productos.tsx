@@ -3,6 +3,8 @@ import { TVBeneficiosProductosID, StepTabEntrySkeleton, StepTabEntryFields } fro
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
+import ButtonModal from "../atoms/ButtonModal";
+import { ColorOption } from "@/constants/ColorModalConstants";
 
 const TVBeneficiosProductos = async ({id} : TVBeneficiosProductosID) => {
     const callCardsContent:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
@@ -36,7 +38,7 @@ const TVBeneficiosProductos = async ({id} : TVBeneficiosProductosID) => {
             
             {/* componentes cards */}
             {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
-                const { titulo, botonText, linkBoton, imagen } = card.fields as StepTabEntryFields;
+                const { titulo, botonText, linkBoton, imagen, isModal, modal, colorHr } = card.fields as StepTabEntryFields;
                 
                 const assetImage = imagen?.fields?.image as Asset | undefined;
                 const imgURL = assetImage?.fields?.file?.url;
@@ -68,10 +70,23 @@ const TVBeneficiosProductos = async ({id} : TVBeneficiosProductosID) => {
                             )}
                         </div>
                         <div className="2xl:mt-3 xl:mt-8 lg:mt-8 md:mt-8 xsm:mt-4 w-full flex items-center justify-center ">
-                            <ButtonGhost classStyles="border-black text-black md:text-[18px] xsm:text-[16px] leading-6 font-bold hover:!bg-white hover:!text-black w-full h-[48px] rounded-md
-                            w-[90%] w-max-[336px] w-min-[248px]"
-                            text={botonText as string} href={linkBoton as string}
-                            />
+                            {
+                                isModal ? (
+                                    <ButtonModal
+                                        textBtn={botonText as string}
+                                        classStyles="border border-black text-black md:text-[18px] xsm:text-[16px] leading-6 font-bold hover:!bg-white hover:!text-black w-full h-[48px] rounded-md w-[90%] w-max-[336px] w-min-[248px] bg-transparent"
+                                        idModal={typeof modal === 'object' && modal !== null && 'sys' in modal ? modal.sys.id : ''}
+                                        modalContentClassName="h-full tv-beneficios-productos"
+                                        closeButtonStroke="black"
+                                        hrColor={colorHr as ColorOption}
+                                    />
+                                ) : (
+                                    <ButtonGhost classStyles="border-black text-black md:text-[18px] xsm:text-[16px] leading-6 font-bold hover:!bg-white hover:!text-black w-full h-[48px] rounded-md
+                                    w-[90%] w-max-[336px] w-min-[248px]"
+                                    text={botonText as string} href={linkBoton as string}
+                                    />
+                                )
+                            }
                         </div>
                         </div>
                     </div>

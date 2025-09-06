@@ -6,7 +6,7 @@
   flex-direction: column;
   height: 100%;
   justify-content: space-evenly;
-
+  gap: 10px;
   @media screen and (max-width: 1023px) {
     gap:20px;
     height: max-content;
