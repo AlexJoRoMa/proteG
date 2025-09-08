@@ -32,18 +32,16 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
    : tipoGradiante == 'verde' ? 'bg-[image:var(--gradient-bar-vertical-5-verde)]' 
    : tipoGradiante == 'amarillo' ? 'bg-[image:var(--gradient-bar-vertical-5-amarillo)]' : 'bg-[image:var(--gradient-bar-vertical-5-magenta)]';
 
-   const setHorizontalWidth = getCardsContent.length === 5 ? '4xl:mx-23 xl:mx-[8.5%] lg:mx-[8%] md:mx-[8%]' : 'xl:mx-23 lg:mx-22 md:mx-15';
+  const setHorizontalWidth = getCardsContent.length === 5 ? '4xl:mx-23 xl:mx-[8.5%] lg:mx-[8%] md:mx-[8%]' : 'xl:mx-23 lg:mx-22 md:mx-15';
+  const setVerticalLength = getTitle === undefined ? 'top-8 bottom-8' : 'top-[13%] bottom-[13%] ';
                                                                                                                   
   const setHorizontalBar = `${setHorizontalColor} ${setHorizontalWidth} top-[82px] left-0 right-0 h-[1px] z-0 hidden md:block absolute`;
-  const setVerticalBar = `${setVerticalColor} top-8 bottom-8 block left-[24.3%]  w-[1px] z-0 md:hidden absolute`;
-  
+  const setVerticalBar = `${setVerticalColor} ${setVerticalLength}  block left-[24.3%]  w-[1px] z-0 md:hidden absolute`;
+  //24.3%
   const setMarginTop = getTitlePosition === true && getTitle !== undefined  ? 'md:mt-3 xsm:mt-7 md:mb-15' : 'md:mt-0 xsm:mt-5 md:mb-0';
 
-  
-  console.log('>>>>setMarginTop ', setMarginTop)
-
   return (
-      <div className=" md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content lg:h-[auto] md:h-[449px] xsm:h-[640px]  relative">
+      <div className=" md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content lg:h-[auto] md:h-auto xsm:h-auto  relative">
   
         <div className=" md:mt-15 xsm:mt-12 text-center lg:text-[36px] md:text-[25px] xsm:text-[32px]">
           {tituloTexto && documentToReactComponents(tituloTexto)}
@@ -55,8 +53,8 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
           )}
         </div>
   
-        <div className={` ${setMarginTop} md:w-full xsm:w-[373px] md:h-auto xsm:h-[420px] 
-        relative flex md:flex-row xsm:flex-col justify-between md:items-start xsm:items-center md:gap-x-8 xsm:gap-x-0 `}>
+        <div className={` ${setMarginTop} md:w-full xsm:w-[373px] md:h-auto xsm:h-auto 
+        relative flex md:flex-row xsm:flex-col justify-between md:items-start xsm:items-center md:gap-x-8 xsm:gap-x-0 md:gap-y-0 xsm:gap-y-8 `}>
           
           <div className={setHorizontalBar} />
           <div className={setVerticalBar} />
@@ -87,7 +85,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
                       />
                     )}
                   </div>
-                  <div className="md:mt-5 xsm:mt-0 md:ml-0 xsm:ml-5">
+                  <div className=" md:mt-5 xsm:mt-0 md:ml-0 xsm:ml-5">
                     {dotURL && (
                       <Image
                         className=" w-[12px] h-[12px] "
@@ -101,9 +99,10 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
                   </div>
                 </div>
 
-                <div className=" md:mt-6 xsm:mt-0 md:ml-0 xsm:ml-6 md:pr-0 xsm:pr-1 md:text-center xsm:text-left flex flex-col md:justify-center xsm:justify-start align-middle items-center  ">
+                <div className=" w-full md:mt-6 xsm:mt-0 md:ml-0 xsm:ml-6 md:pr-0 xsm:pr-1 
+                md:text-center xsm:text-left flex flex-col xsm:justify-start md:justify-center align-middle items-center ">
                 {entryTitle && (
-                  <p className=" w-full font-bold md:text-[18px] xsm:text-[16px] ">
+                  <p className=" md:mb-4 xsm:mb-3 w-full font-bold md:text-[18px] xsm:text-[16px] ">
                     {entryTitle}
                   </p>
                 )}
@@ -117,9 +116,9 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
           })}
         </div>
 
-        <div>
+        <div className=" w-full text-center xsm:mb-10">
           {getTitlePosition === false && (
-            <p className=" mt-10 mb-10 md:text-[18px] xsm:text-[16px]">{getTitle}</p>
+            <p className=" xsm:mt-10  md:text-[18px] xsm:text-[16px] md:mx-0 xsm:mx-5">{getTitle}</p>
           )}
         </div>
 
