@@ -1,9 +1,11 @@
+import React from "react";
 import Image from "next/image";
 import { ContratacionRapidaID, StepTabEntryFields, StepTabEntrySkeleton } from '@/types/CardsTypes';
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { Document } from "@contentful/rich-text-types";
+
 
 
 const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
@@ -33,17 +35,18 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
    : tipoGradiante == 'amarillo' ? 'bg-[image:var(--gradient-bar-vertical-5-amarillo)]' : 'bg-[image:var(--gradient-bar-vertical-5-magenta)]';
 
   const setHorizontalWidth = getCardsContent.length === 5 ? '4xl:mx-23 xl:mx-[8.5%] lg:mx-[8%] md:mx-[8%]' : 'xl:mx-23 lg:mx-22 md:mx-15';
-  const setVerticalLength = getTitle === undefined ? 'top-8 bottom-8' : 'top-[13%] bottom-[13%] ';
+  const setVerticalnoTitle = getCardsContent.length === 5 ? 'top-8 bottom-8' : 'top-[12.7%] bottom-[12.5%]';
+  const setVerticalLength = getTitle === undefined ? 'top-8 bottom-8' : setVerticalnoTitle;
                                                                                                                   
   const setHorizontalBar = `${setHorizontalColor} ${setHorizontalWidth} top-[82px] left-0 right-0 h-[1px] z-0 hidden md:block absolute`;
-  const setVerticalBar = `${setVerticalColor} ${setVerticalLength}  block left-[24.3%]  w-[1px] z-0 md:hidden absolute`;
+  const setVerticalBar = `${setVerticalColor} ${setVerticalLength}  block left-[24.4%]  w-[1px] z-0 md:hidden absolute`;
   //24.3%
   const setMarginTop = getTitlePosition === true && getTitle !== undefined  ? 'md:mt-3 xsm:mt-7 md:mb-15' : 'md:mt-0 xsm:mt-5 md:mb-0';
 
   return (
       <div className=" md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content lg:h-[auto] md:h-auto xsm:h-auto  relative">
   
-        <div className=" md:mt-15 xsm:mt-12 text-center lg:text-[36px] md:text-[25px] xsm:text-[32px]">
+        <div className=" md:mt-15 xsm:mt-12 md:mx-0 xsm:mx-5 text-center lg:text-[36px] md:text-[25px] xsm:text-[32px]">
           {tituloTexto && documentToReactComponents(tituloTexto)}
         </div>
 
@@ -102,7 +105,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
                 <div className=" w-full md:mt-6 xsm:mt-0 md:ml-0 xsm:ml-6 md:pr-0 xsm:pr-1 
                 md:text-center xsm:text-left flex flex-col xsm:justify-start md:justify-center align-middle items-center ">
                 {entryTitle && (
-                  <p className=" md:mb-4 xsm:mb-3 w-full font-bold md:text-[18px] xsm:text-[16px] ">
+                  <p className=" md:mb-4 xsm:mb-1 w-full font-bold md:text-[18px] xsm:text-[16px] ">
                     {entryTitle}
                   </p>
                 )}
