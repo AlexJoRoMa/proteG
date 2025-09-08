@@ -7,7 +7,6 @@ import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import { Document } from "@contentful/rich-text-types";
 
 
-
 const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
 
   const callCardsContent:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
@@ -40,7 +39,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
                                                                                                                   
   const setHorizontalBar = `${setHorizontalColor} ${setHorizontalWidth} top-[82px] left-0 right-0 h-[1px] z-0 hidden md:block absolute`;
   const setVerticalBar = `${setVerticalColor} ${setVerticalLength}  block left-[24.4%]  w-[1px] z-0 md:hidden absolute`;
-  //24.3%
+
   const setMarginTop = getTitlePosition === true && getTitle !== undefined  ? 'md:mt-3 xsm:mt-7 md:mb-15' : 'md:mt-0 xsm:mt-5 md:mb-0';
 
   return (
