@@ -12,7 +12,12 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
   const callCardsContent:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
       content_type: "cardsContentModel",
       'sys.id': id,
-      select: ['fields.cardsContent', 'fields.tituloTexto', 'fields.title', 'fields.typeGradient', 'fields.titlePosition'],
+      select: ['fields.cardsContent', 
+        'fields.tituloTexto', 
+        'fields.title', 
+        'fields.typeGradient', 
+        'fields.textTitleCard', 
+        'fields.titlePosition'],
       include: 2,
     }).then((entriesResponse) => {
       return entriesResponse.items
@@ -20,6 +25,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
 
   const getCardsContent: Array<Entry<StepTabEntrySkeleton>> | undefined = callCardsContent?.[0]?.fields.cardsContent as unknown as Array<Entry<StepTabEntrySkeleton>>;
   const getTitlePosition: boolean | undefined = callCardsContent?.[0]?.fields.titlePosition as unknown as boolean | undefined;
+  const getTitleCard: boolean | undefined = callCardsContent?.[0]?.fields.textTitleCard as unknown as boolean | undefined;
   const getTitle: string | undefined = callCardsContent?.[0]?.fields.title as unknown as string | undefined;
   const tipoGradiante: string | undefined = callCardsContent?.[0]?.fields.typeGradient as unknown as string | undefined;
   const tituloTexto: Document | undefined = callCardsContent?.[0]?.fields.tituloTexto as unknown as Document | undefined;
@@ -34,13 +40,18 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
    : tipoGradiante == 'amarillo' ? 'bg-[image:var(--gradient-bar-vertical-5-amarillo)]' : 'bg-[image:var(--gradient-bar-vertical-5-magenta)]';
 
   const setHorizontalWidth = getCardsContent.length === 5 ? '4xl:mx-23 xl:mx-[8.5%] lg:mx-[8%] md:mx-[8%]' : 'xl:mx-23 lg:mx-22 md:mx-15';
-  const setVerticalnoTitle = getCardsContent.length === 5 ? 'top-8 bottom-8' : 'top-[12.7%] bottom-[12.5%]';
-  const setVerticalLength = getTitle === undefined ? 'top-8 bottom-8' : setVerticalnoTitle;
+  
+  const setVerticalnoTitle = getTitleCard === true && getCardsContent.length === 5 ? 'top-8 bottom-8' : 'top-14 bottom-14';
+  const setVerticalTitle = getTitleCard === false  && getCardsContent.length !== 5 ? 'top-8 bottom-8' : 'top-8 bottom-8';
+  const setVerticalLength = getTitleCard === true ? setVerticalnoTitle : setVerticalTitle;
                                                                                                                   
   const setHorizontalBar = `${setHorizontalColor} ${setHorizontalWidth} top-[82px] left-0 right-0 h-[1px] z-0 hidden md:block absolute`;
   const setVerticalBar = `${setVerticalColor} ${setVerticalLength}  block left-[24.4%]  w-[1px] z-0 md:hidden absolute`;
 
   const setMarginTop = getTitlePosition === true && getTitle !== undefined  ? 'md:mt-3 xsm:mt-7 md:mb-15' : 'md:mt-0 xsm:mt-5 md:mb-0';
+
+  console.log('>>>>>> setVerticalLength ', setVerticalLength);
+
 
   return (
       <div className=" md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content lg:h-[auto] md:h-auto xsm:h-auto  relative">
