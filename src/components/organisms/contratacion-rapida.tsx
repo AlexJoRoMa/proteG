@@ -50,8 +50,6 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
 
   const setMarginTop = getTitlePosition === true && getTitle !== undefined  ? 'md:mt-3 xsm:mt-7 md:mb-15' : 'md:mt-0 xsm:mt-5 md:mb-0';
 
-  console.log('>>>>>> setVerticalLength ', setVerticalLength);
-
 
   return (
       <div className=" md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content lg:h-[auto] md:h-auto xsm:h-auto  relative">
