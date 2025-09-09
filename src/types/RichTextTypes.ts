@@ -9,15 +9,6 @@ export interface RichTextComponentProps {
    * Optional CSS classes for styling the container
    */
   className?: string;
-  /**
-   * Custom callback for closing the modal
-   */
-  onClose?: () => void;
-
-  /**
-   * Custom variables for dynamic data
-   */
-  variables?: Record<string, string>
 }
 
 export interface RichTextRendererOptions {

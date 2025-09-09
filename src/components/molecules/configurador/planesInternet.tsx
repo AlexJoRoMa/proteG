@@ -127,18 +127,6 @@ export default function PlanesInternet({ step }: StepProps) {
                                                 </div>
                                             </div>
                                             <div className="flex flex-row gap-[16px] items-center justify-between">
-                                                <LinkModal
-                                                    text={offersCopys.internet.cards.info}
-                                                    idModal={"5bk4i5bhd03JSYExrFXcu7"}
-                                                    backdropColor="black-0/80"
-                                                    variables={{
-                                                        velocidadMinima: card.velocidadMinima,
-                                                        velocidadMaxima: card.velocidadMaxima,
-                                                        precioPrimerMes: card.precioPaquete,
-                                                        precioDomicilio: '50',
-                                                        precio: card.precioAhorro
-                                                    }}
-                                                />
                                                 {/* <p
                                                     className="underline pointer-events-auto"
                                                     onClick={(e) => {

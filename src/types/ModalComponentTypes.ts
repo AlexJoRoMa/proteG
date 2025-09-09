@@ -34,7 +34,6 @@ export type LinkModalProps = {
     classNames?: string;
     idModal: string;
     children?: React.ReactNode;
-    variables?: {}
     closeButtonStroke?: string; // Color del stroke del botón de cerrar
     modalContentClassName?: string; // Clases adicionales para el ModalContent
     backdropColor?: string; // Color del backdrop del modal, por defecto "black"
@@ -44,7 +43,6 @@ export type ButtonModalComponentProps = {
   url?: string;
   text?: string;
   external?: boolean; // Indica si el enlace es externo
-  onClose?: () => void // Añadido para manejar el cierre del modal en el CloseButtonModalComponent
 };
 
 export type ModalType = {

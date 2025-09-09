@@ -11,7 +11,6 @@ import Image from 'next/image';
 import '@/styles/RichTextComponent.css';
 import Link from 'next/link';
 import { componentMap } from '@/lib/modal/dynamic-map';
-import CloseButtonModalComponent from '../layouts/modalComponents/CloseButtonModalComponent';
 
 /**
  * RichTextComponent - Renders Contentful rich text content
@@ -21,9 +20,7 @@ import CloseButtonModalComponent from '../layouts/modalComponents/CloseButtonMod
  */
 const RichTextComponent: React.FC<RichTextComponentProps> = ({
   document,
-  className = '',
-  onClose,
-  variables = {}
+  className = ''
 }) => {
   // Custom rendering options for different node types
   const options = {
@@ -41,12 +38,6 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
         <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono">{text}</code>
       ),
     },
-    renderText: (text: string) => {
-      return text.replace(/\$\{(\w+)\}/g, (_, key) => {
-        return variables[key] ?? `\${${key}}`;
-      });
-    },
-
     renderNode: {
       [BLOCKS.PARAGRAPH]: (node: Block | Inline, children: React.ReactNode) => {
         // Si TODOS los hijos son embedded-entry-inline (por className), NO renderices <p>
@@ -175,15 +166,12 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
 
         if (Component) {
 
-          if (entry?.fields?.type === 'closeButton') {
-            return <CloseButtonModalComponent onClose={onClose} {...entry.fields}/>
-          } else {
             return (
               <Component
                 {...entry.fields}
               />
             );
-          }
+    
         }
 
 
@@ -203,7 +191,7 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
 
         if (Component) {
 
-          return (
+              return(  
             <div className='embeedded-entry-inline'>
               <Component {...entry.fields}
                 data-embedded-entry-inline />

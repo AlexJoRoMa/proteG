@@ -20,7 +20,6 @@ const LinkModal = ({
     classNames,
     idModal,
     children,
-    variables,
     closeButtonStroke,
     modalContentClassName,
     backdropColor,
@@ -67,8 +66,6 @@ const LinkModal = ({
                                 <RichTextComponent 
                                     document={data.items[0].fields.modalContent}
                                     className="prose prose-lg"
-                                    onClose={() => onClose()}
-                                    variables={variables}
                                 />
                             </div>
                             <div className='xl:ml-auto order-1 md:order-0'>
