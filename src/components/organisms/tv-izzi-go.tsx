@@ -100,7 +100,7 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
                 </div>
 
 
-                {/* Llogica de textos y botones  */}
+                {/* Llogica de textos y botones */}
                 {/* Titulo y text body */}
                 <div className=" lg:w-1/2 lg:h-[70%] pl-5">
                 <div className="flex flex-col">
