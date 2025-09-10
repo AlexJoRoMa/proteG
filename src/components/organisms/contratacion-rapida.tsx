@@ -48,11 +48,11 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
   const setHorizontalBar = `${setHorizontalColor} ${setHorizontalWidth} top-[82px] left-0 right-0 h-[1px] z-0 hidden md:block absolute`;
   const setVerticalBar = `${setVerticalColor} ${setVerticalLength}  block left-[24.4%]  w-[1px] z-0 md:hidden absolute`;
 
-  const setMarginTop = getTitlePosition === true && getTitle !== undefined  ? 'md:mt-3 xsm:mt-7 md:mb-15' : 'md:mt-0 xsm:mt-5 md:mb-0';
+  const setMarginTop = getTitlePosition === true && getTitle !== undefined  ? 'md:mt-3 xsm:mt-7 md:mb-15' : 'md:mt-8 xsm:mt-5 md:mb-0';
 
 
   return (
-      <div className=" md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content lg:h-[auto] md:h-auto xsm:h-auto  relative">
+      <div className=" md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content lg:h-[411px] md:h-auto xsm:h-auto  relative">
   
         <div className=" md:mt-15 xsm:mt-12 md:mx-0 xsm:mx-5 text-center lg:text-[36px] md:text-[25px] xsm:text-[32px]">
           {tituloTexto && documentToReactComponents(tituloTexto)}
