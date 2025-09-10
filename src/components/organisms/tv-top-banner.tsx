@@ -3,18 +3,17 @@ import { ConIzziTvID, StepTabEntryFields, StepTabEntrySkeleton } from '@/types/C
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
-import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+
 
 const ConIzziTv = async ({id} : ConIzziTvID) =>{
     
     const callComponents: Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
             content_type: "izziTvModelTop",
             'sys.id': id,
-            select: ['fields.imgNumber',
-            'fields.imagen',
-            'fields.imagenDesk',
+            select: ['fields.imagen',
             'fields.imagenMovil',
-            'fields.richTitle', 
+            'fields.titulo',
+            'fields.tituloResaltado',
             'fields.body',
             'fields.textoPrecio',
             'fields.precio',
@@ -35,8 +34,8 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
     
     const getComponentContent= callComponents[0] as unknown as Entry<StepTabEntrySkeleton>;
    
-    const { richTitle, body, textoPrecio, precio, textTiempo, incluye,  
-            textBoton1, linkBoton1, adicionales, imgNumber ,imagen, imagenMovil, imagenDesk }= getComponentContent.fields as StepTabEntryFields;
+    const { titulo, tituloResaltado, body, textoPrecio, precio, textTiempo, incluye,  
+            textBoton1, linkBoton1, adicionales ,imagen, imagenMovil }= getComponentContent.fields as StepTabEntryFields;
 
     const assetImage = imagen?.fields?.image as Asset | undefined;
     const imgURL = assetImage?.fields?.file?.url;
@@ -44,29 +43,25 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
     const movilImage = imagenMovil?.fields?.image as Asset | undefined;
     const movilURL = movilImage?.fields?.file?.url;
 
-    const deskImage = imagenDesk?.fields?.image as Asset | undefined;
-    const deskURL = deskImage?.fields?.file?.url;
-
-
-    console.log('>>>> deskImage ', deskImage);
-
     return(
     <div className=" bg-black flex md:w-full xsm:w-full md:h-[489px] xsm:h-[770px] overflow-hidden">
         <div key={getComponentContent.sys.id} className=" relative w-full flex flex-col md:flex-row">
             
             {/* contenido texto */}
-            <div className="  relative md:order-none xsm:order-1 w-1/2  z-10 md:mx-md 2xl:mx-xl 
+            <div className=" relative md:order-none xsm:order-1  z-10 md:mx-md 2xl:mx-xl 
             md:pl-[1%] xsm:ml-4 
             md:w-[400px] xsm:w-[92%] md:h-[85%] xsm:h-[360px] 
             md:mt-10  xsm:mt-15">
                 <div  className=" text-white md:text-[64px] xsm:text-[56px]">
-                    {richTitle && documentToReactComponents(richTitle)}
+                    <h1>
+                        <span>{titulo} </span>
+                        <span className="font-bold">{tituloResaltado}</span>
+                    </h1>
                 </div>
                 <div  className="  text-white md:text-[32px] xsm:text-[24px] xsm:w-[80%] md:w-full ">
                     <h1>{body}</h1>
                 </div>
-                
-                <div  className="  text-white">
+                <div  className=" text-white">
                     <p>
                         <span className="md:text-[16px] xsm:text-[14px]">{textoPrecio}</span>
                         <span className="md:text-[56px] xsm:text-[48px] ml-4">{precio} </span>
@@ -107,21 +102,6 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                 </div>
                     
             </div>
-
-           <div className=" z-10  h-[489px] flex items-center justify-start">
-            {imgNumber === false && (
-                    <div className="">
-                        <Image
-                        className=" object-contain"
-                        alt={'Images'}
-                        src={`https:${deskURL}`}
-                        loading="lazy"
-                        width={589}
-                        height={466}
-                        />
-                    </div>
-            )}
-           </div>
                 
             {/* imagen responsiva */}
             <div className=" md:w-full xsm:w-[92%] md:h-full xsm:h-[280px]

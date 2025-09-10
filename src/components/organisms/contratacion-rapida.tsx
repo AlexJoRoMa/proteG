@@ -52,7 +52,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
 
 
   return (
-      <div className=" md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content lg:h-[411px] md:h-auto xsm:h-auto  relative">
+      <div className=" md:mx-md 2xl:mx-xl bg-white items-center justify-items-center box-content md:h-auto xsm:h-auto  relative">
   
         <div className=" md:mt-15 xsm:mt-12 md:mx-0 xsm:mx-5 text-center lg:text-[36px] md:text-[25px] xsm:text-[32px]">
           {tituloTexto && documentToReactComponents(tituloTexto)}
