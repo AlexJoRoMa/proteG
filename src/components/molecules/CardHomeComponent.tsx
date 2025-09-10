@@ -71,7 +71,7 @@ const CardHomeComponent = async({card}:CardPropType) => {
                             classStyles='w-full mb-4 border h-[48px] border-[color:var(--color-gray-250)] rounded-md text-[color:var(--color-gray-100)] text-[16px] md:text-[18px] font-bold bg-transparent'
                             textBtn={card?.fields?.textBtn1 as string}
                             idModal={typeof card?.fields?.modal === 'object' && card?.fields?.modal !== null && 'sys' in card.fields.modal ? (card.fields.modal as { sys: { id: string } }).sys.id : ''}
-                            modalContentClassName="h-auto"
+                            modalContentClassName="xl:h-auto h-full"
                             hrColor={card?.fields?.colorHr as ColorOption || ''}
                         />
                     ) : <ButtonGhost classStyles='w-full mb-4 border h-[48px] border-[color:var(--color-gray-250)] rounded-md text-[color:var(--color-gray-100)] text-[16px] md:text-[18px] font-bold'

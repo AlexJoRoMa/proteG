@@ -78,7 +78,7 @@ const CardTVInternetMovilComponent = async({card}:CardPropType) => {
                         classStyles='w-full mb-4 border-[1px solid black] rounded-md text-black text-[16px] md:text-[18px] font-bold'
                         textBtn={card?.fields?.textBtn1 as string}
                         idModal={typeof card?.fields?.modal === 'object' && card?.fields?.modal !== null && 'sys' in card.fields.modal ? (card.fields.modal as { sys: { id: string } }).sys.id : ''}
-                        modalContentClassName="h-full"
+                        modalContentClassName="xl:h-auto h-full"
                         hrColor={card?.fields?.colorHr as ColorOption}
                     />
                 ) : (

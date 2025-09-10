@@ -18,8 +18,23 @@
   font-style: italic;
 }
 
-.embeedded-entry-inline{
+
+.embedded-entry-inline:not(.embedded-inline-vertical){
     display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.embedded-inline-vertical{
+    display: inline-flex;
+    gap: 20px;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+    @media screen and (max-width: 573px) {
+    justify-content: start;
+  }
 }
 
 .rich-text-hr-triple_play {

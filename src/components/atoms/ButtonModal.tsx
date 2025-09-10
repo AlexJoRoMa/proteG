@@ -6,8 +6,19 @@ import ModalComponent from '../layouts/ModalComponent'
 import useSWR from 'swr'
 import Image from 'next/image'
 import RichTextComponent from '../molecules/RichTextComponent';
+import CarouselComponent from '../molecules/CarouselComponent';
 import { ButtonModalProps } from '@/types/ModalComponentTypes';
+import { Document } from '@contentful/rich-text-types';
 import '@/styles/Modals.css';
+import { CarouselProvider } from '@/utils/CarouselProvider';
+
+// Tipo para el contenido del modal de Contentful
+interface ModalContentEntry {
+    fields: {
+        content: Document;
+        internalName?: string;
+    };
+}
 
 
 const fetchEntry = async ([id]: [string]) => {
@@ -43,6 +54,7 @@ const ButtonModal = ({
             revalidateIfStale: false,
         }
     );
+    
 
     return (
         <>
@@ -66,11 +78,41 @@ const ButtonModal = ({
                     data && !isLoading && !error && (
                         <div className='flex h-full flex-col xl:flex-row'>                   
                             <div className='px-4 xl:px-14 py-5 w-full order-2 xl:order-0 h-auto'>
-                                <RichTextComponent 
-                                    document={data.items[0].fields.modalContent}
-                                    className="prose prose-lg"
-                                    hrColor={hrColor}
-                                />
+                                {Array.isArray(data.items[0].fields.modalContent) && data.items[0].fields.modalContent.length > 1 ? (
+                                    <CarouselProvider 
+                                        qtyCarousels={1} 
+                                        colorArrow='black' 
+                                        carouselConfigs={[{ 
+                                            options: { 
+                                                align: 'start',
+                                                duration: 20, 
+                                                dragFree: false,
+                                                skipSnaps: false
+                                            } 
+                                        }]}
+                                    >
+                                        <CarouselComponent carouselIndex={0} buttons={true} dots={true}>
+                                            {data.items[0].fields.modalContent.map((contentEntry: ModalContentEntry, index: number) => (
+                                                <RichTextComponent 
+                                                    key={index}
+                                                    document={contentEntry.fields.content as Document}
+                                                    className="prose prose-lg"
+                                                    hrColor={hrColor}
+                                                />
+                                            ))}
+                                        </CarouselComponent>
+                                    </CarouselProvider>
+                                ) : (
+                                    <RichTextComponent 
+                                        document={
+                                            Array.isArray(data.items[0].fields.modalContent) 
+                                                ? data.items[0].fields.modalContent[0].fields.content as Document
+                                                : data.items[0].fields.modalContent as Document
+                                        }
+                                        className="prose prose-lg"
+                                        hrColor={hrColor}
+                                    />
+                                )}
                             </div>
                             <div className='xl:ml-auto order-1 md:order-0'>
                                 {data.items[0].fields.imageResponsive && data.items[0].fields.sideImage && (
@@ -81,7 +123,7 @@ const ButtonModal = ({
                                       alt={data.items[0].fields.sideImage.fields.title}
                                       width={data.items[0].fields.sideImage.fields.file.details.image.width}
                                       height={data.items[0].fields.sideImage.fields.file.details.image.height}
-                                      className="h-auto xl:w-auto max-w-none max-h-none mb-0 w-full"
+                                      className="h-auto xl:w-auto max-w-none max-h-none min-w-[300px] mb-0 w-full"
                                     />
                                   </picture>
                                 )}

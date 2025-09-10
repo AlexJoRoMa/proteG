@@ -14,7 +14,7 @@
                 display:initial
              }
         }
-
+        
         .textandimagecomponent{
 
             span{
@@ -71,4 +71,66 @@
     }
 
     
+}
+
+section[role="dialog"]{
+
+    .embla__prev, .embla__next{
+        position: absolute;
+        top: 50%;
+        cursor: pointer;
+        z-index: 10;
+    }
+    
+    .embla__next{
+        right: 40px;
+    }
+
+    /* Optimización de transiciones para carrusel en modal */
+    .embla {
+        overflow: hidden;
+        position: relative;
+    }
+
+    .embla__viewport {
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .embla__container {
+        backface-visibility: hidden;
+        display: flex;
+        touch-action: pan-y pinch-zoom;
+        transition: transform 0.3s ease-out;
+        will-change: transform;
+    }
+
+    .embla__slide {
+        min-width: 0;
+        flex: 0 0 100%;
+        position: relative;
+        transform: translateZ(0);
+    }
+
+    .embla__dots {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .embla__dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.3);
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .embla__dot--selected {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
 }

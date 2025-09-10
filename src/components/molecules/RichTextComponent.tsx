@@ -41,34 +41,107 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
     },
     renderNode: {
       [BLOCKS.PARAGRAPH]: (node: Block | Inline, children: React.ReactNode) => {
-        // Si TODOS los hijos son embedded-entry-inline (por className), NO renderices <p>
-
-
-        // Aplanar fragments y filtrar nulos, con tipado seguro
-        type InlineElement = React.ReactElement<{ className?: string; children?: React.ReactNode }>;
-        function flatten(children: React.ReactNode): InlineElement[] {
-          const out: InlineElement[] = [];
-          React.Children.forEach(children, child => {
-            if (!child) return;
-            if (React.isValidElement(child) && child.type === React.Fragment) {
-              out.push(...flatten((child as InlineElement).props.children));
-            } else if (React.isValidElement(child)) {
-              out.push(child as InlineElement);
+        // Función para aplanar fragments y obtener elementos reales
+        const getAllChildren = (children: React.ReactNode): React.ReactNode[] => {
+          const result: React.ReactNode[] = [];
+          
+          React.Children.forEach(children, (child) => {
+            if (React.isValidElement(child)) {
+              if (child.type === React.Fragment) {
+                // Si es un Fragment, procesamos sus children recursivamente
+                const fragmentProps = child.props as { children?: React.ReactNode };
+                result.push(...getAllChildren(fragmentProps.children));
+              } else {
+                result.push(child);
+              }
+            } else if (child !== null && child !== undefined && child !== '') {
+              // Texto u otros elementos válidos
+              result.push(child);
             }
           });
-          return out;
-        }
+          
+          return result;
+        };
 
-        const flatChildren = flatten(children);
-        const isAllEmbeddedInline = flatChildren.length > 0 && flatChildren.every(el => {
-          return (
-            typeof el.props.className === 'string' &&
-            el.props.className.includes('embeedded-entry-inline')
-          );
+        const allChildren = getAllChildren(children);
+        
+        // Verificar si TODOS los elementos válidos son embedded-entry-inline
+        const nonEmptyChildren = allChildren.filter(child => {
+          // Filtrar strings vacíos y elementos nulos
+          if (typeof child === 'string') {
+            return child.trim() !== '';
+          }
+          return child !== null && child !== undefined;
         });
 
+        // Separar elementos embedded-entry-inline del resto
+        const embeddedInlineElements: React.ReactNode[] = [];
+        const otherElements: React.ReactNode[] = [];
+        let hasVerticalOrientation = false;
+
+        nonEmptyChildren.forEach(child => {
+          if (React.isValidElement(child)) {
+            const childProps = child.props as { className?: string; 'data-orientation'?: string };
+            const className = childProps?.className;
+            if (typeof className === 'string' && className.includes('embedded-entry-inline')) {
+              embeddedInlineElements.push(child);
+              
+              // Verificar si tiene orientación vertical (verifica tanto en props como en data-orientation)
+              if (childProps?.['data-orientation'] === 'vertical') {
+                hasVerticalOrientation = true;
+              }
+              
+              try {
+                const componentProps = child.props as { children?: { props?: { orientation?: string } } };
+                if (componentProps?.children?.props?.orientation === 'vertical') {
+                  hasVerticalOrientation = true;
+                }
+              } catch {
+                // Si no podemos acceder a la data, continuar
+              }
+            } else {
+              otherElements.push(child);
+            }
+          } else {
+            otherElements.push(child);
+          }
+        });
+
+        const isAllEmbeddedInline = nonEmptyChildren.length > 0 && embeddedInlineElements.length === nonEmptyChildren.length;
+        const hasManyEmbeddedInline = embeddedInlineElements.length >= 2;
+        const hasMixedContent = otherElements.length > 0 && embeddedInlineElements.length > 0;
+
+        console.log('Paragraph analysis:', {
+          allChildren: allChildren.length,
+          nonEmptyChildren: nonEmptyChildren.length,
+          embeddedInlineCount: embeddedInlineElements.length,
+          otherElementsCount: otherElements.length,
+          isAllEmbeddedInline,
+          hasManyEmbeddedInline,
+          hasMixedContent,
+          hasVerticalOrientation
+        });
+
+        // Generar clase CSS con orientación vertical si es necesario
+        const embeddedGroupClass = hasVerticalOrientation 
+          ? "embedded-inline-group embedded-inline-vertical" 
+          : "embedded-inline-group";
+
+        // Si todos son embedded-entry-inline, usar embedded-inline-group
         if (isAllEmbeddedInline) {
-          return <div className="embedded-inline-group">{flatChildren}</div>;
+          return <div className={embeddedGroupClass}>{children}</div>;
+        }
+
+        // Si hay contenido mixto con múltiples embedded-entry-inline, separar
+        if (hasMixedContent && hasManyEmbeddedInline) {
+          return (
+            <div className='contents'>
+              {otherElements.length > 0 && (
+                <p className="text-base w-full">{otherElements}</p>
+              )}
+              <div className={embeddedGroupClass}>{embeddedInlineElements}</div>
+            </div>
+          );
         }
 
         // Si no, renderiza el <p> normalmente
@@ -191,15 +264,21 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
 
       ["embedded-entry-inline"]: (node: Block | Inline) => {
 
+        console.log('Rendering embedded-entry-inline:', node);
+
             const resourceNode = node as unknown as ContentfulEntryNode;
             const entry = resourceNode.data.target;
             const contentType = entry?.sys.contentType.sys.id;
             const Component = typeof entry?.fields?.type === 'string' && entry?.fields?.type in componentMap ? componentMap[entry?.fields?.type as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
 
+            // Agregar atributo data para orientación si existe
+            const orientation = entry?.fields?.orientation;
+            const dataAttributes = orientation ? { 'data-orientation': orientation } : {};
+
             if (Component) {
 
               return(  
-                <div className='embeedded-entry-inline'>
+                <div className='embedded-entry-inline' {...dataAttributes}>
                     <Component {...entry.fields}
                     data-embedded-entry-inline />
                 </div>
@@ -209,7 +288,7 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
 
 
             return (
-            <div className="bg-gray-100 p-4 rounded">
+            <div className="bg-gray-100 p-4 rounded embedded-entry-inline">
                 <p>Embedded resource of type {contentType} is not supported.</p>
             </div>
             );
