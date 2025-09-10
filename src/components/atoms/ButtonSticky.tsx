@@ -2,17 +2,19 @@ import React from 'react'
 import ButtonModal from './ButtonModal';
 import { getAllCopy, getMicroCopy } from '@/services/contentful/components';
 import { ContactIcon } from './ModalIcons';
-import TeLlamamosModalComponent from '../layouts/TeLlamamosModalComponent';
+import TeLlamamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 import { ResourceType } from '@/types/ButtonTypes';
+import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 
 const ButtonFixed = async() => {
 
-  // Obtener el texto del boton desde Contentful
+
   try {
+    // Obtener datos desde Contentful
     const textBtn = await getMicroCopy('btn.sticky.text');
     const modalTexts = await getAllCopy('stickyModal');
 
-    // Crear un helper para encontrar valores por key
+    // Encontrar valores por key
     const getValueByKey = (key: string) => {
 
       const item = modalTexts[0].fields?.resources?.find((item: ResourceType) => item.fields?.key === key);
@@ -68,6 +70,7 @@ const ButtonFixed = async() => {
             idModal=''
             closeButtonStroke='black'
             modalContentClassName='2xl:w-[62vw] 2xl:h-[52vh] xl:w-[90vw] xl:h-[52vh] h-[98vh]'
+            backdropColor='black-0/80'
             textBtn={
               <>
                 {textBtn?.[0]?.fields?.value || '¿Te ayudamos?'}
@@ -80,7 +83,7 @@ const ButtonFixed = async() => {
              [background-origin:padding-box,border-box]
              [background-clip:padding-box,border-box]'
           >
-              <TeLlamamosModalComponent modalData={modalData} />
+              <TeAyudamosModalComponent modalData={modalData} />
           </ButtonModal>
       </>
     );

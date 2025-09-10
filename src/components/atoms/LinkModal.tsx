@@ -1,12 +1,12 @@
 "use client";
 
-import { Button, useDisclosure } from '@heroui/react'
+import { Link, useDisclosure } from '@heroui/react'
 import React from 'react'
 import ModalComponent from '../layouts/ModalComponent'
 import useSWR from 'swr'
 import Image from 'next/image'
 import RichTextComponent from '../molecules/RichTextComponent';
-import { ButtonModalProps } from '@/types/ModalComponentTypes';
+import { LinkModalProps } from '@/types/ModalComponentTypes';
 
 
 const fetchEntry = async ([id]: [string]) => {
@@ -15,16 +15,15 @@ const fetchEntry = async ([id]: [string]) => {
   return res.json();
 };
 
-const ButtonModal = ({
-    textBtn,
-    classStyles,
+const LinkModal = ({
+    text,
+    classNames,
     idModal,
     children,
     closeButtonStroke,
     modalContentClassName,
-    startContent,
-    backdropColor
-}: ButtonModalProps) => {
+    backdropColor,
+}: LinkModalProps) => {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
     const shouldFetch = isOpen && !!idModal;
@@ -44,9 +43,9 @@ const ButtonModal = ({
 
     return (
         <>
-            <Button className={classStyles} onPress={onOpen} isLoading={isLoading && !data && !error} startContent={startContent}>
-                {textBtn}
-            </Button>
+            <Link onPress={onOpen} className={`cursor-pointer underline text-black ${classNames}`}>
+                {text}
+            </Link>
             <ModalComponent isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} closeButtonStroke={closeButtonStroke} modalContentClassName={modalContentClassName} backdropColor={backdropColor}>
                 {isLoading && !children && <div className="py-8 text-center">Cargando...</div>}
                 {error && !children && (
@@ -91,4 +90,4 @@ const ButtonModal = ({
     )
 }
 
-export default ButtonModal
+export default LinkModal

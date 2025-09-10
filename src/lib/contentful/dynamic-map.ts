@@ -1,5 +1,6 @@
 import BenefitsComponent from "@/components/organisms/benefitsComponent";
 import ChannelPromoBannerComponent from "@/components/organisms/ChannelPromoBannerComponent";
+import Configurador from "@/components/organisms/configurador";
 import PagesTabsTile from "@/components/organisms/pagesTabsTile";
 import CarouselCardComponent from "@/components/organisms/CarouselCardComponent";
 import GenericProductCard from "@/components/molecules/GenericProductComponent";
@@ -11,10 +12,12 @@ import TVBeneficiosProductos from '@/components/organisms/tv-beneficios-producto
 import BloqueSeparador from '@/components/organisms/bloque-separador';
 import ConIzziTv from '@/components/organisms/tv-top-banner';
 import IzziGoBloque from '@/components/organisms/tv-izzi-go';
+import TVCanalesSegmento from '@/components/organisms/tv-canales-segmentos';
 
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
   tabs: PagesTabsTile,
+  multyStepConfigurador: Configurador,
   homeCarousel: CarouselCardComponent,
   benefits: BenefitsComponent,
   carouselCards: CarouselCardComponent,
@@ -26,5 +29,6 @@ export const componentMap = {
   tvBloqueSeparador: BloqueSeparador,
   modelIzziTV: ConIzziTv,
   IzziGoBloque: IzziGoBloque,
+  tabCanalesTV: TVCanalesSegmento,
   cardsContratacionRapida: ContratacionRapida
 };
