@@ -39,8 +39,6 @@ const ButtonModal = ({
     hrColor
 }: ButtonModalProps) => {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-    //const carouselRef = useRef<HTMLDivElement>(null);
-    //usePreventCarouselScroll(carouselRef as React.RefObject<HTMLElement>);
 
     const shouldFetch = isOpen && !!idModal;
 
@@ -57,17 +55,6 @@ const ButtonModal = ({
         }
     );
     
-    // Debug específico para los campos del modal
-    if (data && data.items && data.items[0] && data.items[0].fields) {
-        console.log("Modal fields debug:", {
-            modalContent: data.items[0].fields.modalContent,
-            sideImage2: data.items[0].fields.sideImage2,
-            imageResponsive2: data.items[0].fields.imageResponsive2,
-            sideImage: data.items[0].fields.sideImage,
-            imageResponsive: data.items[0].fields.imageResponsive
-        });
-    }
-
     return (
         <>
             <Button className={classStyles} onPress={onOpen} isLoading={isLoading && !data && !error} startContent={startContent}>
@@ -115,60 +102,40 @@ const ButtonModal = ({
                                                     </div>
                                                    
                                                     {/* Incluir imágenes debajo del contenido si existen */}
-                                                    {((data.items[0].fields.sideImage2 && data.items[0].fields.imageResponsive2) || 
-                                                      (data.items[0].fields.sideImage && data.items[0].fields.imageResponsive)) && (
+                                                    {data.items[0].fields.sideImage && data.items[0].fields.imageResponsive && (
                                                         <div className="order-1 xl:order-2 xl:pr-[104px]">
-                                                            {/* Priorizar sideImage2 e imageResponsive2 */}
-                                                            {data.items[0].fields.sideImage2 && data.items[0].fields.imageResponsive2 ? (
-                                                                <picture>
-                                                                    <source media="(max-width: 1023px)" srcSet={`https:${
-                                                                        Array.isArray(data.items[0].fields.imageResponsive2) 
-                                                                            ? data.items[0].fields.imageResponsive2[index]?.fields.file.url || data.items[0].fields.imageResponsive2[0].fields.file.url
-                                                                            : data.items[0].fields.imageResponsive2.fields.file.url
-                                                                    }`} />
-                                                                    <Image
-                                                                        src={`https:${
-                                                                            Array.isArray(data.items[0].fields.sideImage2) 
-                                                                                ? data.items[0].fields.sideImage2[index]?.fields.file.url || data.items[0].fields.sideImage2[0].fields.file.url
-                                                                                : data.items[0].fields.sideImage2.fields.file.url
-                                                                        }`}
-                                                                        alt={
-                                                                            Array.isArray(data.items[0].fields.sideImage2) 
-                                                                                ? data.items[0].fields.sideImage2[index]?.fields.title || data.items[0].fields.sideImage2[0].fields.title
-                                                                                : data.items[0].fields.sideImage2.fields.title
-                                                                        }
-                                                                        width={
-                                                                            Array.isArray(data.items[0].fields.sideImage2) 
-                                                                                ? data.items[0].fields.sideImage2[index]?.fields.file.details.image.width || data.items[0].fields.sideImage2[0].fields.file.details.image.width
-                                                                                : data.items[0].fields.sideImage2.fields.file.details.image.width
-                                                                        }
-                                                                        height={
-                                                                            Array.isArray(data.items[0].fields.sideImage2) 
-                                                                                ? data.items[0].fields.sideImage2[index]?.fields.file.details.image.height || data.items[0].fields.sideImage2[0].fields.file.details.image.height
-                                                                                : data.items[0].fields.sideImage2.fields.file.details.image.height
-                                                                        }
-                                                                        className="h-auto xl:w-auto max-w-none max-h-none min-w-[300px] mb-0 w-full"
-                                                                        unoptimized
-                                                                        sizes="100vw"
-                                                                    />
-                                                                </picture>
-                                                            ) : (
-                                                                /* Fallback a los campos originales */
-                                                                data.items[0].fields.sideImage && data.items[0].fields.imageResponsive && (
-                                                                    <picture>
-                                                                        <source media="(max-width: 1023px)" srcSet={`https:${data.items[0].fields.imageResponsive.fields.file.url}`} />
-                                                                        <Image
-                                                                            src={`https:${data.items[0].fields.sideImage.fields.file.url}`}
-                                                                            alt={data.items[0].fields.sideImage.fields.title}
-                                                                            width={data.items[0].fields.sideImage.fields.file.details.image.width}
-                                                                            height={data.items[0].fields.sideImage.fields.file.details.image.height}
-                                                                            className="h-auto xl:w-auto max-w-none max-h-none min-w-[300px] mb-0 w-full"
-                                                                            unoptimized
-                                                                            sizes="100vw"
-                                                                        />
-                                                                    </picture>
-                                                                )
-                                                            )}
+                                                            <picture>
+                                                                <source media="(max-width: 1023px)" srcSet={`https:${
+                                                                    Array.isArray(data.items[0].fields.imageResponsive) 
+                                                                        ? data.items[0].fields.imageResponsive[index]?.fields.file.url || data.items[0].fields.imageResponsive[0].fields.file.url
+                                                                        : data.items[0].fields.imageResponsive.fields.file.url
+                                                                }`} />
+                                                                <Image
+                                                                    src={`https:${
+                                                                        Array.isArray(data.items[0].fields.sideImage) 
+                                                                            ? data.items[0].fields.sideImage[index]?.fields.file.url || data.items[0].fields.sideImage[0].fields.file.url
+                                                                            : data.items[0].fields.sideImage.fields.file.url
+                                                                    }`}
+                                                                    alt={
+                                                                        Array.isArray(data.items[0].fields.sideImage) 
+                                                                            ? data.items[0].fields.sideImage[index]?.fields.title || data.items[0].fields.sideImage[0].fields.title
+                                                                            : data.items[0].fields.sideImage.fields.title
+                                                                    }
+                                                                    width={
+                                                                        Array.isArray(data.items[0].fields.sideImage) 
+                                                                            ? data.items[0].fields.sideImage[index]?.fields.file.details.image.width || data.items[0].fields.sideImage[0].fields.file.details.image.width
+                                                                            : data.items[0].fields.sideImage.fields.file.details.image.width
+                                                                    }
+                                                                    height={
+                                                                        Array.isArray(data.items[0].fields.sideImage) 
+                                                                            ? data.items[0].fields.sideImage[index]?.fields.file.details.image.height || data.items[0].fields.sideImage[0].fields.file.details.image.height
+                                                                            : data.items[0].fields.sideImage.fields.file.details.image.height
+                                                                    }
+                                                                    className="h-auto xl:w-auto max-w-none max-h-none min-w-[300px] mb-0 w-full"
+                                                                    unoptimized
+                                                                    sizes="100vw"
+                                                                />
+                                                            </picture>
                                                         </div>
                                                     )}
                                                 </div>
@@ -190,60 +157,40 @@ const ButtonModal = ({
                                         </div>
                                         
                                         {/* Incluir imágenes debajo del contenido si existen */}
-                                        {((data.items[0].fields.sideImage2 && data.items[0].fields.imageResponsive2) || 
-                                          (data.items[0].fields.sideImage && data.items[0].fields.imageResponsive)) && (
+                                        {data.items[0].fields.sideImage && data.items[0].fields.imageResponsive && (
                                             <div className="order-1 xl:order-2">
-                                                {/* Priorizar sideImage2 e imageResponsive2 */}
-                                                {data.items[0].fields.sideImage2 && data.items[0].fields.imageResponsive2 ? (
-                                                    <picture>
-                                                        <source media="(max-width: 1023px)" srcSet={`https:${
-                                                            Array.isArray(data.items[0].fields.imageResponsive2) 
-                                                                ? data.items[0].fields.imageResponsive2[0].fields.file.url
-                                                                : data.items[0].fields.imageResponsive2.fields.file.url
-                                                        }`} />
-                                                        <Image
-                                                            src={`https:${
-                                                                Array.isArray(data.items[0].fields.sideImage2) 
-                                                                    ? data.items[0].fields.sideImage2[0].fields.file.url
-                                                                    : data.items[0].fields.sideImage2.fields.file.url
-                                                            }`}
-                                                            alt={
-                                                                Array.isArray(data.items[0].fields.sideImage2) 
-                                                                    ? data.items[0].fields.sideImage2[0].fields.title
-                                                                    : data.items[0].fields.sideImage2.fields.title
-                                                            }
-                                                            width={
-                                                                Array.isArray(data.items[0].fields.sideImage2) 
-                                                                    ? data.items[0].fields.sideImage2[0].fields.file.details.image.width
-                                                                    : data.items[0].fields.sideImage2.fields.file.details.image.width
-                                                            }
-                                                            height={
-                                                                Array.isArray(data.items[0].fields.sideImage2) 
-                                                                    ? data.items[0].fields.sideImage2[0].fields.file.details.image.height
-                                                                    : data.items[0].fields.sideImage2.fields.file.details.image.height
-                                                            }
-                                                            className="h-auto xl:w-auto max-w-none max-h-none min-w-[300px] mb-0 w-full"
-                                                            unoptimized
-                                                            sizes="100vw"
-                                                        />
-                                                    </picture>
-                                                ) : (
-                                                    /* Fallback a los campos originales */
-                                                    data.items[0].fields.sideImage && data.items[0].fields.imageResponsive && (
-                                                        <picture>
-                                                            <source media="(max-width: 1023px)" srcSet={`https:${data.items[0].fields.imageResponsive.fields.file.url}`} />
-                                                            <Image
-                                                                src={`https:${data.items[0].fields.sideImage.fields.file.url}`}
-                                                                alt={data.items[0].fields.sideImage.fields.title}
-                                                                width={data.items[0].fields.sideImage.fields.file.details.image.width}
-                                                                height={data.items[0].fields.sideImage.fields.file.details.image.height}
-                                                                className="h-auto xl:w-auto max-w-none max-h-none min-w-[300px] mb-0 w-full"
-                                                                unoptimized
-                                                                sizes="100vw"
-                                                            />
-                                                        </picture>
-                                                    )
-                                                )}
+                                                <picture>
+                                                    <source media="(max-width: 1023px)" srcSet={`https:${
+                                                        Array.isArray(data.items[0].fields.imageResponsive) 
+                                                            ? data.items[0].fields.imageResponsive[0].fields.file.url
+                                                            : data.items[0].fields.imageResponsive.fields.file.url
+                                                    }`} />
+                                                    <Image
+                                                        src={`https:${
+                                                            Array.isArray(data.items[0].fields.sideImage) 
+                                                                ? data.items[0].fields.sideImage[0].fields.file.url
+                                                                : data.items[0].fields.sideImage.fields.file.url
+                                                        }`}
+                                                        alt={
+                                                            Array.isArray(data.items[0].fields.sideImage) 
+                                                                ? data.items[0].fields.sideImage[0].fields.title
+                                                                : data.items[0].fields.sideImage.fields.title
+                                                        }
+                                                        width={
+                                                            Array.isArray(data.items[0].fields.sideImage) 
+                                                                ? data.items[0].fields.sideImage[0].fields.file.details.image.width
+                                                                : data.items[0].fields.sideImage.fields.file.details.image.width
+                                                        }
+                                                        height={
+                                                            Array.isArray(data.items[0].fields.sideImage) 
+                                                                ? data.items[0].fields.sideImage[0].fields.file.details.image.height
+                                                                : data.items[0].fields.sideImage.fields.file.details.image.height
+                                                        }
+                                                        className="h-auto xl:w-auto max-w-none max-h-none min-w-[300px] mb-0 w-full"
+                                                        unoptimized
+                                                        sizes="100vw"
+                                                    />
+                                                </picture>
                                             </div>
                                         )}
                                     </div>
