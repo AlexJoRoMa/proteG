@@ -48,14 +48,14 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
           React.Children.forEach(children, (child) => {
             if (React.isValidElement(child)) {
               if (child.type === React.Fragment) {
-                // Si es un Fragment, procesamos sus children recursivamente
+
                 const fragmentProps = child.props as { children?: React.ReactNode };
                 result.push(...getAllChildren(fragmentProps.children));
               } else {
                 result.push(child);
               }
             } else if (child !== null && child !== undefined && child !== '') {
-              // Texto u otros elementos válidos
+
               result.push(child);
             }
           });
@@ -67,14 +67,14 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
         
         // Verificar si TODOS los elementos válidos son embedded-entry-inline
         const nonEmptyChildren = allChildren.filter(child => {
-          // Filtrar strings vacíos y elementos nulos
+
           if (typeof child === 'string') {
             return child.trim() !== '';
           }
           return child !== null && child !== undefined;
         });
 
-        // Separar elementos embedded-entry-inline del resto
+
         const embeddedInlineElements: React.ReactNode[] = [];
         const otherElements: React.ReactNode[] = [];
         let hasVerticalOrientation = false;
@@ -97,7 +97,7 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
                   hasVerticalOrientation = true;
                 }
               } catch {
-                // Si no podemos acceder a la data, continuar
+
               }
             } else {
               otherElements.push(child);
@@ -110,17 +110,6 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
         const isAllEmbeddedInline = nonEmptyChildren.length > 0 && embeddedInlineElements.length === nonEmptyChildren.length;
         const hasManyEmbeddedInline = embeddedInlineElements.length >= 2;
         const hasMixedContent = otherElements.length > 0 && embeddedInlineElements.length > 0;
-
-        console.log('Paragraph analysis:', {
-          allChildren: allChildren.length,
-          nonEmptyChildren: nonEmptyChildren.length,
-          embeddedInlineCount: embeddedInlineElements.length,
-          otherElementsCount: otherElements.length,
-          isAllEmbeddedInline,
-          hasManyEmbeddedInline,
-          hasMixedContent,
-          hasVerticalOrientation
-        });
 
         // Generar clase CSS con orientación vertical si es necesario
         const embeddedGroupClass = hasVerticalOrientation 
@@ -144,7 +133,6 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
           );
         }
 
-        // Si no, renderiza el <p> normalmente
         return <p className="text-base w-full">{children}</p>;
       },
       [BLOCKS.HEADING_1]: (_node: Block | Inline, children: React.ReactNode) => (
