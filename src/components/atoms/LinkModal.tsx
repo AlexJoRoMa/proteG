@@ -6,7 +6,11 @@ import ModalComponent from '../layouts/ModalComponent'
 import useSWR from 'swr'
 import Image from 'next/image'
 import RichTextComponent from '../molecules/RichTextComponent';
-import { LinkModalProps } from '@/types/ModalComponentTypes';
+import CarouselComponent from '../molecules/CarouselComponent';
+import { LinkModalProps, ModalContentEntry } from '@/types/ModalComponentTypes';
+import { Document } from '@contentful/rich-text-types';
+import '@/styles/Modals.css';
+import { CarouselProvider } from '@/utils/CarouselProvider';
 
 
 const fetchEntry = async ([id]: [string]) => {
@@ -63,25 +67,124 @@ const LinkModal = ({
                 ) : (
                     data && !isLoading && !error && (
                         <div className='flex h-full flex-col xl:flex-row'>                   
-                            <div className='px-4 xl:px-14 py-5 w-full order-2 xl:order-0 h-full'>
-                                <RichTextComponent 
-                                    document={data.items[0].fields.modalContent}
-                                    className="prose prose-lg"
-                                    hrColor={hrColor}
-                                />
-                            </div>
-                            <div className='xl:ml-auto order-1 md:order-0'>
-                                {data.items[0].fields.imageResponsive && data.items[0].fields.sideImage && (
-                                  <picture>
-                                    <source media="(max-width: 1023px)" srcSet={`https:${data.items[0].fields.imageResponsive.fields.file.url}`} />
-                                    <Image
-                                      src={`https:${data.items[0].fields.sideImage.fields.file.url}`}
-                                      alt={data.items[0].fields.sideImage.fields.title}
-                                      width={384}
-                                      height={937}
-                                      className="h-auto max-w-none mb-0 w-full xl:w-auto xl:h-full object-fit "
-                                    />
-                                  </picture>
+                            <div className='xl:contents'>
+                                {Array.isArray(data.items[0].fields.modalContent) && data.items[0].fields.modalContent.length > 1 ? (
+                                    <CarouselProvider 
+                                        qtyCarousels={1} 
+                                        colorArrow='black' 
+                                        carouselConfigs={[{ 
+                                            options: { 
+                                                align: 'start',
+                                                duration: 20, 
+                                                dragFree: false,
+                                                skipSnaps: false
+                                            } 
+                                        }]}
+                                    >
+                                        <CarouselComponent carouselIndex={0} buttons={true} dots={true}>
+                                            {data.items[0].fields.modalContent.map((contentEntry: ModalContentEntry, index: number) => (
+                                                <div className='flex flex-col xl:flex-row' key={index}>
+                                                    <div className='px-4 xl:pl-[104px] py-5 w-full order-2 xl:order-0 h-auto'>
+                                                         <RichTextComponent 
+                                                        document={contentEntry.fields.content as unknown as Document}
+                                                        className="prose prose-lg"
+                                                        hrColor={hrColor}
+                                                    />
+                                                    </div>
+                                                   
+                                                    {/* Incluir imágenes debajo del contenido si existen */}
+                                                    {data.items[0].fields.sideImage && data.items[0].fields.imageResponsive && (
+                                                        <div className="order-1 xl:order-2 xl:pr-[104px]">
+                                                            <picture>
+                                                                <source media="(max-width: 1023px)" srcSet={`https:${
+                                                                    Array.isArray(data.items[0].fields.imageResponsive) 
+                                                                        ? data.items[0].fields.imageResponsive[index]?.fields.file.url || data.items[0].fields.imageResponsive[0].fields.file.url
+                                                                        : data.items[0].fields.imageResponsive.fields.file.url
+                                                                }`} />
+                                                                <Image
+                                                                    src={`https:${
+                                                                        Array.isArray(data.items[0].fields.sideImage) 
+                                                                            ? data.items[0].fields.sideImage[index]?.fields.file.url || data.items[0].fields.sideImage[0].fields.file.url
+                                                                            : data.items[0].fields.sideImage.fields.file.url
+                                                                    }`}
+                                                                    alt={
+                                                                        Array.isArray(data.items[0].fields.sideImage) 
+                                                                            ? data.items[0].fields.sideImage[index]?.fields.title || data.items[0].fields.sideImage[0].fields.title
+                                                                            : data.items[0].fields.sideImage.fields.title
+                                                                    }
+                                                                    width={
+                                                                        Array.isArray(data.items[0].fields.sideImage) 
+                                                                            ? data.items[0].fields.sideImage[index]?.fields.file.details.image.width || data.items[0].fields.sideImage[0].fields.file.details.image.width
+                                                                            : data.items[0].fields.sideImage.fields.file.details.image.width
+                                                                    }
+                                                                    height={
+                                                                        Array.isArray(data.items[0].fields.sideImage) 
+                                                                            ? data.items[0].fields.sideImage[index]?.fields.file.details.image.height || data.items[0].fields.sideImage[0].fields.file.details.image.height
+                                                                            : data.items[0].fields.sideImage.fields.file.details.image.height
+                                                                    }
+                                                                    className="h-auto xl:w-auto max-w-none max-h-none min-w-[300px] mb-0 w-full"
+                                                                    unoptimized
+                                                                    sizes="100vw"
+                                                                />
+                                                            </picture>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </CarouselComponent>
+                                    </CarouselProvider>
+                                ) : (
+                                    <div className='flex flex-col xl:flex-row w-full'>
+                                        <div className='px-4 xl:mx-14 py-5 w-full order-2 xl:order-0 h-auto'>
+                                            <RichTextComponent 
+                                            document={
+                                                Array.isArray(data.items[0].fields.modalContent) 
+                                                    ? data.items[0].fields.modalContent[0].fields.content as Document
+                                                    : data.items[0].fields.modalContent as Document
+                                            }
+                                            className="prose prose-lg"
+                                            hrColor={hrColor}
+                                        />
+                                        </div>
+                                        
+                                        {/* Incluir imágenes debajo del contenido si existen */}
+                                        {data.items[0].fields.sideImage && data.items[0].fields.imageResponsive && (
+                                            <div className="order-1 xl:order-2">
+                                                <picture>
+                                                    <source media="(max-width: 1023px)" srcSet={`https:${
+                                                        Array.isArray(data.items[0].fields.imageResponsive) 
+                                                            ? data.items[0].fields.imageResponsive[0].fields.file.url
+                                                            : data.items[0].fields.imageResponsive.fields.file.url
+                                                    }`} />
+                                                    <Image
+                                                        src={`https:${
+                                                            Array.isArray(data.items[0].fields.sideImage) 
+                                                                ? data.items[0].fields.sideImage[0].fields.file.url
+                                                                : data.items[0].fields.sideImage.fields.file.url
+                                                        }`}
+                                                        alt={
+                                                            Array.isArray(data.items[0].fields.sideImage) 
+                                                                ? data.items[0].fields.sideImage[0].fields.title
+                                                                : data.items[0].fields.sideImage.fields.title
+                                                        }
+                                                        width={
+                                                            Array.isArray(data.items[0].fields.sideImage) 
+                                                                ? data.items[0].fields.sideImage[0].fields.file.details.image.width
+                                                                : data.items[0].fields.sideImage.fields.file.details.image.width
+                                                        }
+                                                        height={
+                                                            Array.isArray(data.items[0].fields.sideImage) 
+                                                                ? data.items[0].fields.sideImage[0].fields.file.details.image.height
+                                                                : data.items[0].fields.sideImage.fields.file.details.image.height
+                                                        }
+                                                        className="h-auto xl:w-auto max-w-none max-h-none min-w-[300px] mb-0 w-full"
+                                                        unoptimized
+                                                        sizes="100vw"
+                                                    />
+                                                </picture>
+                                            </div>
+                                        )}
+                                    </div>
                                 )}
                             </div>
                         </div>
