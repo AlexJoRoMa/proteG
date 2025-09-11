@@ -7,18 +7,12 @@ import useSWR from 'swr'
 import Image from 'next/image'
 import RichTextComponent from '../molecules/RichTextComponent';
 import CarouselComponent from '../molecules/CarouselComponent';
-import { ButtonModalProps } from '@/types/ModalComponentTypes';
+import { ButtonModalProps, ModalContentEntry } from '@/types/ModalComponentTypes';
 import { Document } from '@contentful/rich-text-types';
 import '@/styles/Modals.css';
 import { CarouselProvider } from '@/utils/CarouselProvider';
 
 // Tipo para el contenido del modal de Contentful
-interface ModalContentEntry {
-    fields: {
-        content: Document;
-        internalName?: string;
-    };
-}
 
 
 const fetchEntry = async ([id]: [string]) => {
@@ -95,7 +89,7 @@ const ButtonModal = ({
                                                 <div className='flex flex-col xl:flex-row' key={index}>
                                                     <div className='px-4 xl:pl-[104px] py-5 w-full order-2 xl:order-0 h-auto'>
                                                          <RichTextComponent 
-                                                        document={contentEntry.fields.content as Document}
+                                                        document={contentEntry.fields.content as unknown as Document}
                                                         className="prose prose-lg"
                                                         hrColor={hrColor}
                                                     />

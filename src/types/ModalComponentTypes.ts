@@ -124,3 +124,10 @@ export interface TeLlamamosFormModalProps {
     successButtonText?: string;
   };
 }
+
+export interface ModalContentEntry {
+    fields: {
+        content: Document;
+        internalName?: string;
+    };
+}
