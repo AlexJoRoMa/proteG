@@ -66,7 +66,7 @@ export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
                                                     textBtn={card.fields.ctaText}
                                                     classStyles="py-[14px] px-[16px] rounded-md w-full h-auto border-1 bg-transparent border-black-0 text-black-0 font-semibold leading-[24px] text-lg"
                                                     idModal={typeof card.fields?.modal === 'object' && card.fields?.modal !== null && 'sys' in card.fields.modal ? card.fields.modal.sys.id : ''}
-                                                    modalContentClassName="h-full benefits-modal"
+                                                    modalContentClassName="h-full xl:h-[70vh]  benefits-modal"
                                                     closeButtonStroke="black"
                                                 />
                                             ) : (

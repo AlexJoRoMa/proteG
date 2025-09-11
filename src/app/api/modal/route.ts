@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     const entry = await contentfulClient.getEntries({
        content_type: 'modalComponentModel',
       'sys.id': id,
-       select: ['fields.sideImage', 'fields.modalContent', 'fields.imageResponsive'],
+       select: ['fields.sideImage', 'fields.modalContent', 'fields.imageResponsive', 'fields.sideImage2', 'fields.imageResponsive2'],
        include: 2 // Incluir referencias hasta 2 niveles de profundidad
     });
 

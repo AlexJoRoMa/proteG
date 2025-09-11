@@ -11,7 +11,7 @@ const ButtonModalComponent = ({url, text, external}: ButtonModalComponentProps) 
         url && text && (
           <div className="flex justify-center xl:justify-start w-full buttonmodalcomponent">
               <Button href={url}
-                    className='bg-black w-full max-w-[230px] xl:max-w-[290px] xl:mx-0 h-[48px] hover:border-black hover:border hover:bg-transparent hover:text-black text-white rounded-md text-[18px] font-bold'
+                    className='bg-black w-full max-w-[230px] mb-2.5 xl:max-w-[290px] xl:mx-0 h-[48px] hover:border-black hover:border hover:bg-transparent hover:text-black text-white rounded-md text-[18px] font-bold'
                     as={Link}
                     target={external ? '_blank' : '_self'} // Si es externo, abre en nueva pestaña
                     rel={external ? 'noopener noreferrer' : undefined} // Añade seguridad para enlaces externos

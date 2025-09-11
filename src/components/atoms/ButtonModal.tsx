@@ -39,6 +39,8 @@ const ButtonModal = ({
     hrColor
 }: ButtonModalProps) => {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+    //const carouselRef = useRef<HTMLDivElement>(null);
+    //usePreventCarouselScroll(carouselRef as React.RefObject<HTMLElement>);
 
     const shouldFetch = isOpen && !!idModal;
 
@@ -55,6 +57,16 @@ const ButtonModal = ({
         }
     );
     
+    // Debug específico para los campos del modal
+    if (data && data.items && data.items[0] && data.items[0].fields) {
+        console.log("Modal fields debug:", {
+            modalContent: data.items[0].fields.modalContent,
+            sideImage2: data.items[0].fields.sideImage2,
+            imageResponsive2: data.items[0].fields.imageResponsive2,
+            sideImage: data.items[0].fields.sideImage,
+            imageResponsive: data.items[0].fields.imageResponsive
+        });
+    }
 
     return (
         <>
@@ -77,7 +89,7 @@ const ButtonModal = ({
                 ) : (
                     data && !isLoading && !error && (
                         <div className='flex h-full flex-col xl:flex-row'>                   
-                            <div className='px-4 xl:px-14 py-5 w-full order-2 xl:order-0 h-auto'>
+                            <div className='xl:contents'>
                                 {Array.isArray(data.items[0].fields.modalContent) && data.items[0].fields.modalContent.length > 1 ? (
                                     <CarouselProvider 
                                         qtyCarousels={1} 
@@ -93,39 +105,148 @@ const ButtonModal = ({
                                     >
                                         <CarouselComponent carouselIndex={0} buttons={true} dots={true}>
                                             {data.items[0].fields.modalContent.map((contentEntry: ModalContentEntry, index: number) => (
-                                                <RichTextComponent 
-                                                    key={index}
-                                                    document={contentEntry.fields.content as Document}
-                                                    className="prose prose-lg"
-                                                    hrColor={hrColor}
-                                                />
+                                                <div className='flex flex-col xl:flex-row' key={index}>
+                                                    <div className='px-4 xl:pl-[104px] py-5 w-full order-2 xl:order-0 h-auto'>
+                                                         <RichTextComponent 
+                                                        document={contentEntry.fields.content as Document}
+                                                        className="prose prose-lg"
+                                                        hrColor={hrColor}
+                                                    />
+                                                    </div>
+                                                   
+                                                    {/* Incluir imágenes debajo del contenido si existen */}
+                                                    {((data.items[0].fields.sideImage2 && data.items[0].fields.imageResponsive2) || 
+                                                      (data.items[0].fields.sideImage && data.items[0].fields.imageResponsive)) && (
+                                                        <div className="order-1 xl:order-2 xl:pr-[104px]">
+                                                            {/* Priorizar sideImage2 e imageResponsive2 */}
+                                                            {data.items[0].fields.sideImage2 && data.items[0].fields.imageResponsive2 ? (
+                                                                <picture>
+                                                                    <source media="(max-width: 1023px)" srcSet={`https:${
+                                                                        Array.isArray(data.items[0].fields.imageResponsive2) 
+                                                                            ? data.items[0].fields.imageResponsive2[index]?.fields.file.url || data.items[0].fields.imageResponsive2[0].fields.file.url
+                                                                            : data.items[0].fields.imageResponsive2.fields.file.url
+                                                                    }`} />
+                                                                    <Image
+                                                                        src={`https:${
+                                                                            Array.isArray(data.items[0].fields.sideImage2) 
+                                                                                ? data.items[0].fields.sideImage2[index]?.fields.file.url || data.items[0].fields.sideImage2[0].fields.file.url
+                                                                                : data.items[0].fields.sideImage2.fields.file.url
+                                                                        }`}
+                                                                        alt={
+                                                                            Array.isArray(data.items[0].fields.sideImage2) 
+                                                                                ? data.items[0].fields.sideImage2[index]?.fields.title || data.items[0].fields.sideImage2[0].fields.title
+                                                                                : data.items[0].fields.sideImage2.fields.title
+                                                                        }
+                                                                        width={
+                                                                            Array.isArray(data.items[0].fields.sideImage2) 
+                                                                                ? data.items[0].fields.sideImage2[index]?.fields.file.details.image.width || data.items[0].fields.sideImage2[0].fields.file.details.image.width
+                                                                                : data.items[0].fields.sideImage2.fields.file.details.image.width
+                                                                        }
+                                                                        height={
+                                                                            Array.isArray(data.items[0].fields.sideImage2) 
+                                                                                ? data.items[0].fields.sideImage2[index]?.fields.file.details.image.height || data.items[0].fields.sideImage2[0].fields.file.details.image.height
+                                                                                : data.items[0].fields.sideImage2.fields.file.details.image.height
+                                                                        }
+                                                                        className="h-auto xl:w-auto max-w-none max-h-none min-w-[300px] mb-0 w-full"
+                                                                        unoptimized
+                                                                        sizes="100vw"
+                                                                    />
+                                                                </picture>
+                                                            ) : (
+                                                                /* Fallback a los campos originales */
+                                                                data.items[0].fields.sideImage && data.items[0].fields.imageResponsive && (
+                                                                    <picture>
+                                                                        <source media="(max-width: 1023px)" srcSet={`https:${data.items[0].fields.imageResponsive.fields.file.url}`} />
+                                                                        <Image
+                                                                            src={`https:${data.items[0].fields.sideImage.fields.file.url}`}
+                                                                            alt={data.items[0].fields.sideImage.fields.title}
+                                                                            width={data.items[0].fields.sideImage.fields.file.details.image.width}
+                                                                            height={data.items[0].fields.sideImage.fields.file.details.image.height}
+                                                                            className="h-auto xl:w-auto max-w-none max-h-none min-w-[300px] mb-0 w-full"
+                                                                            unoptimized
+                                                                            sizes="100vw"
+                                                                        />
+                                                                    </picture>
+                                                                )
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
                                             ))}
                                         </CarouselComponent>
                                     </CarouselProvider>
                                 ) : (
-                                    <RichTextComponent 
-                                        document={
-                                            Array.isArray(data.items[0].fields.modalContent) 
-                                                ? data.items[0].fields.modalContent[0].fields.content as Document
-                                                : data.items[0].fields.modalContent as Document
-                                        }
-                                        className="prose prose-lg"
-                                        hrColor={hrColor}
-                                    />
-                                )}
-                            </div>
-                            <div className='xl:ml-auto order-1 md:order-0'>
-                                {data.items[0].fields.imageResponsive && data.items[0].fields.sideImage && (
-                                  <picture>
-                                    <source media="(max-width: 1023px)" srcSet={`https:${data.items[0].fields.imageResponsive.fields.file.url}`} />
-                                    <Image
-                                      src={`https:${data.items[0].fields.sideImage.fields.file.url}`}
-                                      alt={data.items[0].fields.sideImage.fields.title}
-                                      width={data.items[0].fields.sideImage.fields.file.details.image.width}
-                                      height={data.items[0].fields.sideImage.fields.file.details.image.height}
-                                      className="h-auto xl:w-auto max-w-none max-h-none min-w-[300px] mb-0 w-full"
-                                    />
-                                  </picture>
+                                    <div className='flex flex-col xl:flex-row w-full'>
+                                        <div className='px-4 xl:mx-14 py-5 w-full order-2 xl:order-0 h-auto'>
+                                            <RichTextComponent 
+                                            document={
+                                                Array.isArray(data.items[0].fields.modalContent) 
+                                                    ? data.items[0].fields.modalContent[0].fields.content as Document
+                                                    : data.items[0].fields.modalContent as Document
+                                            }
+                                            className="prose prose-lg"
+                                            hrColor={hrColor}
+                                        />
+                                        </div>
+                                        
+                                        {/* Incluir imágenes debajo del contenido si existen */}
+                                        {((data.items[0].fields.sideImage2 && data.items[0].fields.imageResponsive2) || 
+                                          (data.items[0].fields.sideImage && data.items[0].fields.imageResponsive)) && (
+                                            <div className="order-1 xl:order-2">
+                                                {/* Priorizar sideImage2 e imageResponsive2 */}
+                                                {data.items[0].fields.sideImage2 && data.items[0].fields.imageResponsive2 ? (
+                                                    <picture>
+                                                        <source media="(max-width: 1023px)" srcSet={`https:${
+                                                            Array.isArray(data.items[0].fields.imageResponsive2) 
+                                                                ? data.items[0].fields.imageResponsive2[0].fields.file.url
+                                                                : data.items[0].fields.imageResponsive2.fields.file.url
+                                                        }`} />
+                                                        <Image
+                                                            src={`https:${
+                                                                Array.isArray(data.items[0].fields.sideImage2) 
+                                                                    ? data.items[0].fields.sideImage2[0].fields.file.url
+                                                                    : data.items[0].fields.sideImage2.fields.file.url
+                                                            }`}
+                                                            alt={
+                                                                Array.isArray(data.items[0].fields.sideImage2) 
+                                                                    ? data.items[0].fields.sideImage2[0].fields.title
+                                                                    : data.items[0].fields.sideImage2.fields.title
+                                                            }
+                                                            width={
+                                                                Array.isArray(data.items[0].fields.sideImage2) 
+                                                                    ? data.items[0].fields.sideImage2[0].fields.file.details.image.width
+                                                                    : data.items[0].fields.sideImage2.fields.file.details.image.width
+                                                            }
+                                                            height={
+                                                                Array.isArray(data.items[0].fields.sideImage2) 
+                                                                    ? data.items[0].fields.sideImage2[0].fields.file.details.image.height
+                                                                    : data.items[0].fields.sideImage2.fields.file.details.image.height
+                                                            }
+                                                            className="h-auto xl:w-auto max-w-none max-h-none min-w-[300px] mb-0 w-full"
+                                                            unoptimized
+                                                            sizes="100vw"
+                                                        />
+                                                    </picture>
+                                                ) : (
+                                                    /* Fallback a los campos originales */
+                                                    data.items[0].fields.sideImage && data.items[0].fields.imageResponsive && (
+                                                        <picture>
+                                                            <source media="(max-width: 1023px)" srcSet={`https:${data.items[0].fields.imageResponsive.fields.file.url}`} />
+                                                            <Image
+                                                                src={`https:${data.items[0].fields.sideImage.fields.file.url}`}
+                                                                alt={data.items[0].fields.sideImage.fields.title}
+                                                                width={data.items[0].fields.sideImage.fields.file.details.image.width}
+                                                                height={data.items[0].fields.sideImage.fields.file.details.image.height}
+                                                                className="h-auto xl:w-auto max-w-none max-h-none min-w-[300px] mb-0 w-full"
+                                                                unoptimized
+                                                                sizes="100vw"
+                                                            />
+                                                        </picture>
+                                                    )
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
                                 )}
                             </div>
                         </div>

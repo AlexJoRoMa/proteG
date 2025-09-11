@@ -166,10 +166,10 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
         <h6 className="text-base ">{children}</h6>
       ),
       [BLOCKS.UL_LIST]: (_node: Block | Inline, children: React.ReactNode) => (
-        <ul className="list-disc pl-6  space-y-2">{children}</ul>
+        <ul className="list-disc pl-6">{children}</ul>
       ),
       [BLOCKS.OL_LIST]: (_node: Block | Inline, children: React.ReactNode) => (
-        <ol className="list-decimal pl-6  space-y-2">{children}</ol>
+        <ol className="list-decimal pl-6">{children}</ol>
       ),
       [BLOCKS.LIST_ITEM]: (_node: Block | Inline, children: React.ReactNode) => (
         <li className="text-base leading-relaxed">{children}</li>

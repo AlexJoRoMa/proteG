@@ -1,5 +1,11 @@
 .benefits-modal{
 
+    &:not(:has(.embla)){
+        @media screen and (min-width: 1024px){
+            height: 70vh;
+        }
+    }
+
     @media screen and (max-width: 768px) {
 
         .embedded-inline-group{
@@ -9,6 +15,7 @@
 
         .embedded-inline-group{
             display: inline-flex;
+            justify-content: start;
 
              @media screen and (max-width: 768px) {
                 display:initial
@@ -16,10 +23,9 @@
         }
         
         .textandimagecomponent{
+            max-width: 160px;
 
             span{
-                font-size: 16px;
-                width: 80%;
                 text-align: center;
 
                 @media screen and (max-width: 768px) {
@@ -34,6 +40,7 @@
             margin-top: 0px;
         }
     }
+    
     
 }
 
@@ -75,15 +82,28 @@
 
 section[role="dialog"]{
 
+    &:has(.embla) div:not(.rich-text-content, .order-2, .buttonmodalcomponent, .embedded-inline-group, .embedded-entry-inline){
+        @media screen and (min-width: 1024px) {
+           /* height: 100%;*/
+        }
+    }
+
     .embla__prev, .embla__next{
         position: absolute;
         top: 50%;
         cursor: pointer;
         z-index: 10;
+         @media screen and (max-width: 1023px) {
+            bottom: 10px;
+            top: initial;
+        } 
     }
     
     .embla__next{
-        right: 40px;
+        right: 30px;
+    }
+    .embla__prev{
+        left: 30px;
     }
 
     /* Optimización de transiciones para carrusel en modal */
@@ -110,7 +130,9 @@ section[role="dialog"]{
         flex: 0 0 100%;
         position: relative;
         transform: translateZ(0);
+        
     }
+    
 
     .embla__dots {
         display: flex;
@@ -118,6 +140,7 @@ section[role="dialog"]{
         align-items: center;
         gap: 0.5rem;
         margin-top: 1rem;
+        margin-bottom: 1rem;
     }
 
     .embla__dot {
