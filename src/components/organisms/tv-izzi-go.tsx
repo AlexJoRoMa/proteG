@@ -68,25 +68,30 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
 
     const valueColor = bgColor?.value;
     const setColorContent = valueColor === '#000000' ? 'white' : 'black';
+
+    const buttonWidth = assetsExist ? '3xl:w-[256px] lg:w-[200px] xsm:w-[256px]': 'md:w-[320px] xsm:w-[256px]';
     
     const getOrderTittle = textOrder ? 'order-first' : 'order-last';
     const getOrderBody = textOrder ? 'order-last' : 'order-first';
     const getTopMargin = textOrder ? 'lg:mt-0' : 'lg:mt-8 lg:mb-0 xsm:mb-5';
 
-    const setParentSize = sizeBlock ? ' lg:h-[466px] md:h-[850px] xsm:h-[768px]' : 'lg:h-[347px] md:h-[600px] xsm:h-[550px]';
-    const setImgMargin = sizeBlock ? 'mt-0' : 'mt-8';
+    const setParentSize = sizeBlock ? ' lg:h-[466px] md:h-full xsm:h-full justify-between' : 'lg:h-[347px] md:h-[600px] xsm:h-[600px] justify-between lg:gap-x-4 xsm:gap-x-0';
+    const setImgMargin = sizeBlock ? 'lg:mt-0 xsm:mt-[24px] pt-0' : 'pt-8';
     
+
+
     return(
         <div className={` relative ${setParentSize} `}
         style={{backgroundColor: valueColor ? valueColor : '#000000'}}>
         <div className=" md:mx-md 2xl:mx-xl h-full content-center ">
             
-            <div key={getComponentContent.sys.id} className=" lg:h-full flex lg:flex-row xsm:flex-col relative gap-4 justify-between items-center">
+            <div key={getComponentContent.sys.id} className={` ${setParentSize} lg:h-full flex lg:flex-row xsm:flex-col 
+            relative items-center`}>
                 
                 {/* logica de imagen */}
-                <div className={` ${setImgMargin} lg:w-1/2 lg:h-full flex justify-center items-center`}>
+                <div className={` ${setImgMargin} lg:w-1/2 lg:h-[99%] flex justify-center items-center `}>
                 {imgURL && (
-                    <div className=" lg:max-w-[580px] lg:max-h-[465px]  xsm:max-w-[402px] xsm:max-h-[318px] xsm:min-w-[320px] xsm:min-h-[252px] xsm:mx-5">
+                    <div className=" lg:max-h-[580px]  xsm:max-w-[402px] xsm:max-h-[318px] xsm:min-w-[320px] xsm:min-h-[252px] xsm:mx-5">
                     <Image
                     className=" object-contain"
                     alt={'Images'}
@@ -102,8 +107,8 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
 
                 {/* Llogica de textos y botones */}
                 {/* Titulo y text body */}
-                <div className=" lg:w-1/2 lg:h-[70%] pl-5">
-                <div className="flex flex-col">
+                <div className=" lg:w-1/2 lg:h-[70%] pl-5 lg:mt-15 xsm:mt-0 mb-10 items-center">
+                <div className=" flex flex-col">
                     <div className={` lg:text-left xsm:text-center ${getTopMargin} xsm:mt-8 ${getOrderTittle} text-${setColorContent} lg:text-[36px] xsm:text-[32px] md:mx-0 xsm:mx-5`}>
                         {textoTitulo && documentToReactComponents(textoTitulo)}
                     </div>
@@ -113,7 +118,8 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
                         </p>
                     </div>
                 </div>
-                    {/* Botones y las imagenes de store */}
+
+                {/* Botones y las imagenes de store */}
                     <div className=" lg:mt-5 xsm:mt-0 flex flex-row lg:justify-between xsm:justify-center lg:gap-4 xsm:gap-0">
                        
                         {/* Boton 1 que siempre estara visible  */}
@@ -121,12 +127,12 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
                         {button1Exist && (
                             <>{esModal === 'si' ? (
                                 <ButtonGhost classStyles={`border-${setColorContent} text-white bg-black text-[18px] leading-6 font-bold hover:!bg-white hover:!text-black 
-                                w-full rounded-md h-[48px] 3xl:w-[256px] lg:w-[200px] xsm:w-[256px]`}
+                                w-full rounded-md h-[48px] ${buttonWidth}`}
                                 text={textBoton1 as string}
                                 />
                             ) : (
-                                <ButtonGhost classStyles="border-white text-white bg-black text-[18px] leading-6 font-bold hover:!bg-white hover:!text-black 
-                                w-full rounded-md h-[48px] 3xl:w-[256px] lg:w-[200px] xsm:w-[256px]"
+                                <ButtonGhost classStyles={`border-${setColorContent} text-white bg-black text-[18px] leading-6 font-bold hover:!bg-white hover:!text-black 
+                                w-full rounded-md h-[48px] ${buttonWidth}`}
                                 text={textBoton1 as string} href={linkBoton1 as string}
                                 />
                             )}</>
@@ -142,9 +148,9 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
                         </div>
 
                         {/* Imagenes y texto en pantallas pequeñas se esconde */}
+                        {assetsExist && (
                         <div className=" hidden lg:block">
-                            {assetsExist && (
-                            <>
+                            
                                 <p className={`text-${setColorContent}`}>{textoDescarga}</p>
 
                                 <div className="mt-2 flex flex-row">
@@ -171,10 +177,11 @@ const IzziGoBloque = async ({id}: IzziGoBloqueID) => {
                                     </div>
                                     )}
                                 </div>
-                            </>
-                            )}
-
+                            
                         </div>
+
+                        )}
+                        
                     </div>
                 </div>
             </div>
