@@ -1,5 +1,7 @@
 'use client'
 
+import LinkModal from "@/components/atoms/LinkModal";
+import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
 import AccordionPlanesExtras from "@/components/molecules/configurador/accordionPlanesExtras";
 import { ComponentsFields, OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
@@ -39,7 +41,7 @@ export default function PlanesTv({ step }: StepProps) {
     const plansInfo = tvPlans as unknown as ComponentsFields[];
 
     useEffect(() => {
-        let internet = userAnswers.internet;
+        const internet = userAnswers.internet;
 
         if (internet && internet !== null) {
             clearSelection();
@@ -71,7 +73,7 @@ export default function PlanesTv({ step }: StepProps) {
             setTvPlans(tvOffers);
         }
 
-    }, [userAnswers.internet]);
+    }, [configuradorEntry?.offers.TRIPLE_PLAY, configuradorEntry?.offers.TV, offersCopys.tv.cards.titulo, offersCopys.tv.cards.tituloPlus, userAnswers.internet]);
 
     function clearSelection() {
         setSelectedIndex(null);
@@ -182,13 +184,22 @@ export default function PlanesTv({ step }: StepProps) {
 
                                             </div>
                                             <div className="flex flex-row gap-[16px] items-center justify-between">
-                                                <p
-                                                    className="underline pointer-events-auto"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation()
-                                                        console.log('click!!!')
-                                                    }}
-                                                >{offersCopys.tv.cards.info}</p>
+                                                <LinkModal
+                                                    classNames='underline text-black-0 text-[16px] cursor-pointer'
+                                                    text={offersCopys.internet.cards.info}
+                                                    closeButtonStroke='black'
+                                                    modalContentClassName="w-full h-auto sm:w-[80vw] xl:h-auto xl:w-[90vw] 2xl:w-[62vw] 2xl:h-auto"
+                                                    backdropColor='black-0/80'
+                                                    idModal={""}>
+                                                    <ConfiguradorCardsModalComponent
+                                                        variables={{
+                                                            canales: card.canales,
+                                                            precioPaquete: card.precioPaquete,
+                                                            precioAhorro: card.precioAhorro
+                                                        }}
+                                                        type="tv"
+                                                    />
+                                                </LinkModal>
                                                 <span
                                                     className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
                                                     aria-pressed={isSelected}

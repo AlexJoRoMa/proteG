@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     }
 
   try {
-       const microCopies = await contentfulClient.getEntries({
+        const microCopies = await contentfulClient.getEntries({
         content_type: 'resourceSet',
         'fields.name': key,
         include: 2

@@ -2,8 +2,8 @@ import { Asset } from "contentful";
 
 export type FeatureListItemComponentProps = {
   title?: string;
-    description?: string;
-    image?: Asset
+  description?: string;
+  image?: Asset
 };
 
 export type TextAndImageComponentProps = {
@@ -19,24 +19,24 @@ export type PriceComponentProps = {
 };
 
 export type ButtonModalProps = {
-    textBtn: string | React.ReactNode;
-    classStyles?: string;
-    idModal?: string;
-    children?: React.ReactNode;
-    closeButtonStroke?: string; // Color del stroke del botón de cerrar
-    modalContentClassName?: string; // Clases adicionales para el ModalContent
-    startContent?: React.ReactNode; // Contenido que se muestra al inicio del botón
-    backdropColor?: string; // Color del backdrop del modal, por defecto "black"
+  textBtn: string | React.ReactNode;
+  classStyles?: string;
+  idModal?: string;
+  children?: React.ReactNode;
+  closeButtonStroke?: string; // Color del stroke del botón de cerrar
+  modalContentClassName?: string; // Clases adicionales para el ModalContent
+  startContent?: React.ReactNode; // Contenido que se muestra al inicio del botón
+  backdropColor?: string; // Color del backdrop del modal, por defecto "black"
 }
 
 export type LinkModalProps = {
-    text: string | React.ReactNode;
-    classNames?: string;
-    idModal: string;
-    children?: React.ReactNode;
-    closeButtonStroke?: string; // Color del stroke del botón de cerrar
-    modalContentClassName?: string; // Clases adicionales para el ModalContent
-    backdropColor?: string; // Color del backdrop del modal, por defecto "black"
+  text: string | React.ReactNode;
+  classNames?: string;
+  idModal: string;
+  children?: React.ReactNode;
+  closeButtonStroke?: string; // Color del stroke del botón de cerrar
+  modalContentClassName?: string; // Clases adicionales para el ModalContent
+  backdropColor?: string; // Color del backdrop del modal, por defecto "black"
 }
 
 export type ButtonModalComponentProps = {
@@ -46,13 +46,13 @@ export type ButtonModalComponentProps = {
 };
 
 export type ModalType = {
-    isOpen: boolean;
-    onOpenChange: () => void;
-    children: React.ReactNode;
-    onClose?: () => void; // Añadido para manejar el cierre del modal
-    closeButtonStroke?: string; // Color del stroke del botón de cerrar, por defecto "white"
-    modalContentClassName?: string; // Clases adicionales para el ModalContent
-    backdropColor?: string; // Color del backdrop del modal, por defecto "black"
+  isOpen: boolean;
+  onOpenChange: () => void;
+  children: React.ReactNode;
+  onClose?: () => void; // Añadido para manejar el cierre del modal
+  closeButtonStroke?: string; // Color del stroke del botón de cerrar, por defecto "white"
+  modalContentClassName?: string; // Clases adicionales para el ModalContent
+  backdropColor?: string; // Color del backdrop del modal, por defecto "black"
 }
 
 export interface TeLlamamosModalComponentProps {
@@ -117,4 +117,87 @@ export interface TeLlamamosFormModalProps {
     successDescription?: string;
     successButtonText?: string;
   };
+}
+
+export interface ConfiguradorCardsModalProps {
+  modalData?: ModalData,
+  variables: {
+    velocidadMinima?: number,
+    velocidadMaxima?: number,
+    precioAhorro: string,
+    precioPaquete: string,
+    periodo?: string,
+    domicilio?: string,
+    canales?: string,
+  },
+  type: "internet" | "tv" | "movil",
+}
+
+export interface ModalData {
+  titulo: string,
+  periodo?: string,
+  domicilio?: string,
+  header: {
+    titulo: {
+      preVelocidadMinima?: string,
+      posVelocidasMinima?: string,
+      unidadVelocidad?: string,
+      posVelocidadMaxima?: string,
+      meses?: string,
+      preCanales?: string,
+      posCanales?: string,
+      preVelocidad?: string,
+      posVelocidad?: string
+    },
+    precio: {
+      prePrecio: string,
+      posPrecio: string,
+    }
+  },
+  body: {
+    texto1?: string,
+    textoPromocion1?: string,
+    textoPromocion2?: string,
+    texto2?: string,
+    textoDomicilio?: string,
+    texto3?: string,
+    textoPromocion3?: string,
+    texto4?: string,
+    beneficios: {
+      titulo1: string,
+      descripcion1: string,
+      titulo2: string,
+      descripcion2: string,
+    },
+    textoBoton: string,
+  },
+  footer: {
+    terminos: {
+      texto: string,
+      url: string
+    },
+    descripcion: string
+  }
+}
+
+export interface IconProps {
+  fields: {
+    altText: string,
+    internalName: string,
+    image: {
+      fields: {
+        description: string,
+        title: string,
+        file: {
+          url: string,
+          details: {
+            image: {
+              height: number,
+              width: number
+            }
+          }
+        }
+      }
+    }
+  }
 }
