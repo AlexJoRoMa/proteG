@@ -8,7 +8,7 @@ import { TextAndImageComponentProps } from '@/types/ModalComponentTypes';
 const TextAndImageComponent = ({text, image, fontSize, orientation}:TextAndImageComponentProps) => {
 
   return (
-    <div className={`flex ${orientation === 'vertical' ? '' : 'w-screen sm:w-fit'} w-fit mb-1 xl:mb-0 textandimagecomponent`}
+    <div className={`flex ${orientation === 'vertical' ? '' : 'w-100 sm:w-fit'} w-fit mb-1 xl:mb-0 textandimagecomponent`}
         style={ orientation === 'vertical' ? {flexDirection: 'column', alignItems: 'center', gap:10, marginBottom: 10} : {flexDirection: 'row', alignItems: 'start'}}>
         {
             image && (
