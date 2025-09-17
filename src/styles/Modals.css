@@ -1,0 +1,159 @@
+.benefits-modal{
+
+    &:not(:has(.embla)){
+        @media screen and (min-width: 1024px){
+            height: 70vh;
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+
+        .embedded-inline-group{
+            text-align: center;
+            }
+        }
+
+        .embedded-inline-group{
+            display: inline-flex;
+            justify-content: start;
+
+             @media screen and (max-width: 768px) {
+                display:initial
+             }
+        }
+        
+        .textandimagecomponent{
+            max-width: 160px;
+
+            span{
+                text-align: center;
+
+                @media screen and (max-width: 768px) {
+                width: 100%;
+                }
+            }
+        }
+
+    picture img{
+        margin-top: 57px;
+          @media screen and (max-width: 768px) {
+            margin-top: 0px;
+        }
+    }
+    
+    
+}
+
+.tv-beneficios-productos{
+
+    .rich-text-content{
+        img{
+        margin: auto;
+        order: 0;
+        }
+
+    .buttonmodalcomponent{
+        justify-content: center;
+
+        &:first-of-type{
+            a{
+                background-color: transparent;
+                border: 1px solid black;
+                color: black;
+                font-weight: normal;
+            }
+        }
+    }
+    @media screen and (max-width: 768px) {
+                *:not(img){
+                    order:1;
+                }
+
+                img{
+                    width: auto;
+                    height: 402px;
+                    object-fit: cover;
+                }
+        }
+    }
+
+    
+}
+
+section[role="dialog"]{
+
+    &:has(.embla) div:not(.rich-text-content, .order-2, .buttonmodalcomponent, .embedded-inline-group, .embedded-entry-inline){
+        @media screen and (min-width: 1024px) {
+           /* height: 100%;*/
+        }
+    }
+
+    .embla__prev, .embla__next{
+        position: absolute;
+        top: 50%;
+        cursor: pointer;
+        z-index: 10;
+         @media screen and (max-width: 1023px) {
+            bottom: 10px;
+            top: initial;
+        } 
+    }
+    
+    .embla__next{
+        right: 30px;
+    }
+    .embla__prev{
+        left: 30px;
+    }
+
+    /* Optimización de transiciones para carrusel en modal */
+    .embla {
+        overflow: hidden;
+        position: relative;
+    }
+
+    .embla__viewport {
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .embla__container {
+        backface-visibility: hidden;
+        display: flex;
+        touch-action: pan-y pinch-zoom;
+        transition: transform 0.3s ease-out;
+        will-change: transform;
+    }
+
+    .embla__slide {
+        min-width: 0;
+        flex: 0 0 100%;
+        position: relative;
+        transform: translateZ(0);
+        
+    }
+    
+
+    .embla__dots {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .embla__dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.3);
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .embla__dot--selected {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+}
