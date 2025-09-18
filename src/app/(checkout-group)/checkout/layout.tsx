@@ -24,8 +24,8 @@ export default function CheckoutLayout({
   return (
     <html lang="es" className={`${lato.variable}`}>
       <body>
-        <CheckoutHeader />
-        {children}
+          <CheckoutHeader />
+          {children}
       </body>
     </html>
   );
