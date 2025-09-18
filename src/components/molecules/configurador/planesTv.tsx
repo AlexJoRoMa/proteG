@@ -215,12 +215,11 @@ export default function PlanesTv({ step }: StepProps) {
                     })
                 }
             </div>
-            {/* <div>
-                {selectedIndex === null ?
-                    <h5 className="font-normal leading-[24px] text-base">{plans?.fields.subTitle}</h5> :
+            <div>
+                {selectedIndex !== null &&
                     <AccordionPlanesExtras />
                 }
-            </div> */}
+            </div>
         </div >
 
     )

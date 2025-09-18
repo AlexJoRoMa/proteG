@@ -27,6 +27,19 @@ export interface ApiResponse {
     rptCode: string,
 }
 
+export interface ApiToken {
+    refresh_token: string,
+    token_type: string,
+    access_token: string,
+    expires_in: Number,
+}
+
+export interface PackageInfo {
+    id: number,
+    rpt: string,
+    coverage: string[]
+}
+
 export interface Offers {
     DOBLE_PLAY: OfferItem[],
     TRIPLE_PLAY: OfferItem[],
@@ -128,6 +141,8 @@ export type DataFields = {
     cobertura: boolean,
     userAnswers: UserAnswers,
     setUserAnswers: React.Dispatch<React.SetStateAction<UserAnswers>>,
+    izziSelection: IzziSelection | null,
+    setIzziSelection: React.Dispatch<React.SetStateAction<IzziSelection | null>>,
     checkedPromotions: boolean,
     setCheckedPromotions: React.Dispatch<React.SetStateAction<boolean>>,
     resumenIcon: EntrySkeletonType<ResumenIcon>,
@@ -159,12 +174,30 @@ export interface UserAnswers {
     }
 }
 
+export interface IzziSelection {
+    idPaquete?: number,
+    titulo?: string,
+    descripcion?: string,
+    precioPaquete?: string,
+    precioAhorro?: string,
+    velocidadMinima?: number,
+    velocidadMaxima?: number,
+    extrasIncluidos?: string[],
+    canales?: string,
+    canalesHd?: string,
+    extrasMap?: {
+        ott?: OttProps[]
+    }
+}
+
 export type OttProps = {
-    id: string,
-    title: string,
-    description: string,
-    price: number,
-    term: string
+    idExtra: number,
+    maximo: number,
+    productId: string,
+    titulo: string,
+    costo: string,
+    descripcion: string,
+    grupo?: number
 }
 
 // Resumen de Compra

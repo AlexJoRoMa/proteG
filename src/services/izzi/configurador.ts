@@ -1,3 +1,4 @@
+import { PackageInfo } from "@/types/ConfiguradorTypes";
 
 async function getToken() {
     try {
@@ -54,7 +55,7 @@ export async function getOfertas() {
                     "latitude": 19.447547,
                     "longitude": -99.1745907,
                     "negocios": false,
-                    "offnet": false
+                    "sky": false
                 }),
             }
         );
@@ -71,4 +72,33 @@ export async function getOfertas() {
         console.error("Error al obtener las ofertas", error)
         throw new Error("Error al obtener las ofertas");
     }
+}
+
+export async function getPackageInfo(paqueteInfo: PackageInfo) {
+
+    const accessToken = await getToken();
+
+    const response = await fetch(
+        "https://test.izziapiweb.mx/izzi/ms/purchaseServices/sales/packageInfo",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+                "idPaquete": paqueteInfo.id,
+                "rpt": paqueteInfo.rpt,
+                "coverageType": paqueteInfo.coverage,
+            }),
+        }
+    );
+
+    if (!response.ok) {
+        return new Response(JSON.stringify({ error: 'API fetch error'}), { status: 500 })
+    }
+
+    const data = await response.json();
+    return data;
+
 }
