@@ -1,5 +1,5 @@
 import { contentfulClient } from "@/services/contentful/client";
-import ExitGuardContent from "../molecules/ExitGuardContent";
+import ExitGuardContent from "../../components/molecules/ExitGuardContent";
 import { EntrySkeletonType } from "contentful";
 import { IzziLogo, ModalCopys } from "@/types/ModalAbandonoFlujo";
 import { getCopyForComponent } from "@/services/contentful/components";

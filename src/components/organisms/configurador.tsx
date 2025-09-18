@@ -1,5 +1,5 @@
 import { contentfulClient } from "@/services/contentful/client";
-import { ConfiguradorCopys, ConfiguradorProps, OttsImages, ResumenIcon } from "@/types/ConfiguradorTypes";
+import { ConfiguradorCopys, OttsImages, ResumenIcon } from "@/types/ConfiguradorTypes";
 import { Entry, EntrySkeletonType } from "contentful";
 import { ConfiguradorProvider } from "@/utils/ConfiguradorProvider";
 import { componentMap } from "@/lib/configurador/dynamic-map";
@@ -8,8 +8,10 @@ import { getCopyForComponent } from "@/services/contentful/components";
 import ResumenPedido from "../molecules/configurador/resumenPedido";
 import ResumenInfo from "../molecules/configurador/resumenInfo";
 import { STEPSCOVERAGECOMPONENT, STEPSNOCOVERAGECOMPONENT } from "@/constants/ConfiguradorConstants";
-import ExitGuard from "./ExitGuard";
 import { getOfertas } from "@/services/izzi/configurador";
+import LinkModal from "../atoms/LinkModal";
+import TeAyudamosModalComponent from "../layouts/modals/TeAyudamosModalComponent";
+import ExitGuard from "@/utils/guards/ExitGuard";
 
 export const Arrow =
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -104,9 +106,17 @@ export default async function Configurador() {
 
                             <div className='flex flex-col my-[24px] gap-[10px]'>
                                 <h4 className='font-normal text-lg leading-[24px]'>{entryHelp}</h4>
-                                <h5 className="text-base leading-[24px] font-bold underline">{entryCTA}</h5>
+                                <LinkModal
+                                    classNames='text-base leading-[24px] font-bold underline cursor-pointer'
+                                    text={entryCTA}
+                                    closeButtonStroke='black'
+                                    backdropColor='black-0/80'
+                                    idModal={""}
+                                    modalContentClassName="2xl:w-[62vw] 2xl:h-[52vh] xl:w-[90vw] xl:h-[52vh] h-[98vh]"
+                                >
+                                    <TeAyudamosModalComponent />
+                                </LinkModal>
                             </div>
-                            {/* //TODO: Abrir drawer al hacer click en botón "¿Te ayudamos?" */}
                         </div>
                     </div>
                     <div className="xl:mt-[34px] sticky z-10 bottom-0 xl:static xl:top-auto xl:z-0">
