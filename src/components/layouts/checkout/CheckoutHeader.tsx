@@ -9,7 +9,7 @@ const CheckoutHeader = () => {
         width={81} height={32} alt="Logo Izzi" className='h-8'/>
         <h1 className='text-xl md:text-[24px] leading-6 md:leading-8 font-semibold text-gray-800'>Contratación</h1>
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" className='cursor-pointer'>
-          <path d="M23.9999 8.00006L8 24M7.99993 8L23.9999 23.9999" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M23.9999 8.00006L8 24M7.99993 8L23.9999 23.9999" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
         </svg>
       </div>
     </header>
