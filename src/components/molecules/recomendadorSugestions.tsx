@@ -59,6 +59,10 @@ export default function RecomendadorSugestions({ newSelectionAction }: Recomenda
             (card) => card.fields.recomendadorId?.toLowerCase() === velRecomendada.toLowerCase()
         );
 
+        if ( filteredCards.length === 0) {
+            return [];
+        }
+
         const modifiedEntry = {
             ...carousel,
             fields: {
@@ -72,7 +76,7 @@ export default function RecomendadorSugestions({ newSelectionAction }: Recomenda
 
     return (
         <>
-            {filterData.length > 0 ?
+            {filterData.length > 0 && renderedComponent ?
 
                 <div className="flex flex-col items-center">
                     <h1 className="font-bold leading-[48px] text-4xl text-black-0 text-center mb-[40px] md:mx-md 2xl:mx-xl">{title}</h1>
