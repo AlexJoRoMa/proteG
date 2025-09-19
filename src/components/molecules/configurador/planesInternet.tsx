@@ -2,7 +2,7 @@
 
 import LinkModal from "@/components/atoms/LinkModal";
 import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
-import { ComponentsFields, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
+import { OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
@@ -34,11 +34,11 @@ export default function PlanesInternet({ step }: StepProps) {
     const plans = configuradorEntry?.offers?.DOBLE_PLAY;
     const offersCopys = copysConfigurador as unknown as OffersCopys;
 
-    const plansInfo = plans as unknown as ComponentsFields[];
+    const plansInfo = plans as unknown as OfferItem[];
 
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-    function handleSelect(index: number, card: ComponentsFields) {
+    function handleSelect(index: number, card: OfferItem) {
 
         if (selectedIndex !== null) {
             if (selectedIndex === index) {
@@ -89,7 +89,7 @@ export default function PlanesInternet({ step }: StepProps) {
 
             <div className="grid grid-cols-2 2xl:grid-cols-4 gap-[16px] 2xl:gap-[24px] auto-rows-fr">
                 {
-                    plansInfo.map((card: ComponentsFields, index) => {
+                    plansInfo.map((card: OfferItem, index) => {
                         const isSelected = selectedIndex === index;
 
                         return (
@@ -115,7 +115,9 @@ export default function PlanesInternet({ step }: StepProps) {
                                     </CardHeader>
                                     <CardBody>
                                         <div className="flex items-stretch">
-                                            <p className="leading-[18px] font-normal text-sm text-gray-300">{card.extrasIncluidos[0]}</p>
+                                            {card.extrasIncluidos &&
+                                                <p className="leading-[18px] font-normal text-sm text-gray-300">{card?.extrasIncluidos[0]}</p>
+                                            }
                                         </div>
                                     </CardBody>
                                     <CardFooter>

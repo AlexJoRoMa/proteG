@@ -59,22 +59,9 @@ export interface OfferItem {
     velocidadMinima?: number,
     extrasIncluidos?: string[]
 }
-export interface ComponentsFields {
-    canales: string,
-    canalesHd: string,
-    descripcion: string,
-    extrasIncluidos: Array<string>,
-    idPaquete: number,
-    precioAhorro: string,
-    precioPaquete: string,
-    titulo: string,
-    velocidadMaxima: number,
-    velocidadMinima: number
-}
-
 export interface MovilPlansInfo {
     tituloTab: string,
-    cards: ComponentsFields[]
+    cards: OfferItem[]
 }
 
 export interface ResumenIcon {
@@ -113,7 +100,7 @@ export interface OttsImages {
 export interface ConfigCardsFields {
     interalName: string,
     entryTitle: string,
-    cards: ComponentsFields[]
+    cards: OfferItem[]
 }
 
 export interface ConfigTabsFields {
@@ -156,16 +143,16 @@ export type DataFields = {
 export interface UserAnswers {
     total?: number,
     internet?: {
-        paquete?: ComponentsFields | null,
+        paquete?: OfferItem | null,
         total?: number
     },
     movil?: {
-        paquete?: ComponentsFields | null,
+        paquete?: OfferItem | null,
         contrato?: string,
         total?: number,
     },
     tv?: {
-        paquete?: ComponentsFields | null,
+        paquete?: OfferItem | null,
         total?: number,
         ott?: {
             planes: OttProps[],
@@ -288,7 +275,7 @@ export type ResumenData = {
 }
 
 export type internetComponentFields = {
-    paquete: ComponentsFields,
+    paquete: OfferItem,
     total: number
 }
 
@@ -297,12 +284,12 @@ export type tvComponentFields = {
         planes: ottFields[],
         total: number,
     },
-    paquete: ComponentsFields,
+    paquete: OfferItem,
     total: number
 }
 
 export type movilComponentFields = {
-    paquete: ComponentsFields,
+    paquete: OfferItem,
     contrato: string,
     total: number
 }
