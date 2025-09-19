@@ -98,8 +98,9 @@ export default function RecomendadorSugestions({ newSelectionAction }: Recomenda
                 <div className="flex flex-col items-center">
                     <h1 className="font-bold leading-[48px] text-4xl text-black-0 text-center mb-[40px] md:mb-[24px] md:mx-md 2xl:mx-xl">{error.error.title}</h1>
                     <div className="flex flex-col gap-[8px] md:gap-0 font-normal leading-[24px] text-lg text-black-0 text-center md:mx-md 2xl:mx-xl">
-                        <h5>{error.error.subTitle1}</h5>
-                        <h5>{error.error.subTitle2}</h5>
+                        <p>
+                            {`${error.error.subTitle1} ${error.error.subTitle2}`}
+                        </p>
                     </div>
                     <button
                         className="w-[320px] h-auto rounded-md border-1 border-black-0 bg-black-0 py-[14px] px-[16px] mt-[40px] font-semibold leading-[24px] text-lg text-white-0 text-center md:mx-md 2xl:mx-xl"
