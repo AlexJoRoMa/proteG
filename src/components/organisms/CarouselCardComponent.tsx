@@ -6,8 +6,9 @@ import { CarouselProvider } from '@/utils/CarouselProvider'
 import { CarouselCardProps } from '@/types/CarouselCardTypes'
 import { contentfulClient } from '@/services/contentful/client'
 import { Asset, Entry, EntrySkeletonType } from 'contentful'
-import {CARDHOMECOMPONENT, CARDTVINTERNETMOVILCOMPONENT} from '@/constants/CardComponent';
+import {CARDHOMECOMPONENT, CARDTVINTERNETMOVILCOMPONENT, CARDTVPAQUETESCOMPONENT} from '@/constants/CardComponent';
 import CardTVInternetMovilComponent from '../molecules/CardTVInternetMovilComponent'
+import CardTvPaquetesComponent from '../molecules/CardTVPaquetesComponente';
 import { colorPickerType } from '@/types/ColorPickerType'
 
 const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
@@ -35,34 +36,41 @@ const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
           : '#000000' 
       }}
     >
-      {/* Imagen de fondo del carrusel */}
-        {imgBackground?.fields?.file?.url && (
+      {imgBackground?.fields?.file?.url && (
+        <div className="absolute inset-0 z-0">
           <picture>
-            <source media="(max-width: 1023px)" srcSet={`https:${imgBackgroundMobile?.fields?.file?.url}`} />
+            <source 
+              media="(max-width: 1023px)" 
+              srcSet={`https:${imgBackgroundMobile?.fields?.file?.url}`} 
+            />
             <Image
               src={`https:${imgBackground.fields.file.url}`}
               alt={String(imgBackground.fields.title) || 'Background image'}
               fill
               priority
-              className=""
+              className="object-cover"
               sizes="100vw"
-              quality={100}
+              quality={75}
+              loading="eager"
+              fetchPriority="high"
             />
           </picture>
-        )}
+        </div>
+      )}
         
-        {/* Contenido del carousel con z-index para estar por encima de la imagen */}
         <div className="relative z-10 w-full h-full">
           <CarouselProvider qtyCarousels={1} carouselConfigs={[{ options: { align: 'start' } }]} colorArrow={colorArrow}>
              <CarouselComponent buttons={true} dots={true}>
                 {
                   entryCarousel && entryCarousel[0]?.fields.cardsCarousel && Array.isArray(entryCarousel[0].fields.cardsCarousel) && (entryCarousel[0].fields.cardsCarousel as Entry<EntrySkeletonType, undefined, string>[]).map((card:Entry<EntrySkeletonType, undefined, string>, index:number) => {
-                    // Renderizar el componente de cards dependiendo del tipo de card
                     if( card.fields.type === CARDHOMECOMPONENT) {
                       return <CardHomeComponent key={index} card={card} />
                     }
                     else if (typeof card.fields.type === 'string' && CARDTVINTERNETMOVILCOMPONENT.includes(card.fields.type)) {
                       return <CardTVInternetMovilComponent key={index} card={card} />
+                    }
+                    else if (typeof card.fields.type === 'string' && CARDTVPAQUETESCOMPONENT.includes(card.fields.type)) {
+                      return <CardTvPaquetesComponent key={index} card={card} />
                     }
                     return null;
                   })

@@ -117,6 +117,8 @@
    --gradient-card-line-2: linear-gradient(to right, #00C1B5, #00C1B5);
    --gradient-card-line-3: linear-gradient(to right, #FF6C07, #FF6C07);
    --gradient-background: linear-gradient(to right,#DCEFF0,#F4F4F6,#F3E6EE);
+   --gradient-button-fixed: linear-gradient(90deg,#FF6C07 0%,#4DA9A7 33%, #D31772 66%, #FCD116 100%);
+   
    --gradient-bar-horizontal: linear-gradient(to right,#FF6C07,#4DA9A7,#D31772,#FCD116);
    --gradient-bar-horizontal-4-naranverderosaamarillo: linear-gradient(to right,#FF6C07,#4DA9A7,#D31772,#FCD116);
    --gradient-bar-vertical-4-naranverderosaamarillo: linear-gradient( to bottom,#FF6C07,#4DA9A7,#D31772,#FCD116);
@@ -134,6 +136,17 @@
    --gradient-loader: conic-gradient(from -17.59deg at 50% 50%, #CE32A3 -34.36deg, #3CB594 86.54deg, #FF6C07 179.07deg, #CE32A3 325.64deg, #3CB594 446.54deg);
 
 }
+
+  .bg-conic-custom {
+    background-image: conic-gradient(
+      from -17.59deg at 50% 50%,
+      #CE32A3 -34.36deg,
+      #3CB594 86.54deg,
+      #ff6c07 179.07deg,
+      #CE32A3 325.64deg,
+      #3CB594 446.54deg
+    );
+  }
 
 body {
   background: var(--background);
@@ -280,4 +293,11 @@ body {
 .embla__prev[disabled] {
   opacity: 0;
   cursor: not-allowed;
+}
+
+.border-gradient-verde{
+  border:none;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(to right, #00C1B5,#99EAE5,#00877F,#99EAE5,#00C1B5);
+  border-image-slice: 0 0 100% 0;
 }

@@ -5,6 +5,7 @@ import { contentfulClient } from '@/services/contentful/client';
 import { Asset, AssetDetails } from 'contentful';
 import { CardPropType } from '@/types/CarouselCardsTypes';
 import ButtonModal from '../atoms/ButtonModal';
+import { ColorOption } from '@/constants/ColorModalConstants';
 
 
 
@@ -70,7 +71,8 @@ const CardHomeComponent = async({card}:CardPropType) => {
                             classStyles='w-full mb-4 border h-[48px] border-[color:var(--color-gray-250)] rounded-md text-[color:var(--color-gray-100)] text-[16px] md:text-[18px] font-bold bg-transparent'
                             textBtn={card?.fields?.textBtn1 as string}
                             idModal={typeof card?.fields?.modal === 'object' && card?.fields?.modal !== null && 'sys' in card.fields.modal ? (card.fields.modal as { sys: { id: string } }).sys.id : ''}
-                            modalContentClassName="h-full"
+                            modalContentClassName="xl:h-auto h-full"
+                            hrColor={card?.fields?.colorHr as ColorOption || ''}
                         />
                     ) : <ButtonGhost classStyles='w-full mb-4 border h-[48px] border-[color:var(--color-gray-250)] rounded-md text-[color:var(--color-gray-100)] text-[16px] md:text-[18px] font-bold'
                         text={card?.fields?.textBtn1 as string} href={card?.fields?.urlBtn1 as string} />

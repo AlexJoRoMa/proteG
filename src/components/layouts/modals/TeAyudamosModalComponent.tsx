@@ -1,12 +1,14 @@
 "use client";
 import React from 'react'
-import { CallMeIcon, HeadPhonesIcon, WhatsAppIcon } from '../atoms/ModalIcons'
+import { CallMeIcon, HeadPhonesIcon, WhatsAppIcon } from '../../atoms/ModalIcons'
 import { Button, Link } from '@heroui/react'
 import { TeLlamamosModalComponentProps } from '@/types/ModalComponentTypes';
+import LinkModal from '../../atoms/LinkModal';
+import TeLlamamosModalComponent from './TeLlamamosModalComponent';
 
 
 
-const TeLlamamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlamamosModalComponentProps) => {
+const TeAyudamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlamamosModalComponentProps) => {
   if (!isOpen) return null;
 
   // Valores por defecto en caso de que no se pasen datos
@@ -36,7 +38,15 @@ const TeLlamamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlama
             <div className='flex flex-col'>
                 <strong className='mb-6'>{data.column1.title}</strong>
                 <p className='flex xl:mb-3.5 mb-4 gap-3'><CallMeIcon/>{data.column1.row1.text}<b>{data.column1.row1.tel}</b></p>
-                <Link className='flex xl:mb-3.5 mb-4 gap-3 underline text-black font-bold text-[16px] cursor-pointer'><CallMeIcon/>{data.column1.row2.link}</Link>
+                <LinkModal
+                  classNames='flex xl:mb-3.5 mb-4 gap-3 underline text-black font-bold text-[16px] cursor-pointer' 
+                  text={<><CallMeIcon/>{data.column1.row2.link}</>}
+                  idModal='te-llamamos-modal'
+                  closeButtonStroke='black'
+                  modalContentClassName="w-full h-[52dvh] sm:h-[52vh] sm:w-[80vw] xl:h-auto xl:w-[80vw] 2xl:w-[52vw] 2xl:h-auto"
+                  backdropColor='black-0/80'>
+                    <TeLlamamosModalComponent />
+                  </LinkModal>
                 <a target='_blank' className='flex gap-3' href={`https://wa.me/${data.column1.row3.wpp.tel}?text=${data.column1.row3.wpp.promoText}`}><WhatsAppIcon />{data.column1.row3.wpp.text}</a>
             </div>
             <hr className='w-full xl:mb-10 mb-6 mt-8 block xl:hidden border-0 h-[1px] [background-image:var(--gradient-button-fixed)]' />
@@ -47,14 +57,14 @@ const TeLlamamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlama
                 <a target='_blank' className='flex gap-3' href={`https://wa.me/${data.column2.row3.wpp.tel}?text=${data.column2.row3.wpp.promoText}`}><WhatsAppIcon />{data.column2.row3.wpp.text}</a>
             </div>
         </div>
-      <Button
-        className='bg-black text-white font-bold h-[48px] text-[16px] leading-[24px] w-[256px] rounded-none xl:mt-10 mt-8 mx-auto block'
-        onPress={onClose}
-      >
-        Aceptar
-      </Button>
+        <Button
+          className='bg-black text-white font-bold h-[48px] text-[16px] leading-[24px] w-[256px] rounded-none xl:mt-10 mt-8 mx-auto block'
+          onPress={onClose}
+        >
+          Aceptar
+        </Button>
     </div>
   )
 }
 
-export default TeLlamamosModalComponent
+export default TeAyudamosModalComponent

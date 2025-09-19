@@ -39,7 +39,7 @@ const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({
 
       pauseAllAutoplay();
     },
-    [emblaApi, emblaThumbsApi, syncAllCarousels, syncAllCarouselsToSlide]
+    [emblaApi, emblaThumbsApi, syncAllCarousels, syncAllCarouselsToSlide, pauseAllAutoplay]
   )
 
 const scrollPrev = useCallback(() => {
