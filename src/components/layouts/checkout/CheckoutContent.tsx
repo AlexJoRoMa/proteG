@@ -20,15 +20,22 @@ const CheckoutContent = () => {
   ]
 
   return (
-    <div className='mx-[var(--spacing-sm)] 4xl:mx-[var(--spacing-xl)] 3xl:mx-[var(--spacing-lg)] 2xl:mx-[var(--spacing-md)] sm:mx-[var(--spacing-sm)]'>
-      {
-        stepContents.map((content, index) => (
-          <div data-step={index + 1} key={index} className={`${index + 1 === currentStep ? 'block' : 'hidden'}`}>
-            {content}
-          </div>
-        ))
-      }
+    <div className='mt-6 flex mx-[var(--spacing-sm)] 4xl:mx-[var(--spacing-xl)] 3xl:mx-[var(--spacing-lg)] 2xl:mx-[var(--spacing-md)] sm:mx-[var(--spacing-sm)]'>
+      <div className='xl:w-8/12 mr-auto inline-block'>
+        {
+          stepContents.map((content, index) => (
+            <div data-step={index + 1} key={index} className={`${index + 1 === currentStep ? 'block' : 'hidden'}`}>
+              {content}
+            </div>
+          ))
+        }
+      </div>
+      <div className='xl:w-3/12 inline-block'>
+        elemento lateral
+        {/* Espacio para posibles futuros elementos laterales */}
+      </div>
     </div>
+
   )
 }
 
