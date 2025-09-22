@@ -1,0 +1,57 @@
+import { contentfulClient } from "@/services/contentful/client";
+import { FAQcomponentID, TabsDataFields, FAQEntryFields } from '@/types/FAQTypes';
+import { ColorPickerType } from "@/types/IzziGOTypes";
+import { Entry, EntrySkeletonType } from "contentful";
+import TabFAQ from '../molecules/FAQSegmentosContent';
+
+
+const FAQcomponent = async({id} : FAQcomponentID) => {
+    
+    const tabsEntry:Entry<EntrySkeletonType, undefined, string> | null = await contentfulClient.getEntries({
+        content_type: 'faqTabs',
+        'sys.id': id,
+        include: 3,
+    }).then((entriesResponse) => {
+        return entriesResponse.items[0]
+    });
+
+    const title = tabsEntry?.fields.title as string;
+    const subTitle = tabsEntry?.fields.subTitle as string;
+    const bgColor = (tabsEntry?.fields.colorDeFondo as unknown as ColorPickerType)?.value;
+
+    const entryData = tabsEntry?.fields.tabs as unknown as EntrySkeletonType<TabsDataFields>;
+
+   // console.log('>>>> entryData', entryData)
+
+    
+
+    return(
+        
+        <div className={` w-[100%] relative min-h-[490px] max-h-[986px]`}
+        style={{backgroundColor: bgColor }}>
+            <div className="md:mx-md 2xl:mx-xl flex">
+
+                {/* titulos */}
+                <div className="flex flex-col w-full self-center items-center">
+                    <h1 className="lg:text-[36px] md:text-[30px] xsm:text-[32px] font-bold text-center
+                    mt-10">
+                        {title}
+                    </h1>
+                    <h2 className="lg:text-[18px] md:text-[20px] xsm:text-[16px] text-center
+                    mt-5">
+                        {subTitle}
+                        </h2>
+
+                    {/* tabs */}
+                    <div className="mt-10">
+                    <TabFAQ tabsData={entryData} />
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    );
+}
+
+export default FAQcomponent

@@ -13,6 +13,7 @@ import BloqueSeparador from '@/components/organisms/bloque-separador';
 import ConIzziTv from '@/components/organisms/tv-top-banner';
 import IzziGoBloque from '@/components/organisms/tv-izzi-go';
 import TVCanalesSegmento from '@/components/organisms/tv-canales-segmentos';
+import FAQcomponent from '@/components/organisms/faq-model';
 
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
@@ -30,5 +31,6 @@ export const componentMap = {
   modelIzziTV: ConIzziTv,
   IzziGoBloque: IzziGoBloque,
   tabCanalesTV: TVCanalesSegmento,
+  faqModel: FAQcomponent,
   cardsContratacionRapida: ContratacionRapida
 };
