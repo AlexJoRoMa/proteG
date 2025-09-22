@@ -1,5 +1,5 @@
 import { contentfulClient } from "@/services/contentful/client";
-import { FAQcomponentID, TabsDataFields, FAQEntryFields } from '@/types/FAQTypes';
+import { FAQcomponentID, TabsDataFields } from '@/types/FAQTypes';
 import { ColorPickerType } from "@/types/IzziGOTypes";
 import { Entry, EntrySkeletonType } from "contentful";
 import TabFAQ from '../molecules/FAQSegmentosContent';
@@ -21,20 +21,16 @@ const FAQcomponent = async({id} : FAQcomponentID) => {
 
     const entryData = tabsEntry?.fields.tabs as unknown as EntrySkeletonType<TabsDataFields>;
 
-   // console.log('>>>> entryData', entryData)
-
-    
-
     return(
         
-        <div className={` w-[100%] relative min-h-[490px] max-h-[986px]`}
+        <div className={` w-[100%] relative h-auto`}
         style={{backgroundColor: bgColor }}>
             <div className="md:mx-md 2xl:mx-xl flex">
 
                 {/* titulos */}
-                <div className="flex flex-col w-full self-center items-center">
+                <div className=" flex flex-col w-full self-center items-center my-15">
                     <h1 className="lg:text-[36px] md:text-[30px] xsm:text-[32px] font-bold text-center
-                    mt-10">
+                    ">
                         {title}
                     </h1>
                     <h2 className="lg:text-[18px] md:text-[20px] xsm:text-[16px] text-center

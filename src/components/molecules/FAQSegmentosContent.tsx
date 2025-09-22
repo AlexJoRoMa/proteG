@@ -32,7 +32,7 @@ export default function TabFAQ({ tabsData }: TabsContentProps) {
             >
             {(item) => (
                 <Tab key={item.fields.entryTitle} title={item.fields.entryTitle}>
-                    <Card className="rounded-none  shadow-none md:mx-md 2xl:mx-xl">
+                    <Card className="rounded-none  shadow-none ">
                         <CardBody >
                             {item.fields.cards.map((card) =>{
                                 
@@ -44,10 +44,14 @@ export default function TabFAQ({ tabsData }: TabsContentProps) {
                                             <AccordionItem
                                             key={card.sys.id}
                                             aria-label={cardData.pregunta || "Pregunta" }
-                                            title={cardData.pregunta || "Pregunta"}
-                                            className="text-[20px] font-bold"
+                                            title={
+                                                <span className="text-[20px] font-bold">
+                                                {cardData.pregunta || "Pregunta"}
+                                                </span>}
                                             >
-                                                {cardData.respuesta}
+                                                <p className="">
+                                                    {cardData.respuesta}
+                                                </p>
                                             </AccordionItem>
                                         </Accordion>
                                     </div>
