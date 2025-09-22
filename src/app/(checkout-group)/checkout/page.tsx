@@ -6,7 +6,7 @@ import React from 'react'
 
 const CheckoutPage = () => {
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen">
       <CheckoutProvider totalSteps={6} initialStep={1}>
         {/* CheckoutSteps maneja móvil + desktop steps, incluye CheckoutContent en móvil */}
         <CheckoutSteps />

@@ -30,7 +30,7 @@ const CheckoutContent = () => {
           ))
         }
       </div>
-      <div className='xl:w-3/12 inline-block'>
+      <div className='xl:w-3/12 hidden sm:inline-block'>
         elemento lateral
         {/* Espacio para posibles futuros elementos laterales */}
       </div>
