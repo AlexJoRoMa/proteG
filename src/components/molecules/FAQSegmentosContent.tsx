@@ -1,8 +1,7 @@
 'use client'
 
-import { Tabs, Tab, Card, CardBody } from "@heroui/react";
+import { Tabs, Tab, Card, CardBody, Accordion, AccordionItem } from "@heroui/react";
 import { TabsDataFields, TabsContentProps, CardSegmentoFields } from "@/types/FAQTypes";
-import Image from "next/image";
 import { Entry, EntrySkeletonType } from "contentful";
 
 export default function TabFAQ({ tabsData }: TabsContentProps) {
@@ -10,7 +9,7 @@ export default function TabFAQ({ tabsData }: TabsContentProps) {
     const cardsInfo = tabsData as unknown as EntrySkeletonType<TabsDataFields>[];
 
     const defaultKey = cardsInfo?.[0]?.fields.entryTitle;
-    
+
 
     //console.log('>>>> cardsInfo', cardsInfo );
 
@@ -36,17 +35,21 @@ export default function TabFAQ({ tabsData }: TabsContentProps) {
                     <Card className="rounded-none  shadow-none md:mx-md 2xl:mx-xl">
                         <CardBody >
                             {item.fields.cards.map((card) =>{
-
+                                
                                 const cardData = card?.fields as CardSegmentoFields;
-
-                                console.log('>>>> cardData', cardData );
 
                                 return(
                                     <div key={card.sys.id}>
-                                        
-                                        <h1>{cardData.pregunta}</h1>
-                                        <h1>{cardData.respuesta}</h1>
-
+                                        <Accordion>
+                                            <AccordionItem
+                                            key={card.sys.id}
+                                            aria-label={cardData.pregunta || "Pregunta" }
+                                            title={cardData.pregunta || "Pregunta"}
+                                            className="text-[20px] font-bold"
+                                            >
+                                                {cardData.respuesta}
+                                            </AccordionItem>
+                                        </Accordion>
                                     </div>
                                 )
                             })}
