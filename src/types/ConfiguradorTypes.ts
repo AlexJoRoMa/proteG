@@ -331,3 +331,9 @@ export type OffersCopys = {
         }
     }
 }
+
+export type CoberturaType = {
+    lat: string, 
+    lng: string,
+    zipCode: string
+}

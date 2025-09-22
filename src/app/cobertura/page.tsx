@@ -8,7 +8,9 @@ import {
     useMap,
     useMapsLibrary,
     useAdvancedMarkerRef,
+    MapMouseEvent,
   } from '@vis.gl/react-google-maps';
+import { createCookie } from './actions';
 
 interface GeocodeType {
     results: AddressType[],
@@ -66,9 +68,15 @@ export default function Cobertura() {
     const [data, setData] = useState<GeocodeType>();
     const [error, setError] = useState<string | null>(null);
 
+    const [lat, setLat] = useState<string>('');
+    const [lng, setLng] = useState<string>('');
+    const [markerPosition, setMarkerPosition] = useState<google.maps.LatLng | google.maps.LatLngLiteral>({ lat: 0, lng: 0 });
+
     const [selectedPlace, setSelectedPlace] =
         useState<google.maps.places.PlaceResult | null>(null);
     const [markerRef, marker] = useAdvancedMarkerRef();
+
+    const map = useMap();
 
     const geocodeApi = async (lat: number, lng: number) => {
         try {
@@ -78,6 +86,8 @@ export default function Cobertura() {
         }
         const data: GeocodeType = await response.json();
         setData(data);
+        setLat(lat.toString());
+        setLng(lng.toString());
         mapAddressFields(data);
         } catch (err) {
         setError('Failed gettin geolocation');
@@ -187,7 +197,7 @@ export default function Cobertura() {
           if (!placeAutocomplete) return;
       
           placeAutocomplete.addListener('place_changed', () => {
-            geocodeApi(placeAutocomplete.getPlace().geometry?.location?.lat(), placeAutocomplete.getPlace().geometry?.location?.lng());
+            geocodeApi(placeAutocomplete.getPlace().geometry?.location?.lat() as number, placeAutocomplete.getPlace().geometry?.location?.lng() as number);
             setAddress(true);
             onPlaceSelect(placeAutocomplete.getPlace());
           });
@@ -207,8 +217,19 @@ export default function Cobertura() {
                  />
         );
       };
+
+      const HandleMapClick = (ev: MapMouseEvent) => {
+        console.log('camera changed: ', ev.detail);
+        // const position: google.maps.LatLng | google.maps.LatLngLiteral = ev.detail?.latLng;
+        setMarkerPosition(ev.detail?.latLng as google.maps.LatLng | google.maps.LatLngLiteral);
+        if (map){
+            map.panTo(ev.detail?.latLng as google.maps.LatLng | google.maps.LatLngLiteral);
+        }
+        geocodeApi(ev.detail?.latLng?.lat as number, ev.detail?.latLng?.lng as number);
+        setAddress(true);
+      }
     return (
-        <>
+    <>
         <div className="items-center justify-center mb-8 mx-sm xl:mx-xl xl:justify-start">
             <div className='flex flex-col'>
                 <p className="text-[32px] font-bold">Comprueba tu cobertura</p>
@@ -229,7 +250,7 @@ export default function Cobertura() {
                             errorMessage="Please enter a value"
                             label="Código postal"
                             labelPlacement="outside"
-                            name="address"
+                            name="zipCode"
                             placeholder="Introduce tu código postal"
                             type="text"
                             value={postalCode}
@@ -260,7 +281,7 @@ export default function Cobertura() {
                                 errorMessage="Please enter a value"
                                 label="Número exterior"
                                 labelPlacement="outside"
-                                name="address"
+                                name="extNumber"
                                 placeholder="Introduce tu número exterior"
                                 type="text"
                                 value={streetNumber}
@@ -275,7 +296,7 @@ export default function Cobertura() {
                                 errorMessage="Please enter a value"
                                 label="Número interior"
                                 labelPlacement="outside"
-                                name="address"
+                                name="intNumber"
                                 placeholder="Introduce tu número interior"
                                 type="text"
                                 value={aptNumber}
@@ -291,7 +312,7 @@ export default function Cobertura() {
                             errorMessage="Please enter a value"
                             label="Colonia"
                             labelPlacement="outside"
-                            name="address"
+                            name="locality"
                             placeholder="Introduce tu colonia"
                             type="text"
                             value={neighborhood}
@@ -305,7 +326,7 @@ export default function Cobertura() {
                             errorMessage="Please enter a value"
                             label="Alcaldia o Municipio"
                             labelPlacement="outside"
-                            name="address"
+                            name="locality"
                             placeholder="Introduce tu alcaldia"
                             type="text"
                             value={locality}
@@ -319,7 +340,7 @@ export default function Cobertura() {
                             errorMessage="Please enter a value"
                             label="Estado"
                             labelPlacement="outside"
-                            name="address"
+                            name="state"
                             placeholder="Introduce tu estado"
                             type="text"
                             value={locality}
@@ -355,7 +376,11 @@ export default function Cobertura() {
                             <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 my-4 border border-black' variant='bordered' onPress={handleLocationChange}>
                                 utilizar mi ubicación actual
                             </Button>
-                        <Button className={`w-full lg:w-1/2 ${adressSelected ? 'bg-black' : 'bg-gray-150'} text-white`} type="submit">
+                            <Button onPress={
+                                async () => {
+                                    await createCookie({lat: lat, lng: lng, zipCode: postalCode})
+                                }}
+                                 className={`w-full lg:w-1/2 ${adressSelected ? 'bg-black' : 'bg-gray-150'} text-white`} type="submit">
                                 confirmar dirección
                             </Button>
                         </div>
@@ -367,11 +392,12 @@ export default function Cobertura() {
                     mapId={'bf51a910020fa25a'}
                     style={{height: '400px'}}
                     defaultCenter={{lat: 19.4311231, lng: -99.1777154}}
-                    defaultZoom={14}
+                    defaultZoom={10}
                     disableDefaultUI={true}
-                
+                    // mapTypeId={'roadmap'}
+                    onClick={HandleMapClick}
                 >
-                <AdvancedMarker ref={markerRef} position={null} />
+                <AdvancedMarker ref={markerRef} position={markerPosition} />
                 </Map>
                 <MapHandler place={selectedPlace} marker={marker} />
             </APIProvider>
