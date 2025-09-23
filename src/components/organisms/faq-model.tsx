@@ -19,7 +19,7 @@ const FAQcomponent = async({id} : FAQcomponentID) => {
     const subTitle = tabsEntry?.fields.subTitle as string;
     const bgColor = (tabsEntry?.fields.colorDeFondo as unknown as ColorPickerType)?.value;
 
-    const entryData = tabsEntry?.fields.tabs as unknown as EntrySkeletonType<TabsDataFields>;
+    const entryData = tabsEntry?.fields.tabs as Entry<EntrySkeletonType<TabsDataFields>>[]
 
     return(
         
@@ -39,7 +39,7 @@ const FAQcomponent = async({id} : FAQcomponentID) => {
                         </h2>
 
                     {/* tabs */}
-                    <div className="mt-10">
+                    <div className="md:mt-10 xsm:mt-5 md:w-full xsm:w-[95%]">
                     <TabFAQ tabsData={entryData} />
                     </div>
                 </div>
