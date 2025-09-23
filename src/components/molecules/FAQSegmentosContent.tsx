@@ -8,10 +8,11 @@ export default function TabFAQ({ tabsData }: TabsContentProps) {
 
     const cardsInfo = tabsData as unknown as EntrySkeletonType<TabsDataFields>[];
 
-    const defaultKey = cardsInfo?.[0]?.fields.entryTitle;
+    const checkTab = cardsInfo?.[0]?.fields.entryTitle ? true : false;
+    const defaultKey = cardsInfo?.[0]?.fields.entryTitle || "default";
 
 
-    //console.log('>>>> cardsInfo', cardsInfo );
+    
 
     return (
         <Tabs
@@ -37,7 +38,7 @@ export default function TabFAQ({ tabsData }: TabsContentProps) {
                             {item.fields.cards.map((card) =>{
                                 
                                 const cardData = card?.fields as CardSegmentoFields;
-/*  light shadow bordered splitted                 */
+
                                 return(
                                     <div key={card.sys.id}>
                                         <Accordion variant="light" className="border-b border-gray-150">
