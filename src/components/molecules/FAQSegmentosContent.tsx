@@ -23,7 +23,7 @@ export default function TabFAQ({ tabsData }: TabsContentProps) {
             defaultSelectedKey={defaultKey}
             classNames={{
                 tabContent: " leading-[24px] text-base group-data-[selected=true]:font-medium group-data-[selected=true]:text-black group-data-[selected=true]:font-bold  text-black lg:py-[20px] px-auto lg:w-[246px] whitespace-normal font-medium !rounded-t-sm ",
-                panel: "bg-white w-full p-0",
+                panel: " w-full p-0",
                 tabList: " w-auto flex items-center pb-0 rounded-none overflow-y-hidden",
                 cursor: "bg-black rounded-none rounded-t-sm",
                 base: "m-auto flex items-center justify-around ",
@@ -32,24 +32,24 @@ export default function TabFAQ({ tabsData }: TabsContentProps) {
             >
             {(item) => (
                 <Tab key={item.fields.entryTitle} title={item.fields.entryTitle}>
-                    <Card className="rounded-none  shadow-none ">
+                    <Card className="rounded-none  shadow-none bg-transparent ">
                         <CardBody >
                             {item.fields.cards.map((card) =>{
                                 
                                 const cardData = card?.fields as CardSegmentoFields;
-
+/*  light shadow bordered splitted                 */
                                 return(
                                     <div key={card.sys.id}>
-                                        <Accordion>
+                                        <Accordion variant="light" className="border-b border-gray-150">
                                             <AccordionItem
                                             key={card.sys.id}
                                             aria-label={cardData.pregunta || "Pregunta" }
                                             title={
-                                                <span className="text-[20px] font-bold">
+                                                <span className="md:text-[20px] xsm:text-[16px] font-bold">
                                                 {cardData.pregunta || "Pregunta"}
                                                 </span>}
                                             >
-                                                <p className="">
+                                                <p className="md:text-[18px] xsm:text-[14 px] font-[400]">
                                                     {cardData.respuesta}
                                                 </p>
                                             </AccordionItem>
