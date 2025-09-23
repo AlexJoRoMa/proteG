@@ -174,6 +174,18 @@ export interface IzziSelection {
     canalesHd?: string,
     extrasMap?: {
         ott?: OttProps[]
+    },
+    extras?: {
+        idPaquete?: number,
+        titulo?: string,
+        descripcion?: string,
+        precioPaquete?: string,
+        precioAhorro?: string,
+        velocidadMinima?: number,
+        velocidadMaxima?: number,
+        extrasIncluidos?: string[],
+        canales?: string,
+        canalesHd?: string,
     }
 }
 
@@ -196,7 +208,8 @@ export type ResumenData = {
         domicilio: string,
         pagoAnticipado: string,
         paquete: string,
-        infoAdicional: string
+        infoAdicional: string,
+        titulo: string
     },
     boton: {
         comprobarPromociones: string,
@@ -218,7 +231,9 @@ export type ResumenData = {
             infoAdicional: string,
             postCapacidad: string,
             prevCapacidad: string,
-            titulo: string
+            titulo: string,
+            extrasIncluidos: string,
+            textoContratacion: string
         },
         tv: {
             titulo: string,
@@ -295,11 +310,13 @@ export type movilComponentFields = {
 }
 
 export type ottFields = {
-    description: string,
-    id: string,
-    price: number,
-    term: string,
-    title: string
+    idExtra: number,
+    maximo: number,
+    productId: string,
+    titulo: string,
+    costo: string,
+    descripcion: string,
+    grupo?: number
 }
 
 // copys
@@ -353,7 +370,7 @@ export type OffersCopys = {
 }
 
 export type CoberturaType = {
-    lat: string, 
+    lat: string,
     lng: string,
     zipCode: string
 }
