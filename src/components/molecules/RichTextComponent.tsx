@@ -254,8 +254,6 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
 
       ["embedded-entry-inline"]: (node: Block | Inline) => {
 
-        console.log('Rendering embedded-entry-inline:', node);
-
             const resourceNode = node as unknown as ContentfulEntryNode;
             const entry = resourceNode.data.target;
             const contentType = entry?.sys.contentType.sys.id;
