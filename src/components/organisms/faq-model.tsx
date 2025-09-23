@@ -3,6 +3,7 @@ import { FAQcomponentID, TabsDataFields } from '@/types/FAQTypes';
 import { ColorPickerType } from "@/types/IzziGOTypes";
 import { Entry, EntrySkeletonType } from "contentful";
 import TabFAQ from '../molecules/FAQSegmentosContent';
+import ButtonGhost from "../atoms/ButtonGhost";
 
 
 const FAQcomponent = async({id} : FAQcomponentID) => {
@@ -18,6 +19,9 @@ const FAQcomponent = async({id} : FAQcomponentID) => {
     const title = tabsEntry?.fields.title as string;
     const subTitle = tabsEntry?.fields.subTitle as string;
     const bgColor = (tabsEntry?.fields.colorDeFondo as unknown as ColorPickerType)?.value;
+    const hasBoton = tabsEntry?.fields.hasBtn as boolean;
+    const textBtn = tabsEntry?.fields.textBtn as string;
+    const linkBtn = tabsEntry?.fields.linkBoton as string;
 
     const entryData = tabsEntry?.fields.tabs as Entry<EntrySkeletonType<TabsDataFields>>[]
 
@@ -42,6 +46,15 @@ const FAQcomponent = async({id} : FAQcomponentID) => {
                     <div className="md:mt-10 xsm:mt-5 md:w-full xsm:w-[95%]">
                     <TabFAQ tabsData={entryData} />
                     </div>
+                    
+                    {hasBoton && (
+                        <div className="mt-10">
+                        <ButtonGhost classStyles={`border-black text-white bg-black text-[18px] leading-6  hover:!bg-white hover:!text-black
+                        w-full rounded-md h-[48px] md:w-[320px] xsm:w-[256px] `}
+                        text={textBtn as string} href={linkBtn as string}
+                        />
+                        </div>
+                    )}
                 </div>
 
 
