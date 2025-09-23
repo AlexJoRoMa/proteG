@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, MARKS, INLINES, Block, Inline } from '@contentful/rich-text-types';
