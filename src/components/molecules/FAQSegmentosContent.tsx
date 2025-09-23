@@ -3,19 +3,21 @@
 import { Tabs, Tab, Card, CardBody, Accordion, AccordionItem } from "@heroui/react";
 import { TabsDataFields, TabsContentProps, CardSegmentoFields } from "@/types/FAQTypes";
 import { Entry, EntrySkeletonType } from "contentful";
+import FAQAccordion  from '../molecules/FAQAccordionContent';
 
 export default function TabFAQ({ tabsData }: TabsContentProps) {
 
     const cardsInfo = tabsData as unknown as EntrySkeletonType<TabsDataFields>[];
 
     const checkTab = cardsInfo?.[0]?.fields.entryTitle ? true : false;
-    const defaultKey = cardsInfo?.[0]?.fields.entryTitle || "default";
 
-
-    
+    const defaultKey = cardsInfo?.[0]?.fields.entryTitle;
+    const accordionData = cardsInfo.flatMap((entry) => entry.fields.cards ?? []);
 
     return (
-        <Tabs
+        <>
+        {checkTab ? (
+            <Tabs
             aria-label="Dynamic tabs"
             items={cardsInfo}
             variant="underlined"
@@ -35,33 +37,16 @@ export default function TabFAQ({ tabsData }: TabsContentProps) {
                 <Tab key={item.fields.entryTitle} title={item.fields.entryTitle}>
                     <Card className="rounded-none  shadow-none bg-transparent ">
                         <CardBody >
-                            {item.fields.cards.map((card) =>{
-                                
-                                const cardData = card?.fields as CardSegmentoFields;
-
-                                return(
-                                    <div key={card.sys.id}>
-                                        <Accordion variant="light" className="border-b border-gray-150">
-                                            <AccordionItem
-                                            key={card.sys.id}
-                                            aria-label={cardData.pregunta || "Pregunta" }
-                                            title={
-                                                <span className="md:text-[20px] xsm:text-[16px] font-bold">
-                                                {cardData.pregunta || "Pregunta"}
-                                                </span>}
-                                            >
-                                                <p className="md:text-[18px] xsm:text-[14 px] font-[400]">
-                                                    {cardData.respuesta}
-                                                </p>
-                                            </AccordionItem>
-                                        </Accordion>
-                                    </div>
-                                )
-                            })}
+                            <FAQAccordion cards={item.fields.cards} />
                         </CardBody>
                     </Card>
                 </Tab>
             )}
         </Tabs>
+        ) : (
+            <FAQAccordion cards={accordionData} />
+        )}
+        
+        </>
     )
 }

@@ -9,13 +9,15 @@ export interface CardSegmentoFields {
   respuesta?: string;
 }
 
+export type CardSegmentoSkeleton = EntrySkeletonType<CardSegmentoFields>;
+
 export interface TabsDataFields {
   entryTitle: string;
-  cards: Entry<EntrySkeletonType<CardSegmentoFields>>[];
+  cards: Entry<CardSegmentoSkeleton>[];
 } 
 
 export type TabsContentProps = {
-    tabsData: EntrySkeletonType<TabsDataFields> | null
+    tabsData: Entry<EntrySkeletonType<TabsDataFields>>[] | null;
 }
 
 
