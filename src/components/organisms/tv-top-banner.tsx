@@ -43,19 +43,19 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
 
             {/*Nueva version con RichText */}
 
-            <div className="relative md:order-none xsm:order-1 z-10  h-auto ">
+            <div className="relative md:order-none xsm:order-1 z-10  h-auto md:max-w-6/12 mb-10 md:mb-0">
                {content && <RichTextComponent document={content} className="topBannerComponent" />}
             </div>
 
             {/*Imagen del lado derecho del banner */}
 
-            <div className="z-1 ml-auto xsm:order-2 md-order-none xsm:mt-9">
+            <div className={`z-1 md:m-auto 3xl:mt-0 ml-auto xsm:order-2 md-order-none xsm:mt ${movilURL && !image && 'md:hidden'}`}>
                 <picture>
-                    <source media="(max-width:576px)" srcSet={`https:${imageResponsive?.fields?.file?.url}`}/>
-                    {( image?.fields?.file?.url && imageResponsive?.fields?.file?.url ) && (
+                    <source media="(max-width:576px)" srcSet={`https:${imageResponsive?.fields?.file?.url || movilURL}`}/>
+                    {( image?.fields?.file?.url && imageResponsive?.fields?.file?.url || movilURL ) && (
                         <Image
                         alt={'Images'}
-                        src={`https:${ image?.fields?.file?.url || imageResponsive?.fields?.file?.url}`}
+                        src={`https:${ image?.fields?.file?.url || imageResponsive?.fields?.file?.url || movilURL}`}
                         width={(image?.fields?.file?.details as import("contentful").AssetDetails).image?.width || 600}
                         height={(image?.fields?.file?.details as import("contentful").AssetDetails).image?.height || 400}
                         />
@@ -67,7 +67,7 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                 
             {/* imagen responsiva */}
 
-                    <picture className="block ">
+                    <picture className={`xsm:hidden md:block ${movilURL && image && 'xsm:!block'}`}>
                         <source media="(max-width:576px)" srcSet={`https:${movilURL}`}/>
                         {( imgURL && movilURL ) && (
                             <Image
