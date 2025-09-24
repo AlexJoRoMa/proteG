@@ -29,6 +29,9 @@ export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
                         case "Movil":
                             cssClasses = "#D60270"
                             break;
+                        case "Canales":
+                            cssClasses = "#3F3F45"
+                            break;
                     }
 
                     return (
@@ -44,7 +47,7 @@ export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
                                     >
                                         <Image
                                             src={`https:${card.fields.image.fields.image.fields.file.url}`}
-                                            alt={card.fields.image.fields.altText}
+                                            alt={card.fields.image.fields.altText || 'icon'}
                                             loading="eager"
                                             width={72}
                                             height={72}
@@ -64,7 +67,8 @@ export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
                                             card.fields.isModal ? (
                                                 <ButtonModal
                                                     textBtn={card.fields.ctaText}
-                                                    classStyles="py-[14px] px-[16px] rounded-md w-full h-auto border-1 bg-transparent border-black-0 text-black-0 font-semibold leading-[24px] text-lg"
+                                                    classStyles={`py-[14px] px-[16px] rounded-md w-full h-auto border-1 border-black-0  font-semibold leading-[24px] text-lg
+                                                        ${!card.fields.colorBtn === true ? 'bg-black text-white' : 'bg-transparent text-black-0'}`}
                                                     idModal={typeof card.fields?.modal === 'object' && card.fields?.modal !== null && 'sys' in card.fields.modal ? card.fields.modal.sys.id : ''}
                                                     modalContentClassName="h-full xl:h-[70vh]  benefits-modal"
                                                     closeButtonStroke="black"
@@ -73,7 +77,8 @@ export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
                                                 <ButtonGhost
                                                     text={card.fields.ctaText}
                                                     href={card.fields.ctaLink}
-                                                    classStyles="py-[14px] px-[16px] rounded-md w-full h-auto border-1 border-black-0 text-black-0 font-semibold leading-[24px] text-lg"
+                                                    classStyles={`py-[14px] px-[16px] rounded-md w-full h-auto border-1 border-black-0 font-semibold leading-[24px] text-lg
+                                                        ${!card.fields.colorBtn === true ? 'bg-black text-white' : 'bg-transparent text-black-0'}`}
                                                 />
                                             )
                                         }

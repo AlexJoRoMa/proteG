@@ -18,6 +18,7 @@ export type BenefitsDataFields = {
     ctaText: string,
     type: string,
     cards: CardDataFields[],
+    colorBtn?: boolean,
 }
 
 export type CardDataFields = {
@@ -35,6 +36,7 @@ export type CardDataFields = {
         };
     },
     colorHr?: string,
+    colorBtn?: boolean,
     image: {
         fields: {
             image: {
