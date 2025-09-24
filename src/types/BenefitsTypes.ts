@@ -15,10 +15,12 @@ export type BenefitsContentProps = {
 export type BenefitsDataFields = {
     internalName: string,
     title: string,
+    subTitle: string;
     ctaText: string,
     type: string,
     cards: CardDataFields[],
     colorBtn?: boolean,
+    textUpBtn: string,
 }
 
 export type CardDataFields = {
