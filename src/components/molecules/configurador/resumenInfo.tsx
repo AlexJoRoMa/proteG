@@ -1,6 +1,7 @@
 'use client'
 
-import { internetComponentFields, movilComponentFields, ResumenData, tvComponentFields } from "@/types/ConfiguradorTypes";
+import { internetComponentFields, movilComponentFields, tvComponentFields } from "@/types/ConfiguradorTypes";
+import { ResumenData } from "@/types/ResumenCompra";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { Alert } from "@heroui/react";
 import { useEffect, useState } from "react";
@@ -18,6 +19,9 @@ function hasData(obj: unknown): boolean {
 }
 
 export default function ResumenInfo() {
+
+    // Componente de popups - notificaciones
+
     const { userAnswers, copysResumen, setInfoDrawerContent, cobertura } = useContent();
     const resumenCopys = copysResumen as ResumenData;
 

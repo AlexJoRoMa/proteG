@@ -1,64 +1,21 @@
-import { ComponentsFields, internetComponentFields, movilComponentFields, ResumenData, tvComponentFields } from "@/types/ConfiguradorTypes";
-import { useContent } from "@/utils/ConfiguradorProvider"
+import { internetComponentFields, movilComponentFields, OfferItem, tvComponentFields } from "@/types/ConfiguradorTypes";
+import { ResumenContentProps } from "@/types/ResumenCompra";
 import { FormatCurrency } from "@/utils/Currency";
-import { useEffect, useState } from "react";
 
-export default function ResumenPaquetes() {
+export default function ResumenPaquetes({userSelection, copys}: ResumenContentProps) {
 
-    const content = useContent();
-    const [seleccionUsuario, setSeleccionUsuario] = useState("");
-    const [precioSeleccion, setPrecioSeleccion] = useState<number | undefined>(undefined)
-
-    const paquetes = content.userAnswers as unknown as Record<string, ComponentsFields>;
-
-    const resumenCopys = content.copysResumen as ResumenData;
+    const paquetes = userSelection as unknown as Record<string, OfferItem>;
+    const resumenCopys = copys;
     const internet = paquetes.internet as unknown as internetComponentFields;
     const tv = paquetes.tv as unknown as tvComponentFields;
     const movil = paquetes.movil as unknown as movilComponentFields;
 
-    useEffect(() => {
-        setSeleccionUsuario(seleccionPaquetes(paquetes));
-        setPrecioSeleccion(
-            (internet?.total || 0) + (tv?.total || 0) + (tv?.ott?.total || 0) + (movil?.total || 0)
-        )
-    }, [paquetes])
-
-    function seleccionPaquetes(obj: any) {
-        switch (true) {
-            case !!obj?.internet && !!obj.tv && !!obj.movil:
-                return resumenCopys.seleccionPaquetes["4p"]
-
-            case !!obj?.internet && !!obj?.tv:
-                return resumenCopys.seleccionPaquetes["internet&tv"]
-
-            case !!obj?.internet && !!obj?.movil:
-                return resumenCopys.seleccionPaquetes["internet&movil"]
-
-            case !!obj?.tv && !!obj?.movil:
-                return resumenCopys.seleccionPaquetes["tv&movil"]
-
-            case !!obj?.internet:
-                return resumenCopys.seleccionPaquetes.internet
-
-            case !!obj?.tv:
-                return resumenCopys.seleccionPaquetes.tv
-
-            case !!obj?.movil:
-                return resumenCopys.seleccionPaquetes.movil
-
-            default:
-                return ""
-        }
-    }
 
     return (
         <>
-            {/* {
-                <div className="flex justify-between w-full font-bold leading-[24px] text-lg pt-[24px]">
-                    <h5>{seleccionUsuario}</h5>
-                    <h5>{seleccionUsuario && `$${precioSeleccion}`}</h5>
-                </div>
-            } */}
+
+            {/* Selección Internet - Doble Play */}
+
             {
                 (internet && internet !== null && Object.keys(internet).length > 0) &&
                 <div className="flex flex-col gap-[8px] border-b-1 border-b-gray-150 pt-[24px]">
@@ -75,11 +32,16 @@ export default function ResumenPaquetes() {
                             ${resumenCopys.paquetes.internet.prevCapacidad} ${internet.paquete.velocidadMinima}${resumenCopys.paquetes.internet.postCapacidad}`}
                         </p>
                         <p>
-                            {internet.paquete.extrasIncluidos[0]}
+                            {`${resumenCopys.paquetes.internet.textoContratacion} ${internet.paquete.velocidadMaxima}${resumenCopys.paquetes.internet.postCapacidad}`}
+                        </p>
+                        <p>
+                            {`${resumenCopys.paquetes.internet.extrasIncluidos} ${internet.paquete.extrasIncluidos && internet.paquete.extrasIncluidos[0]}`}
                         </p>
                     </div>
                 </div>
             }
+
+            {/* Selección Tv - Tv */}
 
             {
                 (tv && tv !== null && Object.keys(tv).length > 0) &&
@@ -96,6 +58,8 @@ export default function ResumenPaquetes() {
                     </div>
                 </div>
             }
+
+            {/* Selección Movil - Movil */}
 
             {
                 (movil && movil !== null && Object.keys(movil).length > 0) &&
@@ -116,7 +80,9 @@ export default function ResumenPaquetes() {
                 </div>
             }
 
-            {/* {
+            {/* Seleccion de otts adicionales - getPackageInfo */}
+
+            {
                 (tv && tv.ott?.planes && tv.ott?.planes.length > 0) &&
                 <div className="flex flex-col gap-[8px] pt-[24px] border-b-1 border-b-gray-150">
                     <div className="flex justify-between items-center w-full font-bold leading-[24px] text-lg">
@@ -127,16 +93,16 @@ export default function ResumenPaquetes() {
                         {tv.ott?.planes.map((item, index) => (
                             <div
                                 key={index}
-                                className="flex justify-between w-full font-normal leading-[24px] text-lg"
+                                className="flex justify-between w-full font-normal leading-[24px] text-base text-gray-250"
                             >
                                 <h5>
-                                    {`+ ${item.id} (${item.title})`}
+                                    {`+ ${item.titulo} (descripcion)`}
                                 </h5>
                             </div>
                         ))}
                     </div>
                 </div>
-            } */}
+            }
 
         </>
     )
