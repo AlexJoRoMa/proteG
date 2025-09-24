@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, MARKS, INLINES, Block, Inline } from '@contentful/rich-text-types';
@@ -251,8 +253,6 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
       },
 
       ["embedded-entry-inline"]: (node: Block | Inline) => {
-
-        console.log('Rendering embedded-entry-inline:', node);
 
             const resourceNode = node as unknown as ContentfulEntryNode;
             const entry = resourceNode.data.target;
