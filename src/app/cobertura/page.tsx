@@ -116,10 +116,11 @@ export default function Cobertura() {
         alert("Sorry, no position available.");
     }
 
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const data = Object.fromEntries(new FormData(e.currentTarget));
+        await createCookie({lat: lat, lng: lng, zipCode: postalCode});
 
         console.log(data)
     };
@@ -373,21 +374,18 @@ export default function Cobertura() {
                             classNames={inputStyles}
                         />
                         <div className='w-full pb-4 lg:flex lg:col-2 gap-4'>
-                            <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 my-4 border border-black' variant='bordered' onPress={handleLocationChange}>
+                            <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 my-4 border border-black text-[18px]' variant='bordered' onPress={handleLocationChange}>
                                 utilizar mi ubicación actual
                             </Button>
-                            <Button onPress={
-                                async () => {
-                                    await createCookie({lat: lat, lng: lng, zipCode: postalCode})
-                                }}
-                                 className={`w-full lg:w-1/2 ${adressSelected ? 'bg-black' : 'bg-gray-150'} text-white`} type="submit">
+                            <Button
+                                 className={`w-full lg:w-1/2 ${adressSelected ? 'bg-black' : 'bg-gray-150'} text-white text-[18px]`} isDisabled={!adressSelected} type="submit">
                                 confirmar dirección
                             </Button>
                         </div>
                     </Form>
                 </div>
             </div>
-
+            <div className='lg:w-1/2'>
                 <Map
                     mapId={'bf51a910020fa25a'}
                     style={{height: '400px'}}
@@ -400,6 +398,7 @@ export default function Cobertura() {
                 <AdvancedMarker ref={markerRef} position={markerPosition} />
                 </Map>
                 <MapHandler place={selectedPlace} marker={marker} />
+            </div>
             </APIProvider>
             </div>
         </div>
