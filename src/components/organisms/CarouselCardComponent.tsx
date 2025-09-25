@@ -10,6 +10,8 @@ import {CARDHOMECOMPONENT, CARDTVINTERNETMOVILCOMPONENT, CARDTVPAQUETESCOMPONENT
 import CardTVInternetMovilComponent from '../molecules/CardTVInternetMovilComponent'
 import CardTvPaquetesComponent from '../molecules/CardTVPaquetesComponente';
 import { colorPickerType } from '@/types/ColorPickerType'
+import RichTextComponent from '../molecules/RichTextComponent'
+import { Document } from '@contentful/rich-text-types'
 
 const CarouselCardComponent = async ({id}:CarouselCardProps) => {
 
@@ -18,7 +20,8 @@ const CarouselCardComponent = async ({id}:CarouselCardProps) => {
    const entryCarousel:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
       content_type: "carouselCardHomeModel",
       'sys.id': id,
-      select: ['fields.backgroundImage', 'fields.backgroundImageMobile' , 'fields.cardsCarousel', 'fields.bgColor', 'fields.colorArrow'],
+      select: ['fields.backgroundImage', 'fields.backgroundImageMobile' , 'fields.cardsCarousel', 'fields.bgColor', 'fields.colorArrow', 'fields.title'],
+      include: 2,
     }).then((entriesResponse) => {
       return entriesResponse.items
     })
@@ -29,7 +32,7 @@ const CarouselCardComponent = async ({id}:CarouselCardProps) => {
 
   return (
     <div 
-      className="CarouselCardComponent relative w-full h-full flex justify-center items-center"
+      className="CarouselCardComponent relative w-full h-full flex justify-center items-center flex-wrap"
       style={{ 
         backgroundColor: entryCarousel?.[0].fields?.bgColor 
           ? (entryCarousel?.[0].fields?.bgColor as colorPickerType)?.value 
@@ -57,6 +60,14 @@ const CarouselCardComponent = async ({id}:CarouselCardProps) => {
           </picture>
         </div>
       )}
+
+      {
+        entryCarousel && entryCarousel[0]?.fields?.title ? (
+          <div className='mb-10 text-center'>
+          <RichTextComponent document={entryCarousel[0]?.fields?.title as Document} />
+          </div>
+        ) : null
+      }
         
         <div className="relative z-10 w-full h-full">
           <CarouselProvider qtyCarousels={1} carouselConfigs={[{ options: { align: 'start' } }]} colorArrow={colorArrow}>

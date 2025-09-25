@@ -6,11 +6,11 @@ import { Asset } from 'contentful'
 import { INTERNETCOLOR, MOVILCOLOR, TVCOLOR } from '@/constants/CardComponent'
 import ButtonModal from '../atoms/ButtonModal'
 import { ColorOption } from '@/constants/ColorModalConstants'
+import RichTextComponent from './RichTextComponent'
+import { Document } from '@contentful/rich-text-types'
 
 const CardTVInternetMovilComponent = async({card}:CardPropType) => {
 
-    //Obteniendo el icono del card
-    const imageAsset = card?.fields?.icon as Asset;
     const type = card?.fields?.type as string;
     const color = type === 'internet' ? INTERNETCOLOR : type === 'tv' ? TVCOLOR : type === 'movil' ? MOVILCOLOR : '#000000';
 
@@ -28,19 +28,8 @@ const CardTVInternetMovilComponent = async({card}:CardPropType) => {
         }
 
         <div className='flex mb-[24px] items-center'>
-            {
-                card?.fields?.icon && imageAsset?.fields?.file?.url ? (
-                    <Image 
-                        src={`https:${imageAsset?.fields?.file?.url}` as string}
-                        alt={imageAsset?.fields?.title as string}
-                        width={32}
-                        height={32}
-                        className="mr-[16px]"
-                        priority
-                    />
-                ) : null
-            }
-            <h3 className='text-[24px] leading-[32px]'>{card.fields.title as string}</h3>
+            {/*<h3 className='text-[24px] leading-[32px]'>{card.fields.title as string}</h3>*/}
+            <RichTextComponent document={card?.fields?.tituloRich as Document} className='text-[24px] leading-[32px]'/>
         </div>
         <hr className="mb-[24px]" style={{ color: color }} />
         {
