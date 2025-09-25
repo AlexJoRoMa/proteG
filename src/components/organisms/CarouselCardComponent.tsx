@@ -6,7 +6,7 @@ import { CarouselProvider } from '@/utils/CarouselProvider'
 import { CarouselCardProps } from '@/types/CarouselCardTypes'
 import { contentfulClient } from '@/services/contentful/client'
 import { Asset, Entry, EntrySkeletonType } from 'contentful'
-import {CARDHOMECOMPONENT, CARDTVINTERNETMOVILCOMPONENT, CARDTVPAQUETESCOMPONENT} from '@/constants/CardComponent';
+import {CARDHOMECOMPONENT, CARDTVPAQUETESCOMPONENT} from '@/constants/CardComponent';
 import CardTVInternetMovilComponent from '../molecules/CardTVInternetMovilComponent'
 import CardTvPaquetesComponent from '../molecules/CardTVPaquetesComponente';
 import { colorPickerType } from '@/types/ColorPickerType'
