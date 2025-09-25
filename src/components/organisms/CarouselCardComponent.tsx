@@ -63,7 +63,7 @@ const CarouselCardComponent = async ({id}:CarouselCardProps) => {
 
       {
         entryCarousel && entryCarousel[0]?.fields?.title ? (
-          <div className='mb-10 text-center'>
+          <div className='mb-10 text-center titulo-carousel-card'>
           <RichTextComponent document={entryCarousel[0]?.fields?.title as Document} />
           </div>
         ) : null
@@ -77,7 +77,7 @@ const CarouselCardComponent = async ({id}:CarouselCardProps) => {
                     if( card.fields.type === CARDHOMECOMPONENT) {
                       return <CardHomeComponent key={index} card={card} />
                     }
-                    else if (typeof card.fields.type === 'string' && CARDTVINTERNETMOVILCOMPONENT.includes(card.fields.type)) {
+                    else if (typeof card.fields.type && card.fields.type !== CARDHOMECOMPONENT && card.fields.type !== CARDTVPAQUETESCOMPONENT) {
                       return <CardTVInternetMovilComponent key={index} card={card} />
                     }
                     else if (typeof card.fields.type === 'string' && CARDTVPAQUETESCOMPONENT.includes(card.fields.type)) {

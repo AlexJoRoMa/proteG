@@ -9,57 +9,94 @@ import { ColorOption } from '@/constants/ColorModalConstants'
 import RichTextComponent from './RichTextComponent'
 import { Document } from '@contentful/rich-text-types'
 
-const CardTVInternetMovilComponent = async({card}:CardPropType) => {
+const CardTVInternetMovilComponent = ({card}:CardPropType) => {
 
     const type = card?.fields?.type as string;
     const color = type === 'internet' ? INTERNETCOLOR : type === 'tv' ? TVCOLOR : type === 'movil' ? MOVILCOLOR : '#000000';
 
   return (
     <div className='px-[16px] md:px-[24px] py-[32px] bg-white h-[596px] rounded-md relative flex-col flex'>
-          {
-            card?.fields?.tagPromo ? (
+      {
+        card?.fields?.alternativeDescription ? (
+          <>
+            {card?.fields?.tituloRich && (
+              <RichTextComponent document={card?.fields?.tituloRich as Document} className='!h-min'/>
+            )}
+
+            <hr className={`mt-6 ${
+              card?.fields?.colorHr 
+                ? `border-none h-[2px] border-collapse rich-text-hr-${(card.fields.colorHr as ColorOption).toLowerCase()}`
+                : "border-t border-gray-400"
+            }`} />
+
+            <RichTextComponent document={card?.fields?.alternativeDescription as Document}/>
+          </>
+        ) : (
+          <>
+            {card?.fields?.tagPromo ? (
               <div
                 className="rounded-t-md px-6 py-1 mb-[32px] text-[20px] -mt-[32px] -mx-[16px] md:-mx-[24px] leading-6 w-(calc(100% + 32px)) text-center text-white"
                 style={{ backgroundColor: color }}
               >
                 {card.fields.tagPromo as string}
               </div>
-            ) : null
-        }
+            ) : null}
 
-        <div className='flex mb-[24px] items-center'>
-            {/*<h3 className='text-[24px] leading-[32px]'>{card.fields.title as string}</h3>*/}
-            <RichTextComponent document={card?.fields?.tituloRich as Document} className='text-[24px] leading-[32px]'/>
-        </div>
-        <hr className="mb-[24px]" style={{ color: color }} />
-        {
-          card?.fields?.priceBefore ? (
-            <p className='line-through text-(--color-gray-200) text-[24px] leading-[32px]'>{card.fields.priceBefore as string}</p>
-          ) : null
-        }
-        <p className='mb-4'>
-            <span className='text-[16px] leading-[24px]'>{card.fields.textBeforePrice as string}</span>
-            <span className='text-[56px] font-bold '>{card.fields.price as string}</span>
-            <span className='text-[16px] leading-[24px]'>{card.fields.textAfterPrice as string}</span>
-        </p>
-        <p className='text-[16px] leading-[24px] mb-[24px]'>{card.fields.description as string}</p>
-        <div className='grid grid-cols-4 grid-rows-2 gap-4 mb-[32px]'>
-             {
-                Array.isArray(card?.fields?.adds) && card?.fields?.adds?.map((add, index: number) => {
-                        const assetAdd = add as Asset;
-                    return assetAdd?.fields?.file?.url ? (
-                        <Image 
-                            key={index}
-                            src={`https:${assetAdd.fields?.file?.url}` as string}
-                            alt={`Add ${index + 1}`}
-                            width={56}
-                            height={14}
-                            priority
-                            className='w-auto'/>
-                    ) : null;
-                })
+            <div className='flex mb-[24px] items-center'>
+
+              {
+                card?.fields?.tituloRich && (
+                  <RichTextComponent document={card?.fields?.tituloRich as Document}/>
+                )
+              }
+              
+            </div>
+            <hr className={`mb-[24px] ${
+              card?.fields?.colorHr 
+                ? `border-none h-[2px] border-collapse rich-text-hr-${(card.fields.colorHr as ColorOption).toLowerCase()}`
+                : "border-t border-gray-400"
+            }`} />
+            {
+              card?.fields?.priceBefore ? (
+                <p className='line-through text-(--color-gray-200) text-[24px] leading-[32px]'>{card.fields.priceBefore as string}</p>
+              ) : null
             }
-        </div>
+            <p className='mb-4'>
+              <span className='text-[16px] leading-[24px]'>{card.fields.textBeforePrice as string}</span>
+              <span className='text-[56px] font-bold '>{card.fields.price as string}</span>
+              <span className='text-[16px] leading-[24px]'>{card.fields.textAfterPrice as string}</span>
+            </p>
+            {
+              card?.fields?.description && !card?.fields?.descriptionRich ? (
+                <p className='text-[16px] leading-[24px] mb-[24px]'>{card.fields.description as string}</p>
+              ) : null
+            }
+
+            {
+              card?.fields?.descriptionRich && (
+                <RichTextComponent document={card?.fields?.descriptionRich as Document}/>
+              )
+            }
+            <div className='grid grid-cols-4 grid-rows-2 gap-4 mb-[32px]'>
+                {
+                    Array.isArray(card?.fields?.adds) && card?.fields?.adds?.map((add, index: number) => {
+                            const assetAdd = add as Asset;
+                        return assetAdd?.fields?.file?.url ? (
+                            <Image 
+                                key={index}
+                                src={`https:${assetAdd.fields?.file?.url}` as string}
+                                alt={`Add ${index + 1}`}
+                                width={56}
+                                height={14}
+                                priority
+                                className='w-auto'/>
+                        ) : null;
+                    })
+                }
+            </div>
+          </>
+        )
+      }          
         <div className='mt-auto'>
             {
                 card?.fields.isModal == 'si' ? (
