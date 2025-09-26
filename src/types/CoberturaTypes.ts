@@ -25,3 +25,16 @@ export interface StepTabEntrySkeleton extends EntrySkeletonType{
   contentTypeId: 'stepTabEntry';
   fields: StepTabEntryFields;
 }
+
+export interface GeocodeType {
+  results: AddressType[],
+}
+
+export interface AddressType {
+  formatted_address: string,
+  address_components: [{
+      long_name: string,
+      short_name: string,
+      types: string[]
+  }]
+}
