@@ -5,6 +5,7 @@ import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { Entry, EntrySkeletonType } from "contentful";
 import Image from "next/image";
 import ButtonGhost from "../atoms/ButtonGhost";
+import ButtonModal from "../atoms/ButtonModal";
 
 export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
 
@@ -59,10 +60,23 @@ export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
                                 </CardBody>
                                 {card.fields.ctaText &&
                                     <CardFooter className="px-[24px] pb-[32px]">
-                                        <ButtonGhost
-                                            text={card.fields.ctaText}
-                                            classStyles="py-[14px] px-[16px] rounded-md w-full h-auto border-1 border-black-0 text-black-0 font-semibold leading-[24px] text-lg"
-                                        />
+                                        {
+                                            card.fields.isModal ? (
+                                                <ButtonModal
+                                                    textBtn={card.fields.ctaText}
+                                                    classStyles="py-[14px] px-[16px] rounded-md w-full h-auto border-1 bg-transparent border-black-0 text-black-0 font-semibold leading-[24px] text-lg"
+                                                    idModal={typeof card.fields?.modal === 'object' && card.fields?.modal !== null && 'sys' in card.fields.modal ? card.fields.modal.sys.id : ''}
+                                                    modalContentClassName="h-full xl:h-[70vh]  benefits-modal"
+                                                    closeButtonStroke="black"
+                                                />
+                                            ) : (
+                                                <ButtonGhost
+                                                    text={card.fields.ctaText}
+                                                    href={card.fields.ctaLink}
+                                                    classStyles="py-[14px] px-[16px] rounded-md w-full h-auto border-1 border-black-0 text-black-0 font-semibold leading-[24px] text-lg"
+                                                />
+                                            )
+                                        }
                                     </CardFooter>
                                 }
                             </Card>
