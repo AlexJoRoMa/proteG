@@ -1,4 +1,5 @@
-import { PackageInfo } from "@/types/ConfiguradorTypes";
+import { CoberturaType, PackageInfo } from "@/types/ConfiguradorTypes";
+import { redirect } from "next/navigation";
 
 async function getToken() {
     try {
@@ -36,12 +37,22 @@ async function getToken() {
 }
 
 
-export async function getOfertas() {
-    // TODO: aceptar valores dinamicos para el body
-
-    const accessToken = await getToken();
+export async function getOfertas(dataCobertura: CoberturaType) {
 
     try {
+
+        if ( !dataCobertura.zipCode || !dataCobertura.lat || !dataCobertura.lng ) {
+            console.error("Datos de cobertura inválidos:", dataCobertura);
+            redirect("/error");
+        }
+
+        const accessToken = await getToken();
+
+        if (!accessToken) {
+            console.error("No se pudo obtener el accessToken");
+            redirect("/error");
+        }
+
         const response = await fetch(
             "https://test.izziapiweb.mx/izzi/ms/purchaseServices/sales/offersByType",
             {
@@ -51,12 +62,13 @@ export async function getOfertas() {
                     Authorization: `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify({
-                    "postalCode": "11320",
-                    "latitude": 19.447547,
-                    "longitude": -99.1745907,
+                    "postalCode": dataCobertura.zipCode,
+                    "latitude": Number(dataCobertura.lat),
+                    "longitude": Number(dataCobertura.lng),
                     "negocios": false,
                     "sky": false
                 }),
+                cache: "no-store",
             }
         );
 
@@ -95,7 +107,7 @@ export async function getPackageInfo(paqueteInfo: PackageInfo) {
     );
 
     if (!response.ok) {
-        return new Response(JSON.stringify({ error: 'API fetch error'}), { status: 500 })
+        return new Response(JSON.stringify({ error: 'API fetch error' }), { status: 500 })
     }
 
     const data = await response.json();

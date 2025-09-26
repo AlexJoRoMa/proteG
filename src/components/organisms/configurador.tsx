@@ -1,5 +1,5 @@
 import { contentfulClient } from "@/services/contentful/client";
-import { ConfiguradorCopys, OttsImages, ResumenIcon } from "@/types/ConfiguradorTypes";
+import { CoberturaType, ConfiguradorCopys, OttsImages, ResumenIcon } from "@/types/ConfiguradorTypes";
 import { Entry, EntrySkeletonType } from "contentful";
 import { ConfiguradorProvider } from "@/utils/ConfiguradorProvider";
 import { componentMap } from "@/lib/configurador/dynamic-map";
@@ -12,15 +12,41 @@ import { getOfertas } from "@/services/izzi/configurador";
 import LinkModal from "../atoms/LinkModal";
 import TeAyudamosModalComponent from "../layouts/modals/TeAyudamosModalComponent";
 import ExitGuard from "@/utils/guards/ExitGuard";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const Arrow =
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M15 5L9 12L15 19" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 
+async function getCobertura() {
+    const cookieStore = await cookies()
+
+    const existZipCode = cookieStore.has('zipCode');
+    const existLat = cookieStore.has('lat');
+    const existLng = cookieStore.has('lng');
+
+    if (existZipCode && existLat && existLng) {
+        const lat = cookieStore.get('lat');
+        const lng = cookieStore.get('lng');
+        const zipCode = cookieStore.get('zipCode');
+
+        return {
+            lat: lat?.value,
+            lng: lng?.value,
+            zipCode: zipCode?.value
+        }
+    } 
+    else {
+        redirect('/cobertura');
+    }
+}
+
 export default async function Configurador() {
 
-    const dataOffersEntry = await getOfertas();
+    const getCookies = await getCobertura() as unknown as CoberturaType;
+    const dataOffersEntry = await getOfertas(getCookies);
 
     const resumenIcon = await contentfulClient.getEntries({
         content_type: 'media',
@@ -61,6 +87,7 @@ export default async function Configurador() {
             ottsImages={ottImages}
             cobertura={cobertura}
         >
+            {/* Guard detector de salida del flujo */}
             <ExitGuard />
             <section className="border-t-1 border-t-gray-150">
                 <div className="flex flex-col xl:grid xl:grid-cols-3 gap-[24px] xl:mx-md 4xl:mx-xl">
@@ -78,6 +105,7 @@ export default async function Configurador() {
                                 <h4 className='font-bold text-xl xl:text-[32px] leading-[24px] xl:leading-[40px]'>{entryTitle}</h4>
                             </div>
 
+                            {/* Mapeo dinamico de pasos del configurador según cobertura */}
                             <div className='grid gap-[24px]'>
                                 {
                                     cobertura ?
@@ -119,6 +147,8 @@ export default async function Configurador() {
                             </div>
                         </div>
                     </div>
+
+                    {/* Resumen de pedido & Sticky mobile */}
                     <div className="xl:mt-[34px] sticky z-10 bottom-0 xl:static xl:top-auto xl:z-0">
                         <div className="block xl:hidden mx-[16px] mb-[16px] xl:mx-0">
                             <ResumenInfo />
