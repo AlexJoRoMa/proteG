@@ -22,14 +22,14 @@ export type PriceComponentProps = {
 };
 
 export type ButtonModalProps = {
-  textBtn: string | React.ReactNode;
-  classStyles?: string;
-  idModal?: string;
-  children?: React.ReactNode;
-  closeButtonStroke?: string; // Color del stroke del botón de cerrar
-  modalContentClassName?: string; // Clases adicionales para el ModalContent
-  startContent?: React.ReactNode; // Contenido que se muestra al inicio del botón
-  backdropColor?: string; // Color del backdrop del modal, por defecto "black"
+    textBtn: string | React.ReactNode;
+    classStyles?: string;
+    idModal?: string;
+    children?: React.ReactNode;
+    closeButtonStroke?: string; // Color del stroke del botón de cerrar
+    modalContentClassName?: string; // Clases adicionales para el ModalContent
+    startContent?: React.ReactNode; // Contenido que se muestra al inicio del botón
+    backdropColor?: string; // Color del backdrop del modal, por defecto "black"
     hrColor?: ColorOption; // Opción de color para el HR del RichTextComponent
 }
 
