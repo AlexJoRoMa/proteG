@@ -13,7 +13,9 @@ import BloqueSeparador from '@/components/organisms/bloque-separador';
 import ConIzziTv from '@/components/organisms/tv-top-banner';
 import IzziGoBloque from '@/components/organisms/tv-izzi-go';
 import TVCanalesSegmento from '@/components/organisms/tv-canales-segmentos';
-import MediaBlockModelID from '@/components/organisms/mediablockComponent'
+import MediaBlockModelID from '@/components/organisms/mediablockComponent';
+import RichTextComponentServer from '../../components/organisms/RichTextComponentServer';
+import CarouselImagesComponent from "@/components/organisms/CarouselImagesComponent";
 
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
@@ -32,5 +34,7 @@ export const componentMap = {
   IzziGoBloque: IzziGoBloque,
   tabCanalesTV: TVCanalesSegmento,
   mediaBlock: MediaBlockModelID,
-  cardsContratacionRapida: ContratacionRapida
+  cardsContratacionRapida: ContratacionRapida,
+  richtext:RichTextComponentServer,
+  carouselImages: CarouselImagesComponent,
 };
