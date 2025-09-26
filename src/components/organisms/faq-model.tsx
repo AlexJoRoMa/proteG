@@ -29,21 +29,21 @@ const FAQcomponent = async({id} : FAQcomponentID) => {
         
         <div className={` w-[100%] relative h-auto`}
         style={{backgroundColor: bgColor }}>
-            <div className="md:mx-md 2xl:mx-xl flex">
+            <div className="md:mx-md 2xl:mx-xl flex ">
 
                 {/* titulos */}
-                <div className=" flex flex-col w-full self-center items-center my-15">
-                    <h1 className="lg:text-[36px] md:text-[30px] xsm:text-[32px] font-bold text-center
+                <div className=" w-full xsm:w-[95%] mx-auto flex flex-col items-center my-15">
+                    <h1 className=" lg:text-[36px] md:text-[30px] xsm:text-[32px] font-bold text-center
                     ">
                         {title}
                     </h1>
-                    <h2 className="lg:text-[18px] md:text-[20px] xsm:text-[16px] text-center
+                    <h2 className=" lg:text-[18px] md:text-[20px] xsm:text-[16px] text-center
                     mt-5">
                         {subTitle}
                         </h2>
 
                     {/* tabs */}
-                    <div className="md:mt-10 xsm:mt-5 md:w-full xsm:w-[95%]">
+                    <div className=" md:mt-10 xsm:mt-5 w-full ">
                     <TabFAQ tabsData={entryData} />
                     </div>
                     

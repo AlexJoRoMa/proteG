@@ -2,7 +2,7 @@
 import { Accordion, AccordionItem } from "@heroui/react";
 import { CardSegmentoSkeleton } from "@/types/FAQTypes";
 import { EntrySkeletonType, Entry } from "contentful";
-
+import { Icon } from "@iconify/react";
 
 const safeText = (value: unknown, fallback = ""): string =>
   typeof value === "string" ? value : fallback;
@@ -30,6 +30,13 @@ export default function FAQAccordion({ cards }: FAQAccordionProps) {
                     {safeText(cardData.pregunta, "Pregunta")}
                   </span>
                 }
+                indicator={({ isOpen }) => (
+                  <Icon
+                    icon={isOpen ? "gravity-ui:chevron-right" : "gravity-ui:chevron-down"}
+                    className="text-gray-500"
+                  />
+                )}
+
               >
                 <p className="md:text-[18px] xsm:text-[14px] font-[400]">
                   {safeText(cardData.respuesta)}

@@ -25,6 +25,7 @@
     "@contentful/rich-text-react-renderer": "^16.1.0",
     "@contentful/rich-text-types": "^17.1.0",
     "@heroui/react": "^2.8.1",
+    "@iconify/react": "^6.0.2",
     "@react-google-maps/api": "^2.20.7",
     "@types/react-google-recaptcha": "^2.1.9",
     "@uidotdev/usehooks": "^2.4.1",
