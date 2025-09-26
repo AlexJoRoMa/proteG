@@ -7,26 +7,7 @@ import { Entry, EntrySkeletonType } from "contentful";
 import Image from "next/image";
 import { useState } from "react";
 import RecomendadorSugestions from "./recomendadorSugestions";
-
-export const CheckIcon = (props: any) => {
-    return (
-        <svg
-            aria-hidden="true"
-            fill="none"
-            focusable="false"
-            height="4px"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={3}
-            viewBox="0 0 24 24"
-            width="4px"
-            {...props}
-        >
-            <polyline points="20 6 9 17 4 12" />
-        </svg>
-    );
-};
+import { CheckIcon } from "@/constants/IconsConstants";
 
 export default function RecomendadorQuestionary() {
 

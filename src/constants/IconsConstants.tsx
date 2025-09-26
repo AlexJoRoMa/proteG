@@ -1,4 +1,24 @@
-export default function LoaderIcon() {
+export const CheckIcon = (props: any) => {
+    return (
+        <svg
+            aria-hidden="true"
+            fill="none"
+            focusable="false"
+            height="4px"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={3}
+            viewBox="0 0 24 24"
+            width="4px"
+            {...props}
+        >
+            <polyline points="20 6 9 17 4 12" />
+        </svg>
+    );
+};
+
+export function LoaderIcon() {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -33,5 +53,5 @@ export default function LoaderIcon() {
                 </clipPath>
             </defs>
         </svg>
-    );
+    )
 }

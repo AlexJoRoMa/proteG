@@ -5,7 +5,7 @@ import { useRecomendadorContent } from "@/utils/RecomendadorProvider"
 import { Entry, EntrySkeletonType } from "contentful";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { carouselServerAction } from "../organisms/carouselServerAction";
-import LoaderIcon from "../atoms/LoaderIcon";
+import { LoaderIcon } from "@/constants/IconsConstants";
 
 export default function RecomendadorSugestions({ newSelectionAction }: RecomendadorSugestionsProps) {
 
@@ -33,7 +33,7 @@ export default function RecomendadorSugestions({ newSelectionAction }: Recomenda
             }
         }
         renderCarousel();
-    }, []);
+    }, [filterData.length]);
 
     function filterCards(data: unknown, velRecomendada: string | null): Entry<EntrySkeletonType>[] {
 

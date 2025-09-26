@@ -62,7 +62,7 @@ const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
       )}
 
       {
-        entryCarousel && entryCarousel[0]?.fields?.title ? (
+        entryCarousel && entryCarousel[0]?.fields?.title && !recomendador ? (
           <div className='mb-10 text-center titulo-carousel-card'>
           <RichTextComponent document={entryCarousel[0]?.fields?.title as Document} />
           </div>
