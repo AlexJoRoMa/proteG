@@ -1,3 +1,5 @@
+"use client";
+
 import { ButtonModalComponentProps } from '@/types/ModalComponentTypes'
 import { Button } from '@heroui/react'
 import Link from 'next/link'
