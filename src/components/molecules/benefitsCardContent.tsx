@@ -10,10 +10,12 @@ import ButtonModal from "../atoms/ButtonModal";
 export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
 
     const cardInfo = cards as unknown as EntrySkeletonType<CardDataFields>[];
+    
 
     return (
         <div className="overflow-x-auto lg:overflow-visible w-full">
-            <div className="flex lg:grid lg:grid-cols-3 gap-[24px] mx-[16px] h-fit md:mx-md 2xl:mx-xl min-w-max lg:min-w-0">
+            <div className="flex lg:grid lg:grid-cols-3 gap-[24px] mx-[16px] h-fit md:mx-md 2xl:mx-xl min-w-max lg:min-w-0
+            ">
                 {cardInfo.map((card) => {
 
                     const cardId = card as unknown as Entry<EntrySkeletonType<CardDataFields>>;
