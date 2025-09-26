@@ -1,6 +1,6 @@
 'use client'
 import React, {useState, useEffect, useRef} from 'react'
-import {Button, Form, Input} from '@heroui/react'
+import {Button, Form, Input, Checkbox} from '@heroui/react'
 import {
     APIProvider,
     AdvancedMarker,
@@ -90,7 +90,7 @@ export default function Cobertura() {
         setLng(lng.toString());
         mapAddressFields(data);
         } catch (err) {
-        setError('Failed gettin geolocation');
+        setError('Failed getting geolocation');
         console.error(err);
         }
     };
@@ -125,10 +125,7 @@ export default function Cobertura() {
         console.log(data)
     };
 
-
-    // TODO: Mapear campos que responde api de google para acceder desde el template
     const mapAddressFields = (data: GeocodeType) => {
-        console.log(data)
         if (data && data.results) data.results[0].address_components.map(item => {
             console.log(item);
             switch (item.types[0]) {
@@ -220,8 +217,6 @@ export default function Cobertura() {
       };
 
       const HandleMapClick = (ev: MapMouseEvent) => {
-        console.log('camera changed: ', ev.detail);
-        // const position: google.maps.LatLng | google.maps.LatLngLiteral = ev.detail?.latLng;
         setMarkerPosition(ev.detail?.latLng as google.maps.LatLng | google.maps.LatLngLiteral);
         if (map){
             map.panTo(ev.detail?.latLng as google.maps.LatLng | google.maps.LatLngLiteral);
@@ -373,12 +368,15 @@ export default function Cobertura() {
                             onValueChange={setPhone}
                             classNames={inputStyles}
                         />
+                        <Checkbox defaultSelected={false} color="default" className='text-gray-450 pt-4 pb-8'>
+                            Acepto los <span className='text-black'>Avisos de Privacidad</span>
+                        </Checkbox>
                         <div className='w-full pb-4 lg:flex lg:col-2 gap-4'>
-                            <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 my-4 border border-black text-[18px]' variant='bordered' onPress={handleLocationChange}>
+                            <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange}>
                                 utilizar mi ubicación actual
                             </Button>
                             <Button
-                                 className={`w-full lg:w-1/2 ${adressSelected ? 'bg-black' : 'bg-gray-150'} text-white text-[18px]`} isDisabled={!adressSelected} type="submit">
+                                 className={`w-full lg:w-1/2 ${adressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} isDisabled={!adressSelected} type="submit">
                                 confirmar dirección
                             </Button>
                         </div>
