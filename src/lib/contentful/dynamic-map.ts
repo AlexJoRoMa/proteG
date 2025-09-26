@@ -8,6 +8,7 @@ import ContratacionRapida from '@/components/organisms/contratacion-rapida';
 import TodoEnUnoComp from '@/components/organisms/todo-uno';
 import AccesoConfigurador from '@/components/organisms/acceso-configurador';
 import CoberturaModel from '@/components/organisms/cobertura-model';
+import Recomendador from "@/components/organisms/recomendador";
 import TVBeneficiosProductos from '@/components/organisms/tv-beneficios-productos';
 import BloqueSeparador from '@/components/organisms/bloque-separador';
 import ConIzziTv from '@/components/organisms/tv-top-banner';
@@ -37,4 +38,5 @@ export const componentMap = {
   cardsContratacionRapida: ContratacionRapida,
   richtext:RichTextComponentServer,
   carouselImages: CarouselImagesComponent,
+  recomendador: Recomendador,
 };

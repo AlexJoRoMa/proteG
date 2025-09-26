@@ -13,11 +13,11 @@ import { colorPickerType } from '@/types/ColorPickerType'
 import RichTextComponent from '../molecules/RichTextComponent'
 import { Document } from '@contentful/rich-text-types'
 
-const CarouselCardComponent = async ({id}:CarouselCardProps) => {
+const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
 
   // Obtener informacion de los carruseles desde contentful
 
-   const entryCarousel:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
+    const entryCarousel:Entry<EntrySkeletonType, undefined, string>[] | null = recomendador ? recomendador : await contentfulClient.getEntries({
       content_type: "carouselCardHomeModel",
       'sys.id': id,
       select: ['fields.backgroundImage', 'fields.backgroundImageMobile' , 'fields.cardsCarousel', 'fields.bgColor', 'fields.colorArrow', 'fields.title'],
@@ -62,7 +62,7 @@ const CarouselCardComponent = async ({id}:CarouselCardProps) => {
       )}
 
       {
-        entryCarousel && entryCarousel[0]?.fields?.title ? (
+        entryCarousel && entryCarousel[0]?.fields?.title && !recomendador ? (
           <div className='mb-10 text-center titulo-carousel-card'>
           <RichTextComponent document={entryCarousel[0]?.fields?.title as Document} />
           </div>
