@@ -1,4 +1,5 @@
 import { Asset } from "contentful";
+import { ColorOption } from "@/constants/ColorModalConstants";
 
 export type FeatureListItemComponentProps = {
   title?: string;
@@ -10,33 +11,37 @@ export type TextAndImageComponentProps = {
   text?: string;
   image?: Asset
   fontSize?: string;
+  orientation?: 'horizontal' | 'vertical';
 };
 
 export type PriceComponentProps = {
   textBeforePrice?: string;
   textAfterPrice?: string;
   price?: string;
+  align?: 'horizontal' | 'vertical';
 };
 
 export type ButtonModalProps = {
-  textBtn: string | React.ReactNode;
-  classStyles?: string;
-  idModal?: string;
-  children?: React.ReactNode;
-  closeButtonStroke?: string; // Color del stroke del botón de cerrar
-  modalContentClassName?: string; // Clases adicionales para el ModalContent
-  startContent?: React.ReactNode; // Contenido que se muestra al inicio del botón
-  backdropColor?: string; // Color del backdrop del modal, por defecto "black"
+    textBtn: string | React.ReactNode;
+    classStyles?: string;
+    idModal?: string;
+    children?: React.ReactNode;
+    closeButtonStroke?: string; // Color del stroke del botón de cerrar
+    modalContentClassName?: string; // Clases adicionales para el ModalContent
+    startContent?: React.ReactNode; // Contenido que se muestra al inicio del botón
+    backdropColor?: string; // Color del backdrop del modal, por defecto "black"
+    hrColor?: ColorOption; // Opción de color para el HR del RichTextComponent
 }
 
 export type LinkModalProps = {
-  text: string | React.ReactNode;
-  classNames?: string;
-  idModal: string;
-  children?: React.ReactNode;
-  closeButtonStroke?: string; // Color del stroke del botón de cerrar
-  modalContentClassName?: string; // Clases adicionales para el ModalContent
-  backdropColor?: string; // Color del backdrop del modal, por defecto "black"
+    text: string | React.ReactNode;
+    classNames?: string;
+    idModal: string;
+    children?: React.ReactNode;
+    closeButtonStroke?: string; // Color del stroke del botón de cerrar
+    modalContentClassName?: string; // Clases adicionales para el ModalContent
+    backdropColor?: string; // Color del backdrop del modal, por defecto "black"
+    hrColor?: ColorOption; // Opción de color para el HR del RichTextComponent
 }
 
 export type ButtonModalComponentProps = {
@@ -46,13 +51,14 @@ export type ButtonModalComponentProps = {
 };
 
 export type ModalType = {
-  isOpen: boolean;
-  onOpenChange: () => void;
-  children: React.ReactNode;
-  onClose?: () => void; // Añadido para manejar el cierre del modal
-  closeButtonStroke?: string; // Color del stroke del botón de cerrar, por defecto "white"
-  modalContentClassName?: string; // Clases adicionales para el ModalContent
-  backdropColor?: string; // Color del backdrop del modal, por defecto "black"
+    isOpen: boolean;
+    onOpenChange: () => void;
+    children: React.ReactNode;
+    onClose?: () => void; // Añadido para manejar el cierre del modal
+    closeButtonStroke?: string; // Color del stroke del botón de cerrar, por defecto "white"
+    modalContentClassName?: string; // Clases adicionales para el ModalContent
+    backdropColor?: string; // Color del backdrop del modal, por defecto "black"
+    hrColor?: ColorOption; // Opción de color para el HR del RichTextComponent
 }
 
 export interface TeLlamamosModalComponentProps {
@@ -118,6 +124,14 @@ export interface TeLlamamosFormModalProps {
     successButtonText?: string;
   };
 }
+
+export interface ModalContentEntry {
+    fields: {
+        content: Document;
+        internalName?: string;
+    };
+}
+
 
 export interface ConfiguradorCardsModalProps {
   modalData?: ModalData,

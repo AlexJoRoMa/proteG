@@ -12,7 +12,8 @@ export async function GET(request: Request) {
     const entry = await contentfulClient.getEntries({
        content_type: 'modalComponentModel',
       'sys.id': id,
-       select: ['fields.sideImage', 'fields.modalContent', 'fields.imageResponsive']
+       select: ['fields.sideImage', 'fields.modalContent', 'fields.imageResponsive'],
+       include: 2 // Incluir referencias hasta 2 niveles de profundidad
     });
 
     return new Response(JSON.stringify(entry), { status: 200 });

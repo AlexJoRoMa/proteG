@@ -4,6 +4,8 @@ import ButtonGhost from '../atoms/ButtonGhost'
 import { CardPropType } from '@/types/CarouselCardsTypes'
 import { Asset } from 'contentful'
 import { INTERNETCOLOR, MOVILCOLOR, TVCOLOR } from '@/constants/CardComponent'
+import ButtonModal from '../atoms/ButtonModal'
+import { ColorOption } from '@/constants/ColorModalConstants'
 
 const CardTVInternetMovilComponent = async({card}:CardPropType) => {
 
@@ -70,8 +72,20 @@ const CardTVInternetMovilComponent = async({card}:CardPropType) => {
             }
         </div>
         <div className='mt-auto'>
-            <ButtonGhost classStyles='w-full mb-4 border-[1px solid black] rounded-md text-black text-[16px] md:text-[18px] font-bold'
-                 text={card?.fields?.textBtn1 as string} href={card?.fields?.urlBtn1 as string} />
+            {
+                card?.fields.isModal == 'si' ? (
+                    <ButtonModal
+                        classStyles='w-full mb-4 border-[1px solid black] rounded-md text-black text-[16px] md:text-[18px] font-bold'
+                        textBtn={card?.fields?.textBtn1 as string}
+                        idModal={typeof card?.fields?.modal === 'object' && card?.fields?.modal !== null && 'sys' in card.fields.modal ? (card.fields.modal as { sys: { id: string } }).sys.id : ''}
+                        modalContentClassName="xl:h-auto h-full"
+                        hrColor={card?.fields?.colorHr as ColorOption}
+                    />
+                ) : (
+                    <ButtonGhost classStyles='w-full mb-4 border-[1px solid black] rounded-md text-black text-[16px] md:text-[18px] font-bold'
+                        text={card?.fields?.textBtn1 as string} href={card?.fields?.urlBtn1 as string} />
+                )
+            }
             <ButtonGhost classStyles='w-full rounded-md bg-black text-white border-none font-bold text-[16px] md:text-[18px]'
                 text={card?.fields?.textBtn2 as string} href={card?.fields?.urlBtn2 as string} />
         </div>
