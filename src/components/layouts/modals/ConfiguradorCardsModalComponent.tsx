@@ -29,11 +29,23 @@ const ConfiguradorCardsModalContent = ({ modalData, onClose, variables, type }: 
     const { data: contentfulData, error: contentfulError, isLoading: contentfulLoading } = useSWR(
         ['microcopies', type],
         () => fetchMicrocopies(`modal-configurador-${type}`),
+        {
+            dedupingInterval: 3600000, // 1 hora
+            revalidateOnFocus: false,
+            keepPreviousData: true,
+            revalidateIfStale: false,
+        }
     );
 
     const { data: icons, error: errorIcons, isLoading: loadingIcons } = useSWR(
         ['icons', type],
         () => fetchMediaBlocks(type),
+        {
+            dedupingInterval: 3600000, // 1 hora
+            revalidateOnFocus: false,
+            keepPreviousData: true,
+            revalidateIfStale: false,
+        }
     );
 
     const contentfulIcons = icons?.items as IconProps[];

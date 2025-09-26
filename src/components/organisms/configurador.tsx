@@ -14,11 +14,7 @@ import TeAyudamosModalComponent from "../layouts/modals/TeAyudamosModalComponent
 import ExitGuard from "@/utils/guards/ExitGuard";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-
-export const Arrow =
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M15 5L9 12L15 19" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+import { Arrow } from "@/constants/IconsConstants";
 
 async function getCobertura() {
     const cookieStore = await cookies()
@@ -37,7 +33,7 @@ async function getCobertura() {
             lng: lng?.value,
             zipCode: zipCode?.value
         }
-    } 
+    }
     else {
         redirect('/cobertura');
     }
@@ -98,7 +94,7 @@ export default async function Configurador() {
                                     href={entryBackButtonUrl}
                                 >
                                     <div className="flex flex-row gap-[4px] items-center">
-                                        <p>{Arrow}</p>
+                                        <p><Arrow /></p>
                                         <h5 className="font-bold leading-[24px] text-base xl:text-xl text-black-0">{entryBackButton}</h5>
                                     </div>
                                 </Link>

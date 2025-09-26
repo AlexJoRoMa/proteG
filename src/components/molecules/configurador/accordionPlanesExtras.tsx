@@ -1,4 +1,4 @@
-import LoaderIcon from "@/components/atoms/LoaderIcon";
+import { CheckPlanesIcon, DropIcon, LoaderIcon } from "@/constants/IconsConstants";
 import { OttProps, OttsImages, PackageInfo } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
@@ -7,34 +7,6 @@ import { EntrySkeletonType } from "contentful";
 import Image from "next/image";
 import { Key, useState } from "react";
 import useSWR from "swr";
-
-const DropIcon = () => {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M19 9L12 15L5 9" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-    )
-}
-
-export const CheckIcon = (props: any) => {
-    return (
-        <svg
-            aria-hidden="true"
-            fill="none"
-            focusable="false"
-            height="4px"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            viewBox="0 0 24 24"
-            width="4px"
-            {...props}
-        >
-            <polyline points="20 6 9 17 4 12" />
-        </svg>
-    );
-};
 
 const fetchMicrocopies = async (key: string) => {
     const res = await fetch(`/api/microcopies?key=${key}`);
@@ -77,11 +49,23 @@ export default function AccordionPlanesExtras() {
     const { data: contentfulData, error: contentfulError, isLoading: contentfulLoading } = useSWR(
         ['microcopies', 'configurador'],
         () => fetchMicrocopies(`Configurador`),
+        {
+            dedupingInterval: 3600000, // 1 hora
+            revalidateOnFocus: false,
+            keepPreviousData: true,
+            revalidateIfStale: false,
+        }
     );
 
     const { data: ottsData, error: errorOtts, isLoading: loadingOtts } = useSWR(
         shouldFetch ? ['api/configurador/planes-extras', packageInfo] : null,
         fetchGetPackageInfo,
+        {
+            dedupingInterval: 3600000, // 1 hora
+            revalidateOnFocus: false,
+            keepPreviousData: true,
+            revalidateIfStale: false,
+        }
     );
 
     let planesExtras: OttProps[] | null = null;
@@ -189,7 +173,7 @@ export default function AccordionPlanesExtras() {
                         <h1>De momento no fue posible cargar mas servicios</h1>
                     </div>
                 )}
-                
+
                 {planesExtras && planesExtras.length > 0 && (
                     <div className="grid grid-cols-1 2xl:grid-cols-2 gap-[16px] 2xl:gap-[24px] auto-rows-fr">
 
@@ -255,7 +239,7 @@ export default function AccordionPlanesExtras() {
                                                     className={`w-full h-full rounded-md flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0' : 'bg-white-0'}`}
                                                     aria-pressed={isSelected}
                                                 >
-                                                    {isSelected && <CheckIcon className="w-[16px] h-[16px] text-white-0" />}
+                                                    {isSelected && <CheckPlanesIcon className="w-[16px] h-[16px] text-white-0" />}
                                                 </span>
                                             </div>
                                         </div>

@@ -2,31 +2,12 @@
 
 import LinkModal from "@/components/atoms/LinkModal";
 import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
+import { CheckPlanesIcon } from "@/constants/IconsConstants";
 import { MovilPlansInfo, OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader, Tab, Tabs } from "@heroui/react";
 import { useState } from "react";
-
-export const CheckIcon = (props: any) => {
-    return (
-        <svg
-            aria-hidden="true"
-            fill="none"
-            focusable="false"
-            height="4px"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            viewBox="0 0 24 24"
-            width="4px"
-            {...props}
-        >
-            <polyline points="20 6 9 17 4 12" />
-        </svg>
-    );
-};
 
 export default function PlanesMovil({ step }: StepProps) {
 
@@ -188,7 +169,7 @@ export default function PlanesMovil({ step }: StepProps) {
                                                         className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
                                                         aria-pressed={isSelected}
                                                     >
-                                                        {isSelected && <CheckIcon className="w-[16px] h-[16px] text-white-0" />}
+                                                        {isSelected && <CheckPlanesIcon className="w-[16px] h-[16px] text-white-0" />}
                                                     </span>
                                                 </div>
                                             </div>
