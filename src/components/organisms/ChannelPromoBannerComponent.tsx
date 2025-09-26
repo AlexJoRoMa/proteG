@@ -267,7 +267,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                 </div>
               ) : (
                 // Slide vacío para mantener la sincronización
-                <div key={heroIndex} className="w-full h-0 hidden"></div>
+                <div key={heroIndex} className="w-full bg-black " style={{height: '-webkit-fill-available'}}></div>
               );
             })}
           </CarouselComponent>
