@@ -2,11 +2,11 @@
 
 import LinkModal from "@/components/atoms/LinkModal";
 import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
-import { ComponentsFields, MovilPlansInfo, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
+import { MovilPlansInfo, OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader, Tab, Tabs } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const CheckIcon = (props: any) => {
     return (
@@ -30,8 +30,8 @@ export const CheckIcon = (props: any) => {
 
 export default function PlanesMovil({ step }: StepProps) {
 
-    const { configuradorEntry, setUserAnswers, disabled, userAnswers, copysConfigurador } = useContent();
-    const plans = configuradorEntry?.offers.MOVIL as unknown as ComponentsFields[];
+    const { configuradorEntry, setUserAnswers, userAnswers, copysConfigurador } = useContent();
+    const plans = configuradorEntry?.offers.MOVIL as unknown as OfferItem[];
     const offersCopys = copysConfigurador as unknown as OffersCopys;
 
     const plansInfo = formatData(plans, offersCopys) as unknown as MovilPlansInfo[];
@@ -41,7 +41,7 @@ export default function PlanesMovil({ step }: StepProps) {
     const [selectedTabKey, setSelectedTabKey] = useState<string>(defaultKey);
     const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
-    function formatData(data: ComponentsFields[], copys: OffersCopys) {
+    function formatData(data: OfferItem[], copys: OffersCopys) {
 
         const contrato12 = data.filter(item => item.titulo.includes("12 meses"));
         const sinPlazo = data.filter(item => !item.titulo.includes("12 meses"));
@@ -54,7 +54,7 @@ export default function PlanesMovil({ step }: StepProps) {
         return resultado;
     }
 
-    function handleSelect(cardId: number, card: ComponentsFields) {
+    function handleSelect(cardId: number, card: OfferItem) {
 
         if (selectedCardId !== null) {
             if (selectedCardId === cardId) {
@@ -82,27 +82,17 @@ export default function PlanesMovil({ step }: StepProps) {
         });
     }
 
-    useEffect(() => {
-        if (disabled && (userAnswers.internet?.paquete !== null)) {
-            setSelectedCardId(null);
-            setUserAnswers(prev => {
-                const { movil, ...rest } = prev;
-                return rest
-            });
-        }
-    }, [disabled, setUserAnswers, userAnswers.internet?.paquete])
-
     return (
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
-                <p className={`w-[40px] h-[40px]  ${!disabled ? 'text-white-0 bg-black-0' : 'text-gray-200 bg-gray-50'} rounded-full font-semibold text-base leading-[24px] flex justify-center items-center`}>
+                <p className="w-[40px] h-[40px] text-white-0 bg-black-0  rounded-full font-semibold text-base leading-[24px] flex justify-center items-center">
                     {step}
                 </p>
-                <h3 className={`font-semibold text-xl leading-[24px] ${!disabled ? 'text-black-0' : 'text-gray-200'}`}>
+                <h3 className="font-semibold text-xl leading-[24px] text-black-0">
                     {offersCopys.movil.titulo}
                 </h3>
             </div>
-            <h5 className={`font-normal leading-[24px] text-base ${!disabled ? 'text-black-0' : 'text-gray-200'}`}>
+            <h5 className="font-normal leading-[24px] text-base text-black-0">
                 {offersCopys.movil.subTitulo}
             </h5>
             <div>
@@ -115,7 +105,6 @@ export default function PlanesMovil({ step }: StepProps) {
                         fullWidth={true}
                         defaultSelectedKey={defaultKey}
                         selectedKey={selectedTabKey}
-                        isDisabled={disabled}
                         onSelectionChange={(key) => setSelectedTabKey(key as string)}
                         classNames={{
                             tabContent: "group-data-[selected=true]:font-semibold group-data-[selected=true]:text-black-0 text-black-0 px-auto whitespace-normal font-medium leading-[24px] text-base",
@@ -134,7 +123,7 @@ export default function PlanesMovil({ step }: StepProps) {
                         )}
                     </Tabs>
                     <div className="grid grid-cols-2 2xl:grid-cols-4 gap-[16px] 2xl:gap-[24px] auto-rows-fr auto-cols-fr">
-                        {plansInfo.find((tab) => tab.tituloTab === selectedTabKey)?.cards.map((card: ComponentsFields, index) => {
+                        {plansInfo.find((tab) => tab.tituloTab === selectedTabKey)?.cards.map((card: OfferItem, index) => {
                             const cardId = card.idPaquete;
                             const isSelected = selectedCardId === cardId;
 
@@ -144,9 +133,7 @@ export default function PlanesMovil({ step }: StepProps) {
                                     className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
                                 >
                                     <Card
-                                        isPressable={!disabled}
                                         onPress={() => handleSelect(cardId, card)}
-                                        isDisabled={disabled}
                                         classNames={{
                                             base: "flex flex-col rounded-xs shadow-none h-full w-full",
                                             header: "pt-[16px] pb-0",
