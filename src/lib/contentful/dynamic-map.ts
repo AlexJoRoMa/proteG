@@ -37,6 +37,6 @@ export const componentMap = {
   mediaBlock: MediaBlockModelID,
   cardsContratacionRapida: ContratacionRapida,
   richtext:RichTextComponentServer,
-  carouselImages: CarouselImagesComponent,,
-  recomendador: Recomendador
+  carouselImages: CarouselImagesComponent,
+  recomendador: Recomendador,
 };
