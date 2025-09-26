@@ -255,8 +255,8 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
       ["embedded-entry-inline"]: (node: Block | Inline) => {
 
             const resourceNode = node as unknown as ContentfulEntryNode;
-            const entry = resourceNode.data.target;
-            const contentType = entry?.sys.contentType.sys.id;
+            const entry = resourceNode?.data?.target;
+            const contentType = entry?.sys?.contentType?.sys?.id;
             const Component = typeof entry?.fields?.type === 'string' && entry?.fields?.type in componentMap ? componentMap[entry?.fields?.type as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
 
             // Agregar atributo data para orientación si existe
