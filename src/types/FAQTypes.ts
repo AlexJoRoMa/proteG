@@ -37,4 +37,7 @@ export interface FAQTabEntrySkeleton extends EntrySkeletonType{
   fields: FAQEntryFields;
 }
 
+export type FAQAccordionProps = {
+  cards: Entry<CardSegmentoSkeleton>[];
 
+};
