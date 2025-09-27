@@ -1,93 +1,170 @@
 'use client'
 
+import LinkModal from "@/components/atoms/LinkModal";
+import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
 import AccordionPlanesExtras from "@/components/molecules/configurador/accordionPlanesExtras";
-import { ComponentsFields, StepProps } from "@/types/ConfiguradorTypes";
+import { CheckPlanesIcon } from "@/constants/IconsConstants";
+import { OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
-import { useState } from "react";
-
-export const CheckIcon = (props: any) => {
-    return (
-        <svg
-            aria-hidden="true"
-            fill="none"
-            focusable="false"
-            height="4px"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            viewBox="0 0 24 24"
-            width="4px"
-            {...props}
-        >
-            <polyline points="20 6 9 17 4 12" />
-        </svg>
-    );
-};
-
+import { FormatCurrency } from "@/utils/Currency";
+import { Card, CardBody, CardFooter, CardHeader, tv } from "@heroui/react";
+import { useEffect, useState } from "react";
 
 export default function PlanesTv({ step }: StepProps) {
 
-    const { configuradorEntry, setUserAnswers, setDisabled, userAnswers } = useContent();
-    const plans = configuradorEntry?.tv && configuradorEntry?.tv;
-
-    const plansInfo = plans?.fields.components as unknown as ComponentsFields[];
-
+    const { configuradorEntry, setUserAnswers, setDisabled, userAnswers, copysConfigurador } = useContent();
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+    const [tvPlans, setTvPlans] = useState<OfferItem[] | undefined>(configuradorEntry?.offers.TV);
 
-    function handleSelect(index: number, card: ComponentsFields) {
+    const offersCopys = copysConfigurador as unknown as OffersCopys;
+
+    const plansInfo = tvPlans as unknown as OfferItem[];
+
+    function updateTvAnswers(selectedTv: OfferItem) {
+        setUserAnswers(prev => (
+            {
+                ...prev,
+                tv: {
+                    ...prev.tv,
+                    paquete: selectedTv,
+                    total: selectedTv.precioAhorro ? Number(selectedTv.precioAhorro) || 0 : Number(selectedTv.precioPaquete) || 0
+                },
+            }));
+    }
+
+    useEffect(() => {
+        const internet = userAnswers.internet;
+
+        if (internet) {
+
+            const tvLight = configuradorEntry?.offers.TV.filter(item => item.titulo.includes("light")) as OfferItem[];
+            const triplePlay = configuradorEntry?.offers.TRIPLE_PLAY.filter(item => item.velocidadMinima === internet.paquete?.velocidadMinima)
+                .map((item) => ({
+                    ...item,
+                    titulo: offersCopys.tv.cards.titulo,
+                })) as unknown as OfferItem[];
+
+            const tvOffers = [...triplePlay, ...tvLight]
+            setTvPlans(tvOffers);
+
+        } else {
+            const tvOffers = configuradorEntry?.offers.TV.map((item) => {
+                if (!item.titulo.includes("light")) {
+                    return {
+                        ...item,
+                        titulo: offersCopys.tv.cards.tituloPlus
+                    }
+                }
+                return item;
+            }) as unknown as OfferItem[];
+            setTvPlans(tvOffers);
+        }
+    }, [
+        configuradorEntry?.offers.TRIPLE_PLAY,
+        configuradorEntry?.offers.TV,
+        offersCopys.tv.cards.titulo,
+        offersCopys.tv.cards.tituloPlus,
+        userAnswers.internet?.paquete
+    ]);
+
+    useEffect(() => {
+
+        if (!tvPlans || tvPlans.length === 0) return;
+
+        const prevTv = userAnswers.tv?.paquete;
+
+        if (prevTv && prevTv.titulo === offersCopys.tv.cards.tituloPlus) {
+            const izziTv = tvPlans.find((offer) => offer.titulo === offersCopys.tv.cards.titulo);
+
+            if (izziTv) {
+                const idx = tvPlans.indexOf(izziTv);
+                setSelectedIndex(idx);
+                updateTvAnswers(izziTv);
+                return;
+            }
+        }
+
+        if (prevTv && prevTv.titulo === offersCopys.tv.cards.titulo) {
+            const izziTvPlus = tvPlans.find((offer) => offer.titulo === offersCopys.tv.cards.tituloPlus);
+
+            if (izziTvPlus) {
+                const idx = tvPlans.indexOf(izziTvPlus);
+                setSelectedIndex(idx);
+                updateTvAnswers(izziTvPlus);
+                return;
+            }
+        }
+
+        if (selectedIndex !== null && tvPlans[selectedIndex]) {
+            const selectedTv = tvPlans[selectedIndex];
+
+            const sameTitle = prevTv?.titulo === selectedTv.titulo;
+            const samePrice = String(prevTv?.precioPaquete) === String(selectedTv.precioPaquete) && String(prevTv?.precioAhorro) === String(selectedTv.precioAhorro);
+
+            if (!sameTitle || !samePrice) {
+                updateTvAnswers(selectedTv);
+            }
+            return;
+
+        }
+    }, [tvPlans, selectedIndex, offersCopys.tv.cards.titulo, offersCopys.tv.cards.tituloPlus]);
+
+    function clearSelection() {
+        setSelectedIndex(null);
+        setUserAnswers(prev => {
+            const { tv, ...rest } = prev;
+            return rest
+        });
+        setDisabled(false);
+    }
+
+
+    function handleSelect(index: number, card: OfferItem) {
 
         if (selectedIndex !== null) {
             if (selectedIndex === index) {
-                setSelectedIndex(null);
-                setUserAnswers(prev => {
-                    const { tv, ...rest } = prev;
-                    return rest
-                });
-                setDisabled(false);
+                clearSelection();
                 return;
             }
         }
 
         setSelectedIndex(index);
-        setUserAnswers(prev => ({
-            ...prev,
-            tv: {
-                ...prev.tv,
-                paquete: card,
-                total: card.fields.discountPrice ? Number(card.fields.discountPrice) || 0 : Number(card.fields.price) || 0
-            },
-        }));
+        setUserAnswers(prev => (
+            {
+                ...prev,
+                tv: {
+                    ...prev.tv,
+                    paquete: card,
+                    total: card.precioAhorro ? Number(card.precioAhorro) || 0 : Number(card.precioPaquete) || 0
+                },
+            }));
 
-        if (card.fields.title.includes('light')) {
+        if (card.titulo.includes('light')) {
             setDisabled(true);
         } else {
             setDisabled(false);
         }
     }
 
-    function handleIsPressable(card: ComponentsFields): boolean {
+    function handleIsPressable(card: OfferItem): boolean {
 
-        if (card.fields.title.includes('light') && (userAnswers.internet?.paquete || userAnswers.movil?.paquete)) {
+        if (card.titulo.includes('light') && (userAnswers.internet?.paquete)) {
             return false
         } else {
             return true
         }
     };
 
-    //TODO: const data = contenfulData || integracionData || seleccion del usuario ;  <- data base, de integracion o del usuario
-
     return (
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
                 <p className='w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center'>{step}</p>
-                <h3 className='font-semibold text-xl leading-[24px]'>{plans?.fields.title}</h3>
+                <h3 className='font-semibold text-xl leading-[24px]'>{offersCopys.tv.titulo}</h3>
             </div>
 
             <div className="grid grid-cols-2 2xl:grid-cols-4 gap-[16px] 2xl:gap-[24px] auto-rows-fr">
                 {
-                    plansInfo.map((card: ComponentsFields, index) => {
+                    plansInfo.map((card: OfferItem, index) => {
                         const isSelected = selectedIndex === index;
 
                         return (
@@ -107,15 +184,15 @@ export default function PlanesTv({ step }: StepProps) {
                                     }}>
                                     <CardHeader>
                                         <div className="flex flex-col text-start">
-                                            <h1 className="text-2xl font-extrabold leading-[24px]">{card.fields.title}</h1>
+                                            <h1 className="text-2xl font-extrabold leading-[24px]">{card.titulo}</h1>
                                         </div>
                                     </CardHeader>
                                     <CardBody>
                                         <div className="flex flex-col gap-[8px]">
-                                            <p className="leading-[18px] font-normal text-sm text-gray-300">{card.fields.subTitle}</p>
+                                            <p className="leading-[18px] font-normal text-sm text-gray-300">{`${card.canales} canales`}</p>
                                             {isSelected &&
                                                 <div>
-                                                    <p className="font-normal text-sm mb-[24px]">{plans?.fields.description}</p>
+                                                    <p className="font-normal text-sm mb-[24px]">Envío a domicilio</p>
                                                 </div>
                                             }
                                         </div>
@@ -123,37 +200,46 @@ export default function PlanesTv({ step }: StepProps) {
                                     <CardFooter>
                                         <div className="flex flex-col gap-[8px] w-full">
                                             <div className="flex flex-row items-baseline text-start gap-[4px]">
-                                                {card.fields.discountPrice ?
+                                                {card.precioAhorro ?
                                                     <>
-                                                        <p className="font-normal text-sm line-through text-gray-200">{`$${card.fields.price}`}</p>
+                                                        <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioPaquete)}</p>
                                                         <div className="flex flex-row items-baseline">
-                                                            <p className="text-lg font-bold">{`$${card.fields.discountPrice}`}</p>
-                                                            <p className="text-sm font-normal">{card.fields.afterPrice}</p>
+                                                            <p className="text-lg font-bold">{FormatCurrency(card.precioAhorro)}</p>
+                                                            <p className="text-sm font-normal">{offersCopys.tv.cards.periodo}</p>
                                                         </div>
                                                     </>
                                                     :
                                                     <>
-                                                        {card.fields.beforePrice && <p className="text-sm font-normal">{card.fields.beforePrice}</p>}
+                                                        {/* {card.fields.beforePrice && <p className="text-sm font-normal">{card.fields.beforePrice}</p>} */}
                                                         <div className="flex flex-row items-baseline">
-                                                            <p className="text-lg font-bold">{`$${card.fields.price}`}</p>
-                                                            <p className="text-sm font-normal">{card.fields.afterPrice}</p>
+                                                            <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
+                                                            <p className="text-sm font-normal">{offersCopys.tv.cards.periodo}</p>
                                                         </div>
                                                     </>}
 
                                             </div>
                                             <div className="flex flex-row gap-[16px] items-center justify-between">
-                                                <p
-                                                    className="underline pointer-events-auto"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation()
-                                                        console.log('click!!!')
-                                                    }}
-                                                >{card.fields.ctaText}</p>
+                                                <LinkModal
+                                                    classNames='underline text-black-0 text-[16px] cursor-pointer'
+                                                    text={offersCopys.internet.cards.info}
+                                                    closeButtonStroke='black'
+                                                    modalContentClassName="w-full h-auto sm:w-[80vw] xl:h-auto xl:w-[90vw] 2xl:w-[62vw] 2xl:h-auto"
+                                                    backdropColor='black-0/80'
+                                                    idModal={""}>
+                                                    <ConfiguradorCardsModalComponent
+                                                        variables={{
+                                                            canales: card.canales,
+                                                            precioPaquete: card.precioPaquete,
+                                                            precioAhorro: card.precioAhorro
+                                                        }}
+                                                        type="tv"
+                                                    />
+                                                </LinkModal>
                                                 <span
                                                     className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
                                                     aria-pressed={isSelected}
                                                 >
-                                                    {isSelected && <CheckIcon className="w-[16px] h-[16px] text-white-0" />}
+                                                    {isSelected && <CheckPlanesIcon className="w-[16px] h-[16px] text-white-0" />}
                                                 </span>
                                             </div>
                                         </div>
@@ -165,8 +251,7 @@ export default function PlanesTv({ step }: StepProps) {
                 }
             </div>
             <div>
-                {selectedIndex === null ?
-                    <h5 className="font-normal leading-[24px] text-base">{plans?.fields.subTitle}</h5> :
+                {selectedIndex !== null &&
                     <AccordionPlanesExtras />
                 }
             </div>

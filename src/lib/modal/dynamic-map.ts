@@ -5,5 +5,5 @@ import TextAndImageComponent from "@/components/layouts/modalComponents/TextAndI
 export const componentMap = {
   textandimage: TextAndImageComponent,
   price: PriceComponent,
-  button: ButtonModalComponent
+  button: ButtonModalComponent,
 };

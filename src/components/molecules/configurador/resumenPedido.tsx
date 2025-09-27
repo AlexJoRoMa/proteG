@@ -1,11 +1,12 @@
 'use client'
 
-import { internetComponentFields, movilComponentFields, ResumenData, tvComponentFields } from "@/types/ConfiguradorTypes";
+import { internetComponentFields, movilComponentFields, tvComponentFields } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider"
-import ResumenContent from "./resumenContent";
 import { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, useDisclosure } from "@heroui/react";
 import ButtonGhost from "@/components/atoms/ButtonGhost";
 import { useEffect, useState } from "react";
+import ResumenContainerConfigurador from "./resumenContainerConfigurador";
+import { ResumenData } from "@/types/ResumenCompra";
 
 export const ArrowUpIcon = (props: any) => {
     return (
@@ -151,7 +152,7 @@ export default function ResumenPedido() {
                                     </DrawerHeader>
 
                                     <DrawerBody>
-                                        <ResumenContent />
+                                        <ResumenContainerConfigurador />
                                     </DrawerBody>
 
                                     <DrawerFooter>
@@ -179,7 +180,7 @@ export default function ResumenPedido() {
                     </Drawer>
 
                     <div className="hidden xl:block">
-                        <ResumenContent />
+                        <ResumenContainerConfigurador />
                     </div>
                 </>
             }
