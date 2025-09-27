@@ -17,6 +17,7 @@ import TVCanalesSegmento from '@/components/organisms/tv-canales-segmentos';
 import MediaBlockModelID from '@/components/organisms/mediablockComponent';
 import RichTextComponentServer from '../../components/organisms/RichTextComponentServer';
 import CarouselImagesComponent from "@/components/organisms/CarouselImagesComponent";
+import FAQcomponent from '@/components/organisms/FAQcomponent';
 
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
@@ -39,4 +40,5 @@ export const componentMap = {
   richtext:RichTextComponentServer,
   carouselImages: CarouselImagesComponent,
   recomendador: Recomendador,
+  faqModel: FAQcomponent,
 };
