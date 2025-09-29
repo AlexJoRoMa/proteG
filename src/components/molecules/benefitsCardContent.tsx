@@ -13,7 +13,7 @@ export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
 
     const cardInfo = cards as unknown as EntrySkeletonType<CardDataFields>[];
     
-
+console.log('>>> cardInfo', cardInfo)
     return (
         <div className="overflow-x-auto lg:overflow-visible w-full">
             <div className="flex lg:grid lg:grid-cols-3 gap-[24px] mx-[16px] h-fit md:mx-md 2xl:mx-xl min-w-max lg:min-w-0
@@ -44,18 +44,16 @@ export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
                                 className="flex flex-col w-[280px] lg:w-full h-full rounded-sm border-1"
                                 style={{borderColor: cssClasses}}
                             >
-                                <CardHeader
-                                    className="px-[24px] pt-[32px]">
-                                    <div className="flex justify-center w-full pb-[24px] border-b-1"
+                                <CardHeader >
+                                    <div className=" flex justify-center w-full border-b-1"
                                         style={{borderBottomColor: cssClasses}}
                                     >
                                         <Image
                                             src={`https:${card.fields.image.fields.image.fields.file.url}`}
                                             alt={card.fields.image.fields.altText || 'icon'}
                                             loading="eager"
-                                            width={72}
-                                            height={72}
-                                            className="w-[72px] h-[72px]"
+                                            width={card.fields.image.fields.image.fields.file.details.image.width}
+                                            height={card.fields.image.fields.image.fields.file.details.image.height}
                                         />
                                     </div>
                                 </CardHeader>
@@ -64,7 +62,6 @@ export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
                                         <div className={` text-center `}>
                                             {card.fields.titleRich && documentToReactComponents(card.fields.titleRich, richTextOptions)}
                                         </div>
-                                        
                                         <p className="font-normal text-lg leading-[24px] text-center text-black-0 ">{card.fields.description}</p>
                                     </div>
                                 </CardBody>
