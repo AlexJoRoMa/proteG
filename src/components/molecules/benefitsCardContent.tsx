@@ -45,7 +45,7 @@ export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
                                 style={{borderColor: cssClasses}}
                             >
                                 <CardHeader >
-                                    <div className=" flex justify-center w-full border-b-1"
+                                    <div className=" flex justify-center w-full border-b-1 mb-[24px]"
                                         style={{borderBottomColor: cssClasses}}
                                     >
                                         <Image
