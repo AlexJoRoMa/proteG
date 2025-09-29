@@ -13,7 +13,7 @@ export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
 
     const cardInfo = cards as unknown as EntrySkeletonType<CardDataFields>[];
     
-console.log('>>> cardInfo', cardInfo)
+
     return (
         <div className="overflow-x-auto lg:overflow-visible w-full">
             <div className="flex lg:grid lg:grid-cols-3 gap-[24px] mx-[16px] h-fit md:mx-md 2xl:mx-xl min-w-max lg:min-w-0

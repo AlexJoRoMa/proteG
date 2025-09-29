@@ -1,0 +1,61 @@
+.CarouselImagesComponent{
+
+    .rich-text-content{
+        gap: 0;
+        p:first-of-type{
+            margin-top: 40px;
+        }
+    }
+
+    .embla {
+  --slide-spacing: 24px;
+  overflow: hidden;
+}
+.embla__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+.embla__container {
+  backface-visibility: hidden;
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+}
+.embla__slide {
+  min-width: 0;
+  flex: 0 0 auto;
+  padding-left: var(--slide-spacing);
+}
+
+.embla__slide:first-child {
+  padding-left: 0;
+}
+
+.embla__slide:last-child{
+    /*padding-right: var(--slide-spacing);*/
+}
+
+ .embla__prev, .embla__next{
+        position: absolute;
+        top: 50%;
+        cursor: pointer;
+        z-index: 10;
+         @media screen and (max-width: 1023px) {
+            bottom: -20px;
+            top: initial;
+        } 
+    }
+
+    .embla__next{
+        right: 30px;
+        @media screen and (max-width: 1023px) {
+            right: 10px;
+        }
+    }
+    .embla__prev{
+        left: 30px;
+        @media screen and (max-width: 1023px) {
+            left: 10px;
+        }   
+    }
+
+}

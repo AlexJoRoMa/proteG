@@ -1,3 +1,4 @@
+import { Document } from "@contentful/rich-text-types";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 
 export type ConIzziTvID = {
@@ -35,6 +36,9 @@ export interface StepTabEntryFields extends EntrySkeletonType{
   adicionales?: Asset[];
   textBoton1?: string;
   linkBoton1?: string;
+  content?: Document;
+  image?: Asset;
+  imageResponsive?: Asset;
 }
 
 export interface StepTabEntrySkeleton extends EntrySkeletonType{
