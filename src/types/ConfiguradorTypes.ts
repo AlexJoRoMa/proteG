@@ -21,32 +21,47 @@ export interface ConfiguradorCopyFields {
 }
 
 // entryData
-export interface ConfigDataFields {
-    title: string,
-    subTitle: string,
-    description: string,
-    stepNumber: number,
-    internalName: string,
-    components: ComponentsFields[] | ConfigTabsFields[],
-    type: string
+export interface ApiResponse {
+    coverageType: string[],
+    offers: Offers,
+    rptCode: string,
 }
 
-export interface ComponentsFields {
-    paquete: ComponentsFields;
-    fields: ComponentsFields,
-    sys: {
-        id: string
-    },
-    internalName: string,
-    maxCapacityInternet: string,
-    minCapacityInternet: string,
-    discountPrice: string,
-    beforePrice: string,
-    price: number,
-    afterPrice: string,
-    subTitle: string,
-    title: string,
-    ctaText: string
+export interface ApiToken {
+    refresh_token: string,
+    token_type: string,
+    access_token: string,
+    expires_in: Number,
+}
+
+export interface PackageInfo {
+    id: number,
+    rpt: string,
+    coverage: string[]
+}
+
+export interface Offers {
+    DOBLE_PLAY: OfferItem[],
+    TRIPLE_PLAY: OfferItem[],
+    MOVIL: OfferItem[],
+    TV: OfferItem[]
+}
+
+export interface OfferItem {
+    idPaquete: number,
+    titulo: string,
+    descripcion: string,
+    precioPaquete: string,
+    precioAhorro: string,
+    canales?: string,
+    canalesHd?: string,
+    velocidadMaxima?: number,
+    velocidadMinima?: number,
+    extrasIncluidos?: string[]
+}
+export interface MovilPlansInfo {
+    tituloTab: string,
+    cards: OfferItem[]
 }
 
 export interface ResumenIcon {
@@ -85,7 +100,7 @@ export interface OttsImages {
 export interface ConfigCardsFields {
     interalName: string,
     entryTitle: string,
-    cards: ComponentsFields[]
+    cards: OfferItem[]
 }
 
 export interface ConfigTabsFields {
@@ -98,19 +113,23 @@ export interface ConfigTabsFields {
 
 export type ProviderProps = {
     children: ReactNode,
-    configuradorEntry: Record<string, EntrySkeletonType<ConfigDataFields>>,
+    configuradorEntry: ApiResponse,
     copysResumen: {},
-    resumenIcon:EntrySkeletonType<ResumenIcon>,
+    copysConfigurador: {},
+    resumenIcon: EntrySkeletonType<ResumenIcon>,
     ottsImages: Entry<EntrySkeletonType<OttsImages>>[]
     cobertura: boolean
 }
 
 export type DataFields = {
-    configuradorEntry?: Record<string, EntrySkeletonType<ConfigDataFields>>
+    configuradorEntry?: ApiResponse
     copysResumen?: {},
+    copysConfigurador?: {},
     cobertura: boolean,
     userAnswers: UserAnswers,
     setUserAnswers: React.Dispatch<React.SetStateAction<UserAnswers>>,
+    izziSelection: IzziSelection | null,
+    setIzziSelection: React.Dispatch<React.SetStateAction<IzziSelection | null>>,
     checkedPromotions: boolean,
     setCheckedPromotions: React.Dispatch<React.SetStateAction<boolean>>,
     resumenIcon: EntrySkeletonType<ResumenIcon>,
@@ -124,16 +143,16 @@ export type DataFields = {
 export interface UserAnswers {
     total?: number,
     internet?: {
-        paquete?: ComponentsFields | {},
+        paquete?: OfferItem | null,
         total?: number
     },
     movil?: {
-        paquete?: ComponentsFields | null,
+        paquete?: OfferItem | null,
         contrato?: string,
         total?: number,
     },
     tv?: {
-        paquete?: ComponentsFields | null,
+        paquete?: OfferItem | null,
         total?: number,
         ott?: {
             planes: OttProps[],
@@ -142,102 +161,46 @@ export interface UserAnswers {
     }
 }
 
-export type OttProps = {
-    id: string,
-    title: string,
-    description: string,
-    price: number,
-    term: string
-}
-
-// Resumen de Compra
-
-export type ResumenData = {
-    titulo: string,
-    pagoPosterior: string,
-    ahorro: {
-        domicilio: string,
-        pagoAnticipado: string,
-        paquete: string,
-        infoAdicional: string
+export interface IzziSelection {
+    idPaquete?: number,
+    titulo?: string,
+    descripcion?: string,
+    precioPaquete?: string,
+    precioAhorro?: string,
+    velocidadMinima?: number,
+    velocidadMaxima?: number,
+    extrasIncluidos?: string[],
+    canales?: string,
+    canalesHd?: string,
+    extrasMap?: {
+        ott?: OttProps[]
     },
-    boton: {
-        comprobarPromociones: string,
-        contratar: {
-            titulo: string,
-            url: string
-        }
-    },
-    total: {
-        sinDescuentos: string,
-        titulo: string
-    },
-    promociones: {
-        titulo: string,
-        textoAhorro: string
-    },
-    paquetes: {
-        internet: {
-            infoAdicional: string,
-            postCapacidad: string,
-            prevCapacidad: string,
-            titulo: string
-        },
-        tv: {
-            titulo: string,
-            preCanales: string,
-            postCanales: string,
-            ott: {
-                titulo: string
-            }
-        },
-        movil: {
-            titulo: string
-        }
-    },
-    seleccionPaquetes: {
-        '4p': string,
-        internet: string,
-        'internet&movil': string,
-        'internet&tv': string,
-        movil: string,
-        tv: string,
-        'tv&movil': string
-    },
-    info: {
-        combinacion: {
-            prevPrice: string,
-            postPrice: string
-        },
-        existeCobertura: string,
-        portabilidad: string,
-        sinCobertura: {
-            titulo: string,
-            subTitulo: string
-        },
-        tvLight: string
-    },
-    infoDrawer: {
-        nuevoFlujo: string,
-        plazo: string,
-        combinacion:{
-            prePrice: string,
-            postPrice: string
-        },
-        paquetes: {
-            'internet&tv&movil': string,
-            internet: string,
-            'internet&movil': string,
-            'internet&tv': string,
-            movil: string,
-            tv: string,
-            'tv&movil': string
-        }
+    extras?: {
+        idPaquete?: number,
+        titulo?: string,
+        descripcion?: string,
+        precioPaquete?: string,
+        precioAhorro?: string,
+        velocidadMinima?: number,
+        velocidadMaxima?: number,
+        extrasIncluidos?: string[],
+        canales?: string,
+        canalesHd?: string,
     }
 }
 
+export type OttProps = {
+    idExtra: number,
+    maximo: number,
+    productId: string,
+    titulo: string,
+    costo: string,
+    descripcion: string,
+    grupo?: number
+}
+
 export type internetComponentFields = {
-    paquete: EntrySkeletonType<ComponentsFields>,
+    paquete: OfferItem,
     total: number
 }
 
@@ -246,20 +209,78 @@ export type tvComponentFields = {
         planes: ottFields[],
         total: number,
     },
-    paquete: EntrySkeletonType<ComponentsFields>,
+    paquete: OfferItem,
     total: number
 }
 
 export type movilComponentFields = {
-    paquete: EntrySkeletonType<ComponentsFields>,
+    paquete: OfferItem,
     contrato: string,
     total: number
 }
 
 export type ottFields = {
-    description: string,
-    id: string,
-    price: number,
-    term: string,
-    title: string
+    idExtra: number,
+    maximo: number,
+    productId: string,
+    titulo: string,
+    costo: string,
+    descripcion: string,
+    grupo?: number
+}
+
+// copys
+
+export type ConfiguradorCopys = {
+    page: {
+        titulo: string,
+        botonRegreso: {
+            titulo: string,
+            url: string
+        },
+        ayuda: {
+            textoInfo: string,
+            botonAyuda: string,
+        },
+    },
+}
+
+export type OffersCopys = {
+    internet: {
+        titulo: string,
+        cards: {
+            preVelocidad: string,
+            posVelocidad: string,
+            unidadVelocidad: string,
+            periodo: string,
+            info: string
+        }
+    },
+    tv: {
+        titulo: string,
+        cards: {
+            periodo: string,
+            info: string,
+            titulo: string,
+            tituloPlus: string
+        }
+    },
+    movil: {
+        titulo: string,
+        subTitulo: string,
+        tabs: {
+            contrato: string,
+            sinPlazo: string,
+        },
+        cards: {
+            periodo: string,
+            info: string
+        }
+    }
+}
+
+export type CoberturaType = {
+    lat: string,
+    lng: string,
+    zipCode: string
 }

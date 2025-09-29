@@ -1,6 +1,7 @@
 'use client'
 
-import { internetComponentFields, movilComponentFields, ResumenData, tvComponentFields } from "@/types/ConfiguradorTypes";
+import { internetComponentFields, movilComponentFields, tvComponentFields } from "@/types/ConfiguradorTypes";
+import { ResumenData } from "@/types/ResumenCompra";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { Alert } from "@heroui/react";
 import { useEffect, useState } from "react";
@@ -18,6 +19,9 @@ function hasData(obj: unknown): boolean {
 }
 
 export default function ResumenInfo() {
+
+    // Componente de popups - notificaciones
+
     const { userAnswers, copysResumen, setInfoDrawerContent, cobertura } = useContent();
     const resumenCopys = copysResumen as ResumenData;
 
@@ -62,7 +66,7 @@ export default function ResumenInfo() {
                 (!hasData(internet) && !hasData(movil) && hasData(tv)) || (hasData(internet) && hasData(tv) && !hasData(movil))
             ) {
                 if (isFirstLoad.tv || isFirstLoad.tvLight) {
-                    if (tv?.paquete.fields.title.includes('light')) {
+                    if (tv?.paquete.titulo.includes('light')) {
                         isFirstLoad.tvLight &&
                             showNotification(resumenCopys.info.tvLight, "");
                         setIsFirstLoad((prev) => {
@@ -82,7 +86,7 @@ export default function ResumenInfo() {
                         });
                     }
                 }
-                if (!(tv?.paquete.fields.title.includes('light'))) {
+                if (!(tv?.paquete.titulo.includes('light'))) {
                     setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $XXXX ${resumenCopys.infoDrawer.combinacion.postPrice}`)
                 } else {
                     setInfoDrawerContent(resumenCopys.infoDrawer.nuevoFlujo)
@@ -106,7 +110,7 @@ export default function ResumenInfo() {
         } else {
             if ((!hasData(movil) && hasData(tv))) {
                 if (isFirstLoad.tv || isFirstLoad.tvLight) {
-                    if (tv?.paquete.fields.title.includes('light')) {
+                    if (tv?.paquete.titulo.includes('light')) {
                         isFirstLoad.tvLight &&
                             showNotification(resumenCopys.info.tvLight, "")
                         setIsFirstLoad((prev) => {
@@ -126,7 +130,7 @@ export default function ResumenInfo() {
                         });
                     }
                 }
-                if (!(tv?.paquete.fields.title.includes('light'))) {
+                if (!(tv?.paquete.titulo.includes('light'))) {
                     setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $XXXX ${resumenCopys.infoDrawer.combinacion.postPrice}`)
                 } else {
                     setInfoDrawerContent(resumenCopys.infoDrawer.nuevoFlujo)
