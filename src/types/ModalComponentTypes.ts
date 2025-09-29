@@ -3,8 +3,8 @@ import { ColorOption } from "@/constants/ColorModalConstants";
 
 export type FeatureListItemComponentProps = {
   title?: string;
-    description?: string;
-    image?: Asset
+  description?: string;
+  image?: Asset
 };
 
 export type TextAndImageComponentProps = {
@@ -130,4 +130,88 @@ export interface ModalContentEntry {
         content: Document;
         internalName?: string;
     };
+}
+
+
+export interface ConfiguradorCardsModalProps {
+  modalData?: ModalData,
+  variables: {
+    velocidadMinima?: number,
+    velocidadMaxima?: number,
+    precioAhorro: string,
+    precioPaquete: string,
+    periodo?: string,
+    domicilio?: string,
+    canales?: string,
+  },
+  type: "internet" | "tv" | "movil",
+}
+
+export interface ModalData {
+  titulo: string,
+  periodo?: string,
+  domicilio?: string,
+  header: {
+    titulo: {
+      preVelocidadMinima?: string,
+      posVelocidasMinima?: string,
+      unidadVelocidad?: string,
+      posVelocidadMaxima?: string,
+      meses?: string,
+      preCanales?: string,
+      posCanales?: string,
+      preVelocidad?: string,
+      posVelocidad?: string
+    },
+    precio: {
+      prePrecio: string,
+      posPrecio: string,
+    }
+  },
+  body: {
+    texto1?: string,
+    textoPromocion1?: string,
+    textoPromocion2?: string,
+    texto2?: string,
+    textoDomicilio?: string,
+    texto3?: string,
+    textoPromocion3?: string,
+    texto4?: string,
+    beneficios: {
+      titulo1: string,
+      descripcion1: string,
+      titulo2: string,
+      descripcion2: string,
+    },
+    textoBoton: string,
+  },
+  footer: {
+    terminos: {
+      texto: string,
+      url: string
+    },
+    descripcion: string
+  }
+}
+
+export interface IconProps {
+  fields: {
+    altText: string,
+    internalName: string,
+    image: {
+      fields: {
+        description: string,
+        title: string,
+        file: {
+          url: string,
+          details: {
+            image: {
+              height: number,
+              width: number
+            }
+          }
+        }
+      }
+    }
+  }
 }

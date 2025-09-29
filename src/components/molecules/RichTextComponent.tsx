@@ -1,8 +1,10 @@
+"use client";
+
 import React from 'react';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, MARKS, INLINES, Block, Inline } from '@contentful/rich-text-types';
-import { 
-  RichTextComponentProps, 
+import {
+  RichTextComponentProps,
   ContentfulAssetNode,
   ContentfulEntryNode,
   ContentfulHyperlinkNode
@@ -179,10 +181,10 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
       [INLINES.HYPERLINK]: (node: Block | Inline, children: React.ReactNode) => {
         const linkNode = node as unknown as ContentfulHyperlinkNode;
         return (
-          <Link 
-            href={linkNode.data.uri} 
+          <Link
+            href={linkNode.data.uri}
             className="text-black hover:text-gray-200 hover:font-normal font-bold underline transition-colors duration-200"
-            target="_blank" 
+            target="_blank"
             rel="noopener noreferrer"
           >
             {children}
@@ -197,24 +199,24 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
 
         if (file?.contentType?.startsWith('image/')) {
           return (
-              <Image
-                src={imageUrl}
-                alt={alt}
-                width={file.details?.image?.width || 800}
-                height={file.details?.image?.height || 600}
-                className="max-w-full h-auto inline"
-                priority={false}
-              />
+            <Image
+              src={imageUrl}
+              alt={alt}
+              width={file.details?.image?.width || 800}
+              height={file.details?.image?.height || 600}
+              className="max-w-full h-auto inline"
+              priority={false}
+            />
           );
         }
 
         // For non-image assets, show a download link
         return (
           <div className="border border-gray-300 rounded-lg bg-gray-50">
-            <a 
-              href={imageUrl} 
+            <a
+              href={imageUrl}
               className="text-blue-600 hover:text-blue-800 underline"
-              target="_blank" 
+              target="_blank"
               rel="noopener noreferrer"
             >
               📎 {title || 'Download file'}
@@ -233,37 +235,35 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
         const Component = typeof entry?.fields?.type === 'string' && entry?.fields?.type in componentMap ? componentMap[entry?.fields?.type as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
 
         if (Component) {
-         
-          return (
-            <Component
-              {...entry.fields}
-            />
-          );
+
+            return (
+              <Component
+                {...entry.fields}
+              />
+            );
     
         }
 
 
         return (
-            <div className="bg-gray-100 p-4 rounded">
-                <p>Embedded resource of type {contentType} is not supported.</p>
-            </div>
+          <div className="bg-gray-100 p-4 rounded">
+            <p>Embedded resource of type {contentType} is not supported.</p>
+          </div>
         );
       },
 
       ["embedded-entry-inline"]: (node: Block | Inline) => {
 
-        console.log('Rendering embedded-entry-inline:', node);
-
             const resourceNode = node as unknown as ContentfulEntryNode;
-            const entry = resourceNode.data.target;
-            const contentType = entry?.sys.contentType.sys.id;
+            const entry = resourceNode?.data?.target;
+            const contentType = entry?.sys?.contentType?.sys?.id;
             const Component = typeof entry?.fields?.type === 'string' && entry?.fields?.type in componentMap ? componentMap[entry?.fields?.type as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
 
             // Agregar atributo data para orientación si existe
             const orientation = entry?.fields?.orientation;
             const dataAttributes = orientation ? { 'data-orientation': orientation } : {};
 
-            if (Component) {
+        if (Component) {
 
               return(  
                 <div className='embedded-entry-inline' {...dataAttributes}>
@@ -272,7 +272,7 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
                 </div>
               )
 
-            }
+        }
 
 
             return (

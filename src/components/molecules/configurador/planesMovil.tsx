@@ -1,53 +1,45 @@
 'use client'
 
-import { ComponentsFields, ConfigCardsFields, StepProps } from "@/types/ConfiguradorTypes";
+import LinkModal from "@/components/atoms/LinkModal";
+import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
+import { CheckPlanesIcon } from "@/constants/IconsConstants";
+import { MovilPlansInfo, OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
+import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader, Tab, Tabs } from "@heroui/react";
-import { Entry, EntrySkeletonType } from "contentful";
-import { useEffect, useState } from "react";
-
-export const CheckIcon = (props: any) => {
-    return (
-        <svg
-            aria-hidden="true"
-            fill="none"
-            focusable="false"
-            height="4px"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            viewBox="0 0 24 24"
-            width="4px"
-            {...props}
-        >
-            <polyline points="20 6 9 17 4 12" />
-        </svg>
-    );
-};
+import { useState } from "react";
 
 export default function PlanesMovil({ step }: StepProps) {
 
-    const { configuradorEntry, setUserAnswers, disabled, userAnswers } = useContent();
-    const plans = configuradorEntry?.movil && configuradorEntry?.movil;
+    const { configuradorEntry, setUserAnswers, userAnswers, copysConfigurador } = useContent();
+    const plans = configuradorEntry?.offers.MOVIL as unknown as OfferItem[];
+    const offersCopys = copysConfigurador as unknown as OffersCopys;
 
-    const plansComponents = plans?.fields.components[0] as unknown as Entry<EntrySkeletonType, undefined, string> | null;
+    const plansInfo = formatData(plans, offersCopys) as unknown as MovilPlansInfo[];
 
-    const plansInfo = plansComponents?.fields.tabs as unknown as EntrySkeletonType<ConfigCardsFields>[];
-    const defaultKey = plansInfo[0]?.fields.entryTitle;
+    const defaultKey = plansInfo[0].tituloTab;
 
     const [selectedTabKey, setSelectedTabKey] = useState<string>(defaultKey);
-    const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+    const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
-    function handleSelect(cardId: string, card: ComponentsFields) {
+    function formatData(data: OfferItem[], copys: OffersCopys) {
+
+        const contrato12 = data.filter(item => item.titulo.includes("12 meses"));
+        const sinPlazo = data.filter(item => !item.titulo.includes("12 meses"));
+
+        const resultado = [
+            { tituloTab: copys.movil.tabs.contrato, cards: contrato12 },
+            { tituloTab: copys.movil.tabs.sinPlazo, cards: sinPlazo }
+        ];
+
+        return resultado;
+    }
+
+    function handleSelect(cardId: number, card: OfferItem) {
 
         if (selectedCardId !== null) {
             if (selectedCardId === cardId) {
-                setSelectedCardId(null);
-                setUserAnswers(prev => {
-                    const { movil, ...rest } = prev;
-                    return rest
-                });
+                clearSelection();
                 return;
             }
         }
@@ -58,33 +50,31 @@ export default function PlanesMovil({ step }: StepProps) {
             movil: {
                 paquete: card,
                 contrato: selectedTabKey,
-                total: card.fields.discountPrice ? Number(card.fields.discountPrice) || 0 : Number(card.fields.price) || 0
+                total: card.precioAhorro ? Number(card.precioAhorro) || 0 : Number(card.precioPaquete) || 0
             },
         }))
     }
 
-    useEffect(() => {
-        if (disabled && (userAnswers.internet?.paquete !== null)) {
-            setSelectedCardId(null);
-            setUserAnswers(prev => {
-                const { movil, ...rest } = prev;
-                return rest
-            });
-        }
-    }, [disabled])
+    function clearSelection() {
+        setSelectedCardId(null);
+        setUserAnswers(prev => {
+            const { movil, ...rest } = prev;
+            return rest
+        });
+    }
 
     return (
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
-                <p className={`w-[40px] h-[40px]  ${!disabled ? 'text-white-0 bg-black-0' : 'text-gray-200 bg-gray-50'} rounded-full font-semibold text-base leading-[24px] flex justify-center items-center`}>
+                <p className="w-[40px] h-[40px] text-white-0 bg-black-0  rounded-full font-semibold text-base leading-[24px] flex justify-center items-center">
                     {step}
                 </p>
-                <h3 className={`font-semibold text-xl leading-[24px] ${!disabled ? 'text-black-0' : 'text-gray-200'}`}>
-                    {plans?.fields.title}
+                <h3 className="font-semibold text-xl leading-[24px] text-black-0">
+                    {offersCopys.movil.titulo}
                 </h3>
             </div>
-            <h5 className={`font-normal leading-[24px] text-base ${!disabled ? 'text-black-0' : 'text-gray-200'}`}>
-                {plans?.fields.subTitle}
+            <h5 className="font-normal leading-[24px] text-base text-black-0">
+                {offersCopys.movil.subTitulo}
             </h5>
             <div>
                 <div className="flex w-full flex-col">
@@ -96,7 +86,6 @@ export default function PlanesMovil({ step }: StepProps) {
                         fullWidth={true}
                         defaultSelectedKey={defaultKey}
                         selectedKey={selectedTabKey}
-                        isDisabled={disabled}
                         onSelectionChange={(key) => setSelectedTabKey(key as string)}
                         classNames={{
                             tabContent: "group-data-[selected=true]:font-semibold group-data-[selected=true]:text-black-0 text-black-0 px-auto whitespace-normal font-medium leading-[24px] text-base",
@@ -107,16 +96,16 @@ export default function PlanesMovil({ step }: StepProps) {
                             tab: "py-[8px] px-[12px] w-full h-[48px] rounded-none"
                         }}
                     >
-                        {(item: EntrySkeletonType<ConfigCardsFields>) => (
+                        {(item: MovilPlansInfo) => (
                             <Tab
-                                key={item.fields.entryTitle}
-                                title={item.fields.entryTitle}
+                                key={item.tituloTab}
+                                title={item.tituloTab}
                             />
                         )}
                     </Tabs>
                     <div className="grid grid-cols-2 2xl:grid-cols-4 gap-[16px] 2xl:gap-[24px] auto-rows-fr auto-cols-fr">
-                        {plansInfo.find((tab) => tab.fields.entryTitle === selectedTabKey)?.fields.cards.map((card: ComponentsFields, index) => {
-                            const cardId = card.sys.id;
+                        {plansInfo.find((tab) => tab.tituloTab === selectedTabKey)?.cards.map((card: OfferItem, index) => {
+                            const cardId = card.idPaquete;
                             const isSelected = selectedCardId === cardId;
 
                             return (
@@ -125,9 +114,7 @@ export default function PlanesMovil({ step }: StepProps) {
                                     className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
                                 >
                                     <Card
-                                        isPressable={!disabled}
                                         onPress={() => handleSelect(cardId, card)}
-                                        isDisabled={disabled}
                                         classNames={{
                                             base: "flex flex-col rounded-xs shadow-none h-full w-full",
                                             header: "pt-[16px] pb-0",
@@ -136,7 +123,7 @@ export default function PlanesMovil({ step }: StepProps) {
                                         }}>
                                         <CardHeader>
                                             <div className="flex flex-col text-start">
-                                                <h1 className="text-2xl font-extrabold leading-[27px] 2xl:text-[21px] 3xl:text-2xl 4xl:leading-[32px]">{card.fields.title}</h1>
+                                                <h1 className="text-2xl font-extrabold leading-[27px] 2xl:text-[21px] 3xl:text-2xl 4xl:leading-[32px]">{card.titulo}</h1>
                                             </div>
                                         </CardHeader>
                                         <CardBody>
@@ -144,37 +131,45 @@ export default function PlanesMovil({ step }: StepProps) {
                                         <CardFooter>
                                             <div className="flex flex-col w-full gap-[8px]">
                                                 <div className="flex flex-row items-baseline text-start gap-[4px]">
-                                                    {card.fields.discountPrice ?
+                                                    {card.precioAhorro ?
                                                         <>
-                                                            <p className="font-normal text-sm line-through text-gray-200">{`$${card.fields.price}`}</p>
+                                                            <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioPaquete)}</p>
                                                             <div className="flex flex-row items-baseline">
-                                                                <p className="text-lg font-bold">{`$${card.fields.discountPrice}`}</p>
-                                                                <p className="text-sm font-normal">{card.fields.afterPrice}</p>
+                                                                <p className="text-lg font-bold">{FormatCurrency(card.precioAhorro)}</p>
+                                                                <p className="text-sm font-normal">{offersCopys.movil.cards.periodo}</p>
                                                             </div>
                                                         </>
                                                         :
                                                         <>
-                                                            {card.fields.beforePrice && <p className="text-sm font-normal">{card.fields.beforePrice}</p>}
                                                             <div className="flex flex-row items-baseline">
-                                                                <p className="text-lg font-bold">{`$${card.fields.price}`}</p>
-                                                                <p className="text-sm font-normal">{card.fields.afterPrice}</p>
+                                                                <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
+                                                                <p className="text-sm font-normal">{offersCopys.movil.cards.periodo}</p>
                                                             </div>
                                                         </>}
 
                                                 </div>
                                                 <div className="flex flex-row gap-[16px] items-center justify-between">
-                                                    <p
-                                                        className="underline pointer-events-auto"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation()
-                                                            console.log('click!!!')
-                                                        }}
-                                                    >{card.fields.ctaText}</p>
+                                                    <LinkModal
+                                                        classNames='underline text-black-0 text-[16px] cursor-pointer'
+                                                        text={offersCopys.internet.cards.info}
+                                                        closeButtonStroke='black'
+                                                        modalContentClassName="w-full h-auto sm:w-[80vw] xl:h-auto xl:w-[90vw] 2xl:w-[62vw] 2xl:h-auto"
+                                                        backdropColor='black-0/80'
+                                                        idModal={""}>
+                                                        <ConfiguradorCardsModalComponent
+                                                            variables={{
+                                                                velocidadMaxima: card.velocidadMaxima,
+                                                                precioPaquete: card.precioPaquete,
+                                                                precioAhorro: card.precioAhorro
+                                                            }}
+                                                            type="movil"
+                                                        />
+                                                    </LinkModal>
                                                     <span
                                                         className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
                                                         aria-pressed={isSelected}
                                                     >
-                                                        {isSelected && <CheckIcon className="w-[16px] h-[16px] text-white-0" />}
+                                                        {isSelected && <CheckPlanesIcon className="w-[16px] h-[16px] text-white-0" />}
                                                     </span>
                                                 </div>
                                             </div>

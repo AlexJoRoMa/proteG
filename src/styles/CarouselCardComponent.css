@@ -145,4 +145,17 @@
     }
 }
 
+  .titulo-carousel-card{
+    .rich-text-content{
+      gap:24px;
+    }
+  }
+
+  .rich-text-content{
+    gap:0;
+    @media screen and (max-width: 576px) {
+      gap: 10px;
+    }
+  }
+
 }

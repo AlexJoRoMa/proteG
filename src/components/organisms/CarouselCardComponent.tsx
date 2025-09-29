@@ -6,19 +6,22 @@ import { CarouselProvider } from '@/utils/CarouselProvider'
 import { CarouselCardProps } from '@/types/CarouselCardTypes'
 import { contentfulClient } from '@/services/contentful/client'
 import { Asset, Entry, EntrySkeletonType } from 'contentful'
-import {CARDHOMECOMPONENT, CARDTVINTERNETMOVILCOMPONENT, CARDTVPAQUETESCOMPONENT} from '@/constants/CardComponent';
+import {CARDHOMECOMPONENT, CARDTVPAQUETESCOMPONENT} from '@/constants/CardComponent';
 import CardTVInternetMovilComponent from '../molecules/CardTVInternetMovilComponent'
 import CardTvPaquetesComponent from '../molecules/CardTVPaquetesComponente';
 import { colorPickerType } from '@/types/ColorPickerType'
+import RichTextComponent from '../molecules/RichTextComponent'
+import { Document } from '@contentful/rich-text-types'
 
-const CarouselCardComponent = async ({id}:CarouselCardProps) => {
+const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
 
   // Obtener informacion de los carruseles desde contentful
 
-   const entryCarousel:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
+    const entryCarousel:Entry<EntrySkeletonType, undefined, string>[] | null = recomendador ? recomendador : await contentfulClient.getEntries({
       content_type: "carouselCardHomeModel",
       'sys.id': id,
-      select: ['fields.backgroundImage', 'fields.backgroundImageMobile' , 'fields.cardsCarousel', 'fields.bgColor', 'fields.colorArrow'],
+      select: ['fields.backgroundImage', 'fields.backgroundImageMobile' , 'fields.cardsCarousel', 'fields.bgColor', 'fields.colorArrow', 'fields.title'],
+      include: 2,
     }).then((entriesResponse) => {
       return entriesResponse.items
     })
@@ -29,7 +32,7 @@ const CarouselCardComponent = async ({id}:CarouselCardProps) => {
 
   return (
     <div 
-      className="CarouselCardComponent relative w-full h-full flex justify-center items-center"
+      className="CarouselCardComponent relative w-full h-full flex justify-center items-center flex-wrap"
       style={{ 
         backgroundColor: entryCarousel?.[0].fields?.bgColor 
           ? (entryCarousel?.[0].fields?.bgColor as colorPickerType)?.value 
@@ -57,6 +60,14 @@ const CarouselCardComponent = async ({id}:CarouselCardProps) => {
           </picture>
         </div>
       )}
+
+      {
+        entryCarousel && entryCarousel[0]?.fields?.title && !recomendador ? (
+          <div className='mb-10 text-center titulo-carousel-card'>
+          <RichTextComponent document={entryCarousel[0]?.fields?.title as Document} />
+          </div>
+        ) : null
+      }
         
         <div className="relative z-10 w-full h-full">
           <CarouselProvider qtyCarousels={1} carouselConfigs={[{ options: { align: 'start' } }]} colorArrow={colorArrow}>
@@ -66,7 +77,7 @@ const CarouselCardComponent = async ({id}:CarouselCardProps) => {
                     if( card.fields.type === CARDHOMECOMPONENT) {
                       return <CardHomeComponent key={index} card={card} />
                     }
-                    else if (typeof card.fields.type === 'string' && CARDTVINTERNETMOVILCOMPONENT.includes(card.fields.type)) {
+                    else if (typeof card.fields.type && card.fields.type !== CARDHOMECOMPONENT && card.fields.type !== CARDTVPAQUETESCOMPONENT) {
                       return <CardTVInternetMovilComponent key={index} card={card} />
                     }
                     else if (typeof card.fields.type === 'string' && CARDTVPAQUETESCOMPONENT.includes(card.fields.type)) {

@@ -1,5 +1,5 @@
 import { EntrySkeletonType } from "contentful"
-
+import { Document } from '@contentful/rich-text-types';
 // props container
 export type BenefitsContainerProps = {
     id: string,
@@ -15,9 +15,12 @@ export type BenefitsContentProps = {
 export type BenefitsDataFields = {
     internalName: string,
     title: string,
+    subTitle: string;
     ctaText: string,
     type: string,
     cards: CardDataFields[],
+    colorBtn?: boolean,
+    textUpBtn: string,
 }
 
 export type CardDataFields = {
@@ -26,6 +29,7 @@ export type CardDataFields = {
     ctaLink?: string,
     description: string,
     internalName: string,
+    titleRich: Document;
     title: string,
     type: string,
     isModal?: string,
@@ -35,12 +39,19 @@ export type CardDataFields = {
         };
     },
     colorHr?: string,
+    colorBtn?: boolean,
     image: {
         fields: {
             image: {
                 fields: {
                     file: {
                         url: string;
+                        details: {
+                            image:{
+                                width: number,
+                                height: number
+                            }
+                        }
                     };
                 };
             };

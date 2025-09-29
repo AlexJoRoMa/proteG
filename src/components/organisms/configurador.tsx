@@ -1,5 +1,5 @@
 import { contentfulClient } from "@/services/contentful/client";
-import { ConfigDataFields, ConfiguradorProps, OttsImages, ResumenIcon } from "@/types/ConfiguradorTypes";
+import { CoberturaType, ConfiguradorCopys, OttsImages, ResumenIcon } from "@/types/ConfiguradorTypes";
 import { Entry, EntrySkeletonType } from "contentful";
 import { ConfiguradorProvider } from "@/utils/ConfiguradorProvider";
 import { componentMap } from "@/lib/configurador/dynamic-map";
@@ -8,22 +8,41 @@ import { getCopyForComponent } from "@/services/contentful/components";
 import ResumenPedido from "../molecules/configurador/resumenPedido";
 import ResumenInfo from "../molecules/configurador/resumenInfo";
 import { STEPSCOVERAGECOMPONENT, STEPSNOCOVERAGECOMPONENT } from "@/constants/ConfiguradorConstants";
-import ExitGuard from "./ExitGuard";
+import { getOfertas } from "@/services/izzi/configurador";
+import LinkModal from "../atoms/LinkModal";
+import TeAyudamosModalComponent from "../layouts/modals/TeAyudamosModalComponent";
+import ExitGuard from "@/utils/guards/ExitGuard";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { Arrow } from "@/constants/IconsConstants";
 
-export const Arrow =
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M15 5L9 12L15 19" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+async function getCobertura() {
+    const cookieStore = await cookies()
 
-export default async function Configurador({ id }: ConfiguradorProps) {
+    const existZipCode = cookieStore.has('zipCode');
+    const existLat = cookieStore.has('lat');
+    const existLng = cookieStore.has('lng');
 
-    const pageEntry: Entry<EntrySkeletonType, undefined> | null = await contentfulClient.getEntries({
-        content_type: 'multiStepContainer',
-        'sys.id': id,
-        include: 5
-    }).then((entriesResponse) => {
-        return entriesResponse.items[0]
-    });
+    if (existZipCode && existLat && existLng) {
+        const lat = cookieStore.get('lat');
+        const lng = cookieStore.get('lng');
+        const zipCode = cookieStore.get('zipCode');
+
+        return {
+            lat: lat?.value,
+            lng: lng?.value,
+            zipCode: zipCode?.value
+        }
+    }
+    else {
+        redirect('/cobertura');
+    }
+}
+
+export default async function Configurador() {
+
+    const getCookies = await getCobertura() as unknown as CoberturaType;
+    const dataOffersEntry = await getOfertas(getCookies);
 
     const resumenIcon = await contentfulClient.getEntries({
         content_type: 'media',
@@ -44,31 +63,27 @@ export default async function Configurador({ id }: ConfiguradorProps) {
         return entry.resumen
     });
 
-    const entryBackButton = pageEntry?.fields.backText as string;
-    const entryBackButtonUrl = pageEntry?.fields.backTextUrl as string;
-    const entryTitle = pageEntry?.fields.title as string;
-    const entryHelp = pageEntry?.fields.helpText as string;
-    const entryCTA = pageEntry?.fields.ctaText as string;
+    const copysConfigurador = await getCopyForComponent('Configurador').then((entry) => {
+        return entry.configurador
+    }) as unknown as ConfiguradorCopys;
+
+    const entryBackButton = copysConfigurador.page.botonRegreso.titulo;
+    const entryBackButtonUrl = copysConfigurador.page.botonRegreso.url;
+    const entryTitle = copysConfigurador.page.titulo;
+    const entryHelp = copysConfigurador.page.ayuda.textoInfo;
+    const entryCTA = copysConfigurador.page.ayuda.botonAyuda;
     const cobertura: boolean = true;
-
-    const components = pageEntry?.fields.steps as unknown as EntrySkeletonType<ConfigDataFields>[] | null;
-
-    const configuradorEntry: Record<string, EntrySkeletonType<ConfigDataFields>> = {};
-
-    if (components && components !== null) {
-        for (const item of components) {
-            configuradorEntry[item.fields.type] = item
-        }
-    }
 
     return (
         <ConfiguradorProvider
-            configuradorEntry={configuradorEntry}
+            configuradorEntry={dataOffersEntry}
             copysResumen={copysResumen}
+            copysConfigurador={copysConfigurador}
             resumenIcon={resumenIcon}
             ottsImages={ottImages}
             cobertura={cobertura}
         >
+            {/* Guard detector de salida del flujo */}
             <ExitGuard />
             <section className="border-t-1 border-t-gray-150">
                 <div className="flex flex-col xl:grid xl:grid-cols-3 gap-[24px] xl:mx-md 4xl:mx-xl">
@@ -79,13 +94,14 @@ export default async function Configurador({ id }: ConfiguradorProps) {
                                     href={entryBackButtonUrl}
                                 >
                                     <div className="flex flex-row gap-[4px] items-center">
-                                        <p>{Arrow}</p>
+                                        <p><Arrow /></p>
                                         <h5 className="font-bold leading-[24px] text-base xl:text-xl text-black-0">{entryBackButton}</h5>
                                     </div>
                                 </Link>
                                 <h4 className='font-bold text-xl xl:text-[32px] leading-[24px] xl:leading-[40px]'>{entryTitle}</h4>
                             </div>
 
+                            {/* Mapeo dinamico de pasos del configurador según cobertura */}
                             <div className='grid gap-[24px]'>
                                 {
                                     cobertura ?
@@ -114,11 +130,21 @@ export default async function Configurador({ id }: ConfiguradorProps) {
 
                             <div className='flex flex-col my-[24px] gap-[10px]'>
                                 <h4 className='font-normal text-lg leading-[24px]'>{entryHelp}</h4>
-                                <h5 className="text-base leading-[24px] font-bold underline">{entryCTA}</h5>
+                                <LinkModal
+                                    classNames='text-base leading-[24px] font-bold underline cursor-pointer'
+                                    text={entryCTA}
+                                    closeButtonStroke='black'
+                                    backdropColor='black-0/80'
+                                    idModal={""}
+                                    modalContentClassName="2xl:w-[62vw] 2xl:h-[52vh] xl:w-[90vw] xl:h-[52vh] h-[98vh]"
+                                >
+                                    <TeAyudamosModalComponent />
+                                </LinkModal>
                             </div>
-                            {/* //TODO: Abrir drawer al hacer click en botón "¿Te ayudamos?" */}
                         </div>
                     </div>
+
+                    {/* Resumen de pedido & Sticky mobile */}
                     <div className="xl:mt-[34px] sticky z-10 bottom-0 xl:static xl:top-auto xl:z-0">
                         <div className="block xl:hidden mx-[16px] mb-[16px] xl:mx-0">
                             <ResumenInfo />
