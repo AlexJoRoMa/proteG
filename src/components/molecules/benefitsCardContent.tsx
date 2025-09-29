@@ -6,6 +6,8 @@ import { Entry, EntrySkeletonType } from "contentful";
 import Image from "next/image";
 import ButtonGhost from "../atoms/ButtonGhost";
 import ButtonModal from "../atoms/ButtonModal";
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import { richTextOptions } from '@/components/molecules/RichTitleBenefitsComponent';
 
 export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
 
@@ -59,7 +61,10 @@ export default function BenefitsCardContent({ cards }: BenefitsContentProps) {
                                 </CardHeader>
                                 <CardBody className={`px-[24px] flex-1 flex flex-col justify-between ${!card.fields.ctaText ? 'pb-[32px]' : ''}`}>
                                     <div className="flex flex-col gap-[24px] items-center">
-                                        <h2 className="font-bold text-[32px] text-center text-black-0">{card.fields.title}</h2>
+                                        <div className={` text-center `}>
+                                            {card.fields.titleRich && documentToReactComponents(card.fields.titleRich, richTextOptions)}
+                                        </div>
+                                        
                                         <p className="font-normal text-lg leading-[24px] text-center text-black-0 ">{card.fields.description}</p>
                                     </div>
                                 </CardBody>

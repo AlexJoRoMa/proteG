@@ -1,5 +1,5 @@
 import { EntrySkeletonType } from "contentful"
-
+import { Document } from '@contentful/rich-text-types';
 // props container
 export type BenefitsContainerProps = {
     id: string,
@@ -29,6 +29,7 @@ export type CardDataFields = {
     ctaLink?: string,
     description: string,
     internalName: string,
+    titleRich: Document;
     title: string,
     type: string,
     isModal?: string,

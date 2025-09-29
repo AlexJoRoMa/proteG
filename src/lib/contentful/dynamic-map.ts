@@ -10,7 +10,7 @@ import AccesoConfigurador from '@/components/organisms/acceso-configurador';
 import CoberturaModel from '@/components/organisms/cobertura-model';
 import TVBeneficiosProductos from '@/components/organisms/tv-beneficios-productos';
 import BloqueSeparador from '@/components/organisms/bloque-separador';
-import ConIzziTv from '@/components/organisms/tv-top-banner';
+/* import ConIzziTv from '@/components/organisms/tv-top-banner'; */
 import IzziGoBloque from '@/components/organisms/tv-izzi-go';
 import TVCanalesSegmento from '@/components/organisms/tv-canales-segmentos';
 
@@ -27,7 +27,7 @@ export const componentMap = {
   modelTvBeneficios: TVBeneficiosProductos,
   cardContainer: GenericProductCard,
   tvBloqueSeparador: BloqueSeparador,
-  modelIzziTV: ConIzziTv,
+ 
   IzziGoBloque: IzziGoBloque,
   tabCanalesTV: TVCanalesSegmento,
   cardsContratacionRapida: ContratacionRapida

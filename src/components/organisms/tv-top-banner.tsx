@@ -12,7 +12,7 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
             'sys.id': id,
             select: ['fields.imagen',
             'fields.imagenMovil',
-            'fields.titulo',
+            
             'fields.tituloResaltado',
             'fields.body',
             'fields.textoPrecio',
