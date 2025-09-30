@@ -117,7 +117,7 @@ const ContratacionRapida = async ({id} : ContratacionRapidaID) =>{
                     {entryTitle}
                   </p>
                 )}
-                  <div className=" md:text-[16px] xsm:text-[14px] ">
+                  <div className=" md:text-[16px] xsm:text-[14px] w-full">
                     {richText && documentToReactComponents(richText)}
                   </div>
                 </div>
