@@ -35,7 +35,7 @@ export default function ResumenPaquetes({userSelection, copys}: ResumenContentPr
                             {`${resumenCopys.paquetes.internet.textoContratacion} ${internet.paquete.velocidadMaxima}${resumenCopys.paquetes.internet.postCapacidad}`}
                         </p>
                         <p>
-                            {`${resumenCopys.paquetes.internet.extrasIncluidos} ${internet.paquete.extrasIncluidos && internet.paquete.extrasIncluidos[0]}`}
+                            {`${resumenCopys.paquetes.internet.extrasIncluidos} ${internet.paquete.extrasIncluidos && internet.paquete.extrasIncluidos[0].titulo}`}
                         </p>
                     </div>
                 </div>

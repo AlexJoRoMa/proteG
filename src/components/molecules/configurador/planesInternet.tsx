@@ -33,7 +33,7 @@ export default function PlanesInternet({ step }: StepProps) {
             ...prev,
             internet: {
                 paquete: card,
-                total: Number(card.precioAhorro) || 0
+                total: Number(card.precioPaquete) || 0
             }
 
         }))
@@ -97,17 +97,17 @@ export default function PlanesInternet({ step }: StepProps) {
                                     <CardBody>
                                         <div className="flex items-stretch">
                                             {card.extrasIncluidos &&
-                                                <p className="leading-[18px] font-normal text-sm text-gray-300">{card?.extrasIncluidos[0]}</p>
+                                                <p className="leading-[18px] font-normal text-sm text-gray-300">{card?.extrasIncluidos[0].titulo}</p>
                                             }
                                         </div>
                                     </CardBody>
                                     <CardFooter>
                                         <div className="flex flex-col w-full gap-[8px]">
                                             <div className="flex flex-row items-baseline gap-[4px]">
-                                                <span className="text-sm font-normal text-gray-200 line-through">{FormatCurrency(card.precioPaquete)}</span>
+                                                {/* <span className="text-sm font-normal text-gray-200 line-through">{FormatCurrency(card.precioPaquete)}</span> */}
                                                 <div className="flex flex-row items-baseline">
-                                                    <span className="text-lg font-bold">{FormatCurrency(card.precioAhorro)}</span>
-                                                    <span className="text-sm font-normal">{offersCopys.internet.cards.periodo}</span>
+                                                    <span className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</span>
+                                                    <span className="text-sm font-normal">{`/${card.periodicidad}`}</span>
                                                 </div>
                                             </div>
                                             <div className="flex flex-row gap-[16px] items-center justify-between">
@@ -122,7 +122,6 @@ export default function PlanesInternet({ step }: StepProps) {
                                                         variables={{
                                                             velocidadMinima: card.velocidadMinima,
                                                             velocidadMaxima: card.velocidadMaxima,
-                                                            precioAhorro: card.precioAhorro,
                                                             precioPaquete: card.precioPaquete,
                                                         }}
                                                         type="internet"

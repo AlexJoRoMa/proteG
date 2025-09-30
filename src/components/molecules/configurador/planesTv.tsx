@@ -27,7 +27,7 @@ export default function PlanesTv({ step }: StepProps) {
                 tv: {
                     ...prev.tv,
                     paquete: selectedTv,
-                    total: selectedTv.precioAhorro ? Number(selectedTv.precioAhorro) || 0 : Number(selectedTv.precioPaquete) || 0
+                    total: Number(selectedTv.precioPaquete) || 0
                 },
             }));
     }
@@ -99,7 +99,7 @@ export default function PlanesTv({ step }: StepProps) {
             const selectedTv = tvPlans[selectedIndex];
 
             const sameTitle = prevTv?.titulo === selectedTv.titulo;
-            const samePrice = String(prevTv?.precioPaquete) === String(selectedTv.precioPaquete) && String(prevTv?.precioAhorro) === String(selectedTv.precioAhorro);
+            const samePrice = String(prevTv?.precioPaquete) === String(selectedTv.precioPaquete);
 
             if (!sameTitle || !samePrice) {
                 updateTvAnswers(selectedTv);
@@ -135,7 +135,7 @@ export default function PlanesTv({ step }: StepProps) {
                 tv: {
                     ...prev.tv,
                     paquete: card,
-                    total: card.precioAhorro ? Number(card.precioAhorro) || 0 : Number(card.precioPaquete) || 0
+                    total: Number(card.precioPaquete) || 0
                 },
             }));
 
@@ -200,22 +200,24 @@ export default function PlanesTv({ step }: StepProps) {
                                     <CardFooter>
                                         <div className="flex flex-col gap-[8px] w-full">
                                             <div className="flex flex-row items-baseline text-start gap-[4px]">
-                                                {card.precioAhorro ?
-                                                    <>
-                                                        <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioPaquete)}</p>
-                                                        <div className="flex flex-row items-baseline">
-                                                            <p className="text-lg font-bold">{FormatCurrency(card.precioAhorro)}</p>
-                                                            <p className="text-sm font-normal">{offersCopys.tv.cards.periodo}</p>
-                                                        </div>
-                                                    </>
-                                                    :
-                                                    <>
-                                                        {/* {card.fields.beforePrice && <p className="text-sm font-normal">{card.fields.beforePrice}</p>} */}
-                                                        <div className="flex flex-row items-baseline">
-                                                            <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
-                                                            <p className="text-sm font-normal">{offersCopys.tv.cards.periodo}</p>
-                                                        </div>
-                                                    </>}
+                                                {
+                                                    // card.precioAhorro ?
+                                                    //     <>
+                                                    //         <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioPaquete)}</p>
+                                                    //         <div className="flex flex-row items-baseline">
+                                                    //             <p className="text-lg font-bold">{FormatCurrency(card.precioAhorro)}</p>
+                                                    //             <p className="text-sm font-normal">{offersCopys.tv.cards.periodo}</p>
+                                                    //         </div>
+                                                    //     </>
+                                                    //     :
+                                                        <>
+                                                            {/* {card.fields.beforePrice && <p className="text-sm font-normal">{card.fields.beforePrice}</p>} */}
+                                                            <div className="flex flex-row items-baseline">
+                                                                <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
+                                                                <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
+                                                            </div>
+                                                        </>
+                                                }
 
                                             </div>
                                             <div className="flex flex-row gap-[16px] items-center justify-between">
@@ -230,7 +232,6 @@ export default function PlanesTv({ step }: StepProps) {
                                                         variables={{
                                                             canales: card.canales,
                                                             precioPaquete: card.precioPaquete,
-                                                            precioAhorro: card.precioAhorro
                                                         }}
                                                         type="tv"
                                                     />

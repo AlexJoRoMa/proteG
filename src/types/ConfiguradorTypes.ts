@@ -49,16 +49,26 @@ export interface Offers {
 
 export interface OfferItem {
     idPaquete: number,
+    idExtra: number,
     titulo: string,
     descripcion: string,
     precioPaquete: string,
-    precioAhorro: string,
+    periodicidad: string,
     canales?: string,
     canalesHd?: string,
+    spTV: boolean,
+    spMovil: boolean,
     velocidadMaxima?: number,
     velocidadMinima?: number,
-    extrasIncluidos?: string[]
+    extrasIncluidos?: ExtrasIncluidos[]
 }
+
+export interface ExtrasIncluidos {
+    titulo: string,
+    plazo: string,
+    categoria: string
+}
+
 export interface MovilPlansInfo {
     tituloTab: string,
     cards: OfferItem[]
@@ -163,29 +173,35 @@ export interface UserAnswers {
 
 export interface IzziSelection {
     idPaquete?: number,
+    idExtra?: number,
     titulo?: string,
+    periodicidad?: string,
     descripcion?: string,
     precioPaquete?: string,
-    precioAhorro?: string,
     velocidadMinima?: number,
     velocidadMaxima?: number,
-    extrasIncluidos?: string[],
+    extrasIncluidos?: ExtrasIncluidos[],
     canales?: string,
     canalesHd?: string,
+    spTV?: boolean,
+    spMovil?: boolean,
     extrasMap?: {
         ott?: OttProps[]
     },
     extras?: {
         idPaquete?: number,
+        idExtra?: number,
         titulo?: string,
+        periodicidad?: string,
         descripcion?: string,
         precioPaquete?: string,
-        precioAhorro?: string,
         velocidadMinima?: number,
         velocidadMaxima?: number,
-        extrasIncluidos?: string[],
+        extrasIncluidos?: ExtrasIncluidos[],
         canales?: string,
         canalesHd?: string,
+        spTV?: boolean,
+        spMovil?: boolean,
     }
 }
 
@@ -196,7 +212,8 @@ export type OttProps = {
     titulo: string,
     costo: string,
     descripcion: string,
-    grupo?: number
+    grupo?: number,
+    categoriaExtra?: string
 }
 
 export type internetComponentFields = {

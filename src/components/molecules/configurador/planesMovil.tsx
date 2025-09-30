@@ -50,7 +50,7 @@ export default function PlanesMovil({ step }: StepProps) {
             movil: {
                 paquete: card,
                 contrato: selectedTabKey,
-                total: card.precioAhorro ? Number(card.precioAhorro) || 0 : Number(card.precioPaquete) || 0
+                total: Number(card.precioPaquete) || 0
             },
         }))
     }
@@ -114,6 +114,7 @@ export default function PlanesMovil({ step }: StepProps) {
                                     className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
                                 >
                                     <Card
+                                        isPressable
                                         onPress={() => handleSelect(cardId, card)}
                                         classNames={{
                                             base: "flex flex-col rounded-xs shadow-none h-full w-full",
@@ -131,21 +132,23 @@ export default function PlanesMovil({ step }: StepProps) {
                                         <CardFooter>
                                             <div className="flex flex-col w-full gap-[8px]">
                                                 <div className="flex flex-row items-baseline text-start gap-[4px]">
-                                                    {card.precioAhorro ?
-                                                        <>
-                                                            <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioPaquete)}</p>
-                                                            <div className="flex flex-row items-baseline">
-                                                                <p className="text-lg font-bold">{FormatCurrency(card.precioAhorro)}</p>
-                                                                <p className="text-sm font-normal">{offersCopys.movil.cards.periodo}</p>
-                                                            </div>
-                                                        </>
-                                                        :
+                                                    {
+                                                        // card.precioAhorro ?
+                                                        //     <>
+                                                        //         <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioPaquete)}</p>
+                                                        //         <div className="flex flex-row items-baseline">
+                                                        //             <p className="text-lg font-bold">{FormatCurrency(card.precioAhorro)}</p>
+                                                        //             <p className="text-sm font-normal">{offersCopys.movil.cards.periodo}</p>
+                                                        //         </div>
+                                                        //     </>
+                                                        //     :
                                                         <>
                                                             <div className="flex flex-row items-baseline">
                                                                 <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
-                                                                <p className="text-sm font-normal">{offersCopys.movil.cards.periodo}</p>
+                                                                <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
                                                             </div>
-                                                        </>}
+                                                        </>
+                                                    }
 
                                                 </div>
                                                 <div className="flex flex-row gap-[16px] items-center justify-between">
@@ -160,7 +163,6 @@ export default function PlanesMovil({ step }: StepProps) {
                                                             variables={{
                                                                 velocidadMaxima: card.velocidadMaxima,
                                                                 precioPaquete: card.precioPaquete,
-                                                                precioAhorro: card.precioAhorro
                                                             }}
                                                             type="movil"
                                                         />
