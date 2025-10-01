@@ -98,6 +98,7 @@ export default function Cobertura() {
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const data = Object.fromEntries(new FormData(e.currentTarget));
         await createCookie({lat: lat, lng: lng, zipCode: postalCode});
     };

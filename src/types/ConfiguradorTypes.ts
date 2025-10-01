@@ -31,7 +31,7 @@ export interface ApiToken {
     refresh_token: string,
     token_type: string,
     access_token: string,
-    expires_in: Number,
+    expires_in: number,
 }
 
 export interface PackageInfo {
@@ -121,11 +121,14 @@ export interface ConfigTabsFields {
 
 //Provider
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+type CopysObject = {};
+
 export type ProviderProps = {
     children: ReactNode,
     configuradorEntry: ApiResponse,
-    copysResumen: {},
-    copysConfigurador: {},
+    copysResumen: CopysObject,
+    copysConfigurador: CopysObject,
     resumenIcon: EntrySkeletonType<ResumenIcon>,
     ottsImages: Entry<EntrySkeletonType<OttsImages>>[]
     cobertura: boolean
@@ -133,8 +136,8 @@ export type ProviderProps = {
 
 export type DataFields = {
     configuradorEntry?: ApiResponse
-    copysResumen?: {},
-    copysConfigurador?: {},
+    copysResumen?: CopysObject,
+    copysConfigurador?: CopysObject,
     cobertura: boolean,
     userAnswers: UserAnswers,
     setUserAnswers: React.Dispatch<React.SetStateAction<UserAnswers>>,

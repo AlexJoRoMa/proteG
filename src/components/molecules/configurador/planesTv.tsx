@@ -7,7 +7,7 @@ import { CheckPlanesIcon } from "@/constants/IconsConstants";
 import { OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
-import { Card, CardBody, CardFooter, CardHeader, tv } from "@heroui/react";
+import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { useEffect, useState } from "react";
 
 export default function PlanesTv({ step }: StepProps) {
@@ -112,6 +112,7 @@ export default function PlanesTv({ step }: StepProps) {
     function clearSelection() {
         setSelectedIndex(null);
         setUserAnswers(prev => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { tv, ...rest } = prev;
             return rest
         });

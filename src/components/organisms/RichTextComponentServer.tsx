@@ -4,7 +4,7 @@ import { Document } from '@contentful/rich-text-types'
 import React from 'react'
 import RichTextComponent from '../molecules/RichTextComponent'
 
-const RichTextComponentServer = async ({id}) => {
+const RichTextComponentServer = async ({id}: {id: string}) => {
 
     const entryRich:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
         content_type: "richTextContent",

@@ -7,9 +7,9 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-export const CloseIcon = (props: any) => {
+export const CloseIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" {...props}>
             <path d="M18 6.00005L6 18M5.99995 6L17.9999 18" stroke="black" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
     )
@@ -152,7 +152,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
                 backdrop="opaque"
             >
                 <ModalContent>
-                    {(onClose) => (
+                    {() => (
                         <>
                             <ModalHeader>
                                 <div className="flex items-center justify-center" onClick={handleCancel}>

@@ -3,7 +3,7 @@ import { tabsTileProps, TabsDataFields } from "@/types/TvCanalesSegmentosTypes";
 import { Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
 import SegmentosCanales from '../molecules/TvSegmentosContent';
-import { getAllCopy, getCopyForComponent, getMicroCopy } from '@/services/contentful/components';
+import { getMicroCopy } from '@/services/contentful/components';
 
 export default async function TVCanalesSegmento({ id }: tabsTileProps) {
     

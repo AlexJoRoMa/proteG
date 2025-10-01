@@ -11,6 +11,7 @@ import { useState } from "react";
 
 export default function PlanesMovil({ step }: StepProps) {
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { configuradorEntry, setUserAnswers, userAnswers, copysConfigurador } = useContent();
     const plans = configuradorEntry?.offers.MOVIL as unknown as OfferItem[];
     const offersCopys = copysConfigurador as unknown as OffersCopys;
@@ -58,6 +59,7 @@ export default function PlanesMovil({ step }: StepProps) {
     function clearSelection() {
         setSelectedCardId(null);
         setUserAnswers(prev => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { movil, ...rest } = prev;
             return rest
         });

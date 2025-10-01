@@ -1,8 +1,8 @@
 'use client'
 
-import { Tabs, Tab, Card, CardBody, Accordion, AccordionItem } from "@heroui/react";
-import { TabsDataFields, TabsContentProps, CardSegmentoFields } from "@/types/FAQTypes";
-import { Entry, EntrySkeletonType } from "contentful";
+import { Tabs, Tab, Card, CardBody } from "@heroui/react";
+import { TabsDataFields, TabsContentProps } from "@/types/FAQTypes";
+import { EntrySkeletonType } from "contentful";
 import FAQAccordion  from '../molecules/FAQAccordionContent';
 
 export default function TabFAQ({ tabsData }: TabsContentProps) {

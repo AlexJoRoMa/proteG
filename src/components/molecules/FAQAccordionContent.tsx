@@ -1,7 +1,6 @@
 
 import { Accordion, AccordionItem } from "@heroui/react";
-import { CardSegmentoSkeleton, FAQAccordionProps } from "@/types/FAQTypes";
-import { EntrySkeletonType, Entry } from "contentful";
+import { FAQAccordionProps } from "@/types/FAQTypes";
 import { SAFETEXT } from '@/constants/FAQConstants';
 import { DropIcon } from '@/components/atoms/FAQicons';
 
