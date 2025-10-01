@@ -42,7 +42,8 @@ export default function PlanesInternet({ step }: StepProps) {
     function clearSelection() {
         setSelectedIndex(null);
         setUserAnswers(prev => {
-            const newState = { ...prev }; delete newState.internet;
+            const newState = { ...prev };
+            delete newState.internet;
             return newState;
         });
     }
@@ -51,7 +52,8 @@ export default function PlanesInternet({ step }: StepProps) {
         if (disabled && (userAnswers.internet?.paquete !== null)) {
             setSelectedIndex(null);
             setUserAnswers(prev => {
-                const newState = { ...prev }; delete newState.internet;
+                const newState = { ...prev };
+                delete newState.internet;
                 return newState;
             });
         }
