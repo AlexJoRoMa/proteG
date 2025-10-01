@@ -1,19 +1,29 @@
-import { Calendar, Radio, RadioGroup } from '@heroui/react'
-import React from 'react'
+import React from 'react';
+import { Button, Form, InputOtp, Radio, RadioGroup } from '@heroui/react'
 
 const Step4 = () => {
   return (
     <div>
-      <h5 className='text-[18px] leading-6 font-bold mb-2'>Es necesario hacer una cita para la instalación</h5>
-      <p className='text-[18px] leading-6 mb-6'>Selecciona el día y el horario para la visita de nuestro técnico</p>
-      <div className='flex flex-col md:flex-row'>
-        <Calendar className='w-9/12 ' calendarWidth='100%' weekdayStyle="short"  classNames={{content: 'w-full bg-(--color-gray-50) px-4', headerWrapper: 'bg-(--color-gray-50) mb-[24px] pt-6', header: 'capitalize order-1 justify-start ml-[30px]', prevButton: 'order-2', title:'font-bold text-[18px] leading-6 text-black', gridHeader: 'bg-(--color-gray-50) shadow-none', base: 'w-full shadow-none', grid: 'w-full', gridHeaderRow: 'justify-around px-0 text-black', gridHeaderCell: 'font-bold', gridBodyRow: 'justify-around', cell: 'cursor-pointer', gridWrapper: 'pb-6'}} aria-label="Date (No Selection)" />
-        <div className='w-auto ml-auto'>
-          <RadioGroup orientation='vertical' className='flex flex-col gap-6' defaultValue={'09:00 - 14:00'}>
-            <Radio value="09:00 - 14:00">De 9am a 2pm</Radio>
-            <Radio value="14:00 - 18:00">De 2pm a 6pm</Radio>
-          </RadioGroup>
-        </div>
+      <Form>
+        <h5 className='text-[18px] font-bold leading-6 mb-2.5'>Es necesario confirmar tu información</h5>
+        <p className='text-[18px] leading-6 mb-2.5'>Selecciona el medio por el cual deseas recibir la <b>aceptación o código de verificación.</b></p>
+        <RadioGroup orientation='vertical' className='flex flex-col gap-6' defaultValue={'Whatsapp'}>
+          <Radio value="Whatsapp"><b>Enviar por WhatsApp:</b> 55 XXXX XXXX</Radio>
+          <Radio value="SMS"><b>Enviar por SMS:</b> 55 XXXX XXXX</Radio>
+          <Radio value="Email"><b>Enviar por correo electrónico:</b> mail@gmail.com</Radio>
+        </RadioGroup>
+
+        <Button type='submit' className='mt-10 bg-black text-white hover:bg-white hover:text-black hover:border w-3xs rounded-md mx-auto'>Enviar código</Button>
+      </Form>
+
+      <div className='countdown-timer text-center mt-6 text-(--color-green-700) font-bold'>
+        <span>00:59</span>
+      </div>
+
+      <div>
+        <p className='text-[18px] font-bold leading-6 mb-6 text-center mt-6'>Introduce el código de verificación que te hemos enviado por WhatsApp.</p>
+        <InputOtp length={4} defaultValue="1234" className='mx-auto' radius='md' isRequired size='lg' variant='bordered' />
+        <p className='text-[18px] font-bold leading-6 mb-6 text-center mt-6'>¡Código correcto! Da clic en continuar</p>
       </div>
 
     </div>
