@@ -1,6 +1,7 @@
 import { Entry, EntrySkeletonType } from "contentful";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
+import ButtonFixed from "@/components/atoms/ButtonSticky";
 
 
 export default async function Home() {
@@ -26,7 +27,7 @@ export default async function Home() {
             <p>No existen componentes cargados.</p>
           )
         }
-        
+        <ButtonFixed />
     </main>
   );
 }
