@@ -12,7 +12,7 @@ interface DynamicPageProps {
 export default async function LandingPage({ params }: DynamicPageProps) {
     const { slugs } = await params; //Sugerencia de NextJS para obtener los parametros de la ruta
     // Unir segmentos anidados en un solo slug, p.ej. ['television', 'canales'] -> 'television/canales'
-    const fullPath = slugs.join('/');
+    const fullPath = ["landing", ...slugs].join('/');
 
     const page = await fetchComponentsBySlugPage(fullPath);
     const components = page.items || [];
