@@ -1,5 +1,6 @@
 import { Lato } from 'next/font/google';
 import "../styles/globals.css";
+import Footer from '@/components/molecules/footer';
 
 const lato = Lato({
   weight: '400',
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html lang="es" className={`${lato.variable}`}>
       <body>
         {children}
+        <Footer />
       </body>
     </html>
   );

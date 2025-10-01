@@ -1,13 +1,7 @@
-import Footer from "@/components/molecules/footer";
 import Navigation from "@/components/molecules/navigation";
 import { Lato } from "next/font/google";
 
-const lato = Lato({
-    weight: '400',
-    subsets: ['latin'],
-    variable: '--font-lato',
-})
-
+const lato = Lato({subsets: ['latin'], weight:['400', '700']})
 
 //TODO descomentar metadata cuando se tenga el contenido tomado desde contentful
 
@@ -22,12 +16,9 @@ export default function MainLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="es" className={`${lato.variable}`}>
-            <body>
-                <Navigation />
-                {children}
-                <Footer />
-            </body>
-        </html>
+        <div className={lato.className}>
+            <Navigation />
+            {children}
+        </div>
     )
 }

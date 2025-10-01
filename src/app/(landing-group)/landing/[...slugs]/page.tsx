@@ -1,3 +1,4 @@
+import ButtonFixed from "@/components/atoms/ButtonSticky";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import { Entry, EntrySkeletonType } from "contentful";
@@ -39,6 +40,7 @@ export default async function LandingPage({ params }: DynamicPageProps) {
             ) : (
                 <p>No existen componentes cargados.</p>
             )}
+            <ButtonFixed />
         </main>
     );
 }

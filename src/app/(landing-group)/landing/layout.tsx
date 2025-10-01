@@ -1,13 +1,7 @@
-import { Lato } from 'next/font/google';
 import "@/styles/globals.css";
-import Footer from '@/components/molecules/footer';
-import ButtonFixed from '@/components/atoms/ButtonSticky';
+import { Lato } from "next/font/google";
 
-const lato = Lato({
-    weight: '400',
-    subsets: ['latin'],
-    variable: '--font-lato',
-})
+const lato = Lato({ subsets: ['latin'], weight: ['400', '700'] })
 
 
 //TODO descomentar metadata cuando se tenga el contenido tomado desde contentful
@@ -23,13 +17,9 @@ export default function CheckoutLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="es" className={`${lato.variable}`}>
-            <body>
-                {/* header de las landing */}
-                {children}
-                <Footer />
-                <ButtonFixed />
-            </body>
-        </html>
+        <div className={lato.className}>
+            {/* header de las landing */}
+            {children}
+        </div>
     );
 }
