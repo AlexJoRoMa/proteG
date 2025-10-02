@@ -1,17 +1,18 @@
 'use client'
+import { redirect } from 'next/navigation'
 import React, { createContext, useContext, useState, useCallback } from 'react'
 
 interface CheckoutContextType {
   currentStep: number
   completedSteps: number[]
   totalSteps: number
-  
+
   // Navigation functions
   goToStep: (step: number) => void
   nextStep: () => void
   prevStep: () => void
   markStepAsCompleted: (step: number) => void
-  
+
   // Helper functions
   isStepCompleted: (step: number) => boolean
   isStepActive: (step: number) => boolean
@@ -27,16 +28,18 @@ interface CheckoutProviderProps {
   initialStep?: number
 }
 
-export const CheckoutProvider = ({ 
-  children, 
-  totalSteps = 6, 
-  initialStep = 1 
+export const CheckoutProvider = ({
+  children,
+  totalSteps = 6,
+  initialStep = 2
 }: CheckoutProviderProps) => {
   const [currentStep, setCurrentStep] = useState(initialStep)
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
 
   const goToStep = useCallback((step: number) => {
-    if (step >= 1 && step <= totalSteps) {
+    if (step === 1) {
+      redirect('/configurador');
+    } else if (step > 1 && step <= totalSteps) {
       setCurrentStep(step)
     }
   }, [totalSteps])
