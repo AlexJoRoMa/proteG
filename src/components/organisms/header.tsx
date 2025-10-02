@@ -75,7 +75,7 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
       <NavbarContent className={`${isMenuOpen ? 'ps-0': 'pl-16'} !grow-0 lg:justify-start sm:justify-center lg:pl-0 lg:ps-0`}>
         <NavbarBrand>
           <Link href="/">
-            <Image className='max-w-[120px] h-auto' src={`https:${navbar[0].fields.brandLogo?.fields.file.url}`} alt={`${navbar[0].fields.brandLogo?.fields.file.fileName}`} width={120} height={48} priority />
+            <Image className='max-w-[120px] h-auto' src="/izzi_logo.png" alt="Logo Izzi" width={120} height={48} priority />
           </Link>
           </NavbarBrand>
       </NavbarContent>
@@ -83,7 +83,7 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
       
       
       {/* pestañas */}
-      <NavbarContent className="hidden xl:flex gap-[32px] min-[1024px]:gap-[16px] min-[1095]:gap-[24px] min-[1150px]:gap-[32px]" justify="start">
+      <NavbarContent className=" hidden xl:flex gap-[32px] min-[1024px]:gap-[16px] min-[1095]:gap-[24px] min-[1440px]:gap-[32px]" justify="start">
         <NavbarItem >
             <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href=''>
               internet
@@ -135,10 +135,17 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
         <NavbarItem className="hidden xl:flex ">
           <Button as={Link} className="bg-color-trasparent h-[48px] border-[2px] border-solid rounded-md text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[16px] min-[1150px]:text-[18px]"
           startContent={
-            <Image className='max-w-[24px] h-auto' src='' alt='' width={24} height={24} priority />
+            <Image className='max-w-[24px] h-auto' src='/Headphones_Round.png' alt='Headphone' width={24} height={24} priority />
           }
           href='' >
             centro de ayuda
+          </Button>
+          <Button as={Link} className="bg-color-trasparent h-[48px] border-[2px] border-solid rounded-md text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[16px] min-[1150px]:text-[18px]"
+          startContent={
+            <Image className='max-w-[24px] h-auto' src='/teLlamamos.png' alt='Headphone' width={24} height={24} priority />
+          }
+          href='' >
+            te llamamos
           </Button>
                 
               
