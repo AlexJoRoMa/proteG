@@ -6,6 +6,7 @@ import Step5 from '@/components/molecules/checkout/Step5'
 import Step6 from '@/components/molecules/checkout/Step6'
 import React from 'react'
 import { useCheckout } from '@/components/providers/CheckoutProvider'
+import ResumenContainer from '@/components/molecules/checkout/resumenContainer'
 
 const CheckoutContent = () => {
   const { currentStep } = useCheckout()
@@ -31,8 +32,8 @@ const CheckoutContent = () => {
         }
       </div>
       <div className='xl:w-3/12 hidden sm:inline-block'>
-        elemento lateral
         {/* Espacio para posibles futuros elementos laterales */}
+        <ResumenContainer />
       </div>
     </div>
 

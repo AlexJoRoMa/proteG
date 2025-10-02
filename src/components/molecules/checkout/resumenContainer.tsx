@@ -1,0 +1,24 @@
+'use client'
+
+export default function ResumenContainer() {
+
+    return (
+        <div className="xl:border xl:rounded-md xl:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 xl:bg-white-0">
+            <h1 className="font-bold leading-[24px] text-xl mb-[32px]">Resumen de pedido</h1>
+
+            {/* <ResumenContent copys={resumenCopys} userSelection={userAnswers}/> */}
+            <div className="mb-[24px]">
+                {'Contenido resumen de compra'}
+            </div>
+
+            <div className="pt-[32px] border-t-1 border-t-gray-150">
+                <button
+                    className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
+                >
+                    Continuar
+                </button>
+            </div>
+
+        </div>
+    )
+}
