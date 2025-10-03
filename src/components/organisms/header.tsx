@@ -57,6 +57,33 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
 
     return (
     <>
+        <Navbar style={borderStyle} shouldHideOnScroll
+        classNames={{
+            wrapper: "max-w-full pl-4 pr-0 xl:pl-8 xl:pr-4",
+        }}
+        className={isMenuOpen ? "hidden" : 'sm:flex'}>
+            <NavbarContent>
+            {topNavbar[0].fields?.navigation?.map((link, index) => (    
+            <NavbarItem key={`${link}-${index}`}>
+                <Link className={`text-black-0 sm:text-[18px] text-[16px] ${index == 0 ? 'font-bold' : 'font-normal'}`} href={normalizeUrl(link.fields.navigationUrl)}>
+                {link.fields.navigationTitle}
+                </Link>
+            </NavbarItem>
+            ))}
+            </NavbarContent>
+            <NavbarContent justify="end">
+              {coberturaCopy[0].fields?.navigation?.map((copy, index) => (
+              <NavbarItem key={`${copy}-${index}`} className="hidden xl:flex">
+                      <Button startContent={<Image src={`https:${copy.fields.linkIcon?.fields.file.url}`} alt={`${copy.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />} as={Link} href={normalizeUrl(copy.fields.navigationUrl)} className="text-black-0 font-normal bg-color-trasparent text-[18px]">{copy.fields.navigationTitle}</Button>
+                  </NavbarItem>
+              ))}
+              {mobileCoberturaCopy[0].fields?.navigation?.map((copy, index) => (
+                <NavbarItem key={`${copy}-${index}`} className="xl:hidden">
+                <Button startContent={<Image src={`https:${copy.fields.linkIcon?.fields.file.url}`} alt={`${copy.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />} as={Link} href={normalizeUrl(copy.fields.navigationUrl)} className="text-black-0 font-normal bg-color-trasparent sm:text-[18px] text-[16px]">{copy.fields.navigationTitle}</Button>
+                </NavbarItem>
+              ))}
+            </NavbarContent>
+        </Navbar>
         <Navbar onMenuOpenChange={setIsMenuOpen}
         classNames={{
         wrapper: "max-w-full h-[88px] pl-4 pr-6 bg-white-0"
@@ -68,110 +95,58 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
         />
         
       </NavbarContent>
-      
-      
-      
-      {/* imagen */}
       <NavbarContent className={`${isMenuOpen ? 'ps-0': 'pl-16'} !grow-0 lg:justify-start sm:justify-center lg:pl-0 lg:ps-0`}>
         <NavbarBrand>
           <Link href="/">
-            <Image className='max-w-[120px] h-auto' src="/izzi_logo.png" alt="Logo Izzi" width={120} height={48} priority />
+            <Image className='max-w-[120px] h-auto' src={`https:${navbar[0].fields.brandLogo?.fields.file.url}`} alt={`${navbar[0].fields.brandLogo?.fields.file.fileName}`} width={120} height={48} priority />
           </Link>
           </NavbarBrand>
       </NavbarContent>
-      
-      
-      
-      {/* pestañas */}
-      <NavbarContent className=" hidden xl:flex gap-[32px] min-[1024px]:gap-[16px] min-[1095]:gap-[24px] min-[1440px]:gap-[32px]" justify="start">
-        <NavbarItem >
-            <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href='landing/internet'>
-              internet
+      <NavbarContent className="hidden xl:flex gap-[32px] min-[1024px]:gap-[16px] min-[1095]:gap-[24px] min-[1150px]:gap-[32px]" justify="start">
+        {navbar[0].fields?.navigation?.map((link, index) => (    
+        <NavbarItem key={`${link}-${index}`}>
+            <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href={normalizeUrl(link.fields.navigationUrl)}>
+            {link.fields.navigationTitle}
             </Link>
         </NavbarItem>
-        <NavbarItem >
-            <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href=''>
-              internet + tv
-            </Link>
-        </NavbarItem>
-        <NavbarItem >
-            <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href=''>
-              internet + móvil
-            </Link>
-        </NavbarItem>
-        <NavbarItem >
-            <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href=''>
-              internet + tv + móvil
-            </Link>
-        </NavbarItem>
-        <NavbarItem >
-            <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href=''>
-              tv
-            </Link>
-        </NavbarItem>
-        <NavbarItem >
-            <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href=''>
-              móvil
-            </Link>
-        </NavbarItem>
-        {/* <NavbarItem >
-            <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href=''>
-              combos
-            </Link>
-        </NavbarItem> */}
-        <NavbarItem >
-            <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href=''>
-              promociones
-            </Link>
-        </NavbarItem>
-
+        ))}
       </NavbarContent>
-      
-      
-      
-      {/* Botones */}
       <NavbarContent justify="end" className="!grow-0">
-        
-        <NavbarItem className="hidden xl:flex gap-[8px]">
-          <Button as={Link} className="bg-color-trasparent h-[48px] border-[2px] border-solid rounded-md text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[16px] min-[1150px]:text-[18px]"
-          startContent={
-            <Image className='max-w-[24px] h-auto' src='/Headphones_Round.png' alt='Headphone' width={24} height={24} priority />
-          }
-          href='' >
-            centro de ayuda
+        {navbarButtons[0].fields?.navigation?.map((link, index) => (    
+            <NavbarItem key={`${link}-${index}`} className="hidden xl:flex ">
+              {
+                (link.fields.typeModal === 'TeLlamamos' || link.fields.typeModal === 'TeAyudamos') ? (
+                  <ButtonModal
+                    textBtn={link.fields.navigationTitle}
+                    classStyles={`${index == 2 ? 'bg-black-0 text-white-0' :'bg-color-trasparent'} 
+                        h-[48px] border-[2px] border-solid rounded-md text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[16px] min-[1150px]:text-[18px]`}
+                    closeButtonStroke="black"
+                    modalContentClassName="w-full h-[52dvh] sm:h-[52vh] sm:w-[80vw] xl:h-auto xl:w-[80vw] 2xl:w-[52vw] 2xl:h-auto"
+                    backdropColor='black-0/80'
+                    startContent={<Image className='max-w-[24px] h-auto' src={`https:${link.fields.linkIcon?.fields.file.url}`} alt={`${link.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />}
+                  >
+                    {renderModalComponent(link.fields.typeModal)}
+                  </ButtonModal>
+                ) : (
+                  <Button as={Link} className={`${index == 2 ? 'bg-black-0 text-white-0' :'bg-color-trasparent'} 
+                      h-[48px] border-[2px] border-solid rounded-md text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[16px] min-[1150px]:text-[18px]`}
+                      startContent={<Image className='max-w-[24px] h-auto' src={`https:${link.fields.linkIcon?.fields.file.url}`} alt={`${link.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />}
+                          href={link.fields.navigationUrl}>
+                      {link.fields.navigationTitle}
+                  </Button>
+                )
+              }
+            </NavbarItem>
+        ))}
+        {mobileNavbarButton[0].fields?.navigation?.map((link, index) => ( 
+        <NavbarItem key={`${link}-${index}`}
+            className={isMenuOpen ? "hidden" : "xl:hidden sm:flex"}>
+          <Button as={Link} href={normalizeUrl(link.fields.navigationUrl)} className="bg-color-trasparent justify-end px-0">
+            <Image src={`https:${mobileNavbarButton[0].fields?.brandLogo?.fields?.file?.url}`} alt={link.fields.navigationTitle} width={32} height={32} priority ></Image>
           </Button>
-          <ButtonModal
-          textBtn='te llamamos'
-          classStyles={`bg-color-trasparent'} 
-          h-[48px] border-[2px] border-solid rounded-md text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[16px] min-[1150px]:text-[18px]`}
-          closeButtonStroke="black"
-          modalContentClassName="w-full h-[52dvh] sm:h-[52vh] sm:w-[80vw] xl:h-auto xl:w-[80vw] 2xl:w-[52vw] 2xl:h-auto"
-          backdropColor='black-0/80'
-          startContent={<Image className='max-w-[24px] h-auto' src='/teLlamamos.png' alt='telefono' width={24} height={24} priority />}
-          >
-            <TeAyudamosModalComponent />
-          </ButtonModal>
-                
-              
         </NavbarItem>
-            
+        ))}
       </NavbarContent>
-
-
-
-
-
-
-
-      {/* User Icon */}
-      <NavbarItem
-      className={isMenuOpen ? "hidden" : "xl:hidden sm:flex"}>
-        <Button as={Link} href='/login' className="bg-color-trasparent justify-end px-0">
-          <Image src='/User_Circle.webp' alt='User Icon' width={32} height={32} priority ></Image>
-        </Button>
-      </NavbarItem>
-
-      {/* Navbar xsm */}
       <NavbarMenu className="bg-white-0 mt-[26px] gap-[26px]">
         {navbar[0].fields?.navigation?.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
