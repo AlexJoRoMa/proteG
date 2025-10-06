@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import { Lato } from "next/font/google";
 import LandingHeaderContent from "@/components/molecules/navigationLandingComponent";
 const lato = Lato({ subsets: ['latin'], weight: ['400', '700'] })
+import FooterLandingContent from "@/components/molecules/footerLandingComponent";
 
 
 //TODO descomentar metadata cuando se tenga el contenido tomado desde contentful
@@ -22,6 +23,7 @@ export default function CheckoutLayout({
             <LandingHeaderContent />
             {children}
             {/* footer de las landing */}
+            <FooterLandingContent />
         </div>
     );
 }
