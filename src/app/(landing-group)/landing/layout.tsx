@@ -20,6 +20,7 @@ export default function CheckoutLayout({
         <div className={lato.className}>
             {/* header de las landing */}
             {children}
+            {/* footer de las landing */}
         </div>
     );
 }

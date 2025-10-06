@@ -1,3 +1,4 @@
+import Footer from "@/components/molecules/footer";
 import Navigation from "@/components/molecules/navigation";
 import { Lato } from "next/font/google";
 
@@ -19,6 +20,7 @@ export default function MainLayout({
         <div className={lato.className}>
             <Navigation />
             {children}
+            <Footer />
         </div>
     )
 }
