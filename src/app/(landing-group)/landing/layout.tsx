@@ -21,6 +21,7 @@ export default function CheckoutLayout({
             {/* header de las landing */}
             <LandingHeaderContent />
             {children}
+            {/* footer de las landing */}
         </div>
     );
 }
