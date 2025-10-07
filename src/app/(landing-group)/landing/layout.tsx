@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 import { Lato } from "next/font/google";
-import LandingHeaderContent from "@/components/molecules/navigationLandingComponent";
+import NavigationLanding from "@/components/molecules/navigationLandingComponent";
 const lato = Lato({ subsets: ['latin'], weight: ['400', '700'] })
 import FooterLandingContent from "@/components/molecules/footerLandingComponent";
 
@@ -20,7 +20,7 @@ export default function CheckoutLayout({
     return (
         <div className={lato.className}>
             {/* header de las landing */}
-            <LandingHeaderContent />
+            <NavigationLanding />
             {children}
             {/* footer de las landing */}
             <FooterLandingContent />

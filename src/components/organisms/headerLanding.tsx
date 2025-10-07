@@ -18,7 +18,7 @@ import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent
 import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 
 
-export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
+export default function IzziHeaderLanding({navbarData}: HeaderComponentProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     
     // Función helper para renderizar el modal correcto basado en typeModal
@@ -43,10 +43,10 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
 
     const navbarContent = navbarData as unknown as Array<IzziNavbar>
 
-    const topNavbar = navbarContent?.filter((data) => data.fields.internalName == 'TopNavbar');
+  
 
-    const navbar = navbarContent?.filter((data) => data.fields.internalName == "Navbar");
-    const navbarButtons = navbarContent?.filter((data) => data.fields.internalName == "NavbarButtons");
+    const navbar = navbarContent?.filter((data) => data.fields.internalName == ("Navbar Landing  wCombos") );
+    const navbarButtons = navbarContent?.filter((data) => data.fields.internalName == "NavbarButtons Landing");
     const mobileNavbarButton = navbarContent?.filter((data) => data.fields.internalName == "MobileAccountButton");
     const mobileCoberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaMobile");
     const coberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaDesktop");
@@ -54,36 +54,10 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
 
     // Normaliza URLs para que sean absolutas (agrega '/' si falta)
     const normalizeUrl = (url: string) => url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
-
+console.log('>>>> navbarData ', navbarData)
     return (
     <>
-        <Navbar style={borderStyle} shouldHideOnScroll
-        classNames={{
-            wrapper: "max-w-full pl-4 pr-0 xl:pl-8 xl:pr-4",
-        }}
-        className={isMenuOpen ? "hidden" : 'sm:flex'}>
-            <NavbarContent>
-            {topNavbar[0].fields?.navigation?.map((link, index) => (    
-            <NavbarItem key={`${link}-${index}`}>
-                <Link className={`text-black-0 sm:text-[18px] text-[16px] ${index == 0 ? 'font-bold' : 'font-normal'}`} href={normalizeUrl(link.fields.navigationUrl)}>
-                {link.fields.navigationTitle}
-                </Link>
-            </NavbarItem>
-            ))}
-            </NavbarContent>
-            <NavbarContent justify="end">
-              {coberturaCopy[0].fields?.navigation?.map((copy, index) => (
-              <NavbarItem key={`${copy}-${index}`} className="hidden xl:flex">
-                      <Button startContent={<Image src={`https:${copy.fields.linkIcon?.fields.file.url}`} alt={`${copy.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />} as={Link} href={normalizeUrl(copy.fields.navigationUrl)} className="text-black-0 font-normal bg-color-trasparent text-[18px]">{copy.fields.navigationTitle}</Button>
-                  </NavbarItem>
-              ))}
-              {mobileCoberturaCopy[0].fields?.navigation?.map((copy, index) => (
-                <NavbarItem key={`${copy}-${index}`} className="xl:hidden">
-                <Button startContent={<Image src={`https:${copy.fields.linkIcon?.fields.file.url}`} alt={`${copy.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />} as={Link} href={normalizeUrl(copy.fields.navigationUrl)} className="text-black-0 font-normal bg-color-trasparent sm:text-[18px] text-[16px]">{copy.fields.navigationTitle}</Button>
-                </NavbarItem>
-              ))}
-            </NavbarContent>
-        </Navbar>
+        
         <Navbar onMenuOpenChange={setIsMenuOpen}
         classNames={{
         wrapper: "max-w-full h-[88px] pl-4 pr-6 bg-white-0"
@@ -102,7 +76,7 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
           </Link>
           </NavbarBrand>
       </NavbarContent>
-      <NavbarContent className="hidden xl:flex gap-[32px] min-[1024px]:gap-[16px] min-[1095]:gap-[24px] min-[1150px]:gap-[32px]" justify="start">
+      <NavbarContent className="hidden xl:flex gap-[32px] min-[1024px]:gap-[12px] min-[1095]:gap-[17px] min-[1150px]:gap-[17px]" justify="start">
         {navbar[0].fields?.navigation?.map((link, index) => (    
         <NavbarItem key={`${link}-${index}`}>
             <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href={normalizeUrl(link.fields.navigationUrl)}>
