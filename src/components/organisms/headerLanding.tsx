@@ -39,7 +39,7 @@ export default function IzziHeaderLanding({navbarData}: HeaderComponentProps) {
     
     const routeToNavbarMap: Record<string, string> = {
       'landing/internet': 'Navbar Landing  noCombos',
-      'landing/internetmovil': 'Navbar Landing  wCombos',
+      'landing/landing/internet+movil': 'Navbar Landing  wCombos',
     };
     
     const selectedNavbarName = routeToNavbarMap[cleanPath] || 'Navbar Landing  noCombos';
@@ -57,7 +57,7 @@ export default function IzziHeaderLanding({navbarData}: HeaderComponentProps) {
 
     // Normaliza URLs para que sean absolutas (agrega '/' si falta)
     const normalizeUrl = (url: string) => url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
-console.log('>>>> selectedNavbarName ', selectedNavbarName)
+
     return (
     <>
         

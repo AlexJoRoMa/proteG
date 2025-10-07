@@ -14,7 +14,6 @@ async function getHeaderContentType() {
 const navbarData: Entry<EntrySkeletonType, undefined, string>[] | null = await getHeaderContentType();
 
 export default function NavigationLanding() {
-  /* console.log('navbarData ', navbarData) */
   return (
     <IzziHeaderLanding navbarData={navbarData} />
   );
