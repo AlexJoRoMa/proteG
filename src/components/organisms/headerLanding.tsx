@@ -16,7 +16,7 @@ import { IzziNavbar, HeaderComponentProps } from "@/types/headerTypes";
 import ButtonModal from '../atoms/ButtonModal';
 import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
 import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
-
+import { usePathname } from 'next/navigation';
 
 export default function IzziHeaderLanding({navbarData}: HeaderComponentProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -34,18 +34,21 @@ export default function IzziHeaderLanding({navbarData}: HeaderComponentProps) {
         return null;
     };
     
-    const borderStyle = {
-        'borderBottom': '2px solid',
-        'borderImage': 'linear-gradient(90deg, #FF6C07 0%, #4DA9A7 33%, #D31772 66%, #FCD116 100%)',
-        'borderImageSlice': '1',
-        width: '100%'
-    }
-
-    const navbarContent = navbarData as unknown as Array<IzziNavbar>
+    const pathname = usePathname();
+    const cleanPath = pathname.replace(/^\/+|\/+$/g, '');
+    
+    const routeToNavbarMap: Record<string, string> = {
+      'landing/internet': 'Navbar Landing  noCombos',
+      'landing/internetmovil': 'Navbar Landing  wCombos',
+    };
+    
+    const selectedNavbarName = routeToNavbarMap[cleanPath] || 'Navbar Landing  noCombos';
 
   
+    const navbarContent = navbarData as unknown as Array<IzziNavbar>
 
-    const navbar = navbarContent?.filter((data) => data.fields.internalName == ("Navbar Landing  wCombos") );
+    
+    const navbar = navbarContent?.filter((data) => data.fields.internalName == selectedNavbarName );
     const navbarButtons = navbarContent?.filter((data) => data.fields.internalName == "NavbarButtons Landing");
     const mobileNavbarButton = navbarContent?.filter((data) => data.fields.internalName == "MobileAccountButton");
     const mobileCoberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaMobile");
@@ -54,7 +57,7 @@ export default function IzziHeaderLanding({navbarData}: HeaderComponentProps) {
 
     // Normaliza URLs para que sean absolutas (agrega '/' si falta)
     const normalizeUrl = (url: string) => url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
-console.log('>>>> navbarData ', navbarData)
+console.log('>>>> selectedNavbarName ', selectedNavbarName)
     return (
     <>
         
@@ -76,7 +79,7 @@ console.log('>>>> navbarData ', navbarData)
           </Link>
           </NavbarBrand>
       </NavbarContent>
-      <NavbarContent className="hidden xl:flex gap-[32px] min-[1024px]:gap-[12px] min-[1095]:gap-[17px] min-[1150px]:gap-[17px]" justify="start">
+      <NavbarContent className="hidden xl:flex gap-[32px] min-[1024px]:gap-[12px] min-[1095]:gap-[17px] min-[1150px]:gap-[15px]" justify="start">
         {navbar[0].fields?.navigation?.map((link, index) => (    
         <NavbarItem key={`${link}-${index}`}>
             <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href={normalizeUrl(link.fields.navigationUrl)}>
