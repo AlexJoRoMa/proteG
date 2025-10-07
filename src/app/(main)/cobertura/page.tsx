@@ -13,6 +13,7 @@ import {
 import { createCookie } from './actions';
 import { LocationIcon } from "@/constants/IconsConstants";
 import { GeocodeType } from "@/types/CoberturaTypes";
+import useSWR from "swr";
 
 const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
 
@@ -34,6 +35,12 @@ const inputStyles = {
         "bg-transparent",
     ]
   }
+
+  const fetchMicrocopies = async (key: string) => {
+    const res = await fetch(`/api/microcopies?key=${key}`);
+    if (!res.ok) throw new Error("Error al obtener los microcopies desde Contentful");
+    return res.json();
+    };
 
 export default function Cobertura() {
     const [adressSelected, setAddress] = useState(false) 
@@ -185,11 +192,11 @@ export default function Cobertura() {
         return (
             <Input ref={inputRef}
                 isRequired
-                errorMessage="Ingresa una dirección válida"
-                label="Dirección"
+                label={getValueByKey('cobertura.form.direccion.label')}
+                placeholder={getValueByKey('cobertura.form.direccion.placeholder')}
+                errorMessage={getValueByKey('cobertura.form.direccion.error')}
                 labelPlacement="outside"
                 name="address"
-                placeholder="Introduce tu dirección"
                 type="text"
                 classNames={inputStyles}
                 value={adressSelected ? street : undefined}
@@ -205,12 +212,37 @@ export default function Cobertura() {
         geocodeApi(ev.detail?.latLng?.lat as number, ev.detail?.latLng?.lng as number);
         setAddress(true);
       }
+
+      const { data: contentfulData } = useSWR(
+        ['microcopies'],
+        () => fetchMicrocopies('cobertura'),
+        {
+            dedupingInterval: 3600000, // 1 hora
+            revalidateOnFocus: false,
+            keepPreviousData: true,
+            revalidateIfStale: false,
+        }
+    );
+
+    const getValueByKey = (key: string) => {
+
+        if (!contentfulData || !Array.isArray(contentfulData) || !contentfulData[0]?.fields?.resources) {
+            return '';
+        }
+
+        const item = contentfulData[0].fields.resources.find((item: { fields: { key: string; value: string } }) =>
+            item.fields?.key === key
+        );
+
+        return item?.fields?.value || '';
+    };
+
     return (
     <>
         <div className="items-center justify-center mb-8 mx-sm xl:mx-xl xl:justify-start">
             <div className='flex flex-col'>
-                <p className="text-[32px] font-bold">Comprueba tu cobertura</p>
-                <p className="text-[18px]">Ingresa tu dirección y te mostraremos los paquetes y promociones que puedes contratar.</p>
+                <p className="text-[32px] font-bold">{getValueByKey('cobertura.title')}</p>
+                <p className="text-[18px]">{getValueByKey('cobertura.subtitle')}</p>
             </div>
         
             <div className='lg:flex lg:flex-col-2 mt-8'>
@@ -224,11 +256,11 @@ export default function Cobertura() {
                         <Input
                             isRequired
                             disableAnimation={true}
-                            errorMessage="Ingresa una dirección válida"
-                            label="Código postal"
+                            label={getValueByKey('cobertura.form.codigo.label')}
+                            placeholder={getValueByKey('cobertura.form.codigo.placeholder')}
+                            errorMessage={getValueByKey('cobertura.form.codigo.error')}
                             labelPlacement="outside"
                             name="zipCode"
-                            placeholder="Introduce tu código postal"
                             type="text"
                             value={postalCode}
                             onValueChange={setPostalCode}
@@ -238,11 +270,11 @@ export default function Cobertura() {
                         {adressSelected ?
                             <Input
                                 isRequired
-                                errorMessage="Ingresa una dirección válida"
-                                label="Dirección"
+                                label={getValueByKey('cobertura.form.direccion.label')}
+                                placeholder={getValueByKey('cobertura.form.direccion.placeholder')}
+                                errorMessage={getValueByKey('cobertura.form.direccion.error')}
                                 labelPlacement="outside"
                                 name="address"
-                                placeholder="Introduce tu dirección"
                                 type="text"
                                 value={street}
                                 onValueChange={setStreet}
@@ -255,11 +287,11 @@ export default function Cobertura() {
                             {adressSelected ?
                             <Input
                                 isRequired
-                                errorMessage="Ingresa un número válido"
-                                label="Número exterior"
+                                label={getValueByKey('cobertura.form.numExterno.label')}
+                                placeholder={getValueByKey('cobertura.form.numExterno.placeholder')}
+                                errorMessage={getValueByKey('cobertura.form.numExterno.error')}
                                 labelPlacement="outside"
                                 name="extNumber"
-                                placeholder="Introduce tu número exterior"
                                 type="text"
                                 value={streetNumber}
                                 onValueChange={setStreetNumber}
@@ -269,12 +301,10 @@ export default function Cobertura() {
                             : <></> }
                             {adressSelected ?
                             <Input
-                                
-                                errorMessage="Please enter a value"
-                                label="Número interior"
+                                label={getValueByKey('cobertura.form.numInterno.label')}
+                                placeholder={getValueByKey('cobertura.form.numInterno.placeholder')}
                                 labelPlacement="outside"
                                 name="intNumber"
-                                placeholder="Introduce tu número interior"
                                 type="text"
                                 value={aptNumber}
                                 onValueChange={setAptNumber}
@@ -286,11 +316,11 @@ export default function Cobertura() {
                         {adressSelected ?
                         <Input
                             isRequired
-                            errorMessage="Ingresa una colonia válida"
-                            label="Colonia"
+                            label={getValueByKey('cobertura.form.colonia.label')}
+                            placeholder={getValueByKey('cobertura.form.colonia.placeholder')}
+                            errorMessage={getValueByKey('cobertura.form.colonia.error')}
                             labelPlacement="outside"
                             name="locality"
-                            placeholder="Introduce tu colonia"
                             type="text"
                             value={neighborhood}
                             onValueChange={setNeighborhood}
@@ -299,10 +329,10 @@ export default function Cobertura() {
                         : <></>}
                         {adressSelected ?
                         <Input
-                            label="Alcaldia o Municipio"
+                            label={getValueByKey('cobertura.form.municipio.label')}
+                            placeholder={getValueByKey('cobertura.form.municipio.placeholder')}
                             labelPlacement="outside"
                             name="locality"
-                            placeholder="Introduce tu alcaldia"
                             type="text"
                             value={locality}
                             onValueChange={setLocality}
@@ -312,11 +342,11 @@ export default function Cobertura() {
                         {adressSelected ?
                         <Input
                             isRequired
-                            errorMessage="Ingresa un estado válido"
-                            label="Estado"
+                            label={getValueByKey('cobertura.form.estado.label')}
+                            placeholder={getValueByKey('cobertura.form.estado.placeholder')}
+                            errorMessage={getValueByKey('cobertura.form.estado.error')}
                             labelPlacement="outside"
                             name="state"
-                            placeholder="Introduce tu estado"
                             type="text"
                             value={locality}
                             onValueChange={setLocality}
@@ -325,11 +355,11 @@ export default function Cobertura() {
                         : <></>}
                         <Input
                             isRequired
-                            errorMessage="Ingresa un nombre válido"
-                            label="Nombre"
+                            label={getValueByKey('cobertura.form.nombre.label')}
+                            placeholder={getValueByKey('cobertura.form.nombre.placeholder')}
+                            errorMessage={getValueByKey('cobertura.form.nombre.error')}
                             labelPlacement="outside"
                             name="name"
-                            placeholder="Introduce tu nombre"
                             type="text"
                             value={name}
                             onValueChange={setName}
@@ -337,26 +367,26 @@ export default function Cobertura() {
                         />
                         <Input
                             isRequired
-                            errorMessage="Ingresa un número de teléfono válido"
-                            label="Número de teléfono"
+                            label={getValueByKey('cobertura.form.telefono.label')}
+                            placeholder={getValueByKey('cobertura.form.telefono.placeholder')}
+                            errorMessage={getValueByKey('cobertura.form.telefono.error')}
                             labelPlacement="outside"
                             name="phone"
-                            placeholder="Introduce tu teléfono"
                             type="tel"
                             value={phone}
                             onValueChange={setPhone}
                             classNames={inputStyles}
                         />
                         <Checkbox defaultSelected={false} color="default" className='text-gray-450 pt-4 pb-8'>
-                            Acepto los <span className='text-black'>Avisos de Privacidad</span>
+                        {getValueByKey('cobertura.form.privacidad.label')}
                         </Checkbox>
                         <div className='w-full pb-4 lg:flex lg:col-2 gap-4'>
                             <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange}>
-                                utilizar mi ubicación actual
+                            {getValueByKey('cobertura.button.ubicacion')}
                             </Button>
                             <Button
                                  className={`w-full lg:w-1/2 ${adressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} isDisabled={!adressSelected} type="submit">
-                                confirmar dirección
+                                {getValueByKey('cobertura.button.confirmar')}
                             </Button>
                         </div>
                     </Form>
@@ -367,7 +397,7 @@ export default function Cobertura() {
                     mapId={'bf51a910020fa25a'}
                     style={{height: '400px'}}
                     defaultCenter={{lat: 19.4311231, lng: -99.1777154}}
-                    defaultZoom={10}
+                    defaultZoom={15}
                     disableDefaultUI={true}
                     onClick={HandleMapClick}
                 >
