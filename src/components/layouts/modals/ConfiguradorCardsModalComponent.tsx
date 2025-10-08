@@ -96,7 +96,7 @@ const ConfiguradorCardsModalContent = ({ modalData, onClose, variables, type }: 
                 <>
                     {finalData.body.texto1}&nbsp;
                     <span className="font-bold">{finalData.body.textoPromocion1}</span>&nbsp;
-                    <span className="font-bold">{FormatCurrency(variables.precioAhorro)}</span>&nbsp;
+                    <span className="font-bold">{FormatCurrency(variables.precioPaquete)}</span>&nbsp;
                     <span className="font-bold">{finalData.body.textoPromocion2}</span>&nbsp;
                     <span>{finalData.body.texto2}</span>&nbsp;
                     <span className="font-bold">{finalData.body.textoDomicilio}</span>&nbsp;
@@ -195,7 +195,7 @@ const ConfiguradorCardsModalContent = ({ modalData, onClose, variables, type }: 
                         </>
                         <div className="inline-flex self-start xl:self-end font-normal text-lg items-baseline gap-1 whitespace-nowrap">
                             <h5>{finalData.header.precio.prePrecio}</h5>
-                            <h3 className="font-bold text-[48px] xl:text-[56px]">{FormatCurrency(variables.precioAhorro)}</h3>
+                            <h3 className="font-bold text-[48px] xl:text-[56px]">{FormatCurrency(variables.precioPaquete)}</h3>
                             <h5>{finalData.header.precio.posPrecio}</h5>
                         </div>
                     </div>

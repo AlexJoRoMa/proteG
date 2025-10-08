@@ -9,10 +9,18 @@ import {
   ContentfulEntryNode,
   ContentfulHyperlinkNode
 } from '@/types/RichTextTypes';
+import {
+  ButtonModalComponentProps,
+  PriceComponentProps,
+  TextAndImageComponentProps
+} from '@/types/ModalComponentTypes';
 import Image from 'next/image';
 import '@/styles/RichTextComponent.css';
 import Link from 'next/link';
 import { componentMap } from '@/lib/modal/dynamic-map';
+
+// Union type for all possible component props
+type ComponentProps = ButtonModalComponentProps | PriceComponentProps | TextAndImageComponentProps;
 
 /**
  * RichTextComponent - Renders Contentful rich text content
@@ -232,13 +240,13 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
         const entryNode = node as unknown as ContentfulEntryNode;
         const entry = entryNode.data.target;
         const contentType = entry?.sys.contentType.sys.id;
-        const Component = typeof entry?.fields?.type === 'string' && entry?.fields?.type in componentMap ? componentMap[entry?.fields?.type as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
+        const Component = typeof entry?.fields?.type === 'string' && entry?.fields?.type in componentMap ? componentMap[entry?.fields?.type as keyof typeof componentMap] : null;
 
         if (Component) {
 
             return (
               <Component
-                {...entry.fields}
+                {...(entry.fields as ComponentProps)}
               />
             );
     
@@ -257,7 +265,7 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
             const resourceNode = node as unknown as ContentfulEntryNode;
             const entry = resourceNode?.data?.target;
             const contentType = entry?.sys?.contentType?.sys?.id;
-            const Component = typeof entry?.fields?.type === 'string' && entry?.fields?.type in componentMap ? componentMap[entry?.fields?.type as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
+            const Component = typeof entry?.fields?.type === 'string' && entry?.fields?.type in componentMap ? componentMap[entry?.fields?.type as keyof typeof componentMap] : null;
 
             // Agregar atributo data para orientación si existe
             const orientation = entry?.fields?.orientation;
@@ -267,7 +275,7 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
 
               return(  
                 <div className='embedded-entry-inline' {...dataAttributes}>
-                    <Component {...entry.fields}
+                    <Component {...(entry.fields as ComponentProps)}
                     data-embedded-entry-inline />
                 </div>
               )

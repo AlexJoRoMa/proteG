@@ -25,6 +25,7 @@ export const RecomendadorProvider = ({
     children: ReactNode, 
     contentfulEntry: Entry<EntrySkeletonType, undefined> | null, 
     casosRecomendador: Entry<EntrySkeletonType, undefined>[] | null,
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     casosError: {}
 }) => {
 

@@ -1,4 +1,4 @@
-import NotFoundContent from "./not-found-content";
+import NotFoundContent from "@/app/not-found-content";
 
 export default function NotFound() {
     return <NotFoundContent />;

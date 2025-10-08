@@ -3,7 +3,6 @@
 import ResumenContent from "../resumenCompra/resumenContent";
 import Image from "next/image";
 import { useContent } from "@/utils/ConfiguradorProvider";
-import ButtonGhost from "@/components/atoms/ButtonGhost";
 import { ResumenData } from "@/types/ResumenCompra";
 
 export default function ResumenContainerConfigurador() {

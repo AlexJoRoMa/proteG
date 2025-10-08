@@ -23,10 +23,10 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
               <RichTextComponent document={card?.fields?.tituloRich as Document} className='!h-min'/>
             )}
 
-            <hr className={`mt-6 ${
+            <hr className={`mt-6 mb-6 flex-shrink-0 ${
               card?.fields?.colorHr 
-                ? `border-none h-[2px] border-collapse rich-text-hr-${(card.fields.colorHr as ColorOption).toLowerCase()}`
-                : "border-t border-gray-400"
+                ? `border-none h-[1px] rich-text-hr-${(card.fields.colorHr as ColorOption).toLowerCase()}`
+                : "border-t-2 border-gray-400 h-0"
             }`} />
 
             <RichTextComponent document={card?.fields?.alternativeDescription as Document}/>
@@ -51,10 +51,10 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
               }
               
             </div>
-            <hr className={`mb-[24px] ${
+            <hr className={`mb-[24px] flex-shrink-0 ${
               card?.fields?.colorHr 
-                ? `border-none h-[2px] border-collapse rich-text-hr-${(card.fields.colorHr as ColorOption).toLowerCase()}`
-                : "border-t border-gray-400"
+                ? `border-none h-[1px] rich-text-hr-${(card.fields.colorHr as ColorOption).toLowerCase()}`
+                : "border-t-2 border-gray-400 h-0"
             }`} />
             {
               card?.fields?.priceBefore ? (

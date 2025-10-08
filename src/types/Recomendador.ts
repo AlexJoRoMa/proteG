@@ -1,7 +1,6 @@
 // Props
 
 import { Entry, EntrySkeletonType } from "contentful"
-import { ReactNode } from "react"
 
 export type RecomendadorProps = {
     id: string,
@@ -112,6 +111,7 @@ export type ErrorData = {
 export type DataFields = {
     contentfulEntry: Entry<EntrySkeletonType, undefined> | null,
     casosRecomendador: Entry<EntrySkeletonType, undefined>[] | null,
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     casosError: {}
     userAnswers: UserAnswers,
     setUserAnswers: React.Dispatch<React.SetStateAction<UserAnswers>>,

@@ -1,4 +1,4 @@
-import { Asset, Entry, EntrySkeletonType } from "contentful";
+import { Entry, EntrySkeletonType } from "contentful";
 
 export type FAQcomponentID = {
     id: string;

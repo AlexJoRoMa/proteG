@@ -1,5 +1,4 @@
-import { Asset, Entry, EntrySkeletonType } from "contentful";
-import { Document } from '@contentful/rich-text-types';
+import { Asset, EntrySkeletonType } from "contentful";
 
 export type MediaBlockModelID = {
     id: string;

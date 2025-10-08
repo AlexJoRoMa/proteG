@@ -138,7 +138,6 @@ export interface ConfiguradorCardsModalProps {
   variables: {
     velocidadMinima?: number,
     velocidadMaxima?: number,
-    precioAhorro: string,
     precioPaquete: string,
     periodo?: string,
     domicilio?: string,

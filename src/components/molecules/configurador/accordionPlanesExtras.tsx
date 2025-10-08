@@ -46,6 +46,7 @@ export default function AccordionPlanesExtras() {
 
 
     // Usar SWR para el fetching con caché optimizado
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data: contentfulData, error: contentfulError, isLoading: contentfulLoading } = useSWR(
         ['microcopies', 'configurador'],
         () => fetchMicrocopies(`Configurador`),

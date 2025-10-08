@@ -1,4 +1,4 @@
-export const CheckIcon = (props: any) => {
+export const CheckIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
         <svg
             aria-hidden="true"
@@ -18,7 +18,7 @@ export const CheckIcon = (props: any) => {
     );
 };
 
-export const CheckPlanesIcon = (props: any) => {
+export const CheckPlanesIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
         <svg
             aria-hidden="true"

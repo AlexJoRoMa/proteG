@@ -24,6 +24,7 @@ let carouselText: {
     channelType: string;
     btnShowMore?: string; // Nueva propiedad opcional para el botón "Ver más"
     textPromo?: string; // Nueva propiedad opcional para el texto promocional
+    urlBtnPromo?: string; // Nueva propiedad opcional para el enlace del botón promocional
   }[] = [];
 
 
@@ -196,7 +197,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                 {
                   item.btnShowMore && (
                     <ButtonGhost classStyles="mt-4 border-black bg-white text-black font-bold text-[16px] md:text-[18px] leading-6 sm:max-w-[320px] max-w-[224px] w-full h-[48px] rounded-md"
-                            text={item.btnShowMore} href={item.buttonLink} />
+                            text={item.btnShowMore} href={item.urlBtnPromo} />
                   )
                 }
 

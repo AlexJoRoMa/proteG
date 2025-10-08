@@ -24,7 +24,7 @@ export default function RecomendadorQuestionary() {
 
 
     function handleNextStep(step: number) {
-        let stepsMax = stepsInfo.length - 1;
+        const stepsMax = stepsInfo.length - 1;
         if (step === 0 || step < stepsMax) {
             setActualStep(step + 1);
             setIsComplete(false);

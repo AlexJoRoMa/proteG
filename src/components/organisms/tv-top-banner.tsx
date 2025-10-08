@@ -37,7 +37,7 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
     const movilURL = movilImage?.fields?.file?.url;
 
     return(
-    <div className=" relative bg-black flex md:w-full xsm:w-full h-auto overflow-hidden 4xl:px-[200px] 2xl:px-[144px] xl:px-[80px] md:px-[80px] xsm:px-[16px] md:py-10  xsm:py-15">
+    <div className={` relative bg-black flex md:w-full xsm:w-full h-auto overflow-hidden 4xl:px-[200px] 2xl:px-[144px] xl:px-[80px] md:px-[80px] xsm:px-[16px] md:py-10  xsm:py-15 ${!content && 'min-h-[520px]'}`}>
         <div key={getComponentContent.sys.id} className="w-full flex flex-col md:flex-row">
             
 

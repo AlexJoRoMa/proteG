@@ -98,6 +98,7 @@ export default function Cobertura() {
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const data = Object.fromEntries(new FormData(e.currentTarget));
         await createCookie({lat: lat, lng: lng, zipCode: postalCode});
     };
@@ -171,16 +172,20 @@ export default function Cobertura() {
           if (!placeAutocomplete) return;
       
           placeAutocomplete.addListener('place_changed', () => {
-            geocodeApi(placeAutocomplete.getPlace().geometry?.location?.lat() as number, placeAutocomplete.getPlace().geometry?.location?.lng() as number);
-            setAddress(true);
-            onPlaceSelect(placeAutocomplete.getPlace());
+            const lat = placeAutocomplete.getPlace().geometry?.location?.lat() as number;
+            const lng = placeAutocomplete.getPlace().geometry?.location?.lng() as number;
+            if(lat && lng){
+                geocodeApi(lat, lng);
+                setAddress(true);
+                onPlaceSelect(placeAutocomplete.getPlace());
+            }
           });
         }, [onPlaceSelect, placeAutocomplete]);
       
         return (
             <Input ref={inputRef}
                 isRequired
-                errorMessage="Please enter a value"
+                errorMessage="Ingresa una dirección válida"
                 label="Dirección"
                 labelPlacement="outside"
                 name="address"
@@ -219,7 +224,7 @@ export default function Cobertura() {
                         <Input
                             isRequired
                             disableAnimation={true}
-                            errorMessage="Please enter a value"
+                            errorMessage="Ingresa una dirección válida"
                             label="Código postal"
                             labelPlacement="outside"
                             name="zipCode"
@@ -233,7 +238,7 @@ export default function Cobertura() {
                         {adressSelected ?
                             <Input
                                 isRequired
-                                errorMessage="Please enter a value"
+                                errorMessage="Ingresa una dirección válida"
                                 label="Dirección"
                                 labelPlacement="outside"
                                 name="address"
@@ -250,7 +255,7 @@ export default function Cobertura() {
                             {adressSelected ?
                             <Input
                                 isRequired
-                                errorMessage="Please enter a value"
+                                errorMessage="Ingresa un número válido"
                                 label="Número exterior"
                                 labelPlacement="outside"
                                 name="extNumber"
@@ -281,7 +286,7 @@ export default function Cobertura() {
                         {adressSelected ?
                         <Input
                             isRequired
-                            errorMessage="Please enter a value"
+                            errorMessage="Ingresa una colonia válida"
                             label="Colonia"
                             labelPlacement="outside"
                             name="locality"
@@ -294,8 +299,6 @@ export default function Cobertura() {
                         : <></>}
                         {adressSelected ?
                         <Input
-                            
-                            errorMessage="Please enter a value"
                             label="Alcaldia o Municipio"
                             labelPlacement="outside"
                             name="locality"
@@ -309,7 +312,7 @@ export default function Cobertura() {
                         {adressSelected ?
                         <Input
                             isRequired
-                            errorMessage="Please enter a value"
+                            errorMessage="Ingresa un estado válido"
                             label="Estado"
                             labelPlacement="outside"
                             name="state"
@@ -322,7 +325,7 @@ export default function Cobertura() {
                         : <></>}
                         <Input
                             isRequired
-                            errorMessage="Please enter a value"
+                            errorMessage="Ingresa un nombre válido"
                             label="Nombre"
                             labelPlacement="outside"
                             name="name"
@@ -334,7 +337,7 @@ export default function Cobertura() {
                         />
                         <Input
                             isRequired
-                            errorMessage="Please enter a value"
+                            errorMessage="Ingresa un número de teléfono válido"
                             label="Número de teléfono"
                             labelPlacement="outside"
                             name="phone"
