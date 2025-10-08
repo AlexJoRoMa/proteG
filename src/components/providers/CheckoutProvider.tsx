@@ -1,11 +1,17 @@
 'use client'
 import { redirect } from 'next/navigation'
-import React, { createContext, useContext, useState, useCallback } from 'react'
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react'
 
+export type StepValidator = () => Promise<boolean>
+type FormDataGetter = () => any
 interface CheckoutContextType {
   currentStep: number
   completedSteps: number[]
   totalSteps: number
+  isStepValid: boolean
+  setIsStepValid: (value: boolean) => void
+  checkboxChecked: boolean
+  setCheckboxChecked: (value: boolean) => void
 
   // Navigation functions
   goToStep: (step: number) => void
@@ -18,8 +24,12 @@ interface CheckoutContextType {
   isStepActive: (step: number) => boolean
   canGoToStep: (step: number) => boolean
   getStepStatus: (step: number) => 'pending' | 'active' | 'completed'
+  registerValidator: (step: number, validator: StepValidator) => void
+  registerFormData: (step: number, validator: FormDataGetter) => void
+  validateCurrentStep: () => Promise<boolean>
+  getAllFormData: () => Record<number, any>
+  registerStepValidator: (step: number, validatorFn: StepValidator) => void
 }
-
 const CheckoutContext = createContext<CheckoutContextType | undefined>(undefined)
 
 interface CheckoutProviderProps {
@@ -35,6 +45,11 @@ export const CheckoutProvider = ({
 }: CheckoutProviderProps) => {
   const [currentStep, setCurrentStep] = useState(initialStep)
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
+  const validators = useRef<Record<number, StepValidator>>({})
+  const formGetters = useRef<Record<number, FormDataGetter>>({})
+  const [stepValidators, setStepValidators] = useState<Record<number, () => Promise<boolean>>>({})
+  const [isStepValid, setIsStepValid] = useState(false)
+  const [checkboxChecked, setCheckboxChecked] = useState(false);
 
   const goToStep = useCallback((step: number) => {
     if (step === 1) {
@@ -44,27 +59,30 @@ export const CheckoutProvider = ({
     }
   }, [totalSteps])
 
-  const nextStep = useCallback(() => {
+  const markStepAsCompleted = useCallback((step: number) => {
+    if (!completedSteps.includes(step)) {
+      setCompletedSteps(prev => [...prev, step])
+    }
+  }, [completedSteps])
+
+  const nextStep = useCallback(async () => {
+    const validator = validators.current[currentStep]
+    if (validator) {
+      const valid = await validator()
+      if (!valid) return
+    }
+
     if (currentStep < totalSteps) {
-      // Marcar el step actual como completado antes de avanzar
-      if (!completedSteps.includes(currentStep)) {
-        setCompletedSteps(prev => [...prev, currentStep])
-      }
+      markStepAsCompleted(currentStep)
       setCurrentStep(prev => prev + 1)
     }
-  }, [currentStep, totalSteps, completedSteps])
+  }, [currentStep, totalSteps, markStepAsCompleted])
 
   const prevStep = useCallback(() => {
     if (currentStep > 1) {
       setCurrentStep(prev => prev - 1)
     }
   }, [currentStep])
-
-  const markStepAsCompleted = useCallback((step: number) => {
-    if (!completedSteps.includes(step)) {
-      setCompletedSteps(prev => [...prev, step])
-    }
-  }, [completedSteps])
 
   const isStepCompleted = useCallback((step: number) => {
     return completedSteps.includes(step)
@@ -85,6 +103,33 @@ export const CheckoutProvider = ({
     return 'pending'
   }, [currentStep, completedSteps])
 
+  const registerValidator = useCallback((step: number, validator: StepValidator) => {
+    validators.current[step] = validator
+  }, [])
+
+  const registerFormData = useCallback((step: number, validator: FormDataGetter) => {
+    formGetters.current[step] = validator
+  }, [])
+
+  const getAllFormData = useCallback(() => {
+    const out:Record<number, any> = {}
+    for (const key of Object.keys(formGetters.current)) {
+      const step = Number(key)
+      out[step] = formGetters.current[step]()
+    }
+    return out
+  }, [])
+
+  const registerStepValidator = useCallback((step: number, validatorFn: () => Promise<boolean>) => {
+    setStepValidators(prev => ({...prev, [step]: validatorFn}))
+  }, [])
+
+  const validateCurrentStep = useCallback(async () => {
+    const validator = stepValidators[currentStep]
+    if (!validator) return true
+    return await validator()
+  }, [stepValidators, currentStep])
+
   const value: CheckoutContextType = {
     currentStep,
     completedSteps,
@@ -96,7 +141,16 @@ export const CheckoutProvider = ({
     isStepCompleted,
     isStepActive,
     canGoToStep,
-    getStepStatus
+    getStepStatus,
+    registerValidator,
+    registerFormData,
+    validateCurrentStep,
+    getAllFormData,
+    registerStepValidator,
+    isStepValid,
+    setIsStepValid,
+    checkboxChecked,
+    setCheckboxChecked,
   }
 
   return (

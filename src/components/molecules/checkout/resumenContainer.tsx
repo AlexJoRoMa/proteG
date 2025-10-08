@@ -1,9 +1,42 @@
 'use client'
 
+import { useCheckout } from "@/components/providers/CheckoutProvider"
+import { useState } from "react";
+
 export default function ResumenContainer() {
 
+    const { nextStep, currentStep, totalSteps, validateCurrentStep, getAllFormData, isStepValid } = useCheckout();
+    const [loading, setLoading] = useState(false);
+
+    const handleContinue = async () => {
+        setLoading(true)
+        try {
+            const ok = await validateCurrentStep()
+            if (!ok) return
+
+            const allData = getAllFormData ? getAllFormData() : {}
+            const stepData = allData[currentStep] || {}
+            console.log('allData', allData)
+
+            switch(currentStep) {
+                case 1: {
+                    console.log('configurador listo:', stepData)
+                    break
+                }
+                case 2: {
+                    console.log('Datos Personales:', stepData)
+                    break
+                }
+            }
+
+            await nextStep()
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
-        <div className="xl:border xl:rounded-md xl:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 xl:bg-white-0">
+        <div className="fixed xl:static bottom-0 left-0 z-50 xl:border xl:rounded-md xl:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 xl:bg-white-0">
             <h1 className="font-bold leading-[24px] text-xl mb-[32px]">Resumen de pedido</h1>
 
             {/* <ResumenContent copys={resumenCopys} userSelection={userAnswers}/> */}
@@ -13,6 +46,8 @@ export default function ResumenContainer() {
 
             <div className="pt-[32px] border-t-1 border-t-gray-150">
                 <button
+                    onClick={handleContinue}
+                    disabled={!isStepValid}
                     className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
                 >
                     Continuar
