@@ -1,11 +1,11 @@
 'use client'
 
 import { Form, Input } from "@heroui/react";
-import Link from "next/link";
 import { FC, RefObject } from "react";
 import { inputStyles } from "@/constants/StylesConstants";
 import { InputFilter } from "@/utils/inputFilters";
 import ButtonGhost from "@/components/atoms/ButtonGhost";
+import { useMicrocopies } from "@/hooks/useMicrocopies";
 
 interface Props {
     formRef: RefObject<HTMLFormElement | null>
@@ -13,6 +13,7 @@ interface Props {
 }
 
 export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
+    const { getValue } = useMicrocopies('formulario-datosPersonales');
 
     return (
         <Form
@@ -23,7 +24,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
             {/* Nombre */}
             <div className='order-1'>
                 <Input
-                    label="Nombre"
+                    label={getValue('datosPersonales.label.nombre')}
                     name="firstName"
                     type="text"
                     variant='bordered'
@@ -32,8 +33,8 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     labelPlacement="outside"
                     isRequired
                     className='w-full'
-                    placeholder='Ingresa tu nombre'
-                    errorMessage='Ingresa un nombre válido'
+                    placeholder={getValue('datosPersonales.placeholder.nombre')}
+                    errorMessage={getValue('datosPersonales.error.nombre')}
                     onInput={(e) => InputFilter(e, 'letras')}
                 />
             </div>
@@ -41,7 +42,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
             {/* Segundo nombre */}
             <div className='order-2'>
                 <Input
-                    label="Segundo Nombre"
+                    label={getValue('datosPersonales.label.segundoNombre')}
                     name="secondName"
                     type="text"
                     variant='bordered'
@@ -49,7 +50,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     classNames={inputStyles}
                     labelPlacement="outside"
                     className='w-full'
-                    placeholder='Ingresa tu segundo nombre'
+                    placeholder={getValue('datosPersonales.placeholder.segundoNombre')}
                     onInput={(e) => InputFilter(e, 'letras')}
                 />
             </div>
@@ -57,7 +58,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
             {/* Apellido paterno */}
             <div className='order-3'>
                 <Input
-                    label="Apellido paterno"
+                    label={getValue('datosPersonales.label.apellidoPaterno')}
                     name="firstLastName"
                     type="text"
                     variant='bordered'
@@ -66,8 +67,8 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     labelPlacement="outside"
                     isRequired
                     className='w-full'
-                    placeholder='Ingresa tu apellido paterno'
-                    errorMessage='Ingresa un apellido válido'
+                    placeholder={getValue('datosPersonales.placeholder.apellidoPaterno')}
+                    errorMessage={getValue('datosPersonales.error.apellido')}
                     onInput={(e) => InputFilter(e, 'letras')}
                 />
             </div>
@@ -75,7 +76,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
             {/* Apellido materno */}
             <div className='order-4'>
                 <Input
-                    label="Apellido materno"
+                    label={getValue('datosPersonales.label.apellidoMaterno')}
                     name="secondLastName"
                     type="text"
                     variant='bordered'
@@ -84,8 +85,8 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     labelPlacement="outside"
                     isRequired
                     className='w-full'
-                    placeholder='Ingresa tu apellido materno'
-                    errorMessage='Ingresa un apellido válido'
+                    placeholder={getValue('datosPersonales.placeholder.apellidoMaterno')}
+                    errorMessage={getValue('datosPersonales.error.apellido')}
                     onInput={(e) => InputFilter(e, 'letras')}
                 />
             </div>
@@ -93,7 +94,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
             {/* Teléfono */}
             <div className='order-5'>
                 <Input
-                    label="Número de teléfono"
+                    label={getValue('datosPersonales.label.telefono')}
                     name="phone"
                     type="tel"
                     variant='bordered'
@@ -102,8 +103,8 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     labelPlacement="outside"
                     isRequired
                     className='w-full'
-                    placeholder='Ingresa un número'
-                    errorMessage='Ingresa un número válido'
+                    placeholder={getValue('datosPersonales.placeholder.telefono')}
+                    errorMessage={getValue('datosPersonales.error.telefono')}
                     onInput={(e) => InputFilter(e, 'numeros')}
                 />
             </div>
@@ -111,7 +112,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
             {/* Telefono adicional */}
             <div className='order-6'>
                 <Input
-                    label="Teléfono adicional"
+                    label={getValue('datosPersonales.label.telefonoAdicional')}
                     name="aditionalTel"
                     type="tel"
                     variant='bordered'
@@ -119,7 +120,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     classNames={inputStyles}
                     labelPlacement="outside"
                     className='w-full'
-                    placeholder='Ingresa un número'
+                    placeholder={getValue('datosPersonales.placeholder.telefono')}
                     onInput={(e) => InputFilter(e, 'numeros')}
                 />
             </div>
@@ -129,7 +130,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                 {
                     esExtrangero ?
                         <Input
-                            label="Número de pasaporte o licencia de manejo"
+                            label={getValue('datosPersonales.label.pasaporte')}
                             name="passport"
                             type="text"
                             radius='sm'
@@ -139,11 +140,11 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                             isRequired
                             className='w-full'
                             onInput={(e) => InputFilter(e, 'alfanumerico')}
-                            placeholder='Ingresa tu número de pasaporte o licencia'
-                            errorMessage='Ingresa un número de pasaporte o licencia válido'
+                            placeholder={getValue('datosPersonales.placeholder.pasaporte')}
+                            errorMessage={getValue('datosPersonales.error.pasaporte')}
                         /> :
                         <Input
-                            label="CURP"
+                            label={getValue('datosPersonales.label.curp')}
                             name="curp"
                             type="text"
                             radius='sm'
@@ -153,14 +154,14 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                             isRequired
                             className='w-full'
                             onInput={(e) => InputFilter(e, 'alfanumerico')}
-                            placeholder='GOGM900305HSRMPV59'
-                            errorMessage='Ingresa un CURP válido'
+                            placeholder={getValue('datosPersonales.placeholder.curp')}
+                            errorMessage={getValue('datosPersonales.error.curp')}
                         />
                 }
                 <div className='w-full text-end'>
                     <ButtonGhost
                         classStyles='text-black-0 text-[16px] leading-6 underline font-bold p-0 border-0'
-                        text={"¿No recuerdas tu CURP?"}
+                        text={getValue('datosPersonales.curp')}
                         href="https://www.gob.mx/curp/"
                         external={true}
                     >
@@ -171,7 +172,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
             {/* Correo */}
             <div className='order-8'>
                 <Input
-                    label="Correo electrónico"
+                    label={getValue('datosPersonales.label.correo')}
                     name="email"
                     type="email"
                     variant='bordered'
@@ -180,8 +181,8 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     labelPlacement="outside"
                     isRequired
                     className='w-full'
-                    placeholder='Ingresa un correo'
-                    errorMessage='Ingresa un correo válido'
+                    placeholder={getValue('datosPersonales.placeholder.correo')}
+                    errorMessage={getValue('datosPersonales.error.correo')}
                 />
             </div>
         </Form>

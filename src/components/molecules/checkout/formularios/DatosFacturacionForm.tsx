@@ -1,5 +1,6 @@
 import { CodigosCFDI, RegimenFiscal } from "@/constants/ContratacionConstants";
 import { inputStyles, SelectStyles } from "@/constants/StylesConstants";
+import { useMicrocopies } from "@/hooks/useMicrocopies";
 import { InputFilter } from "@/utils/inputFilters";
 import { Form, Input, Select, SelectItem } from "@heroui/react";
 import { FC, RefObject } from "react";
@@ -13,6 +14,8 @@ interface Props {
 }
 
 export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regimen, setRegimen }) => {
+
+    const { getValue } = useMicrocopies('formulario-facturacion');
 
     const triggerFormChange = () => {
         if (formRef.current) {
@@ -28,25 +31,25 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
             className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'
         >
             <Input
-                label="RFC"
+                label={getValue('facturacion.label.rfc')}
                 name='rfc'
                 type='text'
                 variant='bordered'
-                placeholder='Ingresa tu RFC'
+                placeholder={getValue('facturacion.placeholder.rfc')}
                 radius='sm'
                 classNames={inputStyles}
                 labelPlacement='outside'
                 className='w-full'
                 isRequired
-                errorMessage="Ingresa un RFC valido"
+                errorMessage={getValue('facturacion.error.rfc')}
                 onInput={(e) => InputFilter(e, 'alfanumerico')}
                 onChange={triggerFormChange}
             />
             <Select
-                label="Uso de CFDI"
+                label={getValue('facturacion.label.cfdi')}
                 name="comprobanteFiscal"
                 labelPlacement="outside"
-                placeholder='Selecciona el Comprobante Fiscal Digital'
+                placeholder={getValue('facturacion.placeholder.cfdi')}
                 variant='bordered'
                 radius='sm'
                 classNames={SelectStyles}
@@ -68,10 +71,10 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 }
             </Select >
             <Select
-                label="Regimen fiscal"
+                label={getValue('facturacion.label.regimenFiscal')}
                 name="regimenFiscal"
                 labelPlacement="outside"
-                placeholder='Selecciona tu Régimen fiscal'
+                placeholder={getValue('facturacion.placeholder.regimenFiscal')}
                 variant='bordered'
                 radius='sm'
                 classNames={SelectStyles}

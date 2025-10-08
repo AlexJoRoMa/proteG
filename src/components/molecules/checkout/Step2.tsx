@@ -8,9 +8,11 @@ import { DireccionFacturacionForm } from './formularios/DireccionFacturacionForm
 import { DatosFacturacionForm } from './formularios/DatosFacturacionForm';
 import { useCheckout } from '@/components/providers/CheckoutProvider';
 import ButtonGhost from '@/components/atoms/ButtonGhost';
+import { useMicrocopies } from '@/hooks/useMicrocopies';
 
 const Step2 = () => {
   const { registerStepValidator, currentStep, setCheckboxChecked } = useCheckout();
+  const { getValue } = useMicrocopies('contratacion-datosPersonales');
   const [checked, setChecked] = useState(false);
 
   const {
@@ -32,7 +34,6 @@ const Step2 = () => {
 
   const hanldeCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.checked;
-    console.log('value', value)
     setChecked(value);
     setCheckboxChecked(value);
   }
@@ -49,21 +50,21 @@ const Step2 = () => {
 
       <div className='flex flex-col md:grid md:grid-cols-2 items-center w-full mb-[24px] md:mb-10'>
         <div className='flex items-center w-full justify-between mb-6 md:mb-0'>
-          <p className='text-nowrap text-base'>¿Ya eres cliente?</p>
+          <p className='text-nowrap text-base'>{getValue('datosPersonales.cliente.titulo')}</p>
           <Link
-            href="#"
+            href={getValue('datosPersonales.cliente.url')}
             className='w-[90px] md:w-[180px] h-[40px] flex justify-center items-center
                       rounded-md bg-[var(--color-gray-450)] text-white text-[16px] leading-6
                       hover:bg-white hover:text-[var(--color-gray-450)] hover:border-1'
           >
-            Acceder
+            {getValue('datosPersonales.cliente.btn')}
           </Link>
         </div>
 
         <Divider orientation="horizontal" className='!border-[var(--color-gray-300)] mb-[16px] block md:hidden' />
 
         <div className='flex items-center justify-between md:justify-end w-full gap-[53px]'>
-          <p className='text-nowrap text-base'>¿Eres extranjero?</p>
+          <p className='text-nowrap text-base'>{getValue('datosPersonales.extranjero')}</p>
           <Switch
             aria-label="Extrangero"
             isSelected={esExtranjero}
@@ -82,7 +83,7 @@ const Step2 = () => {
 
       <>
         <h4 className='mb-[38px] font-bold text-[20px] leading-6'>
-          Dirección de instalación
+          {getValue('datosPersonales.direccionInstalacion.titulo')}
         </h4>
 
         <div className='w-full flex items-center justify-between'>
@@ -90,7 +91,7 @@ const Step2 = () => {
             Avenida Paseo De La Reforma, 457, Chapultepec
           </p>
 
-          <Link href='#'>
+          <Link href={getValue('datosPersonales.direccionInstalacion.urlEdicion')}>
             <Button
               className='ml-auto bg-transparent'>
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
@@ -118,7 +119,7 @@ const Step2 = () => {
       </>
 
       <div className='flex justify-between my-[24px] w-full md:w-[50%]'>
-        <p>¿Necesitas facturar?</p>
+        <p>{getValue('datosPersonales.facturacion')}</p>
         <Switch
           aria-label="Facturacion"
           isSelected={necesitaFacturar}
@@ -142,7 +143,7 @@ const Step2 = () => {
             />
 
             <div className='flex justify-between mt-[24px] w-full md:w-[50%]'>
-              <p>¿Necesitas facturar con otra dirección?</p>
+              <p>{getValue('datosPersonales.facturarOtraDireccion')}</p>
               <Switch
                 aria-label="Direccion Diferente"
                 isSelected={facturarOtraDireccion}
@@ -178,11 +179,11 @@ const Step2 = () => {
           icon: "w-[14px] h-[12px]",
         }}
       >
-        Acepto los
+        {getValue('datosPersonales.terminos.textoPrevio')}
         <ButtonGhost
           classStyles='text-black underline font-bold text-[16px] leading-6 underline p-0 border-0 ml-[4px]'
-          text={"Términos y Condiciones de uso"}
-          external={true}
+          text={getValue('datosPersonales.terminos.textoPrincipal')}
+          href={getValue('datosPersonales.terminos.url')}
         >
         </ButtonGhost>
 
