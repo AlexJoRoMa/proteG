@@ -1,32 +1,34 @@
 import React from 'react';
-import { Button, Form, InputOtp, Radio, RadioGroup } from '@heroui/react'
+import { Form, Input } from '@heroui/react'
 
 const Step4 = () => {
   return (
-    <div>
+    <>
       <Form>
-        <h5 className='text-[18px] font-bold leading-6 mb-2.5'>Es necesario confirmar tu información</h5>
-        <p className='text-[18px] leading-6 mb-2.5'>Selecciona el medio por el cual deseas recibir la <b>aceptación o código de verificación.</b></p>
-        <RadioGroup orientation='vertical' className='flex flex-col gap-6' defaultValue={'Whatsapp'}>
-          <Radio value="Whatsapp"><b>Enviar por WhatsApp:</b> 55 XXXX XXXX</Radio>
-          <Radio value="SMS"><b>Enviar por SMS:</b> 55 XXXX XXXX</Radio>
-          <Radio value="Email"><b>Enviar por correo electrónico:</b> mail@gmail.com</Radio>
-        </RadioGroup>
-
-        <Button type='submit' className='mt-10 bg-black text-white hover:bg-white hover:text-black hover:border w-3xs rounded-md mx-auto'>Enviar código</Button>
+        <h5 className='text-[18px] font-bold leading-6'>Cargar de archivos</h5>
+        <p className='text-[18px] mb-6'>Ingresa los siguientes datos para configurar al titular de la cuenta y personalizar tu paquete a tu medida.</p>
+        <p className='text-[18px] mb-4'>Identificación Oficial (INE o pasaporte válido) en formato <b>JPG, PNG o PDF.</b></p>
+        <Input label="INE" name="ine" type="file" variant='bordered' radius='sm' classNames={{ label: 'font-bold', mainWrapper: 'mb-[16px] pointer' }} required className='w-full' endContent={
+          <svg className='self-center' width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 9.00195C19.175 9.01406 20.3529 9.11051 21.1213 9.8789C22 10.7576 22 12.1718 22 15.0002V16.0002C22 18.8286 
+        22 20.2429 21.1213 21.1215C20.2426 22.0002 18.8284 22.0002 16 22.0002H8C5.17157 22.0002 3.75736 22.0002 2.87868 
+        21.1215C2 20.2429 2 18.8286 2 16.0002L2 15.0002C2 12.1718 2 10.7576 2.87868 9.87889C3.64706 9.11051 4.82497 9.01406 
+        7 9.00195" stroke="black" strokeWidth="1.5" strokeLinecap="round" />
+            <path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        } />
+        <p className='text-[18px] mb-4 mt-6'>Comprobante de domicilio (factura de CFE, gas, servicios o estado de cuenta bancario) en formato <b>JPG, PNG o PDF.</b></p>
+        <Input label="Comprobante de domicilio" name="comprobante" type="file" variant='bordered' radius='sm' classNames={{ label: 'font-bold', mainWrapper: 'mb-[16px]' }} required className='w-full' endContent={
+          <svg className='self-center' width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 9.00195C19.175 9.01406 20.3529 9.11051 21.1213 9.8789C22 10.7576 22 12.1718 22 15.0002V16.0002C22 18.8286 
+        22 20.2429 21.1213 21.1215C20.2426 22.0002 18.8284 22.0002 16 22.0002H8C5.17157 22.0002 3.75736 22.0002 2.87868 
+        21.1215C2 20.2429 2 18.8286 2 16.0002L2 15.0002C2 12.1718 2 10.7576 2.87868 9.87889C3.64706 9.11051 4.82497 9.01406 
+        7 9.00195" stroke="black" strokeWidth="1.5" strokeLinecap="round" />
+            <path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        } />
       </Form>
-
-      <div className='countdown-timer text-center mt-6 text-(--color-green-700) font-bold'>
-        <span>00:59</span>
-      </div>
-
-      <div>
-        <p className='text-[18px] font-bold leading-6 mb-6 text-center mt-6'>Introduce el código de verificación que te hemos enviado por WhatsApp.</p>
-        <InputOtp length={4} defaultValue="1234" className='mx-auto' radius='md' isRequired size='lg' variant='bordered' />
-        <p className='text-[18px] font-bold leading-6 mb-6 text-center mt-6'>¡Código correcto! Da clic en continuar</p>
-      </div>
-
-    </div>
+    </>
   )
 }
 
