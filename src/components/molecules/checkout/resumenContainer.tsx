@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function ResumenContainer() {
 
-    const { nextStep, currentStep, totalSteps, validateCurrentStep, getAllFormData, isStepValid } = useCheckout();
+    const { nextStep, currentStep, totalSteps, validateCurrentStep, getAllFormData, isStepValid, setDatosPersonales } = useCheckout();
     const [loading, setLoading] = useState(false);
 
     const handleContinue = async () => {
@@ -16,7 +16,6 @@ export default function ResumenContainer() {
 
             const allData = getAllFormData ? getAllFormData() : {}
             const stepData = allData[currentStep] || {}
-            console.log('allData', allData)
 
             switch(currentStep) {
                 case 1: {
@@ -25,6 +24,7 @@ export default function ResumenContainer() {
                 }
                 case 2: {
                     console.log('Datos Personales:', stepData)
+                    setDatosPersonales(stepData);
                     break
                 }
             }
