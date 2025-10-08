@@ -7,6 +7,7 @@ import { DireccionEnvioForm } from './formularios/DireccionEnvioForm';
 import { DireccionFacturacionForm } from './formularios/DireccionFacturacionForm';
 import { DatosFacturacionForm } from './formularios/DatosFacturacionForm';
 import { useCheckout } from '@/components/providers/CheckoutProvider';
+import ButtonGhost from '@/components/atoms/ButtonGhost';
 
 const Step2 = () => {
   const { registerStepValidator, currentStep, setCheckboxChecked } = useCheckout();
@@ -164,31 +165,28 @@ const Step2 = () => {
 
       <Divider orientation="horizontal" className='!border-[var(--color-gray-300)] mt-6 mb-7' />
 
-      <div className='mb-[16px] xl:mb-[132px]'>
-        <label
-          className='flex items-start gap-3 text-base cursor-pointer'
+      <Checkbox
+        defaultSelected={false}
+        isRequired
+        color={"default"}
+        checked={checked}
+        onChange={hanldeCheckboxChange}
+        radius='sm'
+        className='text-gray-450 pt-4 pb-8'
+        classNames={{
+          wrapper: "before:!bg-white-0 before:border-0 !border-1 border-black-0 group-data-[selected=true]:after:!bg-white-0",
+          icon: "w-[14px] h-[12px]",
+        }}
+      >
+        Acepto los
+        <ButtonGhost
+          classStyles='text-black underline font-bold text-[16px] leading-6 underline p-0 border-0 ml-[4px]'
+          text={"Términos y Condiciones de uso"}
+          external={true}
         >
-          <input
-            type='checkbox'
-            name='aceptoTerminos'
-            required
-            checked={checked}
-            onChange={hanldeCheckboxChange}
-            className='w-4 h-4 mt-1 accent-black-0'
-          />
-          <span
-            className='ml-2'
-          >
-            Acepto los {' '}
-            <Link
-              href="#"
-              className='underline font-bold'
-            >
-              Términos y Condiciones de uso
-            </Link>
-          </span>
-        </label>
-      </div>
+        </ButtonGhost>
+
+      </Checkbox>
 
     </div>
   )

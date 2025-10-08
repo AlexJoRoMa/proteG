@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FC, RefObject } from "react";
 import { inputStyles } from "@/constants/StylesConstants";
 import { InputFilter } from "@/utils/inputFilters";
+import ButtonGhost from "@/components/atoms/ButtonGhost";
 
 interface Props {
     formRef: RefObject<HTMLFormElement | null>
@@ -157,12 +158,13 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                         />
                 }
                 <div className='w-full text-end'>
-                    <Link
-                        href="#"
-                        className='text-black-0 text-[16px] leading-6 underline font-bold'
+                    <ButtonGhost
+                        classStyles='text-black-0 text-[16px] leading-6 underline font-bold p-0 border-0'
+                        text={"¿No recuerdas tu CURP?"}
+                        href="https://www.gob.mx/curp/"
+                        external={true}
                     >
-                        ¿No recuerdas tu CURP?
-                    </Link>
+                    </ButtonGhost>
                 </div>
             </div>
 
