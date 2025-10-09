@@ -39,7 +39,11 @@ export default function IzziHeaderLanding({navbarData}: HeaderComponentProps) {
     
     const routeToNavbarMap: Record<string, string> = {
       'landing/internet': 'Navbar Landing  noCombos',
-      'landing/landing/internet+movil': 'Navbar Landing  wCombos',
+      'landing/internettv': 'Navbar Landing  noCombos',
+      'landing/tv': 'Navbar Landing  noCombos',
+      'landing/movil': 'Navbar Landing  noCombos',
+      'landing/internetmovil': 'Navbar Landing  wCombos',
+      'landing/internettvmovil': 'Navbar Landing  wCombos',
     };
     
     const selectedNavbarName = routeToNavbarMap[cleanPath] || 'Navbar Landing  noCombos';
