@@ -15,7 +15,7 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
     const color = type === 'internet' ? INTERNETCOLOR : type === 'tv' ? TVCOLOR : type === 'movil' ? MOVILCOLOR : '#000000';
 
   return (
-    <div className='px-[16px] md:px-[24px] py-[32px] bg-white h-[596px] rounded-md relative flex-col flex'>
+    <div className='px-[16px] md:px-[24px] py-[32px] bg-white h-[650px] rounded-md relative flex-col flex'>
       {
         card?.fields?.alternativeDescription ? (
           <>
@@ -77,7 +77,7 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
                 <RichTextComponent document={card?.fields?.descriptionRich as Document}/>
               )
             }
-            <div className='grid grid-cols-4 grid-rows-2 gap-4 mb-[32px]'>
+            <div className='grid grid-cols-4 grid-rows-2  '>
                 {
                     Array.isArray(card?.fields?.adds) && card?.fields?.adds?.map((add, index: number) => {
                             const assetAdd = add as Asset;
@@ -94,6 +94,9 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
                     })
                 }
             </div>
+            { card?.fields?.textoContratacin && (
+              <p className='md:text-[18px] xsm:text-[16px] font-bold  text-black gap-4 mb-[32px]'>{card?.fields?.textoContratacin as string}</p>
+            )}
           </>
         )
       }          
