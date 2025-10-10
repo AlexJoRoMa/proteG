@@ -14,8 +14,8 @@ interface CheckoutContextType {
   setCheckboxChecked: (value: boolean) => void
 
   //states steps
-  datosPersonales: {},
-  setDatosPersonales: (value: {}) => void
+  datosContratacion: {},
+  setDatosContratacion: (value: {}) => void
 
   // Navigation functions
   goToStep: (step: number) => void
@@ -56,7 +56,7 @@ export const CheckoutProvider = ({
   const [checkboxChecked, setCheckboxChecked] = useState(false);
 
   // states con informacion del los steps
-  const [datosPersonales, setDatosPersonales] = useState({});
+  const [datosContratacion, setDatosContratacion] = useState({});
 
   const goToStep = useCallback((step: number) => {
     if (step === 1) {
@@ -158,8 +158,8 @@ export const CheckoutProvider = ({
     setIsStepValid,
     checkboxChecked,
     setCheckboxChecked,
-    datosPersonales,
-    setDatosPersonales,
+    datosContratacion,
+    setDatosContratacion,
   }
 
   return (

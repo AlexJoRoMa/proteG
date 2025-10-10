@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function ResumenContainer() {
 
-    const { nextStep, currentStep, totalSteps, validateCurrentStep, getAllFormData, isStepValid, setDatosPersonales } = useCheckout();
+    const { nextStep, currentStep, totalSteps, validateCurrentStep, getAllFormData, isStepValid, setDatosContratacion, datosContratacion, setIsStepValid } = useCheckout();
     const [loading, setLoading] = useState(false);
 
     const handleContinue = async () => {
@@ -17,14 +17,30 @@ export default function ResumenContainer() {
             const allData = getAllFormData ? getAllFormData() : {}
             const stepData = allData[currentStep] || {}
 
-            switch(currentStep) {
+            switch (currentStep) {
                 case 1: {
                     console.log('configurador listo:', stepData)
                     break
                 }
                 case 2: {
                     console.log('Datos Personales:', stepData)
-                    setDatosPersonales(stepData);
+                    setDatosContratacion((prev: any) => ({
+                        ...prev,
+                        DatosPersonales: stepData
+                    }));
+                    console.log('Datos Contratacion:', datosContratacion)
+                    setIsStepValid(false)
+                    break
+                }
+                case 3: {
+                    console.log('Verificacion de contacto:', stepData)
+                    setDatosContratacion((prev: any) => ({
+                        ...prev,
+                        VerificacionContacto: stepData
+                    }));
+                    console.log('Datos Contratacion:', datosContratacion)
+                    //TODO: agregar conexion a apis (izienrrol, processStatus, submitOffer)
+                    setIsStepValid(false)
                     break
                 }
             }
