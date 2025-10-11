@@ -43,6 +43,16 @@ export default function ResumenContainer() {
                     setIsStepValid(false)
                     break
                 }
+                case 4: {
+                    console.log('Documentos del Titular:', stepData)
+                    setDatosContratacion((prev: any) => ({
+                        ...prev,
+                        DocumentosTitular: stepData
+                    }));
+                    //TODO: agregar conexion a apis (attach, getCapacity)
+                    setIsStepValid(false)
+                    break
+                }
             }
 
             await nextStep()

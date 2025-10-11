@@ -1,32 +1,122 @@
-import React from 'react';
-import { Form, Input } from '@heroui/react'
+import React, { useRef } from 'react';
+import { Form, Input, user } from '@heroui/react'
+import { DeleteIcon, UploadICon } from '@/constants/IconsConstants';
+import { useStep4Form } from '@/hooks/checkout/useStep4Form';
+import { useMicrocopies } from '@/hooks/useMicrocopies';
 
 const Step4 = () => {
+
+  const { DocumentosTitularRef, ineFile, comprobanteFile, setIneFile, setComprobanteFile } = useStep4Form();
+
+  const { getValue } = useMicrocopies('contratacion-documentosTitular');
+
+  const ineInputRef = useRef<HTMLInputElement | null>(null);
+  const comprobanteInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileChange =
+    (setter: (f: File | null) => void) =>
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+
+        const file = e.target.files?.[0];
+        if (!file) return setter(null);
+
+        const validTypes = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
+        if (!validTypes.includes(file.type) || file.size > 4 * 1024 * 1024) {
+          alert("Archivo inválido. Debe ser JPG, PNG o PDF y menor a 4MB.");
+          e.target.value = "";
+          setter(null);
+          return;
+        }
+
+        setter(file);
+      };
+
+  const clearFile = (ref: React.RefObject<HTMLInputElement | null>, setter: (f: File | null) => void) => {
+    if (ref.current) ref.current.value = "";
+    setter(null);
+  };
+
   return (
     <>
-      <Form>
-        <h5 className='text-[18px] font-bold leading-6'>Cargar de archivos</h5>
-        <p className='text-[18px] mb-6'>Ingresa los siguientes datos para configurar al titular de la cuenta y personalizar tu paquete a tu medida.</p>
-        <p className='text-[18px] mb-4'>Identificación Oficial (INE o pasaporte válido) en formato <b>JPG, PNG o PDF.</b></p>
-        <Input label="INE" name="ine" type="file" variant='bordered' radius='sm' classNames={{ label: 'font-bold', mainWrapper: 'mb-[16px] pointer' }} required className='w-full' endContent={
-          <svg className='self-center' width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17 9.00195C19.175 9.01406 20.3529 9.11051 21.1213 9.8789C22 10.7576 22 12.1718 22 15.0002V16.0002C22 18.8286 
-        22 20.2429 21.1213 21.1215C20.2426 22.0002 18.8284 22.0002 16 22.0002H8C5.17157 22.0002 3.75736 22.0002 2.87868 
-        21.1215C2 20.2429 2 18.8286 2 16.0002L2 15.0002C2 12.1718 2 10.7576 2.87868 9.87889C3.64706 9.11051 4.82497 9.01406 
-        7 9.00195" stroke="black" strokeWidth="1.5" strokeLinecap="round" />
-            <path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        } />
-        <p className='text-[18px] mb-4 mt-6'>Comprobante de domicilio (factura de CFE, gas, servicios o estado de cuenta bancario) en formato <b>JPG, PNG o PDF.</b></p>
-        <Input label="Comprobante de domicilio" name="comprobante" type="file" variant='bordered' radius='sm' classNames={{ label: 'font-bold', mainWrapper: 'mb-[16px]' }} required className='w-full' endContent={
-          <svg className='self-center' width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17 9.00195C19.175 9.01406 20.3529 9.11051 21.1213 9.8789C22 10.7576 22 12.1718 22 15.0002V16.0002C22 18.8286 
-        22 20.2429 21.1213 21.1215C20.2426 22.0002 18.8284 22.0002 16 22.0002H8C5.17157 22.0002 3.75736 22.0002 2.87868 
-        21.1215C2 20.2429 2 18.8286 2 16.0002L2 15.0002C2 12.1718 2 10.7576 2.87868 9.87889C3.64706 9.11051 4.82497 9.01406 
-        7 9.00195" stroke="black" strokeWidth="1.5" strokeLinecap="round" />
-            <path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        } />
+      <Form ref={DocumentosTitularRef}>
+        <h5
+          className='text-[18px] font-bold leading-6'
+        >
+          {getValue('documentos.titulo')}
+        </h5>
+        <p
+          className='text-[18px] mb-6'
+        >
+          {getValue('documentos.subtitulo')}
+        </p>
+        <p
+          className='text-[18px] mb-4'
+        >
+          {`${getValue('documentos.ine.titulo')} `}
+          <b>{getValue('documentos.formatos')}</b>
+        </p>
+
+        <Input
+          ref={ineInputRef}
+          label={ineFile ? `${getValue('documentos.input.ine')}.${ineFile.type.split("/")[1].toLowerCase()}` : getValue('documentos.input.vacio')}
+          name="ine"
+          type="file"
+          variant='bordered'
+          accept='.jpg, .jpeg, .png, .pdf'
+          radius='sm'
+          classNames={{
+            label: 'font-bold text-lg leading-[24px] text-[#11181C] mt-[25px] px-[24px]',
+            mainWrapper: 'mb-[16px] pointer',
+            input: "cursor-pointer file:!hidden text-indent-[-9999px] text-transparent h-full",
+            inputWrapper: ` rounded-xl shadow-none h-[78px] ${ineFile ? "bg-conic-custom !p-1 group-data-[hover=true]:!border-0 group-data-[focus=true]:!border-0" : "!p-1 border-dashed border-gray-200"}`,
+            innerWrapper: "!items-center bg-white-0 rounded-md px-[24px] !border-0 group-data-[focus=true]:border-0",
+          }}
+          required
+          className='w-full'
+          endContent={
+            ineFile ? (
+              <div onClick={() => clearFile(ineInputRef, setIneFile)}><DeleteIcon /></div>
+            ) : (
+              <UploadICon />
+            )
+          }
+          onChange={handleFileChange(setIneFile)}
+        />
+
+        <p
+          className='text-[18px] mb-4 mt-6'
+        >
+          {`${getValue('documentos.comprobante.titulo')} `}
+          <b>{getValue('documentos.formatos')}</b>
+        </p>
+
+        <Input
+          ref={comprobanteInputRef}
+          label={comprobanteFile ? `${getValue('documentos.input.comprobante')}.${comprobanteFile.type.split("/")[1].toLowerCase()})` : getValue('documentos.input.vacio')}
+          name="comprobante"
+          type="file"
+          variant='bordered'
+          radius='sm'
+          accept='.jpg, .jpeg, .png, .pdf'
+          classNames={{
+            label: 'font-bold text-lg leading-[24px] text-[#11181C] mt-[25px] px-[24px]',
+            mainWrapper: 'mb-[16px] pointer',
+            input: "cursor-pointer file:!hidden text-indent-[-9999px] text-transparent",
+            inputWrapper: ` rounded-xl shadow-none h-[78px] ${comprobanteFile ? "bg-conic-custom !p-1 group-data-[hover=true]:!border-0 group-data-[focus=true]:!border-0" : "!p-1 border-dashed border-gray-200"}`,
+            innerWrapper: "!items-center bg-white-0 rounded-md px-[24px] !border-0 group-data-[focus=true]:border-0 group-data-[hover=true]:!border-0",
+          }}
+          required
+          className='w-full'
+          endContent={
+            comprobanteFile ? (
+              <div onClick={() => clearFile(comprobanteInputRef, setComprobanteFile)}><DeleteIcon /></div>
+            ) : (
+              <UploadICon />
+            )
+          }
+          onChange={handleFileChange(setComprobanteFile)}
+        />
+
       </Form>
     </>
   )
