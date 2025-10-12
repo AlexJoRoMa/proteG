@@ -16,6 +16,10 @@ interface CheckoutContextType {
   //states steps
   datosContratacion: {},
   setDatosContratacion: (value: {}) => void
+  getCapacity: Record<string, string>[] | null
+  setGetCapacity: (value: []) => void
+  getIntentosInstalacion: number
+  setGetIntentosInstalacion: (value: number) => void
 
   // Navigation functions
   goToStep: (step: number) => void
@@ -54,6 +58,8 @@ export const CheckoutProvider = ({
   const [stepValidators, setStepValidators] = useState<Record<number, () => Promise<boolean>>>({})
   const [isStepValid, setIsStepValid] = useState(false)
   const [checkboxChecked, setCheckboxChecked] = useState(false);
+  const [getCapacity, setGetCapacity] = useState<Record<string, string>[] | null>(null);
+  const [getIntentosInstalacion, setGetIntentosInstalacion] = useState<number>(0);
 
   // states con informacion del los steps
   const [datosContratacion, setDatosContratacion] = useState({});
@@ -160,6 +166,10 @@ export const CheckoutProvider = ({
     setCheckboxChecked,
     datosContratacion,
     setDatosContratacion,
+    getCapacity,
+    setGetCapacity,
+    getIntentosInstalacion,
+    setGetIntentosInstalacion
   }
 
   return (

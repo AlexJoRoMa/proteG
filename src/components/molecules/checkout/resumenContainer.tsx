@@ -5,7 +5,19 @@ import { useState } from "react";
 
 export default function ResumenContainer() {
 
-    const { nextStep, currentStep, totalSteps, validateCurrentStep, getAllFormData, isStepValid, setDatosContratacion, datosContratacion, setIsStepValid } = useCheckout();
+    const {
+        nextStep,
+        currentStep,
+        totalSteps,
+        validateCurrentStep,
+        getAllFormData,
+        isStepValid,
+        setDatosContratacion,
+        datosContratacion,
+        setIsStepValid,
+        setGetCapacity
+    } = useCheckout();
+
     const [loading, setLoading] = useState(false);
 
     const handleContinue = async () => {
@@ -49,7 +61,17 @@ export default function ResumenContainer() {
                         ...prev,
                         DocumentosTitular: stepData
                     }));
+                    // setGetCapacity() 
                     //TODO: agregar conexion a apis (attach, getCapacity)
+                    setIsStepValid(false)
+                    break
+                }
+                case 5: {
+                    console.log('Fecha y hora de Instalacion:', stepData)
+                    setDatosContratacion((prev: any) => ({
+                        ...prev,
+                        Instalacion: stepData
+                    }));
                     setIsStepValid(false)
                     break
                 }
