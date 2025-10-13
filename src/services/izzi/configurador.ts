@@ -1,7 +1,7 @@
 import { CoberturaType, PackageInfo } from "@/types/ConfiguradorTypes";
 import { redirect } from "next/navigation";
 
-async function getToken() {
+export async function getToken() {
     try {
         const response = await fetch(
             "https://test.izziapiweb.mx/modifyservices/purchase/oauth2/token",

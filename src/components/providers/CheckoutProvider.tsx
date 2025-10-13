@@ -1,4 +1,6 @@
 'use client'
+import { ResumenIcon } from '@/types/ConfiguradorTypes'
+import { EntrySkeletonType } from 'contentful'
 import { redirect } from 'next/navigation'
 import React, { createContext, useContext, useState, useCallback, useRef } from 'react'
 
@@ -9,6 +11,8 @@ interface CheckoutContextType {
   completedSteps: number[]
   totalSteps: number
   isStepValid: boolean
+  icon: EntrySkeletonType<ResumenIcon>
+  paypalIcon: EntrySkeletonType<ResumenIcon>
   setIsStepValid: (value: boolean) => void
   checkboxChecked: boolean
   setCheckboxChecked: (value: boolean) => void
@@ -44,12 +48,16 @@ interface CheckoutProviderProps {
   children: React.ReactNode
   totalSteps?: number
   initialStep?: number
+  icon: EntrySkeletonType<ResumenIcon>
+  paypalIcon: EntrySkeletonType<ResumenIcon>
 }
 
 export const CheckoutProvider = ({
   children,
   totalSteps = 6,
-  initialStep = 2
+  initialStep = 2,
+  icon,
+  paypalIcon
 }: CheckoutProviderProps) => {
   const [currentStep, setCurrentStep] = useState(initialStep)
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
@@ -125,7 +133,7 @@ export const CheckoutProvider = ({
   }, [])
 
   const getAllFormData = useCallback(() => {
-    const out:Record<number, any> = {}
+    const out: Record<number, any> = {}
     for (const key of Object.keys(formGetters.current)) {
       const step = Number(key)
       out[step] = formGetters.current[step]()
@@ -134,7 +142,7 @@ export const CheckoutProvider = ({
   }, [])
 
   const registerStepValidator = useCallback((step: number, validatorFn: () => Promise<boolean>) => {
-    setStepValidators(prev => ({...prev, [step]: validatorFn}))
+    setStepValidators(prev => ({ ...prev, [step]: validatorFn }))
   }, [])
 
   const validateCurrentStep = useCallback(async () => {
@@ -147,6 +155,8 @@ export const CheckoutProvider = ({
     currentStep,
     completedSteps,
     totalSteps,
+    icon,
+    paypalIcon,
     goToStep,
     nextStep,
     prevStep,

@@ -1,6 +1,7 @@
 'use client'
 
 import { useCheckout } from "@/components/providers/CheckoutProvider"
+import { validatePayment } from "@/utils/validatePayment";
 import { useState } from "react";
 
 export default function ResumenContainer() {
@@ -72,7 +73,17 @@ export default function ResumenContainer() {
                         ...prev,
                         Instalacion: stepData
                     }));
-                    setIsStepValid(false)
+                    setIsStepValid(true)
+                    break
+                }
+                case 6: {
+                    const result = await validatePayment();
+                    setDatosContratacion((prev: any) => ({
+                        ...prev,
+                        Pago: result.metodoPago,
+                    }));
+                    console.log('Pago:', result.metodoPago)
+                    setIsStepValid(true)
                     break
                 }
             }
