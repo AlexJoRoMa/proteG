@@ -31,6 +31,14 @@ export async function createCookie(data: CoberturaType) {
     maxAge: 1800
   });
 
+  cookieStore.set({
+    name: 'formattedAddress',
+    value: data.address,
+    httpOnly: true,
+    path: '/',
+    maxAge: 1800
+  });
+
   revalidatePath('/configurador')
   redirect('/configurador')
 }
