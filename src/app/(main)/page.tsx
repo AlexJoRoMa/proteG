@@ -2,8 +2,16 @@ import { Entry, EntrySkeletonType } from "contentful";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import ButtonFixed from "@/components/atoms/ButtonSticky";
+import Head from "next/head";
 
-
+interface SeoFields {
+  titulo: string;
+  descripcion: string;
+}
+interface SeoFieldSkeleton extends EntrySkeletonType {
+  contentTypeId: 'contentSEO',
+  fields: SeoFields;
+}
 export default async function Home() {
 
   // Obtener la informacion de la pagina
@@ -11,8 +19,15 @@ export default async function Home() {
   const page = await fetchComponentsBySlugPage("home");
 
    const components = page.items || [];
+   const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
+   const seo = seoEntry?.fields;
 
   return (
+    <>
+    
+      <title>{seo?.titulo || "izzi"}</title>
+      <meta name="description" content={seo?.descripcion || "izzi desc"} />
+    
     <main className="">
 
         {
@@ -29,5 +44,6 @@ export default async function Home() {
         }
         <ButtonFixed />
     </main>
+    </>
   );
 }

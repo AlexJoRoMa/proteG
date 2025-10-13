@@ -3,69 +3,11 @@ import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import { notFound } from "next/navigation";
 import ButtonFixed from "@/components/atoms/ButtonSticky";
-import { Metadata } from "next";
 
-
-interface SEOFields {
-  titulo: string;
-  descripcion: string
-  tituloCorto?: string;
-  descripcionCorto?: string;
-  noIndex?: boolean;
-}
-
-type SeoEntrySkeleton = {
-  contentTypeId: 'contentSEO';
-  fields: SEOFields;
-}
-
-type PageEntrySkeleton = {
-  contentTypeId: 'page';
-  fields: {
-    internalName: string;
-    components?: Entry<EntrySkeletonType, undefined, string>[];
-    slug?: string;
-    seoMetadata?: Entry<SeoEntrySkeleton, undefined, string>;
-  }
-}
-
-interface PageEntryFields {
-  seoMetadata?: Entry<SeoEntrySkeleton, undefined, string>;
-}
 interface DynamicPageProps {
   params: Promise<{
     slugs: string[];
   }>;
-}
-
-export async function generateMetadata({ params }: DynamicPageProps): Promise<Metadata> {
-  const fullPath = (await params).slugs.join('/');
-  const pageData = await fetchComponentsBySlugPage(fullPath);
-  const pageEntry = pageData.items?.[0] as unknown as Entry<PageEntrySkeleton>;
-
-  if(!pageEntry || !pageEntry.fields.seoMetadata){
-    return{};
-  }
-
-  const rawSeo = pageEntry?.fields.seoMetadata?.fields;
-
- 
-  if(!rawSeo){
-    return {};
-  }
-
-  const seo = rawSeo as SEOFields;
-console.log('>>>> pageData', pageData)  
-  return{
-    title: seo.titulo,
-    description: seo.descripcion,
-    robots: seo.noIndex ? 'noIndex, nofollow' : 'index, follow',
-    openGraph: {
-      title: seo.tituloCorto || seo.titulo,
-      description: seo.descripcionCorto || seo.descripcion,
-      type: 'website',
-    }
-  }
 }
 
 export default async function DynamicPage({ params }: DynamicPageProps) {

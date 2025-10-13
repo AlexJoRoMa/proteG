@@ -19,10 +19,12 @@ export async function fetchComponentsBySlugPage(
     const query: Record<string, string> = {
       content_type: "page",
       "fields.slug": slug,
+      include: "2",
       ...(parentId && { "fields.parent.sys.id": parentId }),
     };
 
     res = await contentfulClient.getEntries(query);
+    
 
     // Si la búsqueda falla o no es única, devolvemos el resultado
     if (res.total !== 1) {
