@@ -2,7 +2,7 @@ import { Entry, EntrySkeletonType } from "contentful";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import ButtonFixed from "@/components/atoms/ButtonSticky";
-import {SeoFieldSkeleton} from "@/types/HomeSEOTypes";
+import {SeoFieldSkeleton} from "@/types/SEOHOMETypes";
 
 
 export default async function Home() {
