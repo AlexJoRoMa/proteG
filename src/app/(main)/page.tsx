@@ -2,16 +2,9 @@ import { Entry, EntrySkeletonType } from "contentful";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import ButtonFixed from "@/components/atoms/ButtonSticky";
-import Head from "next/head";
+import {SeoFieldSkeleton} from "@/types/HomeSEOTypes";
 
-interface SeoFields {
-  titulo: string;
-  descripcion: string;
-}
-interface SeoFieldSkeleton extends EntrySkeletonType {
-  contentTypeId: 'contentSEO',
-  fields: SeoFields;
-}
+
 export default async function Home() {
 
   // Obtener la informacion de la pagina
