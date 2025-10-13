@@ -2,7 +2,7 @@ import { Entry, EntrySkeletonType } from "contentful";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import ButtonFixed from "@/components/atoms/ButtonSticky";
-import {SeoFieldSkeleton} from "@/types/SEOHOMETypes";
+import {SeoFieldSkeleton} from "@/types/SEOTypes";
 
 
 export default async function Home() {
@@ -18,8 +18,14 @@ export default async function Home() {
   return (
     <>
     
-      <title>{seo?.titulo || "izzi"}</title>
-      <meta name="description" content={seo?.descripcion || "izzi desc"} />
+    <title>{seo?.titulo || "izzi"}</title>
+    <meta name="description" content={seo?.descripcion || "izzi desc"} />
+    <meta name="robots" content={seo?.noIndex ? 'noIndex, no follow' : 'index, follow'} />
+    
+    <meta property="og:title" content={seo?.tituloCorto || 'izzi'}/>
+    <meta property="og:description" content={seo?.descripcionCorto || 'izzi descripcion'}/>
+
+    <meta property="og:type" content="website"/>
     
     <main className="">
 

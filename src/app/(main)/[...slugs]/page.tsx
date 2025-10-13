@@ -3,12 +3,8 @@ import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import { notFound } from "next/navigation";
 import ButtonFixed from "@/components/atoms/ButtonSticky";
+import {SeoFieldSkeleton, DynamicPageProps} from "@/types/SEOTypes";
 
-interface DynamicPageProps {
-  params: Promise<{
-    slugs: string[];
-  }>;
-}
 
 export default async function DynamicPage({ params }: DynamicPageProps) {
   const {slugs} = await params; //Sugerencia de NextJS para obtener los parametros de la ruta
@@ -17,12 +13,27 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
 
   const page = await fetchComponentsBySlugPage(fullPath);
   const components = page.items || [];
+  
+  const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
+  const seo = seoEntry?.fields;
 
   if (page.total !== 1) {
     notFound();
   }
 
   return (
+    <>
+    <title>{seo?.titulo || "izzi"}</title>
+    <meta name="description" content={seo?.descripcion || "izzi desc"} />
+
+    <meta name="robots" content={seo?.noIndex ? 'noIndex, no follow' : 'index, follow'} />
+    
+    <meta property="og:title" content={seo?.tituloCorto || 'izzi'}/>
+    <meta property="og:description" content={seo?.descripcionCorto || 'izzi descripcion'}/>
+
+    <meta property="og:type" content="website"/>
+    
+
     <main>
       {components[0]?.fields.components &&
       Array.isArray(components[0].fields.components) &&
@@ -42,5 +53,6 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
       )}
       <ButtonFixed />
     </main>
+    </>
   );
 }
