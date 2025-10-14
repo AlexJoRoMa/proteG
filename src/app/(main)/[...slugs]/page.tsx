@@ -24,7 +24,7 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
   if (page.total !== 1) {
     notFound();
   }
-console.log('>>>>🥑🥑 canonicalURL ', canonicalURL)
+  console.log('>>>>🥑🥑 seo ', seo)
   return (
     <>
     <link rel="canonical" href={canonicalURL}/>

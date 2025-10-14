@@ -1,13 +1,6 @@
-import { Asset, Entry, EntrySkeletonType } from "contentful";
+import { EntrySkeletonType } from "contentful";
 
-interface MediaEntryFields {
-  image?: Asset;
-}
 
-interface MediaEntrySkeleton extends EntrySkeletonType{
-  contentTypeId: 'media';
-  fields: MediaEntryFields;
-}
 export interface SeoFields {
   baseUrl: string;
   titulo: string;
@@ -15,7 +8,17 @@ export interface SeoFields {
   noIndex: boolean;
   tituloCorto: string;
   descripcionCorto: string;
-  image: Entry<MediaEntrySkeleton>;
+  imagen: {
+    fields:{
+      image:{
+        fields:{
+          file:{
+            url: string;
+          }
+        }
+      }
+    }
+  }
 }
 export interface SeoFieldSkeleton extends EntrySkeletonType {
   contentTypeId: 'contentSEO',

@@ -1,8 +1,8 @@
-import { Entry, EntrySkeletonType } from "contentful";
+import { Asset, Entry, EntrySkeletonType } from "contentful";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import ButtonFixed from "@/components/atoms/ButtonSticky";
-import {SeoFieldSkeleton} from "@/types/SEOTypes";
+import {SeoFieldSkeleton, SeoFields} from "@/types/SEOTypes";
 
 
 export default async function Home() {
@@ -19,11 +19,12 @@ export default async function Home() {
   const bastURL =  seo.baseUrl;
   const canonicalURL = `${bastURL}/${slug}`;
 
-
+  const imagen = (seo?.imagen as SeoFields["imagen"])
+  const imgURL = imagen.fields.image.fields.file.url;
 
 
   //console.log('>>>> seo ', seo)
-  console.log('>>>>🥑 canonicalURL ', canonicalURL)
+  console.log('>>>>🥑 imgURL ', imgURL)
   return (
     <>
     <link rel="canonical" href={canonicalURL}/>
@@ -31,10 +32,18 @@ export default async function Home() {
     <meta name="description" content={seo?.descripcion || "izzi desc"} />
     <meta name="robots" content={seo?.noIndex ? 'noIndex, no follow' : 'index, follow'} />
     
+    {/* OpenGraph */}
     <meta property="og:title" content={seo?.tituloCorto || 'izzi'}/>
     <meta property="og:description" content={seo?.descripcionCorto || 'izzi descripcion'}/>
-
     <meta property="og:type" content="website"/>
+    <meta property="og:url" content={canonicalURL} />
+    {imgURL && <meta property="og:image" content={imgURL}/>}
+    
+    {/* Twitter summary summary_large_image */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={seo?.tituloCorto || 'izzi'}/>
+    <meta name="twitter:description" content={seo?.descripcionCorto || 'izzi descripcion'}/>
+    {imgURL && <meta name="twitter:image" content={imgURL}/>}
     
     <main className="">
 
