@@ -10,29 +10,110 @@ const RadioStyles = {
   label: "text-base xl:text-lg"
 }
 
+const DUMMY_BODY = {
+  "phone": "5540318268 ",
+  "mail": "juanarodriguez@deloitte.com",
+  "name": "JUAN-TEST",
+  "lastname": "NBVN",
+  "package": "izzi 1000 + izzitv HD",
+  "descriptionPackage": "Llamadas ilimitadas. Internet de 1000 Megas. izzitv HD con más de 60 canales en vivo, además de acceso a izzi go y kids",
+  "price": 1170,
+  "addons": [
+    { "name": "Netflix Estándar", "price": "249" },
+    { "name": "izzi móvil 5 12 meses", "price": "240" },
+    { "name": "izzi móvil 5 12 meses", "price": "240" }
+  ],
+  "promos": [
+    { "name": "izzi movil 5 12 meses", "amount": "120", "duration": "", "permanent": "SI", "startMonth": "1" },
+    { "name": "izzi movil 5 12 meses", "amount": "120", "duration": "", "permanent": "SI", "startMonth": "1" }
+  ],
+  "priceAddons": 249,
+  "priceWithoutPromo": 1899,
+  "priceWithPromo": 1659,
+  "priceMobile": 480,
+  "promoMobile": 240,
+  "promoPackage": [
+    { "name": "Vix Premium", "amount": "119", "duration": 12, "permanent": "NO", "startMonth": 1 },
+    { "name": "AppleTV+", "amount": "129", "duration": 12, "permanent": "NO", "startMonth": 1 },
+    { "name": "HBO Max básico con anuncios", "amount": "149", "duration": 12, "permanent": "NO", "startMonth": 1 },
+    { "name": "LALIGA EA sports", "amount": 0, "duration": 0, "permanent": "SI", "startMonth": 1 },
+    { "name": "Skeelo", "amount": 0, "duration": 0, "permanent": "SI", "startMonth": 1 },
+    { "name": "izzi ahorro", "amount": 120, "duration": 0, "permanent": "SI", "startMonth": 1 }
+  ]
+}
+
 const Step3 = () => {
 
   const [radioState, setRadioState] = useState('');
   const [inputCode, setInputCode] = useState('');
   const [sendCode, setSendCode] = useState(false);
 
-  const { CodigoVerificacionRef, handleOtpChange, startTimer, timer, isLoading, isValid, resetStep3 } = useStep3Form();
+  const {
+    CodigoVerificacionRef,
+    LastVerifiedCodeRef,
+    handleOtpChange,
+    startTimer,
+    timer,
+    isLoading,
+    isValid,
+    resetStep3,
+    idTransaction,
+    setIsValid,
+    setIsStepValid,
+    setIsLoading,
+    setOtpValue,
+    setTimer
+  } = useStep3Form(radioState);
   const { getValue } = useMicrocopies('contratacion-verificaContacto');
 
   async function handleSendCode() {
     console.log('seleccion', radioState);
     setSendCode(true);
     setInputCode('');
-
-    //TODO: arreglar conexion a api envioCodigo
-    
-    // const response = await fetch("/api/contratacion/verificacionContacto/envioCodigo", {
-    //   method: "POST",
-    // });
-
-    // const data = await response.json();
-    // console.log('sendCode', data)
     startTimer();
+
+    try {
+      const body = JSON.stringify({
+        ...DUMMY_BODY,
+        idTransaction,
+      });
+
+      const headers = new Headers({
+        "Content-Type": "application/json",
+        "x-origin": "PORTALVL",
+        "medio": radioState === "Correo Electrónico" ? "CORREO" : radioState === "WhatsApp" ? "WHATSAPP" : "SMS",
+        "oferta": "IZZI",
+        //TODO: validar tipo de oferta IZZI / SKY
+      });
+
+      const response = await fetch("/api/contratacion/verificacionContacto/envioCodigo", {
+        method: "POST",
+        headers,
+        body,
+      });
+
+      const data = await response.json();
+      if (!data) throw new Error("Invalid response from server");
+
+      return data;
+    } catch (err) {
+      console.error("Error al enviar codigo", err);
+      throw err;
+    }
+  }
+
+  function hanldeResendCode() {
+    setIsValid(null);
+    setIsStepValid(false);
+    setIsLoading(false);
+    LastVerifiedCodeRef.current = null;
+
+    //limpia el input OTP
+    setOtpValue("");
+
+    //reinicia timer
+    setTimer(0);
+    handleSendCode();
   }
 
   useEffect(() => {
@@ -157,11 +238,14 @@ const Step3 = () => {
                 <p
                   className='text-base xl:text-[18px] font-bold leading-6 mb-6 text-center mt-6 text-(--color-red-700)'
                 >
-                  {getValue('verificacion.validacion.codigoInvalido')}
+                  {getValue('verificacion.error.codigoInvalido')}
                 </p>
                 <button
                   className='text-black-0 underline font-bold text-base xl:text-lg'
-                  onClick={handleSendCode}
+                  onClick={() => {
+                    setIsValid(null);
+                    hanldeResendCode();
+                  }}
                 >
                   {getValue('verificacion.error.nuevoCodigo')}
                 </button>
@@ -182,7 +266,10 @@ const Step3 = () => {
                     <span>{getValue('verificacion.error.sinCodigo')}</span>
                     <button
                       className='text-black-0 underline font-bold'
-                      onClick={handleSendCode}
+                      onClick={() => {
+                        setIsValid(null);
+                        hanldeResendCode();
+                      }}
                     >
                       {getValue('verificacion.error.nuevoCodigo')}
                     </button>

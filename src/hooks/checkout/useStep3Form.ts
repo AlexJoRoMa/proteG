@@ -1,5 +1,5 @@
 import { useCheckout } from "@/components/providers/CheckoutProvider";
-import { isValidElement, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 function getFormData(ref: React.RefObject<HTMLFormElement | null>) {
     if (!ref.current) return {};
@@ -7,48 +7,74 @@ function getFormData(ref: React.RefObject<HTMLFormElement | null>) {
     return Object.fromEntries(data.entries());
 }
 
-export const useStep3Form = () => {
+function generateTransactionId(): string {
+    const uuid = crypto.randomUUID();
+    return `P${uuid}`;
+}
+
+export const useStep3Form = (radioState: string) => {
     const { registerStepValidator, registerFormData, setIsStepValid } = useCheckout();
 
     const CodigoVerificacionRef = useRef<HTMLFormElement | null>(null);
+    const LastVerifiedCodeRef = useRef<string | null>(null);
     const [otpValue, setOtpValue] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
     const [isValid, setIsValid] = useState<boolean | null>(null);
     const [timer, setTimer] = useState<number>(0); //cuenta regresiva
     const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const [idTransaction] = useState<string>(generateTransactionId);
 
     // verifica codigo
     const verificarCodigo = useCallback(async (codigo: string) => {
+        if (isLoading || isValid === false || LastVerifiedCodeRef.current === codigo) return;
         setIsLoading(true);
-        setIsValid(null);
+        setIsStepValid(false);
 
         try {
-            // llamada a api
-            //TODO: conexion a api VerificaCodigo
-            
-            // const response = await fetch("/api/contratacion/verificacionContacto/verificaCodigo", {
-            //     method: "POST",
-            // });
+            const body = JSON.stringify({
+                idTransaction,
+                codigo,
+            });
+            const headers = new Headers({
+                "Content-Type": "application/json",
+                "medio": radioState === "Correo Electrónico" ? "CORREO" : radioState === "WhatsApp" ? "WHATSAPP" : "SMS",
+                "oferta": "IZZI",
+                "x-origin": "PORTALVL",
+                //TODO: validar tipo de oferta IZZI / SKY
+            });
 
-            // const data = await response.json();
+            const response = await fetch("/api/contratacion/verificacionContacto/verificaCodigo", {
+                method: "POST",
+                headers,
+                body,
+            });
 
-            // if (res.ok) {
-            //     setIsValid(true);
-            //     setIsStepValid(true);
-            // } else {
-            //     setIsValid(false);
-            //     setIsStepValid(false);
-            // }
+            if (!response.ok) {
+                throw new Error(`Error HTTP ${response.status}`);
+            }
 
-            setIsValid(true);
-            setIsStepValid(true);
+            const data = await response.json();
+
+            if (data?.izziErrorCode === "000") {
+                setIsValid(true);
+                setIsStepValid(true);
+                LastVerifiedCodeRef.current= codigo
+            } else {
+                setIsValid(false);
+                setIsStepValid(false);
+            }
+
+            console.log('data verificaCode:', data)
+            return data;
         } catch (err) {
             setIsValid(false);
             setIsStepValid(false);
+            console.error("Error al verificar codigo", err);
+            throw err;
         } finally {
             setIsLoading(false);
         }
-    }, [setIsStepValid]);
+    }, [setIsStepValid, idTransaction, radioState, isLoading, isValid]);
 
     // validador de paso
     const validateStep3 = useCallback(async () => {
@@ -70,15 +96,16 @@ export const useStep3Form = () => {
     useEffect(() => {
         registerFormData(3, () => {
             const allData = {
+                idTransaction: idTransaction,
                 codigoVerificacion: otpValue || getFormData(CodigoVerificacionRef),
             };
 
             return allData;
         });
-    }, [registerFormData, otpValue]);
+    }, [registerFormData, otpValue, idTransaction]);
 
     useEffect(() => {
-        if (otpValue.length === 4 && isValid !== true) {
+        if (otpValue.length === 4 && !isLoading && isValid !== false) {
             verificarCodigo(otpValue);
         }
     }, [verificarCodigo, otpValue, isValid]);
@@ -91,7 +118,7 @@ export const useStep3Form = () => {
     //temporizador (60 segundos)
     const startTimer = useCallback(() => {
         if (timerRef.current) clearInterval(timerRef.current);
-        setTimer(60);
+        setTimer(350);
 
         timerRef.current = setInterval(() => {
             setTimer((t) => {
@@ -128,6 +155,7 @@ export const useStep3Form = () => {
 
     return {
         CodigoVerificacionRef,
+        LastVerifiedCodeRef,
         handleOtpChange,
         startTimer,
         resetStep3,
@@ -135,5 +163,11 @@ export const useStep3Form = () => {
         timer,
         isLoading,
         isValid,
+        idTransaction,
+        setIsValid,
+        setIsStepValid,
+        setIsLoading,
+        setOtpValue,
+        setTimer
     };
 };
