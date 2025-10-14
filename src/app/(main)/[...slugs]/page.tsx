@@ -14,15 +14,20 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
   const page = await fetchComponentsBySlugPage(fullPath);
   const components = page.items || [];
   
+
   const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
   const seo = seoEntry?.fields;
+  
+  const bastURL =  seo.baseUrl;
+  const canonicalURL = `${bastURL}/${fullPath}`;
 
   if (page.total !== 1) {
     notFound();
   }
-
+console.log('>>>>🥑🥑 canonicalURL ', canonicalURL)
   return (
     <>
+    <link rel="canonical" href={canonicalURL}/>
     <title>{seo?.titulo || "izzi"}</title>
     <meta name="description" content={seo?.descripcion || "izzi desc"} />
 

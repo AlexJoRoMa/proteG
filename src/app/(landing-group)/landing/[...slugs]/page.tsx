@@ -17,10 +17,14 @@ export default async function LandingPage({ params }: DynamicPageProps) {
     const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
     const seo = seoEntry?.fields;
 
+    const bastURL =  seo.baseUrl;
+    const canonicalURL = `${bastURL}/${fullPath}`;
+
     if (page.total !== 1) {
         notFound();
     }
 
+    console.log('>>>>🦧 canonicalURL ', canonicalURL)
     return (
         <>
         <title>{seo?.titulo || "izzi"}</title>
@@ -30,8 +34,8 @@ export default async function LandingPage({ params }: DynamicPageProps) {
         
         <meta property="og:title" content={seo?.tituloCorto || 'izzi'}/>
         <meta property="og:description" content={seo?.descripcionCorto || 'izzi descripcion'}/>
-
-    <meta property="og:type" content="website"/>
+        
+        <meta property="og:type" content="website"/>
         
         
         <main>

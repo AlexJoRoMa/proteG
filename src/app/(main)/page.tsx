@@ -11,13 +11,22 @@ export default async function Home() {
 
   const page = await fetchComponentsBySlugPage("home");
 
-   const components = page.items || [];
-   const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
-   const seo = seoEntry?.fields;
+  const components = page.items || [];
+  const slug = components[0]?.fields.slug as Entry<SeoFieldSkeleton, undefined, string>;
+  const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
+  const seo = seoEntry?.fields;
 
+  const bastURL =  seo.baseUrl;
+  const canonicalURL = `${bastURL}/${slug}`;
+
+
+
+
+  //console.log('>>>> seo ', seo)
+  console.log('>>>>🥑 canonicalURL ', canonicalURL)
   return (
     <>
-    
+    <link rel="canonical" href={canonicalURL}/>
     <title>{seo?.titulo || "izzi"}</title>
     <meta name="description" content={seo?.descripcion || "izzi desc"} />
     <meta name="robots" content={seo?.noIndex ? 'noIndex, no follow' : 'index, follow'} />
