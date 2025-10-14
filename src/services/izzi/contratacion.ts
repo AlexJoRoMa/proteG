@@ -1,124 +1,199 @@
 'use server'
 
-export async function getSendCode() {
-    console.log("ejecutando getSendCode...")
+import { getToken } from "./configurador";
 
-    const response = await fetch(
-        "https://qaizzi.izzi.mx/WSVeL/webservices/izzi/envio_codigo_v2",
-        {
+interface SendCodeProps {
+    body: Record<string, unknown>;
+    headers: {
+        medio: string;
+        oferta: string;
+        origin: string;
+    }
+}
+
+interface EnrollProps {
+    body: Record<string, unknown>;
+    headers: {
+        Cookie: string;
+    }
+}
+
+interface ProcessStatusProps {
+    headers: {
+        processId: string
+    }
+}
+
+interface SubmitOfferProps {
+    body: Record<string, unknown>;
+}
+
+export async function getSendCode({
+    body,
+    headers,
+}: SendCodeProps): Promise<any> {
+
+    const url = process.env.ENVIO_CODIGO_PATH;
+
+    try {
+        console.log("ejecutando getSendCode...")
+
+        const response = await fetch(`${url}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "medio": "CORREO",
-                "oferta": "IZZI",
-                "origin": "WEB",
+                medio: headers.medio,
+                oferta: headers.oferta,
+                origin: headers.origin,
             },
-            body: JSON.stringify({
-                oferta: "IZZI",
-                medio: "CORREO",
-                idTransaction: "acfd6eff-a2f6-11f0-84a1-0205516d054d",
-                phone: "7772085039",
-                mail: "juanarodriguez@deloitte.com",
-                name: "DAVID",
-                lastname: "ABARCA",
-                package: "izzi 80 + izzitv HD",
-                descriptionPackage: "Llamadas ilimitadas. Internet de 80 Megas. izzitv HD con mas de 60 canales en vivo, además de acceso a izzi go y kids",
-                price: 790,
-                addons: [
-                    {
-                        name: "Stingray Karaoke",
-                        price: "95"
-                    },
-                    {
-                        name: "Dog TV",
-                        price: "89"
-                    },
-                    {
-                        name: "ATV HD",
-                        price: 115
-                    }
-                ],
-                promos: [],
-                "priceAddons": 299,
-                "priceWithoutPromo": 1089,
-                "priceWithPromo": 1089,
-                "priceMobile": 0,
-                "promoMobile": 0,
-                "promoPackage": [
-                    {
-                        "name": "Netflix Estándar con anuncios",
-                        "amount": "119",
-                        "duration": 12,
-                        "permanent": "NO",
-                        "startMonth": 1
-                    },
-                    {
-                        "name": "Vix Premium",
-                        "amount": "119",
-                        "duration": 12,
-                        "permanent": "NO",
-                        "startMonth": 1
-                    },
-                    {
-                        "name": "LALIGA EA sports",
-                        "amount": 0,
-                        "duration": 0,
-                        "permanent": "SI",
-                        "startMonth": 1
-                    },
-                    {
-                        "name": "Skeelo",
-                        "amount": 0,
-                        "duration": 0,
-                        "permanent": "SI",
-                        "startMonth": 1
-                    },
-                    {
-                        "name": "izzi ahorro",
-                        "amount": 139,
-                        "duration": 0,
-                        "permanent": "SI",
-                        "startMonth": 1
-                    }
-                ]
-            })
-        }
-    );
-    console.log('estado:', response.status)
+            body: JSON.stringify(body),
+        });
 
-    if (!response.ok) {
-        return new Response(JSON.stringify({ error: 'API fetch error' }), { status: 500 })
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (err) {
+        console.error("Error en getSendCode:", err);
+        throw err;
     }
-    const text = await response.text()
-    console.log('texto de respuesta', text)
-    const data = await response.json();
-    return data;
 }
 
-export async function getVerifyCode() {
+export async function getVerifyCode({
+    body,
+    headers,
+}: SendCodeProps): Promise<any> {
 
-    const response = await fetch(
-        "https://qaizzi.izzi.mx/WSVeL/webservices/izzi/envio_codigo_v2",
-        {
+    const url = process.env.VERIFICA_CODIGO_PATH;
+
+    try {
+        console.log("ejecutando getVerifyCode...")
+
+        const response = await fetch(`${url}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "medio": "CORREO",
-                "oferta": "IZZI",
+                medio: headers.medio,
+                oferta: headers.oferta,
+                origin: headers.origin,
             },
-            body: JSON.stringify({
-                idTransaction: "acfd6eff-a2f6-11f0-84a1-0205516d054d",
-                codigo: ""
-            })
-        }
-    );
+            body: JSON.stringify(body)
+        });
 
-    if (!response.ok) {
-        return new Response(JSON.stringify({ error: 'API fetch error' }), { status: 500 })
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+
+    } catch (err) {
+        console.error("Error en getVerifyCode:", err);
+        throw err;
     }
-    const text = await response.text()
-    console.log('texto de respuesta verificaCode', text)
-    const data = await response.json();
-    return data;
 }
 
+export async function getIzziEnroll({
+    body,
+    headers,
+}: EnrollProps): Promise<any> {
+
+    const url = process.env.IZZI_ENRROLL_PATH;
+    const accessToken = await getToken();
+
+    try {
+        console.log('Ejecutando IzziEnroll...');
+
+        const response = await fetch(`${url}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`,
+                Cookie: headers.Cookie,
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}`);
+        }
+
+        const data = await response.text();
+        console.log('response izziEnrroll:', data)
+        return data;
+
+    } catch (err) {
+        console.error("Error en getIzziEnroll:", err);
+        throw err;
+    }
+}
+
+export async function GetProcessStatus({
+    headers,
+}: ProcessStatusProps) {
+
+    const url = process.env.PROCESS_STATUS_PATH;
+    const accessToken = await getToken();
+
+
+    try {
+        console.log('Ejecutando processStatus...');
+
+        const response = await fetch(`${url}?processId=${headers.processId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('response processStatus:', data)
+        return data;
+
+    } catch (err) {
+        console.error("Error en getProcessStatus:", err);
+        throw new Error('Error en getProcessStatus')
+    }
+
+}
+
+export async function getSubmitOffer({
+    body,
+}: SubmitOfferProps) {
+
+    const url = process.env.SUBMIT_OFFER_PATH;
+    const accessToken = await getToken();
+
+    try {
+        console.log('Ejecutando processStatus...');
+
+        const response = await fetch(`${url}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('response submitOffer:', data)
+        return data;
+
+    } catch (err) {
+        console.error("Error en getsubmitOffer:", err);
+        throw err;
+    }
+
+}

@@ -14,16 +14,17 @@ export async function GET() {
             paypalPlatform,
         })
 
-        const url = new URL(paypalBasePath);
+        const url = paypalBasePath;
 
         const headers = new Headers({
             "Content-Type": "application/json",
             channel: paypalChannel,
             platform: paypalPlatform,
-            // "x-api-key": apiKey,
+            "Authorization": "2ZA7P2vJBUnOO3zADXNzJpCGbkMsvCeS",
+            "x-api-key": apiKey,
         });
 
-        const res = await fetch(`${url.toString()}/getPaypalScript`, {
+        const res = await fetch(`${url}/getPaypalScript`, {
             method: "GET",
             headers,
             cache: "no-store",

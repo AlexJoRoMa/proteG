@@ -31,41 +31,41 @@ export const useStep3Form = (radioState: string) => {
         setIsStepValid(false);
 
         try {
-            const body = JSON.stringify({
-                idTransaction,
-                codigo,
-            });
-            const headers = new Headers({
-                "Content-Type": "application/json",
-                "medio": radioState === "Correo Electrónico" ? "CORREO" : radioState === "WhatsApp" ? "WHATSAPP" : "SMS",
-                "oferta": "IZZI",
-                "x-origin": "PORTALVL",
-                //TODO: validar tipo de oferta IZZI / SKY
-            });
+            // const body = JSON.stringify({
+            //     idTransaction,
+            //     codigo,
+            // });
+            // const headers = new Headers({
+            //     "Content-Type": "application/json",
+            //     "medio": radioState === "Correo Electrónico" ? "CORREO" : radioState === "WhatsApp" ? "WHATSAPP" : "SMS",
+            //     "oferta": "IZZI",
+            //     "x-origin": "PORTALVL",
+            //     //TODO: validar tipo de oferta IZZI / SKY
+            // });
 
-            const response = await fetch("/api/contratacion/verificacionContacto/verificaCodigo", {
-                method: "POST",
-                headers,
-                body,
-            });
+            // const response = await fetch("/api/contratacion/verificacionContacto/verificaCodigo", {
+            //     method: "POST",
+            //     headers,
+            //     body,
+            // });
 
-            if (!response.ok) {
-                throw new Error(`Error HTTP ${response.status}`);
-            }
+            // if (!response.ok) {
+            //     throw new Error(`Error HTTP ${response.status}`);
+            // }
 
-            const data = await response.json();
+            // const data = await response.json();
 
-            if (data?.izziErrorCode === "000") {
+            // if (data?.izziErrorCode === "000") {
                 setIsValid(true);
                 setIsStepValid(true);
                 LastVerifiedCodeRef.current= codigo
-            } else {
-                setIsValid(false);
-                setIsStepValid(false);
-            }
+            // } else {
+            //     setIsValid(false);
+            //     setIsStepValid(false);
+            // }
 
-            console.log('data verificaCode:', data)
-            return data;
+            // console.log('data verificaCode:', data)
+            // return data;
         } catch (err) {
             setIsValid(false);
             setIsStepValid(false);

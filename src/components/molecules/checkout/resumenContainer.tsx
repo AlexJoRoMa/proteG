@@ -1,10 +1,18 @@
 'use client'
 
 import { useCheckout } from "@/components/providers/CheckoutProvider"
+import { useProcessStatusLoop } from "@/hooks/checkout/useProcessStatusLoop";
+import { waitForStatusAndRun } from "@/hooks/checkout/waitForStatus";
+import { GetIzziEnroll } from "@/utils/GetIzziEnroll";
+import { GetProcessStatus } from "@/utils/GetProcessStatus";
+import { GetSubmitOffer } from "@/utils/GetSubmitOffer";
 import { validatePayment } from "@/utils/validatePayment";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ResumenContainer() {
+    const abortRef = useRef<AbortController | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [loopActive, setLoopActive] = useState(false);
 
     const {
         nextStep,
@@ -16,10 +24,28 @@ export default function ResumenContainer() {
         setDatosContratacion,
         datosContratacion,
         setIsStepValid,
-        setGetCapacity
+        setGetCapacity,
+        setIzziEnroll,
+        izziEnroll,
+        processStatus,
     } = useCheckout();
 
-    const [loading, setLoading] = useState(false);
+    const { stop } = useProcessStatusLoop({
+        fetchFn: () => GetProcessStatus(izziEnroll),
+        interval: 10000,
+        onError: () => {
+            console.error("El proceso ha fallado. Serás redirigido fuera del flujo.");
+            stop();
+        },
+        autoStart: loopActive,
+    });
+
+    useEffect(() => {
+        return () => {
+            stop();
+            abortRef.current?.abort();
+        };
+    }, []);
 
     const handleContinue = async () => {
         setLoading(true)
@@ -52,7 +78,28 @@ export default function ResumenContainer() {
                         VerificacionContacto: stepData
                     }));
                     console.log('Datos Contratacion:', datosContratacion)
-                    //TODO: agregar conexion a apis (izienrrol, processStatus, submitOffer)
+
+                    // IzziEnroll
+                    const resultIzziEnroll = await GetIzziEnroll();
+                    setIzziEnroll(resultIzziEnroll);
+
+                    // // ProcessStatus
+                    if (!loopActive) setLoopActive(true);
+
+                    // SubmitOffer
+                    try {
+                        const result = await waitForStatusAndRun(
+                            () => processStatus?.waitingForAction,
+                            async () => {
+                                return await GetSubmitOffer(izziEnroll);
+                            },
+                            1000,
+                            60000
+                        );
+
+                    } catch (err) {
+                        console.error("Error o timeout esperando waitingForAction:", err);
+                    }
                     setIsStepValid(false)
                     break
                 }
@@ -106,10 +153,10 @@ export default function ResumenContainer() {
             <div className="pt-[32px] border-t-1 border-t-gray-150">
                 <button
                     onClick={handleContinue}
-                    disabled={!isStepValid}
+                    disabled={!isStepValid || loading}
                     className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
                 >
-                    Continuar
+                    {loading ? "Procesando..." : "Continuar"}
                 </button>
             </div>
 

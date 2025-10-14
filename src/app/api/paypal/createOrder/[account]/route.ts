@@ -5,32 +5,35 @@ const paypalBasePath = process.env.PAYPAL_BASE_PATH!;
 const apiKey = process.env.API_KEY!;
 const paypalChannel = process.env.PAYPAL_CHANNEL!;
 const paypalPlatform = process.env.PAYPAL_PLATFORM!;
+const authorizationKey = process.env.AUTHORIZATION_KEY!;
 
 // Crea una orden PayPal
 
 export async function POST(
-    req: NextRequest,
+    request: NextRequest,
     context: { params: Promise<{ account: string }> }
 ) {
     try {
-        const body = await req.json();
+        const body = await request.json();
+        const rpt = request.headers.get("rpt")!;
+
+
         const { account } = await context.params;
-        const accessToken = await getToken();
         console.log('body', body)
 
         const headers = new Headers({
             "Content-Type": "application/json",
-            token: accessToken,
+            "Authorization": authorizationKey,
             channel: paypalChannel,
             platform: paypalPlatform,
-            rpt: body.rptGetOffer ?? "",
+            rpt: rpt,
             "x-api-key": apiKey
         });
 
         const res = await fetch(`${paypalBasePath}/createOrder/${account}`, {
             method: "POST",
             headers,
-            body: JSON.stringify({ amount: body.amount }),
+            body,
             cache: "no-store",
         });
 

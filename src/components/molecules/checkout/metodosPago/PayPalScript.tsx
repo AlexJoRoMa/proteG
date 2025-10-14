@@ -37,13 +37,17 @@ export default function PayPalScript({ amount, rptGetOffer, account }: TabPayPal
    */
     const createOrder = async (): Promise<string> => {
 
-        const req = { amount, rptGetOffer }; // Monto total a cobrar
         const headers = new Headers({
             "Content-Type": "application/json",
+            "rpt": rptGetOffer,
+            "channel": paypalChannel,
+            "platform": paypalPlatform,
         });
 
         try {
-            const body = JSON.stringify(req); // Monto total a cobrar
+            const body = JSON.stringify({
+                amount: amount
+            }); // Monto total a cobrar
 
             const res = await fetch(`/api/paypal/createOrder/${account}`, {
                 method: 'POST',
@@ -52,7 +56,7 @@ export default function PayPalScript({ amount, rptGetOffer, account }: TabPayPal
             });
 
             const data = await res.json();
-            console.log("Response externa createOrdser:", data)
+            console.log("Response externa createOrder:", data)
             if (!data.order || !data) throw new Error("Invalid response from server");
 
             payPalPaymentRef = data.reference;
@@ -75,9 +79,7 @@ export default function PayPalScript({ amount, rptGetOffer, account }: TabPayPal
      */
     const onApprove = async (data: Record<string, any>): Promise<void> => {
         data["errorTest"] = false; //validacion de error de prueba
-        const checkbox = document.getElementById("pago_recurrente_paypal") as HTMLInputElement | null;
         data["baFlag"] = isRecurrent;
-        isRecurrent = data["baFlag"];
 
         const headers = new Headers({
             "Content-Type": "application/json",

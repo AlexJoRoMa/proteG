@@ -24,6 +24,10 @@ interface CheckoutContextType {
   setGetCapacity: (value: []) => void
   getIntentosInstalacion: number
   setGetIntentosInstalacion: (value: number) => void
+  izziEnroll: string
+  setIzziEnroll: (value: string) => void
+  processStatus: { status: string, waitingForAction: boolean},
+  setProcessStatus: (value: { status: string; waitingForAction: boolean; }) => void
 
   // Navigation functions
   goToStep: (step: number) => void
@@ -71,6 +75,10 @@ export const CheckoutProvider = ({
 
   // states con informacion del los steps
   const [datosContratacion, setDatosContratacion] = useState({});
+
+  // states con informacion de las apis
+  const [izziEnroll, setIzziEnroll] = useState<string>("");
+  const [processStatus, setProcessStatus] = useState({ status: "", waitingForAction: true});
 
   const goToStep = useCallback((step: number) => {
     if (step === 1) {
@@ -179,7 +187,11 @@ export const CheckoutProvider = ({
     getCapacity,
     setGetCapacity,
     getIntentosInstalacion,
-    setGetIntentosInstalacion
+    setGetIntentosInstalacion,
+    izziEnroll,
+    setIzziEnroll,
+    processStatus,
+    setProcessStatus,
   }
 
   return (

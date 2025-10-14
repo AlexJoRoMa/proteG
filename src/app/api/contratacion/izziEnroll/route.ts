@@ -1,6 +1,6 @@
 'use server'
 
-import { getSendCode } from "@/services/izzi/contratacion";
+import { getIzziEnroll } from "@/services/izzi/contratacion";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -8,16 +8,12 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
         console.log('body', body)
-        const medio = request.headers.get("medio")!;
-        const oferta = request.headers.get("oferta")!;
-        const origin = request.headers.get("x-origin")!;
+        const Cookie = request.headers.get("x-Cookie")!;
 
-        const data = await getSendCode({
+        const data = await getIzziEnroll({
             body,
-            headers: { medio, oferta, origin }
+            headers: { Cookie }
         });
-        console.log('headers:', { medio, oferta, origin })
-        console.log('response:', data)
 
         return new Response(JSON.stringify(data), { status: 200 });
     } catch (e) {
