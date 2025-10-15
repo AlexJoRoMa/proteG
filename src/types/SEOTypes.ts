@@ -30,3 +30,8 @@ export interface DynamicPageProps {
     slugs: string[];
   }>;
 }
+
+export interface SEOHeadProps {
+  seo: SeoFields;
+  slug: string;
+}

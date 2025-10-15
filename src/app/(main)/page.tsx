@@ -2,8 +2,8 @@ import { Entry, EntrySkeletonType } from "contentful";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import ButtonFixed from "@/components/atoms/ButtonSticky";
-import {SeoFieldSkeleton, SeoFields} from "@/types/SEOTypes";
-
+import {SeoFieldSkeleton} from "@/types/SEOTypes";
+import SEOHead from '@/components/atoms/SEOHead';
 
 export default async function Home() {
 
@@ -12,36 +12,14 @@ export default async function Home() {
   const page = await fetchComponentsBySlugPage("home");
 
   const components = page.items || [];
-  const slug = components[0]?.fields.slug as Entry<SeoFieldSkeleton, undefined, string>;
+  const slug = components[0]?.fields.slug as string;
   const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
   const seo = seoEntry?.fields;
-
-  const bastURL =  seo.baseUrl;
-  const canonicalURL = `${bastURL}/${slug}`;
-
-  const imagen = (seo?.imagen as SeoFields["imagen"])
-  const imgURL = imagen.fields.image.fields.file.url;
-
   
   return (
     <>
-    <link rel="canonical" href={canonicalURL}/>
-    <title>{seo?.titulo || "izzi"}</title>
-    <meta name="description" content={seo?.descripcion || "izzi desc"} />
-    <meta name="robots" content={seo?.noIndex ? 'index, follow' : 'noIndex, no follow'} />
     
-    {/* OpenGraph */}
-    <meta property="og:title" content={seo?.tituloCorto || 'izzi'}/>
-    <meta property="og:description" content={seo?.descripcionCorto || 'izzi descripcion'}/>
-    <meta property="og:type" content="website"/>
-    <meta property="og:url" content={canonicalURL} />
-    {imgURL && <meta property="og:image" content={imgURL}/>}
-    
-    {/* Twitter summary summary_large_image */}
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={seo?.tituloCorto || 'izzi'}/>
-    <meta name="twitter:description" content={seo?.descripcionCorto || 'izzi descripcion'}/>
-    {imgURL && <meta name="twitter:image" content={imgURL}/>}
+    {seo && <SEOHead seo={seo} slug={slug} />}
     
     <main className="">
 
