@@ -1,4 +1,4 @@
-import { Asset, Entry, EntrySkeletonType } from "contentful";
+import { Entry, EntrySkeletonType } from "contentful";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import ButtonFixed from "@/components/atoms/ButtonSticky";
@@ -22,9 +22,7 @@ export default async function Home() {
   const imagen = (seo?.imagen as SeoFields["imagen"])
   const imgURL = imagen.fields.image.fields.file.url;
 
-
-  //console.log('>>>> seo ', seo)
-  console.log('>>>>🥑 imgURL ', imgURL)
+  
   return (
     <>
     <link rel="canonical" href={canonicalURL}/>
