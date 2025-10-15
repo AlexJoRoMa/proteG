@@ -28,7 +28,7 @@ export default async function Home() {
     <link rel="canonical" href={canonicalURL}/>
     <title>{seo?.titulo || "izzi"}</title>
     <meta name="description" content={seo?.descripcion || "izzi desc"} />
-    <meta name="robots" content={seo?.noIndex ? 'noIndex, no follow' : 'index, follow'} />
+    <meta name="robots" content={seo?.noIndex ? 'index, follow' : 'noIndex, no follow'} />
     
     {/* OpenGraph */}
     <meta property="og:title" content={seo?.tituloCorto || 'izzi'}/>

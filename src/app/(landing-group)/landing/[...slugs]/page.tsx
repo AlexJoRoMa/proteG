@@ -3,7 +3,7 @@ import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import { Entry, EntrySkeletonType } from "contentful";
 import { notFound } from "next/navigation";
-import {SeoFieldSkeleton, DynamicPageProps} from "@/types/SEOTypes";
+import {SeoFieldSkeleton, SeoFields, DynamicPageProps} from "@/types/SEOTypes";
 
 
 export default async function LandingPage({ params }: DynamicPageProps) {
@@ -20,22 +20,33 @@ export default async function LandingPage({ params }: DynamicPageProps) {
     const bastURL =  seo.baseUrl;
     const canonicalURL = `${bastURL}/${fullPath}`;
 
+    const imagen = (seo?.imagen as SeoFields["imagen"])
+    const imgURL = imagen.fields.image.fields.file.url;
+
     if (page.total !== 1) {
         notFound();
     }
 
-    console.log('>>>>🦧 canonicalURL ', canonicalURL)
+   
     return (
         <>
+        <link rel="canonical" href={canonicalURL}/>
         <title>{seo?.titulo || "izzi"}</title>
         <meta name="description" content={seo?.descripcion || "izzi desc"} />
-
-        <meta name="robots" content={seo?.noIndex ? 'noIndex, no follow' : 'index, follow'} />
+        <meta name="robots" content={seo?.noIndex ? 'index, follow' : 'noIndex, no follow'} />
         
+        {/* OpenGraph */}
         <meta property="og:title" content={seo?.tituloCorto || 'izzi'}/>
         <meta property="og:description" content={seo?.descripcionCorto || 'izzi descripcion'}/>
-        
         <meta property="og:type" content="website"/>
+        <meta property="og:url" content={canonicalURL} />
+        {imgURL && <meta property="og:image" content={imgURL}/>}
+        
+        {/* Twitter summary summary_large_image */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo?.tituloCorto || 'izzi'}/>
+        <meta name="twitter:description" content={seo?.descripcionCorto || 'izzi descripcion'}/>
+        {imgURL && <meta name="twitter:image" content={imgURL}/>}
         
         
         <main>
