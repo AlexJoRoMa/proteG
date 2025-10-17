@@ -28,6 +28,18 @@ interface SubmitOfferProps {
     body: Record<string, unknown>;
 }
 
+interface AttachFilesProps {
+    body: Record<string, unknown>;
+}
+
+interface LigaPagoProps {
+    body: Record<string, unknown>;
+    headers: {
+        origin: string,
+        channel: string
+    }
+}
+
 export async function getSendCode({
     body,
     headers,
@@ -183,16 +195,87 @@ export async function getSubmitOffer({
             body: JSON.stringify(body)
         });
 
-        if (!response.ok) {
-            throw new Error(`Error HTTP ${response.status}`);
-        }
+        // if (!response.ok) {
+        //     throw new Error(`Error HTTP ${response.status}`);
+        // }
 
-        const data = await response.json();
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : null;
         console.log('response submitOffer:', data)
         return data;
 
     } catch (err) {
         console.error("Error en getsubmitOffer:", err);
+        throw err;
+    }
+
+}
+
+export async function getAttachFiles({
+    body,
+}: AttachFilesProps): Promise<any> {
+
+    const url = process.env.ATTACH_FILES_PATH;
+    const accessToken = await getToken();
+
+    try {
+        console.log('Ejecutando AttachFiles...');
+
+        const response = await fetch(`${url}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}`);
+        }
+
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : null;
+        console.log('response AttachFiles:', data)
+        return data;
+
+    } catch (err) {
+        console.error("Error en getAttachFiles:", err);
+        throw err;
+    }
+}
+
+export async function getLigaPago({
+    headers,
+    body
+}: LigaPagoProps): Promise<any> {
+
+    const url = "https://qaizzi.izzi.mx/WSVeL/webservices/izzi/envio_liga_pago"
+
+    try {
+        console.log('Ejecutando ligaPago...');
+
+        const response = await fetch(`https://qaizzi.izzi.mx/WSVeL/webservices/izzi/envio_liga_pago`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-access-origin": headers.origin,
+                "x-access-channel": headers.channel,
+                "Authorization": "null",
+            },
+            body: JSON.stringify(body)
+        });
+
+        // if (!response.ok) {
+        //     throw new Error(`Error HTTP ${response.status}`);
+        // }
+
+        const data = await response.json();
+        console.log('response ligaPago:', data)
+        return data;
+
+    } catch (err) {
+        console.error("Error en getLigaPago:", err);
         throw err;
     }
 

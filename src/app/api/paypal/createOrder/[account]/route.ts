@@ -1,4 +1,3 @@
-import { getToken } from "@/services/izzi/configurador";
 import { NextRequest, NextResponse } from "next/server";
 
 const paypalBasePath = process.env.PAYPAL_BASE_PATH!;
@@ -17,17 +16,16 @@ export async function POST(
         const body = await request.json();
         const rpt = request.headers.get("rpt")!;
 
-
         const { account } = await context.params;
         console.log('body', body)
 
         const headers = new Headers({
             "Content-Type": "application/json",
-            "Authorization": authorizationKey,
             channel: paypalChannel,
             platform: paypalPlatform,
-            rpt: rpt,
-            "x-api-key": apiKey
+            "Authorization": "2ZA7P2vJBUnOO3zADXNzJpCGbkMsvCeS",
+            "x-api-key": apiKey,
+            rpt: rpt
         });
 
         const res = await fetch(`${paypalBasePath}/createOrder/${account}`, {

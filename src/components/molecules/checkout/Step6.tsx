@@ -4,6 +4,7 @@ import PagoTecnico from './metodosPago/PagoTecnico';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import PaymentInfoBanner from './metodosPago/PaymentInfoBanner';
 import PagoPayPal from './metodosPago/PagoPayPal';
+import PagoTarjeta from './metodosPago/PagoTarjeta';
 
 
 const Step6 = () => {
@@ -28,7 +29,7 @@ const Step6 = () => {
           title="Pago con Tarjeta"
         >
           <PaymentInfoBanner />
-
+          <PagoTarjeta />
         </Tab>
 
         <Tab

@@ -64,7 +64,7 @@ const Step5 = () => {
             aria-label="Seleccionar día"
           />
 
-          <div className='w-auto ml-0 md:ml-auto'>
+          <div className='w-auto ml-0 md:ml-auto text-nowrap'>
             <RadioGroup
               orientation='vertical'
               className='flex flex-col gap-6'

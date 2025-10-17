@@ -25,7 +25,7 @@ export const useStep4Form = () => {
             ineFile.size <= 4 * 1024 * 1024 &&
             comprobanteFile.size <= 4 * 1024 * 1024;
         setIsStepValid(valid);
-        return Promise.resolve(valid);
+        return valid;
     }, [ineFile, comprobanteFile, setIsStepValid]);
 
     // registro de validador
@@ -35,17 +35,33 @@ export const useStep4Form = () => {
 
     // registro de datos (base64)
     useEffect(() => {
-        registerFormData(4, async () => {
+        const setFormData = async () => {
+            console.log('ineFile', ineFile)
+            console.log('comprobante', comprobanteFile)
             const ineBase64 = ineFile ? await fileToBase64(ineFile) : null;
             const comprobanteBase64 = comprobanteFile ? await fileToBase64(comprobanteFile) : null;
 
-            return {
-                documentosTitular: {
-                    ine: ineBase64,
-                    comprobante: comprobanteBase64,
-                },
-            };
-        });
+            registerFormData(4, () => {
+
+                return {
+                    ine: {
+                        fileName: ineFile?.name,
+                        fileExtension: ineFile?.type === 'application/pdf' ? 'pdf' : 'jpg',
+                        data: ineBase64,
+                    },
+                    comprobante: {
+                        fileName: comprobanteFile?.name,
+                        fileExtension: comprobanteFile?.type === 'application/pdf' ? 'pdf' : 'jpg',
+                        data: comprobanteBase64,
+                    },
+                };
+            });
+        }
+
+        if (ineFile || comprobanteFile) {
+            setFormData();
+        }
+
     }, [registerFormData, ineFile, comprobanteFile]);
 
     useEffect(() => {

@@ -1,25 +1,33 @@
-import { useEffect } from "react";
 
-const DUMMY_BODY =
-{
-    "processId": "e8f40412-a86e-11f0-be4c-026ec2a830dd",
+const DUMMY_BODY = {
     "requestedServices": {
-        "product": 38054,
-        "productName": null,
+        "product": 38008,
+        "productName": "izzi80m_izzitvhd",
         "negocios": false,
-        "termExemptionPrice": 1000,
+        "termExemptionPrice": 1500,
         "extras": [
             {
-                "extId": 38051,
+                "extId": 28039,
                 "nuevaCantidad": 1,
                 "combo": true
+            },
+            {
+                "extId": 28009,
+                "extra": {
+                    "title": "izzi móvil 5 12 meses"
+                },
+                "nuevaCantidad": 1,
+                "combo": false,
+                "tipoEntrega": "DOMICILIO",
+                "sucursalId": "N/A",
+                "portabilidadMovil": "Y",
+                "imei": ""
             }
         ],
-        "priceToPay": 1250.0,
-        "vel": 0,
-        "priceToPayMovil": 0.0
+        "priceToPay": "810.0",
+        "vel": 80
     },
-    "salesChanel": "WEB",
+    "salesChannel": "WEB",
     "offNetSky": false,
     "offNetIzzi": false
 }
@@ -42,7 +50,7 @@ export async function GetSubmitOffer(processId: string) {
         });
 
         const data = await response.json();
-        if (!data) throw new Error("Invalid response from server");
+        // if (!data) throw new Error("Invalid response from server");
 
         console.log('responseSubmitOffer:', data)
         return data;

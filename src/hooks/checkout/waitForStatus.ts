@@ -1,23 +1,21 @@
 
-export async function waitForStatusAndRun<T>(
-    getStatus: () => boolean | undefined,
-    serviceFn: () => Promise<T>,
-    interval: number = 1000,
-    timeout: number = 60000
-): Promise<T> {
-    const start = Date.now();
+export async function waitForStatusAndRun<T extends { waitingForAction?: boolean }>(
+    getStatus: () => T,
+    callback: () => Promise<void>,
+    interval = 1000
+) {
+
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
     while (true) {
         const status = getStatus();
 
-        if (status) {
-            return await serviceFn();
+        if (status?.waitingForAction === true) {
+            console.log("waitingForAction = true -> ejecutando callback...")
+            await callback();
+            break;
         }
 
-        if (Date.now() - start > timeout) {
-            throw new Error("Timeout esperando waitingForAction = true");
-        }
-
-        await new Promise((res) => setTimeout(res, interval));
+        await sleep(interval);
     }
 }

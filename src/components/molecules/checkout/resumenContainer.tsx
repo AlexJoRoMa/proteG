@@ -1,18 +1,20 @@
 'use client'
 
 import { useCheckout } from "@/components/providers/CheckoutProvider"
-import { useProcessStatusLoop } from "@/hooks/checkout/useProcessStatusLoop";
-import { waitForStatusAndRun } from "@/hooks/checkout/waitForStatus";
+import { useControlledAction } from "@/hooks/checkout/useControlledAction";
+import { useGlobalProcessStatus } from "@/hooks/checkout/useGlobalProcessStatus";
+import { AttacheFilesProps } from "@/types/Contratacion";
+import { GetAttachFile } from "@/utils/GetAttachFile";
 import { GetIzziEnroll } from "@/utils/GetIzziEnroll";
-import { GetProcessStatus } from "@/utils/GetProcessStatus";
 import { GetSubmitOffer } from "@/utils/GetSubmitOffer";
 import { validatePayment } from "@/utils/validatePayment";
 import { useEffect, useRef, useState } from "react";
 
 export default function ResumenContainer() {
-    const abortRef = useRef<AbortController | null>(null);
+
     const [loading, setLoading] = useState(false);
-    const [loopActive, setLoopActive] = useState(false);
+    const [contratacion, setContratacion] = useState();
+    const [shouldRunAttach, setShouldRunAttach] = useState(false);
 
     const {
         nextStep,
@@ -28,24 +30,65 @@ export default function ResumenContainer() {
         setIzziEnroll,
         izziEnroll,
         processStatus,
+        setProcessStatus,
     } = useCheckout();
 
-    const { stop } = useProcessStatusLoop({
-        fetchFn: () => GetProcessStatus(izziEnroll),
-        interval: 10000,
-        onError: () => {
-            console.error("El proceso ha fallado. Serás redirigido fuera del flujo.");
-            stop();
-        },
-        autoStart: loopActive,
-    });
+    const datosContratacionRef = useRef(datosContratacion);
+    const izziEnrrollRef = useRef(izziEnroll);
 
     useEffect(() => {
-        return () => {
-            stop();
-            abortRef.current?.abort();
-        };
-    }, []);
+        datosContratacionRef.current = datosContratacion;
+    }, [datosContratacion]);
+
+    useEffect(() => {
+        izziEnrrollRef.current = izziEnroll;
+    }, [izziEnroll]);
+
+    useEffect(() => {
+        if (!shouldRunAttach) return;
+        if (!datosContratacionRef.current) return;
+
+        runAttachFile();
+        setShouldRunAttach(false);
+    }, [shouldRunAttach]);
+
+    const { iniciarPolling } = useGlobalProcessStatus((finalData) => {
+        console.log('proceso finalizado', finalData);
+        // logica adicional
+    });
+
+    const { trigger: runSubmitOffer, isLoading: loadingOrder } = useControlledAction({
+        action: async () => {
+            const res = await GetSubmitOffer(izziEnrrollRef.current);
+            const data = await res;
+            console.log('data submitOffer:', data)
+            if (data?.code) {
+                throw new Error("Error del servicio submitOffer");
+            }
+
+            return data;
+        },
+        resetKey: `step-3-submitOffer`,
+        autoExecute: false,
+        // onSuccess: (data) => console.log('submitOffer success.', data),
+        // onError: (err) => console.error('submitOffer error:', err),
+        // onLoadingChange: (loading) => setModalLoading(loading),
+    });
+
+
+    const { trigger: runAttachFile, isLoading: loadingAttach } = useControlledAction({
+        action: async () => {
+            const res = await GetAttachFile(processStatus, datosContratacion as AttacheFilesProps["datosContratacion"]);
+            const data = await res;
+            console.log('data attach:', data)
+            return data;
+        },
+        resetKey: `step-4-attachFile`,
+        autoExecute: false,
+        // onSuccess: (data) => console.log('submitOffer success.', data),
+        // onError: (err) => console.error('submitOffer error:', err),
+        // onLoadingChange: (loading) => setModalLoading(loading),
+    });
 
     const handleContinue = async () => {
         setLoading(true)
@@ -59,6 +102,7 @@ export default function ResumenContainer() {
             switch (currentStep) {
                 case 1: {
                     console.log('configurador listo:', stepData)
+                    nextStep()
                     break
                 }
                 case 2: {
@@ -69,6 +113,7 @@ export default function ResumenContainer() {
                     }));
                     console.log('Datos Contratacion:', datosContratacion)
                     setIsStepValid(false)
+                    nextStep()
                     break
                 }
                 case 3: {
@@ -79,28 +124,24 @@ export default function ResumenContainer() {
                     }));
                     console.log('Datos Contratacion:', datosContratacion)
 
-                    // IzziEnroll
-                    const resultIzziEnroll = await GetIzziEnroll();
-                    setIzziEnroll(resultIzziEnroll);
-
-                    // // ProcessStatus
-                    if (!loopActive) setLoopActive(true);
-
-                    // SubmitOffer
                     try {
-                        const result = await waitForStatusAndRun(
-                            () => processStatus?.waitingForAction,
-                            async () => {
-                                return await GetSubmitOffer(izziEnroll);
-                            },
-                            1000,
-                            60000
-                        );
+                        // IzziEnroll
+                        const resultIzziEnroll = await GetIzziEnroll();
+                        setIzziEnroll(resultIzziEnroll);
+
+                        // // ProcessStatus
+                        iniciarPolling();
+
+                        // SubmitOffer
+                        await runSubmitOffer();
+
+                        setIsStepValid(false)
+                        nextStep()
 
                     } catch (err) {
-                        console.error("Error o timeout esperando waitingForAction:", err);
+                        console.error('Error en step3', err)
                     }
-                    setIsStepValid(false)
+
                     break
                 }
                 case 4: {
@@ -109,9 +150,21 @@ export default function ResumenContainer() {
                         ...prev,
                         DocumentosTitular: stepData
                     }));
-                    // setGetCapacity() 
-                    //TODO: agregar conexion a apis (attach, getCapacity)
-                    setIsStepValid(false)
+
+                    setShouldRunAttach(true);
+                    try {
+                        // AttachFiles
+
+                        // setGetCapacity() 
+                        //TODO: agregar conexion a apis (attach, getCapacity)
+
+                        setIsStepValid(false)
+                        nextStep()
+
+                    } catch (err) {
+                        console.error('Error en step3', err)
+                    }
+
                     break
                 }
                 case 5: {
@@ -121,6 +174,7 @@ export default function ResumenContainer() {
                         Instalacion: stepData
                     }));
                     setIsStepValid(true)
+                    nextStep()
                     break
                 }
                 case 6: {
@@ -131,11 +185,11 @@ export default function ResumenContainer() {
                     }));
                     console.log('Pago:', result.metodoPago)
                     setIsStepValid(true)
+                    nextStep()
                     break
                 }
             }
 
-            await nextStep()
         } finally {
             setLoading(false)
         }
@@ -163,3 +217,4 @@ export default function ResumenContainer() {
         </div>
     )
 }
+
