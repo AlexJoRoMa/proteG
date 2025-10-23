@@ -17,10 +17,11 @@ import ButtonModal from '../atoms/ButtonModal';
 import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
 import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 import { usePathname } from 'next/navigation';
+import { LandingNavBar, defaultLandingNavbar } from '@/constants/LandingHeaderConstants';
 
 export default function IzziHeaderLanding({navbarData}: HeaderComponentProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-    
+
     // Función helper para renderizar el modal correcto basado en typeModal
     const renderModalComponent = (typeModal?: 'TeLlamamos' | 'TeAyudamos') => {
 
@@ -37,22 +38,13 @@ export default function IzziHeaderLanding({navbarData}: HeaderComponentProps) {
     const pathname = usePathname();
     const cleanPath = pathname.replace(/^\/+|\/+$/g, '');
     
-    const routeToNavbarMap: Record<string, string> = {
-      'landing/internet': 'Navbar Landing  noCombos',
-      'landing/internettv': 'Navbar Landing  noCombos',
-      'landing/tv': 'Navbar Landing  noCombos',
-      'landing/movil': 'Navbar Landing  noCombos',
-      'landing/internetmovil': 'Navbar Landing  wCombos',
-      'landing/internettvmovil': 'Navbar Landing  wCombos',
-    };
-    
-    const selectedNavbarName = routeToNavbarMap[cleanPath] || 'Navbar Landing  noCombos';
+    const selectNavBar = LandingNavBar[cleanPath] || defaultLandingNavbar;
 
   
     const navbarContent = navbarData as unknown as Array<IzziNavbar>
 
     
-    const navbar = navbarContent?.filter((data) => data.fields.internalName == selectedNavbarName );
+    const navbar = navbarContent?.filter((data) => data.fields.internalName == selectNavBar );
     const navbarButtons = navbarContent?.filter((data) => data.fields.internalName == "NavbarButtons Landing");
     const mobileNavbarButton = navbarContent?.filter((data) => data.fields.internalName == "MobileAccountButton");
     const mobileCoberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaMobile");
@@ -84,11 +76,13 @@ export default function IzziHeaderLanding({navbarData}: HeaderComponentProps) {
           </NavbarBrand>
       </NavbarContent>
       <NavbarContent className="hidden xl:flex gap-[32px] min-[1024px]:gap-[12px] min-[1095]:gap-[17px] min-[1150px]:gap-[15px]" justify="start">
-        {navbar[0].fields?.navigation?.map((link, index) => (    
+        { navbar[0].fields?.navigation?.map((link, index) => (    
         <NavbarItem key={`${link}-${index}`}>
+          
             <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href={normalizeUrl(link.fields.navigationUrl)}>
-            {link.fields.navigationTitle}
+              {link.fields.navigationTitle}
             </Link>
+          
         </NavbarItem>
         ))}
       </NavbarContent>
