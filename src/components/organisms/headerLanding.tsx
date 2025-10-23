@@ -17,7 +17,7 @@ import ButtonModal from '../atoms/ButtonModal';
 import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
 import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 import { usePathname } from 'next/navigation';
-import { LandingNavBar, defaultLandingNavbar } from '@/constants/LandingHeaderConstants';
+import { getLandingNavbar } from '@/constants/LandingHeaderConstants';
 
 export default function IzziHeaderLanding({navbarData}: HeaderComponentProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -36,15 +36,12 @@ export default function IzziHeaderLanding({navbarData}: HeaderComponentProps) {
     };
     
     const pathname = usePathname();
-    const cleanPath = pathname.replace(/^\/+|\/+$/g, '');
     
-    const selectNavBar = LandingNavBar[cleanPath] || defaultLandingNavbar;
-
-  
     const navbarContent = navbarData as unknown as Array<IzziNavbar>
 
+    const setNavbar = getLandingNavbar(pathname, navbarContent);
     
-    const navbar = navbarContent?.filter((data) => data.fields.internalName == selectNavBar );
+    const navbar = navbarContent?.filter((data) => data.fields.internalName == setNavbar );
     const navbarButtons = navbarContent?.filter((data) => data.fields.internalName == "NavbarButtons Landing");
     const mobileNavbarButton = navbarContent?.filter((data) => data.fields.internalName == "MobileAccountButton");
     const mobileCoberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaMobile");
