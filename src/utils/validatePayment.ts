@@ -1,20 +1,61 @@
-/**
- * valida los metodos de pago (tarjeta / paypal) en paralelo.
- * si ambas fallan, se asume "pago al tecnico".
- * retorna el método exitoso o el fallback
- */
+import { DatosContratacion, ProcessStatus } from "@/types/Contratacion";
 
-interface ValidatePaymentResult {
-    metodoPago: "tarjeta" | "paypal" | "tecnico";
-    success: boolean;
+interface ValidatePayment {
+    datosContratacion: DatosContratacion,
+    setDatosContratacion: React.Dispatch<React.SetStateAction<DatosContratacion>>,
+    processStatus: {
+        accountNumber: string
+    }
 }
 
-export async function validatePayment(): Promise<ValidatePaymentResult> {
+export async function validatePayment(datosContratacion: Partial<DatosContratacion>, setDatosContratacion: React.Dispatch<React.SetStateAction<Partial<DatosContratacion>>>, processStatus: Partial<ProcessStatus>) {
+
+    const account = processStatus.accountNumber;
+
     try {
+
+        if (datosContratacion.Pago?.metodoPago === 'tecnico') {
+            setDatosContratacion((prev) => ({
+                ...prev,
+                Pago: {
+                    metodoPago: "tecnico",
+                    success: true,
+                }
+            }));
+            console.log("pago Tecnico", datosContratacion.Pago)
+            return;
+        };
 
         const validateAPI = async (isPayPal: boolean) => {
             try {
-                // llamado a api
+                const origin = process.env.ACCESS_ORIGIN;
+                const channel = process.env.ACCESS_CHANNEL;
+
+                const headers = new Headers({
+                    "Content-Type": "application/json",
+                    "x-access-origin": `${origin}`,
+                    "x-access-channel": `${channel}`,
+                });
+
+                const body = JSON.stringify({
+                    "referencia": datosContratacion.DatosPersonales?.personal.email || "700433240814-20250512183533",
+                    "cuenta": account,
+                    "paypal": isPayPal,
+                });
+
+
+                const response = await fetch("/api/contratacion/verificaPago", {
+                    method: "POST",
+                    body,
+                });
+
+                const data = await response.json();
+                console.log('response getVerificaPago:', data)
+
+                if (!data) throw new Error("Invalid response from server");
+                if (data.izziErrorCode !== "000") throw new Error("No se ha reflejado el Pago");
+
+                return true;
 
             } catch {
                 return false;
@@ -27,20 +68,35 @@ export async function validatePayment(): Promise<ValidatePaymentResult> {
         ]);
 
         if (okPayPal) {
-            return { metodoPago: "paypal", success: true };
+            setDatosContratacion((prev) => ({
+                ...prev,
+                Pago: {
+                    metodoPago: "paypal",
+                    success: true,
+                }
+            }));
+            console.log("pago paypal", datosContratacion.Pago)
+            return;
+        } else if (okCard) {
+            setDatosContratacion((prev) => ({
+                ...prev,
+                Pago: {
+                    metodoPago: "creditCard",
+                    success: true,
+                }
+            }));
+            console.log("pago Tarjeta", datosContratacion.Pago)
+            return;
+        } else {
+            setDatosContratacion((prev) => ({
+                ...prev,
+                Pago: {
+                    ...prev.Pago,
+                    success: false,
+                }
+            }));
         }
-        if (okCard) {
-            return { metodoPago: "tarjeta", success: true };
-        }
-        return {
-            metodoPago: "tecnico",
-            success: true,
-        };
     } catch (err) {
         console.error("Error validando pago:", err);
-        return {
-            metodoPago: "tecnico",
-            success: true,
-        };
     }
 }

@@ -4,6 +4,7 @@ const paypalBasePath = process.env.PAYPAL_BASE_PATH!;
 const apiKey = process.env.API_KEY!;
 const paypalChannel = process.env.PAYPAL_CHANNEL!;
 const paypalPlatform = process.env.PAYPAL_PLATFORM!;
+const paypalAuthorization = process.env.AUTHORIZATION_KEY!;
 
 export async function GET() {
     try {
@@ -20,8 +21,7 @@ export async function GET() {
             "Content-Type": "application/json",
             channel: paypalChannel,
             platform: paypalPlatform,
-            "Authorization": "2ZA7P2vJBUnOO3zADXNzJpCGbkMsvCeS",
-            "x-api-key": apiKey,
+            "Authorization": paypalAuthorization,
         });
 
         const res = await fetch(`${url}/getPaypalScript`, {

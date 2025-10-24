@@ -1,24 +1,17 @@
-import { AttacheFilesProps } from "@/types/Contratacion";
+import { ProcessStatus } from "@/types/Contratacion";
 
-export async function GetAttachFile(processStatus: AttacheFilesProps["processStatus"], datosContratacion: AttacheFilesProps["datosContratacion"]) {
+export async function GetAttachFile(processStatus: Partial<ProcessStatus>, attachInfo: { fileName: string; fileExtension: string; data: string; } | undefined) {
 
 
     try {
-        console.log("datosTitular", datosContratacion)
+        console.log("datosTitular", attachInfo)
         const attachBody = {
             "accountNumber": processStatus.accountNumber,
             "accountId": processStatus.accountId,
             "file": {
-                "ine": {
-                    "fileName": datosContratacion.DocumentosTitular.ine.fileName,
-                    "fileExtencion": datosContratacion.DocumentosTitular.ine.fileExtension,
-                    "data": datosContratacion.DocumentosTitular.ine.data,
-                },
-                "comprobante": {
-                    "fileName": datosContratacion.DocumentosTitular.comprobante.fileName,
-                    "fileExtencion": datosContratacion.DocumentosTitular.comprobante.fileExtension,
-                    "data": datosContratacion.DocumentosTitular.comprobante.data,
-                },
+                "fileName": attachInfo?.fileName,
+                "fileExtencion": attachInfo?.fileExtension,
+                "data": attachInfo?.data,
             },
         };
 
@@ -36,7 +29,7 @@ export async function GetAttachFile(processStatus: AttacheFilesProps["processSta
 
         const data = await response.json();
         console.log('response getAttachFile:', data)
-        if (!data) throw new Error("Invalid response from server");
+        // if (data.status !== 200) throw new Error("Invalid response from server");
 
         return data;
 

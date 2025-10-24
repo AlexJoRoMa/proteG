@@ -44,7 +44,7 @@ export default function PagoPayPal() {
                 )
             }
 
-            <PayPalScript amount={20} rptGetOffer={'300'} account={'43365581'} isRecurrent={isRecurrent} />
+            <PayPalScript amount={470} rptGetOffer={'000'} account={'43402700'} isRecurrent={isRecurrent} />
 
             <div className='flex flex-col gap-[27px] text-center text-sm md:text-base leading-[24px] mt-[8px]'>
                 <p className='text-start md:text-center'>

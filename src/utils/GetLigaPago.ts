@@ -17,9 +17,12 @@ const DUMMY_BODY = {
 export async function GetLigaPago() {
     try {
         const body = JSON.stringify(DUMMY_BODY);
+        const origin = process.env.ACCESS_ORIGIN;
+        const channel = process.env.ACCESS_CHANNEL;
+
         const headers = new Headers({
-            "x-access-origin": "IZZI",
-            "x-access-channel": "PORTALVL",
+            "x-access-origin": `${origin}`,
+            "x-access-channel": `${channel}`,
         })
         const res = await fetch(`/api/contratacion/pagoTarjeta`, {
             method: 'POST',

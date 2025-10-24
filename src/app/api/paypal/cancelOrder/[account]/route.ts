@@ -1,32 +1,31 @@
-import { getToken } from "@/services/izzi/configurador";
 import { NextRequest, NextResponse } from "next/server";
-
-const paypalBasePath = process.env.PAYPAL_BASE_PATH!;
-const apiKey = process.env.API_KEY!;
-const paypalChannel = process.env.PAYPAL_CHANNEL!;
-const paypalPlatform = process.env.PAYPAL_PLATFORM!;
 
 // Cancela una orden PayPal
 
 export async function POST(
-    req: NextRequest,
-    { params }: { params: { account: string } }
+    request: NextRequest,
+    context: { params: Promise<{ account: string }> }
 ) {
     try {
-        const body = await req.json();
-        const accessToken = await getToken();
+        const paypalBasePath = process.env.PAYPAL_BASE_PATH!;
+        const paypalChannel = process.env.PAYPAL_CHANNEL!;
+        const paypalPlatform = process.env.PAYPAL_PLATFORM!;
+        const paypalCookie = process.env.PAYPAL_COOKIE!;
+
+        const body = await request.json();
+        const rpt = request.headers.get("rpt")!;
+
+        const { account } = await context.params;
 
         const headers = new Headers({
             "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`
-            // Accept: "application/json",
-            // channel: paypalChannel,
-            // platform: paypalPlatform,
-            // rpt: body.rptGetOffer ?? "",
-            // "x-api-key": apiKey
+            "channel": `${paypalChannel}`,
+            "platform": `${paypalPlatform}`,
+            "rpt": `${rpt}`,
+            "Cookie": `${paypalCookie}`,
         });
 
-        const res = await fetch(`${paypalBasePath}/cancelOrder/${params.account}`, {
+        const res = await fetch(`${paypalBasePath}/cancelOrder/${account}`, {
             method: "POST",
             headers,
             body: JSON.stringify(body),

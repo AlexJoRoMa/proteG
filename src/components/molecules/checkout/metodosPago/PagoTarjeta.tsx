@@ -1,32 +1,38 @@
 'use client'
 
 import { Switch } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { GetLigaPago } from "@/utils/GetLigaPago";
+import { useCheckout } from "@/components/providers/CheckoutProvider";
 
 export default function PagoTarjeta() {
+
     const [isRecurrent, setIsRecurrent] = useState(false);
     const [urlFrame, setUrlFrame] = useState("");
+    const { currentStep } = useCheckout();
 
-    // useEffect(() => {
-    //     const fetchPagoTarjetaConfig = async () => {
-    //         try {
-    //             const result = await GetLigaPago();
+    const hasFetched = useRef(false);
 
-    //             if (result?.response) {
+    useEffect(() => {
+        if (currentStep !== 6 || hasFetched.current) return;
+        hasFetched.current = true;
 
-    //                 setUrlFrame(result.response.html);
-    //             }
+        (async () => {
+            try {
+                const result = await GetLigaPago();
 
-    //         } catch (err) {
-    //             console.error("Error al obtener url de pagos:", err);
-    //             throw new Error("Error al obtener url de pagos")
-    //         }
-    //     };
+                if (result?.response) {
 
-    //     fetchPagoTarjetaConfig();
+                    setUrlFrame(result.response.html);
+                }
 
-    // }, [])
+            } catch (err) {
+                console.error("Error al obtener url de pagos:", err);
+                throw new Error("Error al obtener url de pagos")
+            }
+        })();
+
+    }, [currentStep])
 
     return (
         <>
@@ -48,16 +54,23 @@ export default function PagoTarjeta() {
                 Acepto el cargo recurrente en mi pago y las condiciones de uso del servicio.
             </p>
 
-            {/* {urlFrame && (
-                <div>
+            {urlFrame && (
+                <div className="mt-[24px] xl:mt-[27px] w-full h-full">
                     <iframe
                         id="pago con tarjeta"
                         src={urlFrame}
                         width={300}
                         height={300}
+                        className="w-full"
                     />
                 </div>
-            )} */}
+            )}
+
+            <div className='flex flex-col gap-[27px] text-center text-sm md:text-base leading-[24px] mt-[27px]'>
+                <p className='font-bold'>
+                    ¡Gracias por elegir izzi! Estamos para servirte
+                </p>
+            </div>
 
         </>
     )

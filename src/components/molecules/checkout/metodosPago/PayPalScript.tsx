@@ -3,11 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { PayPalScriptProvider, PayPalButtons, type ReactPayPalScriptOptions } from "@paypal/react-paypal-js";
 
-const paypalBasePath = process.env.PAYPAL_BASE_PATH!;
-const apiKey = process.env.API_KEY!;
-const paypalChannel = process.env.PAYPAL_CHANNEL!;
-const paypalPlatform = process.env.PAYPAL_PLATFORM!;
-
 interface TabPayPalProps {
     amount: number;
     rptGetOffer: string;
@@ -21,13 +16,12 @@ const parsePaypalUrl = (url: string): Record<string, string> => {
     return Object.fromEntries(parsed.searchParams.entries());
 };
 
-export default function PayPalScript({ amount, rptGetOffer, account }: TabPayPalProps) {
+export default function PayPalScript({ amount, rptGetOffer, account, isRecurrent }: TabPayPalProps) {
     const [paypalOptions, setPaypalOptions] = useState<ReactPayPalScriptOptions | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     let payPalPaymentRef: string | undefined;
     let PaypalStatus: string | undefined;
-    let isRecurrent = false;
 
     /**
    * Creates a PayPal order by sending a POST request to the server.
@@ -37,17 +31,15 @@ export default function PayPalScript({ amount, rptGetOffer, account }: TabPayPal
    */
     const createOrder = async (): Promise<string> => {
 
-        const headers = new Headers({
-            "Content-Type": "application/json",
-            "rpt": rptGetOffer,
-            "channel": paypalChannel,
-            "platform": paypalPlatform,
-        });
-
         try {
             const body = JSON.stringify({
-                amount: amount
+                "amount": amount
             }); // Monto total a cobrar
+
+            const headers = new Headers({
+                "Content-Type": "application/json",
+                "rpt": rptGetOffer,
+            });
 
             const res = await fetch(`/api/paypal/createOrder/${account}`, {
                 method: 'POST',
@@ -78,19 +70,16 @@ export default function PayPalScript({ amount, rptGetOffer, account }: TabPayPal
      * @returns {Promise<void>} Resolves when the capture process is complete.
      */
     const onApprove = async (data: Record<string, any>): Promise<void> => {
-        data["errorTest"] = false; //validacion de error de prueba
-        data["baFlag"] = isRecurrent;
-
-        const headers = new Headers({
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "channel": paypalChannel,
-            "platform": paypalPlatform,
-            "rpt": rptGetOffer,
-            "x-api-key": apiKey,
-        });
 
         try {
+            data["errorTest"] = false; //validacion de error de prueba
+            data["baFlag"] = isRecurrent;
+
+            const headers = new Headers({
+                "Content-Type": "application/json",
+                "rpt": rptGetOffer,
+            });
+
             const res = await fetch(`/api/paypal/captureOrder/${account}`, {
                 method: 'POST',
                 headers,
@@ -124,18 +113,15 @@ export default function PayPalScript({ amount, rptGetOffer, account }: TabPayPal
      * @returns {Promise<void>} Resolves when the cancellation request is complete.
      */
     const onCancel = async (data: Record<string, any>): Promise<void> => {
-        const req = { orderID: data.orderID };
-
-        const headers = new Headers({
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "channel": paypalChannel,
-            "platform": paypalPlatform,
-            "rpt": rptGetOffer,
-            "x-api-key": apiKey,
-        });
 
         try {
+            const req = { orderID: data.orderID };
+
+            const headers = new Headers({
+                "Content-Type": "application/json",
+                "rpt": rptGetOffer,
+            });
+
             const res = await fetch(`/api/paypal/cancelOrder/${account}`, {
                 method: 'POST',
                 headers,

@@ -32,12 +32,30 @@ interface AttachFilesProps {
     body: Record<string, unknown>;
 }
 
+interface GetCapacityProps {
+    headers: {
+        processId: string;
+    }
+}
+
 interface LigaPagoProps {
     body: Record<string, unknown>;
     headers: {
         origin: string,
         channel: string
     }
+}
+
+interface VerificaPago {
+    body: Record<string, unknown>;
+    headers: {
+        origin: string,
+        channel: string
+    }
+}
+
+interface SubmitCapacityProps {
+    body: Record<string, unknown>;
 }
 
 export async function getSendCode({
@@ -245,17 +263,49 @@ export async function getAttachFiles({
     }
 }
 
+export async function getCapacity({
+    headers,
+}: GetCapacityProps): Promise<any> {
+
+    const url = process.env.GET_CAPACITY_PATH;
+    const accessToken = await getToken();
+
+    try {
+        console.log('Ejecutando GetCapacity...');
+
+        const response = await fetch(`${url}?processId=${headers.processId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('response getCapacity:', data)
+        return data;
+
+    } catch (err) {
+        console.error("Error en getCapacity:", err);
+        throw err;
+    }
+}
+
 export async function getLigaPago({
     headers,
     body
 }: LigaPagoProps): Promise<any> {
 
-    const url = "https://qaizzi.izzi.mx/WSVeL/webservices/izzi/envio_liga_pago"
+    const url = process.env.GET_LIGA_PAGO;
 
     try {
         console.log('Ejecutando ligaPago...');
 
-        const response = await fetch(`https://qaizzi.izzi.mx/WSVeL/webservices/izzi/envio_liga_pago`, {
+        const response = await fetch(`${url}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -279,4 +329,73 @@ export async function getLigaPago({
         throw err;
     }
 
+}
+
+export async function getVerificaPago({
+    body,
+    headers
+}: VerificaPago): Promise<any> {
+
+    const url = process.env.VERIFICA_PAGO_PATH;
+    const Authorization = process.env.AUTHORIZATION_KEY;
+
+    try {
+        console.log('Ejecutando VerificaPago...');
+
+        const response = await fetch(`${url}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `${Authorization}`,
+                "x-access-origin": headers.origin,
+                "x-access-channel": headers.channel,
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('response VerificaPago:', data)
+        return data;
+
+    } catch (err) {
+        console.error("Error en VerificaPago:", err);
+        throw err;
+    }
+}
+
+export async function getSubmitCapacity({
+    body,
+}: SubmitCapacityProps): Promise<any> {
+
+    const url = process.env.SUBMIT_CAPACITY;
+    const accessToken = await getToken();
+
+    try {
+        console.log('Ejecutando SubmitCapacity...');
+
+        const response = await fetch(`${url}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('response SubmitCapacity:', data)
+        return data;
+
+    } catch (err) {
+        console.error("Error en getSubmitCapacity:", err);
+        throw err;
+    }
 }

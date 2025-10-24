@@ -37,10 +37,10 @@ export function useControlledAction<T>({
     autoExecute = false,
 }: UseControlledActionOptions<T>) {
 
-    type CheckoyContext = {
+    type CheckoutContext = {
         processStatus?: Partial<ProcessStatusResponse> | null
     }
-    const { processStatus } = useCheckout() as CheckoyContext;
+    const { processStatus } = useCheckout() as CheckoutContext;
 
     const executedRef = useRef(false);
     const waitingPromiseRef = useRef<Promise<void> | null>(null);
@@ -50,7 +50,7 @@ export function useControlledAction<T>({
     const [result, setResult] = useState<T | null>(null);
     const [error, setError] = useState<unknown | null>(null);
 
-    /** 🔹 Fuente de verdad: processStatus del provider */
+    /**  Fuente de verdad: processStatus del provider */
     const { data } = useSWR<ProcessStatusResponse | null>(
         processStatus ? ['processStatus', processStatus.status] : null,
         async () => {
@@ -67,7 +67,7 @@ export function useControlledAction<T>({
         }
     );
 
-    /** 🔄 Reset del estado cuando cambia la key externa */
+    /** Reset del estado cuando cambia la key externa */
     useEffect(() => {
         executedRef.current = false;
         setResult(null);
@@ -85,7 +85,7 @@ export function useControlledAction<T>({
         }
     }, [data?.waitingForAction]);
 
-    /** 🚀 Ejecuta acción una sola vez al detectar waitingForAction = true */
+    /**  Ejecuta acción una sola vez al detectar waitingForAction = true */
     useEffect(() => {
         if (!autoExecute) return;
         if (!data?.waitingForAction) return;
@@ -109,7 +109,7 @@ export function useControlledAction<T>({
         })();
     }, [autoExecute, data?.waitingForAction, action, onSuccess, onError, onLoadingChange]);
 
-    /** 🔹 trigger manual opcional */
+    /** trigger manual opcional */
     const trigger = useCallback(async () => {
         if (executedRef.current) return null;
 
