@@ -29,7 +29,7 @@ function getFormData(ref: React.RefObject<HTMLFormElement | null>) {
 }
 
 export const useStep2Form = () => {
-    const { registerStepValidator, registerFormData, setIsStepValid, checkboxChecked } = useCheckout();
+    const { registerStepValidator, registerFormData, setIsStepValid, checkboxChecked, datosContratacion } = useCheckout();
 
     const DatosPersonalesRef = useRef<HTMLFormElement | null>(null);
     const DireccionEnvioRef = useRef<HTMLFormElement | null>(null);

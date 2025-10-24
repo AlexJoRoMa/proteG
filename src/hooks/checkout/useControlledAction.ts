@@ -42,7 +42,6 @@ export function useControlledAction<T>({
     }
     const { processStatus } = useCheckout() as CheckoutContext;
 
-    const executedRef = useRef(false);
     const waitingPromiseRef = useRef<Promise<void> | null>(null);
     const resolveWaitingRef = useRef<(() => void) | null>(null);
 
@@ -69,7 +68,6 @@ export function useControlledAction<T>({
 
     /** Reset del estado cuando cambia la key externa */
     useEffect(() => {
-        executedRef.current = false;
         setResult(null);
         setError(null);
         waitingPromiseRef.current = null;
@@ -89,9 +87,7 @@ export function useControlledAction<T>({
     useEffect(() => {
         if (!autoExecute) return;
         if (!data?.waitingForAction) return;
-        if (executedRef.current) return; // ya se ejecutó
 
-        executedRef.current = true;
         (async () => {
             try {
                 setIsLoading(true);
@@ -111,7 +107,6 @@ export function useControlledAction<T>({
 
     /** trigger manual opcional */
     const trigger = useCallback(async () => {
-        if (executedRef.current) return null;
 
         if (!data?.waitingForAction) {
             if (!waitingPromiseRef.current) {
@@ -122,7 +117,6 @@ export function useControlledAction<T>({
             await waitingPromiseRef.current;
         }
 
-        executedRef.current = true;
         setIsLoading(true);
         onLoadingChange?.(true);
         try {

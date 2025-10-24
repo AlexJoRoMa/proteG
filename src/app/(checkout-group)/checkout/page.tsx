@@ -24,7 +24,6 @@ const CheckoutPage = async () => {
   }) as unknown as EntrySkeletonType<ResumenIcon>;
 
 
-
   return (
     <main className="min-h-screen">
       <CheckoutProvider totalSteps={6} initialStep={2} icon={Icon} paypalIcon={PaypalIcon}>

@@ -67,7 +67,6 @@ const Step3 = () => {
   const { getValue } = useMicrocopies('contratacion-verificaContacto');
 
   async function handleSendCode() {
-    console.log('seleccion', radioState);
     setSendCode(true);
     setInputCode('');
     startTimer();
@@ -152,7 +151,6 @@ const Step3 = () => {
             base: "h-full"
           }}
           onChange={(e) => {
-            console.log('value', e.target.value)
             setRadioState(e.target.value);
             setSendCode(false);
             setInputCode("");

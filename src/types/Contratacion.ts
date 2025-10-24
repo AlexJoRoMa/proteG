@@ -78,6 +78,27 @@ export interface ProcessStatus {
     waitingForAction: boolean
 }
 
+export interface StatusFlujo {
+    step1: {
+        completado: boolean
+    },
+    step2: {
+        completado: boolean
+    },
+    step3: {
+        completado: boolean
+    },
+    step4: {
+        completado: boolean
+    },
+    step5: {
+        completado: boolean
+    },
+    step6: {
+        completado: boolean
+    },
+}
+
 export type AttachFilesProps = {
     processStatus: {
         accountNumber?: string,

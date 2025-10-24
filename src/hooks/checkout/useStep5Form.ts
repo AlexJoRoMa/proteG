@@ -12,7 +12,7 @@ type Shift = '09:00 - 14:00' | '14:00 - 18:00';
 
 export function useStep5Form() {
 
-    const { registerStepValidator, registerFormData, setIsStepValid, getCapacity } = useCheckout();
+    const { registerStepValidator, registerFormData, setIsStepValid, getCapacity, datosContratacion } = useCheckout();
 
     const [selectedShift, setSelectedShift] = useState<Shift>('09:00 - 14:00');
     const [selectedDateIso, setSelectedDateIso] = useState<string | null>(null);

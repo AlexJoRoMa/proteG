@@ -1,40 +1,72 @@
-import React, { useRef } from 'react';
-import { Form, Input, user } from '@heroui/react'
+import React, { useEffect, useRef, useState } from 'react';
+import { Form, Input } from '@heroui/react'
 import { DeleteIcon, UploadICon } from '@/constants/IconsConstants';
 import { useStep4Form } from '@/hooks/checkout/useStep4Form';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 
 const Step4 = () => {
 
-  const { DocumentosTitularRef, ineFile, comprobanteFile, setIneFile, setComprobanteFile } = useStep4Form();
+  const { DocumentosTitularRef, ineFile, comprobanteFile, setIneFile, setComprobanteFile, invalidateStep } = useStep4Form();
 
   const { getValue } = useMicrocopies('contratacion-documentosTitular');
 
   const ineInputRef = useRef<HTMLInputElement | null>(null);
   const comprobanteInputRef = useRef<HTMLInputElement | null>(null);
 
+  const [errorComprobante, setErrorComprobante] = useState<string | null>(null);
+  const [errorIne, setErrorIne] = useState<string | null>(null);
+
   const handleFileChange =
-    (setter: (f: File | null) => void) =>
+    (
+      setter: (f: File | null) => void,
+      setError: (e: string | null) => void
+    ) =>
       (e: React.ChangeEvent<HTMLInputElement>) => {
 
         const file = e.target.files?.[0];
-        if (!file) return setter(null);
-
-        const validTypes = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
-        if (!validTypes.includes(file.type) || file.size > 4 * 1024 * 1024) {
-          alert("Archivo inválido. Debe ser JPG, PNG o PDF y menor a 4MB.");
-          e.target.value = "";
+        if (!file) {
           setter(null);
+          setError(null);
+          invalidateStep();
           return;
         }
 
+        const validTypes = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
+        if (!validTypes.includes(file.type)) {
+          setError("El archivo tiene un formato inválido. Intentalo de nuevo.");
+          e.target.value = "";
+          setter(null);
+          invalidateStep();
+          return;
+        }
+
+        if (file.size > 4 * 1024 * 1024) {
+          setError("El archivo rebasa el límite de 4 MB. inténtalo de nuevo.");
+          e.target.value = "";
+          setter(null);
+          invalidateStep();
+          return;
+        }
+
+        setError(null);
         setter(file);
       };
 
-  const clearFile = (ref: React.RefObject<HTMLInputElement | null>, setter: (f: File | null) => void) => {
+  const clearFile = (
+    ref: React.RefObject<HTMLInputElement | null>,
+    setter: (f: File | null) => void,
+    setError: (e: string | null) => void
+  ) => {
     if (ref.current) ref.current.value = "";
     setter(null);
+    setError(null);
+    invalidateStep();
   };
+
+  const borderClass = (hasFile: boolean, hasError: boolean) =>
+    hasError ? "!p-1 border-dashed border-red-700" :
+      hasFile ? "bg-conic-custom !p-1 group-data-[hover=true]:!border-0 group-data-[focus=true]:!border-0" :
+        "!p-1 border-dashed border-gray-200";
 
   return (
     <>
@@ -68,20 +100,23 @@ const Step4 = () => {
             label: 'font-bold text-lg leading-[24px] text-[#11181C] mt-[25px] px-[24px]',
             mainWrapper: 'mb-[16px] pointer',
             input: "cursor-pointer file:!hidden text-indent-[-9999px] text-transparent h-full",
-            inputWrapper: ` rounded-xl shadow-none h-[78px] ${ineFile ? "bg-conic-custom !p-1 group-data-[hover=true]:!border-0 group-data-[focus=true]:!border-0" : "!p-1 border-dashed border-gray-200"}`,
+            inputWrapper: ` rounded-xl shadow-none h-[78px] ${borderClass(!!ineFile, !!errorIne)}`,
             innerWrapper: "!items-center bg-white-0 rounded-md px-[24px] !border-0 group-data-[focus=true]:border-0",
           }}
           required
           className='w-full'
           endContent={
             ineFile ? (
-              <div onClick={() => clearFile(ineInputRef, setIneFile)}><DeleteIcon /></div>
+              <div onClick={() => clearFile(ineInputRef, setIneFile, setErrorIne)}><DeleteIcon /></div>
             ) : (
               <UploadICon />
             )
           }
-          onChange={handleFileChange(setIneFile)}
+          onChange={handleFileChange(setIneFile, setErrorIne)}
         />
+        {errorIne && (
+          <p className='mt-[12px] text-red-700 text-xs md:text-sm'>{errorIne}</p>
+        )}
 
         <p
           className='text-[18px] mb-4 mt-6'
@@ -92,7 +127,7 @@ const Step4 = () => {
 
         <Input
           ref={comprobanteInputRef}
-          label={comprobanteFile ? `${getValue('documentos.input.comprobante')}.${comprobanteFile.type.split("/")[1].toLowerCase()})` : getValue('documentos.input.vacio')}
+          label={comprobanteFile ? `${getValue('documentos.input.comprobante')}.${comprobanteFile.type.split("/")[1].toLowerCase()}` : getValue('documentos.input.vacio')}
           name="comprobante"
           type="file"
           variant='bordered'
@@ -102,20 +137,25 @@ const Step4 = () => {
             label: 'font-bold text-lg leading-[24px] text-[#11181C] mt-[25px] px-[24px]',
             mainWrapper: 'mb-[16px] pointer',
             input: "cursor-pointer file:!hidden text-indent-[-9999px] text-transparent",
-            inputWrapper: ` rounded-xl shadow-none h-[78px] ${comprobanteFile ? "bg-conic-custom !p-1 group-data-[hover=true]:!border-0 group-data-[focus=true]:!border-0" : "!p-1 border-dashed border-gray-200"}`,
+            inputWrapper: ` rounded-xl shadow-none h-[78px] ${borderClass(!!comprobanteFile, !!errorComprobante)}`,
             innerWrapper: "!items-center bg-white-0 rounded-md px-[24px] !border-0 group-data-[focus=true]:border-0 group-data-[hover=true]:!border-0",
           }}
           required
           className='w-full'
           endContent={
             comprobanteFile ? (
-              <div onClick={() => clearFile(comprobanteInputRef, setComprobanteFile)}><DeleteIcon /></div>
+              <div onClick={() => clearFile(comprobanteInputRef, setComprobanteFile, setErrorComprobante)}><DeleteIcon /></div>
             ) : (
               <UploadICon />
             )
           }
-          onChange={handleFileChange(setComprobanteFile)}
+          onChange={handleFileChange(setComprobanteFile, setErrorComprobante)}
         />
+
+        {errorComprobante && (
+          <p className='mt-[12px] text-red-700 text-xs md:text-sm'>{errorComprobante}</p>
+        )}
+
 
       </Form>
     </>

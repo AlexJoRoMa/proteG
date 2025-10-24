@@ -1,5 +1,6 @@
 'use client'
 import { ResumenIcon } from '@/types/ConfiguradorTypes'
+import { DatosContratacion, ProcessStatus, StatusFlujo } from '@/types/Contratacion'
 import { EntrySkeletonType } from 'contentful'
 import { redirect } from 'next/navigation'
 import React, { createContext, useContext, useState, useCallback, useRef } from 'react'
@@ -18,16 +19,18 @@ interface CheckoutContextType {
   setCheckboxChecked: (value: boolean) => void
 
   //states steps
-  datosContratacion: {},
-  setDatosContratacion: (value: {}) => void
+  datosContratacion: Partial<DatosContratacion>,
+  setDatosContratacion: React.Dispatch<React.SetStateAction<Partial<DatosContratacion>>>
   getCapacity: Record<string, string>[] | null
   setGetCapacity: (value: []) => void
   getIntentosInstalacion: number
   setGetIntentosInstalacion: (value: number) => void
   izziEnroll: string
   setIzziEnroll: (value: string) => void
-  processStatus: {},
-  setProcessStatus: (value: {}) => void
+  processStatus: Partial<ProcessStatus>,
+  setProcessStatus: React.Dispatch<React.SetStateAction<Partial<ProcessStatus>>>
+  statusStep: Partial<StatusFlujo>
+  setStatusStep: React.Dispatch<React.SetStateAction<Partial<StatusFlujo>>>
 
   // Navigation functions
   goToStep: (step: number) => void
@@ -61,7 +64,7 @@ export const CheckoutProvider = ({
   totalSteps = 6,
   initialStep = 2,
   icon,
-  paypalIcon
+  paypalIcon,
 }: CheckoutProviderProps) => {
   const [currentStep, setCurrentStep] = useState(initialStep)
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
@@ -71,14 +74,22 @@ export const CheckoutProvider = ({
   const [isStepValid, setIsStepValid] = useState(false)
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [getCapacity, setGetCapacity] = useState<Record<string, string>[] | null>(null);
-  const [getIntentosInstalacion, setGetIntentosInstalacion] = useState<number>(0);
+  const [getIntentosInstalacion, setGetIntentosInstalacion] = useState<number>(1);
+  const [statusStep, setStatusStep] = useState<Partial<StatusFlujo>>({
+    step1: { completado: true },
+    step2: { completado: false },
+    step3: { completado: false },
+    step4: { completado: false },
+    step5: { completado: false },
+    step6: { completado: false },
+  });
 
   // states con informacion del los steps
-  const [datosContratacion, setDatosContratacion] = useState({});
+  const [datosContratacion, setDatosContratacion] = useState<Partial<DatosContratacion>>({});
 
   // states con informacion de las apis
   const [izziEnroll, setIzziEnroll] = useState<string>("");
-  const [processStatus, setProcessStatus] = useState({});
+  const [processStatus, setProcessStatus] = useState<Partial<ProcessStatus>>({});
 
   const goToStep = useCallback((step: number) => {
     if (step === 1) {
@@ -192,6 +203,8 @@ export const CheckoutProvider = ({
     setIzziEnroll,
     processStatus,
     setProcessStatus,
+    statusStep,
+    setStatusStep,
   }
 
   return (

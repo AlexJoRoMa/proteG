@@ -11,7 +11,7 @@ import ButtonGhost from '@/components/atoms/ButtonGhost';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 
 const Step2 = () => {
-  const { registerStepValidator, currentStep, setCheckboxChecked } = useCheckout();
+  const { setCheckboxChecked } = useCheckout();
   const { getValue } = useMicrocopies('contratacion-datosPersonales');
   const [checked, setChecked] = useState(false);
 
@@ -47,7 +47,6 @@ const Step2 = () => {
 
   return (
     <div className='step2-container'>
-
       <div className='flex flex-col md:grid md:grid-cols-2 items-center w-full mb-[24px] md:mb-10'>
         <div className='flex items-center w-full justify-between mb-6 md:mb-0'>
           <p className='text-nowrap text-base'>{getValue('datosPersonales.cliente.titulo')}</p>
