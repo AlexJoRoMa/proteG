@@ -14,6 +14,9 @@ import { GetSubmitCapacity } from "@/utils/GetSubmitCapacity";
 import { useRouter } from "next/navigation";
 import ModalContratacion from "./modals/ModalContratacion";
 import ModalFechaInvalida from "./modals/ModalFechaInvalida";
+import { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, useDisclosure } from "@heroui/react";
+import { ArrowDownIcon, ArrowUpIcon } from "@/constants/IconsConstants";
+import { ResumenData } from "@/types/ResumenCompra";
 
 export default function ResumenContainer() {
 
@@ -23,6 +26,8 @@ export default function ResumenContainer() {
     const [modalNewDate, setModalNewDate] = useState(false);
     const [modalName, setModalName] = useState<string>("modal-generico");
     const router = useRouter();
+
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const {
         nextStep,
@@ -43,12 +48,15 @@ export default function ResumenContainer() {
         getIntentosInstalacion,
         setGetIntentosInstalacion,
         statusStep,
-        setStatusStep
+        setStatusStep,
+        copyResumen,
     } = useCheckout();
 
     const datosContratacionRef = useRef<Partial<DatosContratacion>>(null);
     const izziEnrrollRef = useRef(izziEnroll);
     const processStatusRef = useRef(processStatus);
+
+    const resumenCopys = copyResumen as ResumenData;
 
     useEffect(() => {
         datosContratacionRef.current = datosContratacion;
@@ -375,27 +383,110 @@ export default function ResumenContainer() {
     }
 
     return (
-        <div className="fixed xl:static bottom-0 left-0 z-50 xl:border xl:rounded-md xl:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 xl:bg-white-0">
-            <h1 className="font-bold leading-[24px] text-xl mb-[32px]">Resumen de pedido</h1>
+        <>
+            <div className="fixed xl:static bottom-0 left-0 z-40 xl:border xl:rounded-md xl:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 xl:bg-white-0 shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)] xl:shadow-none">
+                <div className="block xl:hidden">
+                    <div className="flex justify-between mb-[16px]">
+                        <div className="flex flex-col gap-[8px]">
+                            <div className="flex gap-[4px] font-normal text-base leading-[24px] text-gray-500 items-baseline">
+                                <h3 className="font-extrabold text-[32px] leading-[32px] text-black-0">
+                                    $XXXX
+                                </h3>
+                                <h5>{resumenCopys.infoDrawer.plazo}</h5>
+                                <p>|</p>
+                                <h5 className="font-bold">test</h5>
 
-            {/* <ResumenContent copys={resumenCopys} userSelection={userAnswers}/> */}
-            <div className="mb-[24px]">
-                {'Contenido resumen de compra'}
+                                {/* <h5 className="font-bold">{infoPaquetes}</h5> */}
+                            </div>
+                            <div className="font-bold">¡Te ahorras XXXX al combinar!</div>
+
+                            {/* <div className="font-bold">{infoDrawerContent}</div> */}
+                        </div>
+                        <button
+                            className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
+                            onClick={onOpen}
+                        >
+                            <ArrowUpIcon />
+                        </button>
+                    </div>
+                </div>
+
+                <div className="hidden xl:block">
+                    <h1 className="font-bold leading-[24px] text-xl mb-[32px]">Resumen de pedido</h1>
+
+                    {/* <ResumenContent copys={resumenCopys} userSelection={userAnswers}/> */}
+                    <div className="mb-[24px]">
+                        {'Contenido resumen de compra'}
+                    </div>
+
+                </div>
+
+                <div className="xl:pt-[32px] xl:border-t-1 xl:border-t-gray-150">
+                    <button
+                        onClick={handleContinue}
+                        disabled={!isStepValid && !statusStep[`step${currentStep}` as keyof StatusFlujo]?.completado}
+                        className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
+                    >
+                        {loading ? "Procesando..." : "Continuar"}
+                    </button>
+
+                </div>
+                <ModalContratacion isOpen={modalLoading} name={modalName} />
+                <ModalFechaInvalida isOpen={modalNewDate} setModal={handleModalNewDate} />
             </div>
 
-            <div className="pt-[32px] border-t-1 border-t-gray-150">
-                <button
-                    onClick={handleContinue}
-                    disabled={!isStepValid && !statusStep[`step${currentStep}` as keyof StatusFlujo]?.completado}
-                    className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                >
-                    {loading ? "Procesando..." : "Continuar"}
-                </button>
+            <Drawer
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                size="full"
+                placement="bottom"
+                hideCloseButton
+                classNames={{
+                    header: "px-[16px] py-[24px]",
+                    body: "px-[16px] py-0 gap-0",
+                    footer: "w-full px-[16px] pt-[32px]"
+                }}
+            >
+                <DrawerContent>
+                    {(onClose) => (
+                        <>
+                            <DrawerHeader
+                                className="flex flex-row justify-between items-center"
+                            >
+                                <h3 className="font-bold text-xl leading-[24px] text-[#11181C]">{resumenCopys.titulo}</h3>
+                                <button
+                                    className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
+                                    onClick={onClose}
+                                >
+                                    <ArrowDownIcon />
+                                </button>
+                            </DrawerHeader>
 
-            </div>
-            <ModalContratacion isOpen={modalLoading} name={modalName} />
-            <ModalFechaInvalida isOpen={modalNewDate} setModal={handleModalNewDate} />
-        </div>
+                            <DrawerBody>
+                                {/* <ResumenContent copys={resumenCopys} userSelection={userAnswers}/> */}
+
+                                <div className="mb-[24px]">
+                                    {'Contenido resumen de compra'}
+                                </div>
+                            </DrawerBody>
+
+                            <DrawerFooter>
+                                <div className="flex flex-col w-full">
+                                    <button
+                                        onClick={handleContinue}
+                                        disabled={!isStepValid && !statusStep[`step${currentStep}` as keyof StatusFlujo]?.completado}
+                                        className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
+                                    >
+                                        {loading ? "Procesando..." : "Continuar"}
+                                    </button>
+                                </div>
+
+                            </DrawerFooter>
+                        </>
+                    )}
+                </DrawerContent>
+            </Drawer>
+        </>
     )
 }
 

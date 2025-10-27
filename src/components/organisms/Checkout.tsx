@@ -10,7 +10,7 @@ export default function Checkout() {
             <CheckoutSteps />
 
             {/* CheckoutContent separado - solo visible en desktop */}
-            <div className="hidden md:block">
+            <div className="hidden xl:block">
                 <CheckoutContent />
             </div>
 
