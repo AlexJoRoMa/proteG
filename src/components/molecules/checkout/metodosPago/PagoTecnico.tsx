@@ -19,7 +19,7 @@ export default function PagoTecnico() {
                 <p
                     className='font-bold text-[16px] leading-6'
                 >
-                    {getValue('pago.tecnico.agradecimiento')}
+                    {getValue('pago.agradecimiento')}
                 </p>
             </div>
         </section>

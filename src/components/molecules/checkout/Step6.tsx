@@ -58,12 +58,12 @@ const Step6 = () => {
           tabContent: "flex-warp !text-warp whitespace-normal"
         }}
       >
-        <Tab key="creditCard" title="Pago con Tarjeta">
+        <Tab key="creditCard" title={getValue('pago.tarjet.titulo')}>
           <PaymentInfoBanner />
           <PagoTarjeta />
         </Tab>
 
-        <Tab key="paypal" title="Pago con Paypal">
+        <Tab key="paypal" title={getValue('pago.paypal.titulo')}>
           <PaymentInfoBanner />
           <PagoPayPal />
         </Tab>

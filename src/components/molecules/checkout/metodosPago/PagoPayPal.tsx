@@ -4,17 +4,19 @@ import { useCheckout } from '@/components/providers/CheckoutProvider';
 import { useState } from 'react';
 import { Switch } from '@heroui/react';
 import PayPalScript from './PayPalScript';
+import { useMicrocopies } from '@/hooks/useMicrocopies';
 
 export default function PagoPayPal() {
 
     const { paypalIcon } = useCheckout();
+    const {getValue} = useMicrocopies('contratacion-pago');
     const [isRecurrent, setIsRecurrent] = useState(false);
 
     return (
         <section className='w-full'>
             <div className='flex flex-row w-full justify-between mt-[24px] xl:mt-[27px]'>
                 <h1 className='font-normal text-lg leading-[24px]'>
-                    Activa tu pago recurrente
+                    {getValue('pago.pagoRecurrente.titulo')}
                 </h1>
                 <Switch
                     checked={isRecurrent}
@@ -27,7 +29,7 @@ export default function PagoPayPal() {
                 />
             </div>
             <p className='mt-[8px] w-full text-sm xl:text-base leading-[24px]'>
-                Acepto el cargo recurrente en mi pago y las condiciones de uso del servicio.
+                {getValue('pago.pagoRecurrente.subTitulo')}
             </p>
 
             {
@@ -48,10 +50,10 @@ export default function PagoPayPal() {
 
             <div className='flex flex-col gap-[27px] text-center text-sm md:text-base leading-[24px] mt-[8px]'>
                 <p className='text-start md:text-center'>
-                    Te redigiremos al sitio de Paypal para que hagas tu pago. Una vez realizado, volverás a esta pantalla.
+                    {getValue('pago.paypal.InfoRedireccion')}
                 </p>
                 <p className='font-bold'>
-                    ¡Gracias por elegir izzi! Estamos para servirte
+                    {getValue('pago.agradecimiento')}
                 </p>
             </div>
 

@@ -4,12 +4,14 @@ import { Switch } from "@heroui/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { GetLigaPago } from "@/utils/GetLigaPago";
 import { useCheckout } from "@/components/providers/CheckoutProvider";
+import { useMicrocopies } from "@/hooks/useMicrocopies";
 
 export default function PagoTarjeta() {
 
     const [isRecurrent, setIsRecurrent] = useState(false);
     const [urlFrame, setUrlFrame] = useState("");
     const { currentStep } = useCheckout();
+    const { getValue } = useMicrocopies('contratacion-pago');
 
     const hasFetched = useRef(false);
 
@@ -38,7 +40,7 @@ export default function PagoTarjeta() {
         <section className="w-full">
             <div className='flex flex-row w-full justify-between mt-[24px] xl:mt-[27px]'>
                 <h1 className='font-normal text-lg leading-[24px]'>
-                    Activa tu pago recurrente
+                    {getValue('pago.pagoRecurrente.titulo')}
                 </h1>
                 <Switch
                     checked={isRecurrent}
@@ -51,7 +53,7 @@ export default function PagoTarjeta() {
                 />
             </div>
             <p className='mt-[8px] w-full text-sm xl:text-base leading-[24px]'>
-                Acepto el cargo recurrente en mi pago y las condiciones de uso del servicio.
+                {getValue('pago.pagoRecurrente.subTitulo')}
             </p>
 
             {urlFrame && (
@@ -68,7 +70,7 @@ export default function PagoTarjeta() {
 
             <div className='flex flex-col gap-[27px] text-center text-sm md:text-base leading-[24px] mt-[27px]'>
                 <p className='font-bold'>
-                    ¡Gracias por elegir izzi! Estamos para servirte
+                    {getValue('pago.agradecimiento')}
                 </p>
             </div>
 
