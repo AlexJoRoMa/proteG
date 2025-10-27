@@ -3,6 +3,7 @@ import CheckoutProvider from '@/components/providers/CheckoutProvider'
 import { contentfulClient } from '@/services/contentful/client'
 import { getCopyForComponent } from '@/services/contentful/components'
 import { ResumenIcon } from '@/types/ConfiguradorTypes'
+import ExitGuard from '@/utils/guards/ExitGuard'
 import { EntrySkeletonType } from 'contentful'
 import React from 'react'
 
@@ -31,6 +32,8 @@ const CheckoutPage = async () => {
   return (
     <main className="min-h-screen w-full">
       <CheckoutProvider totalSteps={6} initialStep={2} icon={Icon} paypalIcon={PaypalIcon} copyResumen={copysResumen}>
+        {/* Guard detector de salida del flujo */}
+        <ExitGuard />
         <Checkout />
       </CheckoutProvider>
     </main>

@@ -36,7 +36,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
     const pathName = usePathname();
     const pendingRouteRef = useRef<string | null>(null);
     const isMobile = useIsMobile(768);
-    const scopePrefix = ["/configurador", "/contratacion"];
+    const scopePrefix = ["/configurador", "/contratacion", "/thank-you"];
 
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
