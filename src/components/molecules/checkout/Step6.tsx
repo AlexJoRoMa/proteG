@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Tab, Tabs } from '@heroui/react'
+import { Card, CardBody, Tab, Tabs } from '@heroui/react'
 import PagoTecnico from './metodosPago/PagoTecnico';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import PaymentInfoBanner from './metodosPago/PaymentInfoBanner';
@@ -43,38 +43,32 @@ const Step6 = () => {
 
   return (
     <>
+
       <Tabs
-        className='flex flex-col md:flex-row gap-6'
-        fullWidth
+        aria-label="Options"
+        className='w-full'
+        fullWidth={true}
         variant='underlined'
         defaultSelectedKey={selectedTab}
         onSelectionChange={handleTabChange}
         classNames={{
           tabList: "pb-0",
           base: "border-b-1 border-b-gray-150",
-          tab: "pb-[16px] text-[14px] md:text-[16px] font-normal leading-[16px] text-black-0 data-[selected=true]:text-gray-450 data-[selected=true]:font-bold"
+          tab: "pb-[16px] text-[14px] md:text-[16px] font-normal leading-[16px] text-black-0 data-[selected=true]:text-gray-450 data-[selected=true]:font-bold",
+          tabContent: "flex-warp !text-warp whitespace-normal"
         }}
       >
-        <Tab
-          key="creditCard"
-          title="Pago con Tarjeta"
-        >
+        <Tab key="creditCard" title="Pago con Tarjeta">
           <PaymentInfoBanner />
           <PagoTarjeta />
         </Tab>
 
-        <Tab
-          key="paypal"
-          title="Pago con Paypal"
-        >
+        <Tab key="paypal" title="Pago con Paypal">
           <PaymentInfoBanner />
           <PagoPayPal />
         </Tab>
 
-        <Tab
-          key="tecnico"
-          title={getValue('pago.tecnico.titulo')}
-        >
+        <Tab key="tecnico" title={getValue('pago.tecnico.titulo')}>
           <PaymentInfoBanner />
           <PagoTecnico />
         </Tab>

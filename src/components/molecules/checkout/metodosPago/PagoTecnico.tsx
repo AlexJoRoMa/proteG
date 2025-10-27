@@ -6,7 +6,7 @@ export default function PagoTecnico() {
     const { getValue } = useMicrocopies('contratacion-pago');
 
     return (
-        <>
+        <section className="w-full">
             <div className='text-center mt-7'>
                 <p
                     className='text-[16px] leading-6 mb-7 xl:text-start'
@@ -22,6 +22,6 @@ export default function PagoTecnico() {
                     {getValue('pago.tecnico.agradecimiento')}
                 </p>
             </div>
-        </>
+        </section>
     )
 }

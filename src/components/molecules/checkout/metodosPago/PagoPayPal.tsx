@@ -11,7 +11,7 @@ export default function PagoPayPal() {
     const [isRecurrent, setIsRecurrent] = useState(false);
 
     return (
-        <>
+        <section className='w-full'>
             <div className='flex flex-row w-full justify-between mt-[24px] xl:mt-[27px]'>
                 <h1 className='font-normal text-lg leading-[24px]'>
                     Activa tu pago recurrente
@@ -55,6 +55,6 @@ export default function PagoPayPal() {
                 </p>
             </div>
 
-        </>
+        </section>
     )
 }
