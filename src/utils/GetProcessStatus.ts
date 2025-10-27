@@ -19,7 +19,6 @@ export async function GetProcessStatus(processId: string) {
         const data = await response.json();
         if (data.error) throw new Error("Invalid response from server");
 
-        console.log('response processStatus:', data)
         return data;
 
     } catch (err) {

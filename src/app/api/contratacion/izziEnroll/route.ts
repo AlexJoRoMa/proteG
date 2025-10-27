@@ -7,7 +7,6 @@ export async function POST(request: NextRequest) {
 
     try {
         const body = await request.json();
-        console.log('body', body)
         const Cookie = request.headers.get("x-Cookie")!;
 
         const data = await getIzziEnroll({

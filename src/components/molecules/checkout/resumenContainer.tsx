@@ -109,7 +109,6 @@ export default function ResumenContainer() {
         action: async () => {
             const res = await GetSubmitOffer(izziEnrrollRef.current);
             const data = await res;
-            console.log('data submitOffer:', data)
             if (data?.code) {
                 throw new Error("Error del servicio submitOffer");
             }
@@ -161,7 +160,6 @@ export default function ResumenContainer() {
         action: async () => {
             const res = await GetCapacity(izziEnrrollRef.current);
             const data = await res;
-            console.log('data getCapacity:', data)
             if (data?.code) {
                 throw new Error("Error del servicio getCapacity");
             }
@@ -206,7 +204,6 @@ export default function ResumenContainer() {
         action: async () => {
             const res = await GetSubmitCapacity(izziEnrrollRef.current, datosContratacionRef);
             const data = await res;
-            console.log('data getCapacity:', data)
             if (data?.code) {
                 throw new Error("Error del servicio getCapacity");
             }
@@ -229,7 +226,6 @@ export default function ResumenContainer() {
 
             switch (currentStep) {
                 case 1: {
-                    console.log('configurador listo:', stepData)
                     setStatusStep((prev) => ({
                         ...prev,
                         [`step${currentStep}`]: {
@@ -240,7 +236,6 @@ export default function ResumenContainer() {
                     break
                 }
                 case 2: {
-                    console.log('Datos Personales:', stepData)
                     setDatosContratacion((prev) => ({
                         ...prev,
                         DatosPersonales: stepData
@@ -252,13 +247,11 @@ export default function ResumenContainer() {
                         }
                     }));
 
-                    console.log('Datos Contratacion:', datosContratacion)
                     setIsStepValid(false)
                     nextStep()
                     break
                 }
                 case 3: {
-                    console.log('Verificacion de contacto:', stepData)
                     setDatosContratacion((prev) => ({
                         ...prev,
                         VerificacionContacto: stepData
@@ -269,8 +262,6 @@ export default function ResumenContainer() {
                             completado: true
                         }
                     }));
-
-                    console.log('Datos Contratacion:', datosContratacion)
 
                     try {
                         // IzziEnroll
@@ -293,7 +284,6 @@ export default function ResumenContainer() {
                     break
                 }
                 case 4: {
-                    console.log('Documentos del Titular:', stepData)
                     setDatosContratacion((prev) => ({
                         ...prev,
                         DocumentosTitular: stepData
@@ -330,7 +320,6 @@ export default function ResumenContainer() {
                     break
                 }
                 case 5: {
-                    console.log('Fecha y hora de Instalacion:', stepData)
                     setDatosContratacion((prev) => ({
                         ...prev,
                         Instalacion: stepData

@@ -52,7 +52,6 @@ export async function GetSubmitOffer(processId: string) {
         const data = await response.json();
         // if (!data) throw new Error("Invalid response from server");
 
-        console.log('responseSubmitOffer:', data)
         return data;
 
     } catch (err) {

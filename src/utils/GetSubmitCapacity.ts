@@ -27,7 +27,6 @@ export async function GetSubmitCapacity(processId: string, datosContratacion: Re
         });
 
         const data = await response.json();
-        console.log('response getSubmitCapacity:', data)
         if (!data) throw new Error("Invalid response from server");
 
         return data;

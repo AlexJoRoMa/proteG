@@ -66,7 +66,6 @@ export async function getSendCode({
     const url = process.env.ENVIO_CODIGO_PATH;
 
     try {
-        console.log("ejecutando getSendCode...")
 
         const response = await fetch(`${url}`, {
             method: "POST",
@@ -99,7 +98,6 @@ export async function getVerifyCode({
     const url = process.env.VERIFICA_CODIGO_PATH;
 
     try {
-        console.log("ejecutando getVerifyCode...")
 
         const response = await fetch(`${url}`, {
             method: "POST",
@@ -134,7 +132,6 @@ export async function getIzziEnroll({
     const accessToken = await getToken();
 
     try {
-        console.log('Ejecutando IzziEnroll...');
 
         const response = await fetch(`${url}`, {
             method: "POST",
@@ -151,7 +148,6 @@ export async function getIzziEnroll({
         }
 
         const data = await response.text();
-        console.log('response izziEnrroll:', data)
         return data;
 
     } catch (err) {
@@ -169,7 +165,6 @@ export async function GetProcessStatus({
 
 
     try {
-        console.log('Ejecutando processStatus...');
 
         const response = await fetch(`${url}?processId=${headers.processId}`, {
             method: "GET",
@@ -184,7 +179,6 @@ export async function GetProcessStatus({
         }
 
         const data = await response.json();
-        console.log('response processStatus:', data)
         return data;
 
     } catch (err) {
@@ -202,7 +196,6 @@ export async function getSubmitOffer({
     const accessToken = await getToken();
 
     try {
-        console.log('Ejecutando processStatus...');
 
         const response = await fetch(`${url}`, {
             method: "POST",
@@ -219,7 +212,6 @@ export async function getSubmitOffer({
 
         const text = await response.text();
         const data = text ? JSON.parse(text) : null;
-        console.log('response submitOffer:', data)
         return data;
 
     } catch (err) {
@@ -271,7 +263,6 @@ export async function getCapacity({
     const accessToken = await getToken();
 
     try {
-        console.log('Ejecutando GetCapacity...');
 
         const response = await fetch(`${url}?processId=${headers.processId}`, {
             method: "GET",
@@ -286,7 +277,6 @@ export async function getCapacity({
         }
 
         const data = await response.json();
-        console.log('response getCapacity:', data)
         return data;
 
     } catch (err) {
@@ -303,7 +293,6 @@ export async function getLigaPago({
     const url = process.env.GET_LIGA_PAGO;
 
     try {
-        console.log('Ejecutando ligaPago...');
 
         const response = await fetch(`${url}`, {
             method: "POST",
@@ -375,7 +364,6 @@ export async function getSubmitCapacity({
     const accessToken = await getToken();
 
     try {
-        console.log('Ejecutando SubmitCapacity...');
 
         const response = await fetch(`${url}`, {
             method: "POST",
@@ -391,7 +379,6 @@ export async function getSubmitCapacity({
         }
 
         const data = await response.json();
-        console.log('response SubmitCapacity:', data)
         return data;
 
     } catch (err) {

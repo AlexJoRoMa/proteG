@@ -13,7 +13,6 @@ export async function GetCapacity(processId: string) {
         });
 
         const data = await response.json();
-        console.log('response getCapacity:', data)
         if (!data) throw new Error("Invalid response from server");
 
         return data;

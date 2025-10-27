@@ -8,7 +8,6 @@ export async function POST(request: NextRequest) {
     try {
 
         const body = await request.json();
-        console.log('body verifica', body)
         const medio = request.headers.get("medio")!;
         const oferta = request.headers.get("oferta")!;
         const origin = request.headers.get("x-origin")!;
@@ -17,8 +16,6 @@ export async function POST(request: NextRequest) {
             body,
             headers: { medio, oferta, origin}
         });
-        // console.log('headers:', { medio, oferta, origin })
-        console.log('response verifica:', data)
 
         return new Response(JSON.stringify(data), { status: 200 });
     } catch (e) {

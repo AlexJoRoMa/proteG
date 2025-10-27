@@ -8,12 +8,6 @@ const paypalAuthorization = process.env.AUTHORIZATION_KEY!;
 
 export async function GET() {
     try {
-        console.log({
-            paypalBasePath,
-            apiKey,
-            paypalChannel,
-            paypalPlatform,
-        })
 
         const url = paypalBasePath;
 

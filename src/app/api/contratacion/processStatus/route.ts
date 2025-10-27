@@ -11,7 +11,6 @@ export async function GET(request: NextRequest) {
         const data = await GetProcessStatus({
             headers: { processId }
         });
-        console.log('response:', data)
 
         return new Response(JSON.stringify(data), { status: 200 });
     } catch (e) {

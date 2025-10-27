@@ -96,7 +96,6 @@ export async function GetIzziEnroll() {
         });
 
         const data = await response.json();
-        console.log('response getIzziEnrroll:', data)
         if (!data) throw new Error("Invalid response from server");
 
         return data;
