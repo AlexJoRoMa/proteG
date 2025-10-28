@@ -12,14 +12,12 @@ import {
 } from "@heroui/react";
 import Link from "next/link";
 import Image from "next/image";
-import { IzziNavbar, HeaderComponentProps } from "@/types/headerTypes";
+import { IzziNavbar, HeaderLandingComponentProps } from "@/types/headerTypes";
 import ButtonModal from '../atoms/ButtonModal';
 import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
 import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
-import { usePathname } from 'next/navigation';
-import { getLandingNavbar } from '@/constants/LandingHeaderConstants';
 
-export default function IzziHeaderLanding({navbarData}: HeaderComponentProps) {
+export default function IzziHeaderLanding({apibarData, navbarData}: HeaderLandingComponentProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
     // Función helper para renderizar el modal correcto basado en typeModal
@@ -35,17 +33,19 @@ export default function IzziHeaderLanding({navbarData}: HeaderComponentProps) {
         return null;
     };
     
-    const pathname = usePathname();
     
-    const navbarContent = navbarData as unknown as Array<IzziNavbar>
+    const getBarData = navbarData as unknown as IzziNavbar;
+    const hasCombos = getBarData.fields.landingCombos === true ? 'Navbar Landing  wCombos' : 'Navbar Landing  noCombos';
+    
+    const navbarContent = apibarData as unknown as Array<IzziNavbar>;
 
-    const setNavbar = getLandingNavbar(pathname, navbarContent);
     
-    const navbar = navbarContent?.filter((data) => data.fields.internalName == setNavbar );
+    
+    const navbar = navbarContent?.filter((data) => data.fields.internalName === hasCombos );
     const navbarButtons = navbarContent?.filter((data) => data.fields.internalName == "NavbarButtons Landing");
     const mobileNavbarButton = navbarContent?.filter((data) => data.fields.internalName == "MobileAccountButton");
-    const mobileCoberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaMobile");
-    const coberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaDesktop");
+   /*  const mobileCoberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaMobile");
+    const coberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaDesktop"); */
 
 
     // Normaliza URLs para que sean absolutas (agrega '/' si falta)
