@@ -83,6 +83,8 @@ export default function IzziHeaderLanding({apibarData, navbarData}: HeaderLandin
         </NavbarItem>
         ))}
       </NavbarContent>
+
+{/* Botones Navbar Desk */}
       <NavbarContent justify="end" className="!grow-0">
         {navbarButtons[0].fields?.navigation?.map((link, index) => (    
             <NavbarItem key={`${link}-${index}`} className="hidden xl:flex ">
@@ -119,6 +121,8 @@ export default function IzziHeaderLanding({apibarData, navbarData}: HeaderLandin
         </NavbarItem>
         ))}
       </NavbarContent>
+      
+      
       <NavbarMenu className="bg-white-0 mt-[26px] gap-[26px]">
         {navbar[0].fields?.navigation?.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>

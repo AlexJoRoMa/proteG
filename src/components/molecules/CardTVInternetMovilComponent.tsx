@@ -8,6 +8,7 @@ import ButtonModal from '../atoms/ButtonModal'
 import { ColorOption } from '@/constants/ColorModalConstants'
 import RichTextComponent from './RichTextComponent'
 import { Document } from '@contentful/rich-text-types'
+import ButtonLanding from '@/components/atoms/ButtonStickyLanding'
 
 const CardTVInternetMovilComponent = ({card}:CardPropType) => {
 
@@ -15,7 +16,7 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
     const color = type === 'internet' ? INTERNETCOLOR : type === 'tv' ? TVCOLOR : type === 'movil' ? MOVILCOLOR : '#000000';
 
   return (
-    <div className='px-[16px] md:px-[24px] py-[32px] bg-white md:h-[660px] xsm:h-[670px] rounded-md relative flex-col flex'>
+    <div className='px-[16px] md:px-[24px] py-[32px] bg-white 3xl:h-[660px] 2xl:h-[690px] md:h-[660px] xsm:h-[670px] rounded-md relative flex-col flex'>
       {
         card?.fields?.alternativeDescription ? (
           <>
@@ -101,8 +102,7 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
         )
       }          
         <div className='mt-auto'>
-            {
-                card?.fields.isModal == 'si' ? (
+            {card?.fields.isModal == 'si' ? (
                     <ButtonModal
                         classStyles='w-full mb-4 border-[1px solid black] rounded-md text-black text-[16px] md:text-[18px] font-bold'
                         textBtn={card?.fields?.textBtn1 as string}
@@ -115,8 +115,12 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
                         text={card?.fields?.textBtn1 as string} href={card?.fields?.urlBtn1 as string} />
                 )
             }
-            <ButtonGhost classStyles='w-full rounded-md bg-black text-white border-none font-bold text-[16px] md:text-[18px]'
+            {card?.fields?.urlBtn2 === 'landing' ? (
+              <ButtonLanding />
+            ) : (
+              <ButtonGhost classStyles='w-full rounded-md bg-black text-white border-none font-bold text-[16px] md:text-[18px]'
                 text={card?.fields?.textBtn2 as string} href={card?.fields?.urlBtn2 as string} />
+            )}
         </div>
     </div>
   )
