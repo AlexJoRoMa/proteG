@@ -15,7 +15,7 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
     const color = type === 'internet' ? INTERNETCOLOR : type === 'tv' ? TVCOLOR : type === 'movil' ? MOVILCOLOR : '#000000';
 
   return (
-    <div className='px-[16px] md:px-[24px] py-[32px] bg-white h-[650px] rounded-md relative flex-col flex'>
+    <div className='px-[16px] md:px-[24px] py-[32px] bg-white md:h-[660px] xsm:h-[670px] rounded-md relative flex-col flex'>
       {
         card?.fields?.alternativeDescription ? (
           <>
