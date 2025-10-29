@@ -116,7 +116,7 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
                 )
             }
             {card?.fields?.urlBtn2 === 'landing' ? (
-              <ButtonLanding />
+              <ButtonLanding textBoton={card?.fields?.textBtn2 as string} landing={card?.fields?.urlBtn2 as string} />
             ) : (
               <ButtonGhost classStyles='w-full rounded-md bg-black text-white border-none font-bold text-[16px] md:text-[18px]'
                 text={card?.fields?.textBtn2 as string} href={card?.fields?.urlBtn2 as string} />

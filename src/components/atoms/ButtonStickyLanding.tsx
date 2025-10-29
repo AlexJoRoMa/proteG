@@ -5,63 +5,20 @@ import { ContactIcon } from './ModalIcons';
 import { ResourceType } from '@/types/ButtonTypes';
 import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
-const ButtonLanding = async() => {
 
+interface ButtonLandingProps {
+  textBoton: string;
+  landing: boolean | string;
+}
 
+const ButtonLanding: React.FC<ButtonLandingProps> = async(
+  {textBoton, landing}) => {
   try {
-    // Obtener datos desde Contentful
-    const textBtn = await getMicroCopy('btn.sticky.text');
-    const modalTexts = await getAllCopy('stickyModal');
 
-    // Encontrar valores por key
-    const getValueByKey = (key: string) => {
-
-      const item = modalTexts[0].fields?.resources?.find((item: ResourceType) => item.fields?.key === key);
-
-      return item?.fields?.value || '';
-    };
-
-    // Mapear los datos del modal
-    const modalData = {
-      title: getValueByKey('stickyModal.title'),
-      column1: {
-        title: getValueByKey('stickyModal.column1.title'),
-        row1: {
-          text: getValueByKey('stickyModal.column1.row1.text'),
-          tel: getValueByKey('stickyModal.column1.row1.tel'),
-        },
-        row2: {
-          link: getValueByKey('stickyModal.column1.row2.link'),
-        },
-        row3: {
-          wpp: {
-            text: getValueByKey('stickyModal.column1.row3.wpp.text'),
-            tel: getValueByKey('stickyModal.column1.row3.wpp.tel'),
-            promoText: getValueByKey('stickyModal.column1.row3.wpp.promoText'),
-          },
-        },
-      },
-      column2: {
-        title: getValueByKey('stickyModal.column2.title'),
-        row1: {
-          text: getValueByKey('stickyModal.column2.row1.text'),
-          tel: getValueByKey('stickyModal.column2.row1.tel'),
-        },
-        row2: {
-          link: {
-            text: getValueByKey('stickyModal.column2.row2.link.text'),
-            url: getValueByKey('stickyModal.column2.row2.link.url'),
-          },
-        },
-        row3: {
-          wpp: {
-            text: getValueByKey('stickyModal.column2.row3.wpp.text'),
-            tel: getValueByKey('stickyModal.column2.row3.wpp.tel'),
-            promoText: getValueByKey('stickyModal.column2.row3.wpp.promoText'),
-          },
-        },
-      },
-    };
+    const marginTop = landing ===  true ? 'mt-5' : ''
+    const btnColor = landing ===  true ? 'bg-white' : 'bg-black'
+    const textColor = landing === true ? 'text-black' : 'text-white'
+    const wBtn = landing ===  true ? 'md:w-[320px] xsm:w-[256px]' : 'w-full'
 
     return (
       <>
@@ -73,10 +30,10 @@ const ButtonLanding = async() => {
             backdropColor='black-0/80'
             textBtn={
               <>
-                {'contratar ahorax'}
+                { textBoton || 'contratar ahora'}
               </>
             }
-            classStyles='w-full rounded-md bg-black text-white border-none font-bold text-[16px] md:text-[18px]'
+            classStyles={`${wBtn} rounded-md ${btnColor} ${textColor} ${marginTop} border-none font-bold text-[16px] md:text-[18px]`}
           >
               <TeLlamamosModalComponent  />
           </ButtonModal>
@@ -90,23 +47,19 @@ const ButtonLanding = async() => {
     return (
       <>
         <ButtonModal
-          idModal=''
-          closeButtonStroke='black'
-          modalContentClassName='2xl:w-[55vw] 2xl:h-[55vh] xl:w-[70vw] xl:h-[55vh]'
-          textBtn={
-            <>
-              ¿Te ayudamos?
-              <ContactIcon />
-            </>
-          }
-          classStyles='border-2 font-bold border-solid border-transparent text-[18px] box-content leading-[24px] h-[52px] fixed bottom-4 right-4 z-50 rounded-md bg-black text-white
-           shadow-[2px_4px_16px_0_rgba(0,0,0,0.3)]
-           [background-image:linear-gradient(black,black),var(--gradient-button-fixed)]
-           [background-origin:padding-box,border-box]
-           [background-clip:padding-box,border-box]'
-        >
-            <TeLlamamosModalComponent />
-        </ButtonModal>
+            idModal=''
+            closeButtonStroke='black'
+            modalContentClassName='2xl:w-[62vw] 2xl:h-[52vh] xl:w-[90vw] xl:h-[52vh] h-[98vh]'
+            backdropColor='black-0/80'
+            textBtn={
+              <>
+                {'contratar ahora'}
+              </>
+            }
+            classStyles='w-full rounded-md bg-black text-white border-none font-bold text-[16px] md:text-[18px]'
+          >
+              <TeLlamamosModalComponent  />
+          </ButtonModal>
       </>
     );
   }
