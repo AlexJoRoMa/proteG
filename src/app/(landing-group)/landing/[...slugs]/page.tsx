@@ -3,7 +3,7 @@ import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import { Entry, EntrySkeletonType } from "contentful";
 import { notFound } from "next/navigation";
-import NavigationLanding from '@/components/molecules/navigationLandingComponent';
+/* import NavigationLanding from '@/components/molecules/navigationLandingComponent'; */
 
 interface DynamicPageProps {
     params: Promise<{
@@ -19,7 +19,7 @@ export default async function LandingPage({ params }: DynamicPageProps) {
     const page = await fetchComponentsBySlugPage(fullPath);
     const components = page.items || [];
     
-    const headerData = components[0].fields.header as Entry<EntrySkeletonType, undefined, string> | null;
+    /* const headerData = components[0].fields.header as Entry<EntrySkeletonType, undefined, string> | null; */
     
     
     if (page.total !== 1) {
@@ -28,7 +28,7 @@ export default async function LandingPage({ params }: DynamicPageProps) {
 
     return (
         <>
-        <NavigationLanding navbarData={headerData}/>
+        {/* <NavigationLanding navbarData={headerData}/> */}
         <main>
             
             {components[0]?.fields.components &&

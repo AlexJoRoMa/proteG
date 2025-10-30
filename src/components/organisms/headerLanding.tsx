@@ -17,7 +17,7 @@ import ButtonModal from '../atoms/ButtonModal';
 import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
 import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 
-export default function IzziHeaderLanding({apibarData, navbarData, clienteTitulo, llamanosTitulo}: HeaderLandingComponentProps) {
+export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTitulo}: HeaderLandingComponentProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     
 
@@ -35,29 +35,55 @@ export default function IzziHeaderLanding({apibarData, navbarData, clienteTitulo
     };
     
     
-    const getBarData = navbarData as unknown as IzziNavbar;
-    const hasCombos = getBarData.fields.landingCombos === true ? 'Navbar Landing  wCombos' : 'Navbar Landing  noCombos';
+/*     const getBarData = navbarData as unknown as IzziNavbar;
+    const hasCombos = getBarData.fields.landingCombos === true ? 'Navbar Landing  wCombos' : 'Navbar Landing  noCombos'; */
     
     const navbarContent = apibarData as unknown as Array<IzziNavbar>;
 
+    const borderStyle = {
+        'borderBottom': '2px solid',
+        'borderImage': 'linear-gradient(90deg, #FF6C07 0%, #4DA9A7 33%, #D31772 66%, #FCD116 100%)',
+        'borderImageSlice': '1',
+        width: '100%'
+    }
     
-    
-    const navbar = navbarContent?.filter((data) => data.fields.internalName === hasCombos );
+    const navbar = navbarContent?.filter((data) => data.fields.internalName === 'Navbar Landing  wCombos' );
     const navbarButtons = navbarContent?.filter((data) => data.fields.internalName == "NavbarButtons Landing");
     const mobileNavbarButton = navbarContent?.filter((data) => data.fields.internalName == "MobileAccountButton");
-   /*  const mobileCoberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaMobile");
-    const coberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaDesktop"); */
+    const mobileCoberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaMobile");
+    const coberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaDesktop");
 
 
     // Normaliza URLs para que sean absolutas (agrega '/' si falta)
     const normalizeUrl = (url: string) => url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
 console.log("🥑🥑🥑  clienteTitulo ", clienteTitulo)
-console.log("🥑🥑🥑  llamanosTitulo ", llamanosTitulo)
+
 
     return (
     <>
-        
-        <Navbar onMenuOpenChange={setIsMenuOpen}
+      <Navbar style={borderStyle}
+        onMenuOpenChange={setIsMenuOpen}
+        className='3xl:hidden'
+        classNames={{
+        wrapper: "max-w-full h-[88px] pl-0 pr-0 bg-white-0 " 
+        }}
+        >
+          <NavbarContent>
+            <NavbarItem className=" w-full 3xl:hidden flex h-full ">
+              <div className='border-r-1 border-gray-150 bg-gray-100 w-1/2 h-full flex flex-col justify-center align-middle items-center'>
+              <p className=''>{clienteTitulo}</p>
+              <p className='font-bold '>800 120 5000</p>
+              </div>
+              <div className=' bg-gray-100 w-1/2 h-full flex flex-col justify-center align-middle items-center'>
+              <p className=''>{llamanosTitulo}</p>
+              <p className='font-bold '>800 607 7082</p>
+              </div>
+              </NavbarItem>    
+          </NavbarContent>
+      </Navbar>        
+      
+{/* Bar de Navegacion */}
+      <Navbar onMenuOpenChange={setIsMenuOpen}
         classNames={{
         wrapper: "max-w-full h-[88px] pl-4 pr-0 bg-white-0"
       }}>
@@ -68,7 +94,7 @@ console.log("🥑🥑🥑  llamanosTitulo ", llamanosTitulo)
         />
         
       </NavbarContent>
-{/*  */}
+{/* icono */}
       <NavbarContent className={`${isMenuOpen ? 'ps-0': 'pl-16'} !grow-0 lg:justify-start sm:justify-center lg:pl-0 lg:ps-0`}>
         <NavbarBrand>
           <Link href="/">
@@ -76,6 +102,7 @@ console.log("🥑🥑🥑  llamanosTitulo ", llamanosTitulo)
           </Link>
           </NavbarBrand>
       </NavbarContent>
+      
 {/* Opciones de navegacion */}
       <NavbarContent className="hidden 2xl:flex gap-[32px] min-[1024px]:gap-[12px] min-[1095]:gap-[17px] min-[1150px]:gap-[15px]" justify="start">
         { navbar[0].fields?.navigation?.map((link, index) => (    
@@ -155,6 +182,9 @@ console.log("🥑🥑🥑  llamanosTitulo ", llamanosTitulo)
             );
         })}
       </NavbarMenu>
+
+
+
     </Navbar>
     </>
     )

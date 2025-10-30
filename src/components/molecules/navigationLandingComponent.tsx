@@ -18,16 +18,16 @@ const getLlamanosTitulo = await getMicroCopy('llamanos.gratis');
 
 const apibarData: Entry<EntrySkeletonType, undefined, string>[] | null = await getHeaderContentType();
 
-interface NavigationProps {
+/* interface NavigationProps {
   navbarData: Entry<EntrySkeletonType, undefined, string> | null;
-}
+} */
 
 
-export default function NavigationLanding({ navbarData }: NavigationProps) {
+export default function NavigationLanding() {
   const clienteTitulo = getClienteTitulo?.[0]?.fields?.value;
   const llamanosTitulo = getLlamanosTitulo?.[0]?.fields?.value;
 
   return (
-    <IzziHeaderLanding navbarData={navbarData} apibarData={apibarData} clienteTitulo={clienteTitulo as string} llamanosTitulo={llamanosTitulo as string}/>  
+    <IzziHeaderLanding apibarData={apibarData} clienteTitulo={clienteTitulo as string} llamanosTitulo={llamanosTitulo as string}/>  
   );
 }

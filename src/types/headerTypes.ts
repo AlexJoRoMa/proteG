@@ -37,7 +37,7 @@ export type HeaderComponentProps = {
 }
 
 export type HeaderLandingComponentProps = {
-    navbarData: Entry<EntrySkeletonType, undefined, string> | null,
+    /* navbarData: Entry<EntrySkeletonType, undefined, string> | null, */
     apibarData: Entry<EntrySkeletonType, undefined, string>[] | null,
     clienteTitulo: string,
     llamanosTitulo: string,
