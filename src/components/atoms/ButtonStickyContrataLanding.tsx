@@ -59,7 +59,7 @@ const ButtonFixedContracLanding = async() => {
       },
     };
 
-    console.log('🥑 setWhatsPromo ', setWhatsPromo )
+    console.log('👽 setWhatsNumber ', setWhatsNumber )
     return (
       <>
           <ButtonModal
@@ -83,26 +83,20 @@ const ButtonFixedContracLanding = async() => {
           </ButtonModal>
 
 {/* Botones sticky para movil */}
-          <ButtonModal
-            idModal=''
-            closeButtonStroke='black'
-            modalContentClassName='2xl:w-[62vw] 2xl:h-[52vh] xl:w-[90vw] xl:h-[52vh] h-[98vh]'
-            backdropColor='black-0/80'
-            textBtn={
-              <>
-                { stikyLlamanos || 'llamanos'}
-              </>
-            }
-            classStyles='border-2 font-bold border-solid border-transparent text-[18px] box-content leading-[24px] h-[52px] 
+          <div
+            className='border-2 font-bold border-solid border-transparent text-[18px] box-content leading-[24px] h-[52px] 
             fixed bottom-4 left-4 z-50 rounded-md bg-black text-white
              shadow-[2px_4px_16px_0_rgba(0,0,0,0.3)]
              [background-image:linear-gradient(black,black),var(--gradient-button-fixed)]
              [background-origin:padding-box,border-box]
              [background-clip:padding-box,border-box]
-             flex md:hidden'
+             flex md:hidden  w-[116px]'
           >
-              <TeAyudamosLandingModalComponent modalData={modalData} />
-          </ButtonModal>
+              <a className='flex items-center justify-center w-full' 
+              href={`tel:${setWhatsNumber}`} >
+              { stikyLlamanos || 'stikyLlamanos'}
+              </a>
+          </div>
           <div
             className='border-2 font-bold border-solid border-transparent text-[18px] box-content leading-[24px] h-[52px] 
             fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 rounded-md bg-black text-white
