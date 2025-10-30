@@ -38,11 +38,26 @@ export default function PlanesTv({ step }: StepProps) {
         if (internet) {
 
             const tvLight = configuradorEntry?.offers.TV.filter(item => item.titulo.includes("light")) as OfferItem[];
-            const triplePlay = configuradorEntry?.offers.TRIPLE_PLAY.filter(item => item.velocidadMinima === internet.paquete?.velocidadMinima)
-                .map((item) => ({
-                    ...item,
-                    titulo: offersCopys.tv.cards.titulo,
-                })) as unknown as OfferItem[];
+            const triplePlay: OfferItem[] = configuradorEntry?.offers.TRIPLE_PLAY
+            .filter(item => item.velocidadMinima === internet.paquete?.velocidadMinima)
+            .map(item => {
+            const totalAhorros = item.izziAhorros?.reduce(
+                (acc, ahorro) => acc + Number(ahorro.monto),
+                0
+            ) || 0;
+
+            const precioTachado = (
+                Number(item.precioPaquete || 0) - totalAhorros - Number(userAnswers.internet?.paquete?.precioTachado)
+            ).toString();
+
+            return {
+                ...item,
+                titulo: offersCopys.tv.cards.titulo,
+                precioPaquete: precioTachado,
+                precioTachado: item.precioPaquete
+            };
+            }) ?? []
+
 
             const tvOffers = [...triplePlay, ...tvLight]
             setTvPlans(tvOffers);
@@ -201,24 +216,20 @@ export default function PlanesTv({ step }: StepProps) {
                                     <CardFooter>
                                         <div className="flex flex-col gap-[8px] w-full">
                                             <div className="flex flex-row items-baseline text-start gap-[4px]">
-                                                {
-                                                    // card.precioAhorro ?
-                                                    //     <>
-                                                    //         <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioPaquete)}</p>
-                                                    //         <div className="flex flex-row items-baseline">
-                                                    //             <p className="text-lg font-bold">{FormatCurrency(card.precioAhorro)}</p>
-                                                    //             <p className="text-sm font-normal">{offersCopys.tv.cards.periodo}</p>
-                                                    //         </div>
-                                                    //     </>
-                                                    //     :
+                                                <>
+                                                <div className="flex flex-row items-baseline">
+                                                    {
+                                                    userAnswers.internet && card.precioTachado ? 
                                                         <>
-                                                            {/* {card.fields.beforePrice && <p className="text-sm font-normal">{card.fields.beforePrice}</p>} */}
-                                                            <div className="flex flex-row items-baseline">
-                                                                <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
-                                                                <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
-                                                            </div>
+                                                        <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioTachado)}</p>
+                                                        <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete as string)}</p>
                                                         </>
-                                                }
+                                                        :
+                                                        <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
+                                                    }
+                                                    <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
+                                                </div>
+                                                </>
 
                                             </div>
                                             <div className="flex flex-row gap-[16px] items-center justify-between">

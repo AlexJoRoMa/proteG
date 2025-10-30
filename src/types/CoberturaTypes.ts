@@ -98,6 +98,4 @@ export type DataFields = {
   setLat: React.Dispatch<React.SetStateAction<number>>,
   lng: number,
   setLng: React.Dispatch<React.SetStateAction<number>>,
-  formattedAddress: string,
-  setFormattedAddress: React.Dispatch<React.SetStateAction<string>>
 }

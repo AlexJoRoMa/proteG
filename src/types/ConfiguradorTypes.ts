@@ -25,6 +25,9 @@ export interface ApiResponse {
     coverageType: string[],
     offers: Offers,
     rptCode: string,
+    hub: string,
+    offnetIzzi: boolean,
+    offnetSky: boolean
 }
 
 export interface ApiToken {
@@ -38,6 +41,24 @@ export interface PackageInfo {
     id: number,
     rpt: string,
     coverage: string[]
+}
+
+export interface QuoteInfo {
+    rpt: string,
+    postalCode: string,
+    hub: string,
+    coverageType: string[],
+    requestedServices: {
+        extras?: Extra[],
+        product: number
+    },
+    offnet: boolean
+}
+
+export interface Extra {
+    extId: number,
+    nuevaCantidad: number,
+    combo: boolean
 }
 
 export interface Offers {
@@ -60,7 +81,17 @@ export interface OfferItem {
     spMovil: boolean,
     velocidadMaxima?: number,
     velocidadMinima?: number,
-    extrasIncluidos?: ExtrasIncluidos[]
+    extrasIncluidos?: ExtrasIncluidos[],
+    izziAhorros?: Ahorro[],
+    descuentoPaquete?: string,
+    precioDomiciliacion?: string,
+    precioTachado?: string;
+}
+
+export interface Ahorro {
+    aplica: string,
+    categoria: string,
+    monto: string
 }
 
 export interface ExtrasIncluidos {
@@ -130,8 +161,8 @@ export type ProviderProps = {
     copysResumen: CopysObject,
     copysConfigurador: CopysObject,
     resumenIcon: EntrySkeletonType<ResumenIcon>,
-    ottsImages: Entry<EntrySkeletonType<OttsImages>>[]
-    cobertura: boolean
+    ottsImages: Entry<EntrySkeletonType<OttsImages>>[],
+    cobertura: boolean,
 }
 
 export type DataFields = {
@@ -150,7 +181,33 @@ export type DataFields = {
     infoDrawerContent: string,
     setInfoDrawerContent: React.Dispatch<React.SetStateAction<string>>,
     disabled: boolean,
-    setDisabled: React.Dispatch<React.SetStateAction<boolean>>
+    setDisabled: React.Dispatch<React.SetStateAction<boolean>>,
+}
+
+export interface Promotion {
+    promoPackage?: PromoPackage[],
+    promos?: Promos[]
+}
+
+export interface PromoPackage {
+    amount: string,
+    duration: number,
+    name: string,
+    permanent: string,
+    startMonth: number
+}
+
+export interface Promos {
+    mesInicio: string,
+    meses: string,
+    permanente: string,
+    product: string,
+    promoMode: string,
+    promoMovil: boolean,
+    promoName: string,
+    promoPrice: number,
+    promoType: string,
+    serviceType: string,
 }
 
 export interface UserAnswers {
@@ -181,6 +238,7 @@ export interface IzziSelection {
     periodicidad?: string,
     descripcion?: string,
     precioPaquete?: string,
+    precioDomiciliacion?: string,
     velocidadMinima?: number,
     velocidadMaxima?: number,
     extrasIncluidos?: ExtrasIncluidos[],
@@ -266,6 +324,17 @@ export type ConfiguradorCopys = {
 }
 
 export type OffersCopys = {
+    page: {
+        titulo: string,
+        ayuda: {
+            textoInfo: string,
+            botonAyuda: string
+        },
+        botonRegreso: {
+            titulo: string,
+            url: string
+        }
+    },
     internet: {
         titulo: string,
         cards: {
@@ -299,9 +368,16 @@ export type OffersCopys = {
     }
 }
 
-export type CoberturaType = {
-    lat: string,
-    lng: string,
-    zipCode: string,
-    address: string
+export interface CoberturaType {
+    lat?: string,
+    lng?: string,
+    zipCode?: string,
+    address?: string
 }
+
+export type ClientProps = {
+    resumenIcon: EntrySkeletonType<ResumenIcon>
+    ottImages: Entry<EntrySkeletonType<OttsImages>>[]
+    copysResumen: string
+    copysConfigurador: ConfiguradorCopys
+  }

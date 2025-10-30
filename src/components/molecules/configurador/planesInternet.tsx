@@ -14,9 +14,44 @@ export default function PlanesInternet({ step }: StepProps) {
     const { configuradorEntry, setUserAnswers, disabled, userAnswers, copysConfigurador } = useContent();
     const plans = configuradorEntry?.offers?.DOBLE_PLAY;
     const offersCopys = copysConfigurador as unknown as OffersCopys;
+    const coverageType = configuradorEntry?.coverageType.includes('FTTH') ? 'FTTH' : 'HFC';
 
-    const plansInfo = plans as unknown as OfferItem[];
+    const plansPrev = plans as unknown as OfferItem[];
 
+  
+    const plansInfo: OfferItem[] = plansPrev.map(offer => {
+        const totalAhorros = offer.izziAhorros?.reduce((acc, ahorro) => acc + Number(ahorro.monto), 0) || 0;
+        const nuevoPrecio = (
+        Number(offer.precioPaquete) -
+        totalAhorros -
+        Number(offer.descuentoPaquete || 0) -
+        Number(offer.precioDomiciliacion || 0)
+        ).toString();
+        const precioTachado = (Number(offer.precioPaquete) - totalAhorros).toString();
+        return {
+        ...offer,
+        precioPaquete: nuevoPrecio,
+        precioTachado: precioTachado
+        };
+    })
+  
+  
+
+    const mapOffersByType = {
+        hfc: [
+            80,
+            100,
+            150
+        ],
+        ftth: [
+            80,
+            100,
+            200,
+            1000
+        ]
+    }
+
+    const offersByType = plansInfo.filter((plan: OfferItem) => coverageType == 'HFC' ? mapOffersByType.hfc.includes(plan.velocidadMinima as number) : mapOffersByType.ftth.includes(plan.velocidadMinima as number));
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
     function handleSelect(index: number, card: OfferItem) {
@@ -72,7 +107,7 @@ export default function PlanesInternet({ step }: StepProps) {
 
             <div className="grid grid-cols-2 2xl:grid-cols-4 gap-[16px] 2xl:gap-[24px] auto-rows-fr">
                 {
-                    plansInfo.map((card: OfferItem, index) => {
+                    offersByType && offersByType.map((card: OfferItem, index) => {
                         const isSelected = selectedIndex === index;
 
                         return (
@@ -106,7 +141,7 @@ export default function PlanesInternet({ step }: StepProps) {
                                     <CardFooter>
                                         <div className="flex flex-col w-full gap-[8px]">
                                             <div className="flex flex-row items-baseline gap-[4px]">
-                                                {/* <span className="text-sm font-normal text-gray-200 line-through">{FormatCurrency(card.precioPaquete)}</span> */}
+                                                <span className="text-sm font-normal text-gray-200 line-through">{FormatCurrency(card.precioTachado as string)}</span>
                                                 <div className="flex flex-row items-baseline">
                                                     <span className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</span>
                                                     <span className="text-sm font-normal">{`/${card.periodicidad}`}</span>
