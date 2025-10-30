@@ -8,6 +8,9 @@ import { ThankyouCopys } from "@/types/ThankyouTypes";
 import { FormatCurrency } from "@/utils/Currency";
 import { useEffect, useState } from "react";
 import ButtonGhost from "../atoms/ButtonGhost";
+import ResumenContent from "../molecules/resumenCompra/resumenContent";
+import { useIzziContent } from "@/utils/IzziProvider";
+import { ResumenData } from "@/types/ResumenCompra";
 
 type Shift = {
     day: number | string,
@@ -35,9 +38,13 @@ const DUMMY = {
 
 export default function ThankYou() {
 
-    const { icon, copys } = useThankYou();
-    const copy = copys as ThankyouCopys;
+    const { globalUserAnswers } = useIzziContent();
+    const { icon, copys, copyResumen } = useThankYou();
+
     const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
+
+    const copy = copys as ThankyouCopys;
+    const resumenCopys = copyResumen as ResumenData;
 
     useEffect(() => {
         const horario = DUMMY.product.instalacion;
@@ -135,11 +142,7 @@ export default function ThankYou() {
 
                     <div className="hidden xl:block">
                         <h1 className="mb-[24px] font-normal text-base xl:text-lg">{copy.resumen}</h1>
-                        {/* <ResumenContent copys={resumenCopys} userSelection={userAnswers}/> */}
-
-                        <div className="mb-[24px]">
-                            {'Contenido resumen de compra'}
-                        </div>
+                        <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
 
                     </div>
 

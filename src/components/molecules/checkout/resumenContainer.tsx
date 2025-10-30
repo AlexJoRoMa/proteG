@@ -17,6 +17,8 @@ import ModalFechaInvalida from "./modals/ModalFechaInvalida";
 import { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, useDisclosure } from "@heroui/react";
 import { ArrowDownIcon, ArrowUpIcon } from "@/constants/IconsConstants";
 import { ResumenData } from "@/types/ResumenCompra";
+import ResumenContent from "../resumenCompra/resumenContent";
+import { useIzziContent } from "@/utils/IzziProvider";
 
 export default function ResumenContainer() {
 
@@ -29,6 +31,7 @@ export default function ResumenContainer() {
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+    const { globalUserAnswers } = useIzziContent();
     const {
         nextStep,
         goToStep,
@@ -432,12 +435,9 @@ export default function ResumenContainer() {
                 </div>
 
                 <div className="hidden xl:block">
-                    <h1 className="font-bold leading-[24px] text-xl mb-[32px]">Resumen de pedido</h1>
+                    <h1 className="font-bold leading-[24px] text-xl mb-[32px]">{resumenCopys.titulo}</h1>
 
-                    {/* <ResumenContent copys={resumenCopys} userSelection={userAnswers}/> */}
-                    <div className="mb-[24px]">
-                        {'Contenido resumen de compra'}
-                    </div>
+                    <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers}/>
 
                 </div>
 

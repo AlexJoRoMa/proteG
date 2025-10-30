@@ -51,7 +51,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                 <>
                     <div className="flex justify-between w-full font-bold leading-[32px] xl:leading-[40px] text-2xl xl:text-[32px] pt-[24px]">
                         <h2>{resumenCopys.total.titulo}</h2>
-                        <h2>${globalIzziSelection?.precioPaquete}</h2>
+                        <h2>{FormatCurrency(Number(globalIzziSelection?.precioPaquete))}</h2>
                     </div>
 
                     {

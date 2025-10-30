@@ -5,7 +5,8 @@ import React, { createContext, useContext } from 'react'
 
 interface ThankYouContextType {
     icon: EntrySkeletonType<ResumenIcon>
-    copys: {}
+    copys: {},
+    copyResumen: {},
 
 }
 const ThankYouContext = createContext<ThankYouContextType | undefined>(undefined)
@@ -13,19 +14,22 @@ const ThankYouContext = createContext<ThankYouContextType | undefined>(undefined
 interface ThankYouProviderProps {
     children: React.ReactNode
     icon: EntrySkeletonType<ResumenIcon>
-    copys: {}
+    copys: {},
+    copyResumen: {}
 }
 
 export const ThankYouProvider = ({
     children,
     icon,
     copys,
+    copyResumen,
 }: ThankYouProviderProps) => {
 
 
     const value: ThankYouContextType = {
         icon,
         copys,
+        copyResumen,
     }
 
     return (
