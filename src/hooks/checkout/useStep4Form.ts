@@ -12,7 +12,8 @@ async function processFileToBase64(file: File): Promise<string> {
         const reader = new FileReader();
         reader.onload = () => {
             const result = reader.result as string;
-            resolve(result);
+            const cleanBase64 = result.split(",")[1];
+            resolve(cleanBase64);
         };
         reader.onerror = reject;
         reader.readAsDataURL(processedFile);
@@ -71,13 +72,13 @@ export const useStep4Form = () => {
                         },
                         ine: ineFile ?
                             {
-                                fileName: ineFile?.name,
+                                fileName: "INEIFE",
                                 fileExtension: ineFile?.type === 'application/pdf' ? 'pdf' : 'jpg',
                                 data: ineBase64,
                             } : null,
                         comprobante: comprobanteFile ?
                             {
-                                fileName: comprobanteFile?.name,
+                                fileName: "COMDOMICILIO",
                                 fileExtension: comprobanteFile?.type === 'application/pdf' ? 'pdf' : 'jpg',
                                 data: comprobanteBase64,
                             } : null,
