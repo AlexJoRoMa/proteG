@@ -1,20 +1,20 @@
 import { contentfulClient } from "@/services/contentful/client";
 import { CoberturaType, ConfiguradorCopys, OttsImages, ResumenIcon } from "@/types/ConfiguradorTypes";
 import { Entry, EntrySkeletonType } from "contentful";
+import { getCopyForComponent } from "@/services/contentful/components";
 import { ConfiguradorProvider } from "@/utils/ConfiguradorProvider";
+import ExitGuard from "@/utils/guards/ExitGuard";
 import { componentMap } from "@/lib/configurador/dynamic-map";
 import Link from "next/link";
-import { getCopyForComponent } from "@/services/contentful/components";
 import ResumenPedido from "../molecules/configurador/resumenPedido";
 import ResumenInfo from "../molecules/configurador/resumenInfo";
 import { STEPSCOVERAGECOMPONENT, STEPSNOCOVERAGECOMPONENT } from "@/constants/ConfiguradorConstants";
 import { getOfertas } from "@/services/izzi/configurador";
 import LinkModal from "../atoms/LinkModal";
 import TeAyudamosModalComponent from "../layouts/modals/TeAyudamosModalComponent";
-import ExitGuard from "@/utils/guards/ExitGuard";
+import { Arrow } from "@/constants/IconsConstants";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { Arrow } from "@/constants/IconsConstants";
 
 async function getCobertura() {
     const cookieStore = await cookies()
@@ -72,8 +72,13 @@ export default async function Configurador() {
     const entryTitle = copysConfigurador.page.titulo;
     const entryHelp = copysConfigurador.page.ayuda.textoInfo;
     const entryCTA = copysConfigurador.page.ayuda.botonAyuda;
-    const cobertura: boolean = true;
 
+    let cobertura: boolean = false;
+    if (dataOffersEntry?.offers.DOBLE_PLAY ) {
+        cobertura = true;
+    } else {
+        cobertura = false;
+    }
     return (
         <ConfiguradorProvider
             configuradorEntry={dataOffersEntry}
@@ -157,7 +162,7 @@ export default async function Configurador() {
                         </div>
                     </div>
                 </div>
-            </section>
+                </section>
         </ConfiguradorProvider>
     )
 }

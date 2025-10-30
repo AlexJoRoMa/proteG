@@ -1,5 +1,6 @@
 import { Lato } from 'next/font/google';
 import "../styles/globals.css";
+import { IzziProvider } from '@/utils/IzziProvider';
 
 const lato = Lato({
   weight: '400',
@@ -23,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${lato.variable}`}>
       <body>
+        <IzziProvider>
         {children}
+        </IzziProvider>
       </body>
     </html>
   );

@@ -8,6 +8,7 @@ import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import geocodeApi from '@/services/google-maps/api';
 import { GeocodeType } from '@/types/CoberturaTypes';
+import { useIzziContent } from '@/utils/IzziProvider';
 
 const inputStyles = {
     label: "text-black/50",
@@ -53,8 +54,9 @@ export default function CoberturaForm() {
         setLat,
         lng,
         setLng,
-        setFormattedAddress
       } = useContent();
+
+      const { setGlobalFlag, setFormattedAddress, setCoberturaData } = useIzziContent();
     
     interface PlaceAutocompleteProps {
         onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
@@ -115,6 +117,8 @@ export default function CoberturaForm() {
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setFormattedAddress(`${street}, ${streetNumber}, ${locality}`);
+        setGlobalFlag(true);
+        setCoberturaData({lat: lat.toString(), lng: lng.toString(), zipCode: postalCode, address: `${street}, ${streetNumber}, ${locality}`});
         await createCookie({lat: lat.toString(), lng: lng.toString(), zipCode: postalCode, address: `${street}, ${streetNumber}, ${locality}`});
     };
 
