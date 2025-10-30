@@ -50,7 +50,7 @@ export default function IzziHeaderLanding({apibarData, navbarData}: HeaderLandin
 
     // Normaliza URLs para que sean absolutas (agrega '/' si falta)
     const normalizeUrl = (url: string) => url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
-
+console.log("🥑🥑🥑  navbarContent ", navbarContent)
     return (
     <>
         
@@ -84,7 +84,8 @@ export default function IzziHeaderLanding({apibarData, navbarData}: HeaderLandin
         ))}
       </NavbarContent>
 
-{/* Botones Navbar Desk */}
+
+{/* Modales Botones */}      
       <NavbarContent justify="end" className="!grow-0">
         {navbarButtons[0].fields?.navigation?.map((link, index) => (    
             <NavbarItem key={`${link}-${index}`} className="hidden xl:flex ">
@@ -121,8 +122,8 @@ export default function IzziHeaderLanding({apibarData, navbarData}: HeaderLandin
         </NavbarItem>
         ))}
       </NavbarContent>
-      
-      
+
+{/* Movil hamburgues */}
       <NavbarMenu className="bg-white-0 mt-[26px] gap-[26px]">
         {navbar[0].fields?.navigation?.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
