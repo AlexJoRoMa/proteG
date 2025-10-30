@@ -22,7 +22,7 @@ const CheckoutContent = () => {
 
   return (
     <div className='my-6 flex mx-[var(--spacing-sm)] 4xl:mx-[var(--spacing-xl)] 3xl:mx-[var(--spacing-lg)] 2xl:mx-[var(--spacing-md)] sm:mx-[var(--spacing-sm)]'>
-      <div className='w-full xl:w-8/12 mr-auto block'>
+      <div className='w-full xl:w-7/12 mr-auto block'>
         {
           stepContents.map((content, index) => (
             <div data-step={index + 1} key={index} className={`${index + 1 === currentStep ? 'block' : 'hidden'}`}>
@@ -31,7 +31,7 @@ const CheckoutContent = () => {
           ))
         }
       </div>
-      <div className='xl:w-3/12 hidden xl:block'>
+      <div className='xl:w-4/12 hidden xl:block'>
         {/* Espacio para posibles futuros elementos laterales */}
         <ResumenContainer />
       </div>
