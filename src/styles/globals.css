@@ -301,3 +301,18 @@ body {
   border-image: linear-gradient(to right, #00C1B5,#99EAE5,#00877F,#99EAE5,#00C1B5);
   border-image-slice: 0 0 100% 0;
 }
+
+.border-gradient-fixed{
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-image: var(--gradient-button-fixed) 1;
+}
+
+.border-gradient-fixed-main{
+  border: none;
+  
+  @media screen and (min-width: 760px) {
+    border-bottom: 2px solid transparent;
+    border-image: var(--gradient-button-fixed) 1;
+  }
+}
