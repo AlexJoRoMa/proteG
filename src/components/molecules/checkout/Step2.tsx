@@ -9,12 +9,14 @@ import { DatosFacturacionForm } from './formularios/DatosFacturacionForm';
 import { useCheckout } from '@/components/providers/CheckoutProvider';
 import ButtonGhost from '@/components/atoms/ButtonGhost';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
+import { useIzziContent } from '@/utils/IzziProvider';
 
 const Step2 = () => {
   const { setCheckboxChecked } = useCheckout();
   const { getValue } = useMicrocopies('contratacion-datosPersonales');
   const [checked, setChecked] = useState(false);
-
+  const { formattedAddress } = useIzziContent();
+ 
   const {
     DatosPersonalesRef,
     DireccionEnvioRef,
@@ -87,7 +89,7 @@ const Step2 = () => {
 
         <div className='w-full flex items-center justify-between'>
           <p>
-            Avenida Paseo De La Reforma, 457, Chapultepec
+            {formattedAddress}
           </p>
 
           <Link href={getValue('datosPersonales.direccionInstalacion.urlEdicion')}>
