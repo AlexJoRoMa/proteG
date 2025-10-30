@@ -5,6 +5,7 @@ import { ContactIcon } from './ModalIcons';
 import TeAyudamosLandingModalComponent from '../layouts/modals/TeAyudamosModalLandingComponent';
 import { ResourceType } from '@/types/ButtonTypes';
 import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
+import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
 
 const ButtonFixedContracLanding = async() => {
 
@@ -14,6 +15,18 @@ const ButtonFixedContracLanding = async() => {
     const textBtn = await getMicroCopy('btn.contrac.tittle');
     const modalTexts = await getAllCopy('stickyModal');
 
+    const getStickyTexts = await getAllCopy('stickyBotones');
+    const stikyLlamanos = getStickyTexts?.[0]?.fields?.resources?.[0]?.fields?.value;
+    const stikyWhats = getStickyTexts?.[1]?.fields?.resources?.[1]?.fields?.value;
+    const stikyTeLlamanos = getStickyTexts?.[2]?.fields?.resources?.[2]?.fields?.value;
+
+
+    const getWhatsNumber = await getMicroCopy('stickyModal.column1.row3.wpp.tel');
+    const getWhatsPromo = await getMicroCopy('stickyModal.column1.row3.wpp.promoText');
+
+    const setWhatsNumber = getWhatsNumber?.[0]?.fields?.value;
+    const setWhatsPromo = getWhatsPromo?.[0]?.fields?.value;
+
     // Encontrar valores por key
     const getValueByKey = (key: string) => {
 
@@ -21,6 +34,8 @@ const ButtonFixedContracLanding = async() => {
 
       return item?.fields?.value || '';
     };
+
+    
 
     // Mapear los datos del modal
     const modalData = {
@@ -44,6 +59,7 @@ const ButtonFixedContracLanding = async() => {
       },
     };
 
+    console.log('🥑 setWhatsPromo ', setWhatsPromo )
     return (
       <>
           <ButtonModal
@@ -61,10 +77,67 @@ const ButtonFixedContracLanding = async() => {
              [background-image:linear-gradient(black,black),var(--gradient-button-fixed)]
              [background-origin:padding-box,border-box]
              [background-clip:padding-box,border-box]
-             hidden xl:flex'
+             hidden md:flex'
           >
               <TeAyudamosLandingModalComponent modalData={modalData} />
           </ButtonModal>
+
+{/* Botones sticky para movil */}
+          <ButtonModal
+            idModal=''
+            closeButtonStroke='black'
+            modalContentClassName='2xl:w-[62vw] 2xl:h-[52vh] xl:w-[90vw] xl:h-[52vh] h-[98vh]'
+            backdropColor='black-0/80'
+            textBtn={
+              <>
+                { stikyLlamanos || 'llamanos'}
+              </>
+            }
+            classStyles='border-2 font-bold border-solid border-transparent text-[18px] box-content leading-[24px] h-[52px] 
+            fixed bottom-4 left-4 z-50 rounded-md bg-black text-white
+             shadow-[2px_4px_16px_0_rgba(0,0,0,0.3)]
+             [background-image:linear-gradient(black,black),var(--gradient-button-fixed)]
+             [background-origin:padding-box,border-box]
+             [background-clip:padding-box,border-box]
+             flex md:hidden'
+          >
+              <TeAyudamosLandingModalComponent modalData={modalData} />
+          </ButtonModal>
+          <div
+            className='border-2 font-bold border-solid border-transparent text-[18px] box-content leading-[24px] h-[52px] 
+            fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 rounded-md bg-black text-white
+             shadow-[2px_4px_16px_0_rgba(0,0,0,0.3)]
+             [background-image:linear-gradient(black,black),var(--gradient-button-fixed)]
+             [background-origin:padding-box,border-box]
+             [background-clip:padding-box,border-box]
+             flex md:hidden w-[116px]'
+          > 
+              <a target='_blank' className='flex items-center justify-center w-full' 
+              href={`https://wa.me/${setWhatsNumber}?text=${setWhatsPromo}`} >
+              { stikyWhats || 'WhatsApp'}
+              </a>
+          </div>
+          <ButtonModal
+            idModal=''
+            closeButtonStroke='black'
+            modalContentClassName='2xl:w-[62vw] 2xl:h-[52vh] xl:w-[90vw] xl:h-[52vh] h-[98vh]'
+            backdropColor='black-0/80'
+            textBtn={
+              <>
+                { stikyTeLlamanos || 'te llamamos'}
+              </>
+            }
+            classStyles='border-2 font-bold border-solid border-transparent text-[18px] box-content leading-[24px] h-[52px] 
+            fixed bottom-4 right-4 z-50 w-[10px] rounded-md bg-black text-white
+             shadow-[2px_4px_16px_0_rgba(0,0,0,0.3)]
+             [background-image:linear-gradient(black,black),var(--gradient-button-fixed)]
+             [background-origin:padding-box,border-box]
+             [background-clip:padding-box,border-box]
+             flex md:hidden'
+          >
+              <TeLlamamosModalComponent />
+          </ButtonModal>
+          
       </>
     );
 
@@ -90,7 +163,7 @@ const ButtonFixedContracLanding = async() => {
            [background-origin:padding-box,border-box]
            [background-clip:padding-box,border-box]'
         >
-            <TeLlamamosModalComponent />
+            <TeAyudamosModalComponent />
         </ButtonModal>
       </>
     );

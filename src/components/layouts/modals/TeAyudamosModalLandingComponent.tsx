@@ -1,7 +1,7 @@
 "use client";
 import React from 'react'
-import { CallMeIcon, HeadPhonesIcon, WhatsAppIcon } from '../../atoms/ModalIcons'
-import { Button, Link } from '@heroui/react'
+import { CallMeIcon, WhatsAppIcon } from '../../atoms/ModalIcons'
+import { Button } from '@heroui/react'
 import { TeLlamamosModalLandingComponentProps } from '@/types/ModalComponentTypes';
 import LinkModal from '../../atoms/LinkModal';
 import TeLlamamosModalComponent from './TeLlamamosModalComponent';
