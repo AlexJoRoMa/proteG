@@ -2,7 +2,7 @@ import React from "react";
 import IzziHeaderLanding from "@/components/organisms/headerLanding";
 import { contentfulClient } from "@/services/contentful/client";
 import { Entry, EntrySkeletonType } from "contentful";
-
+import { getMicroCopy } from '@/services/contentful/components';
 
 async function getHeaderContentType() {
   const responseData = await contentfulClient.getEntries({
@@ -12,6 +12,8 @@ async function getHeaderContentType() {
   return responseData.items;
 } 
 
+const getClienteTitulo = await getMicroCopy('sieres.cliente');
+const getLlamanosTitulo = await getMicroCopy('llamanos.gratis');
 
 
 const apibarData: Entry<EntrySkeletonType, undefined, string>[] | null = await getHeaderContentType();
@@ -22,8 +24,10 @@ interface NavigationProps {
 
 
 export default function NavigationLanding({ navbarData }: NavigationProps) {
+  const clienteTitulo = getClienteTitulo?.[0]?.fields?.value;
+  const llamanosTitulo = getLlamanosTitulo?.[0]?.fields?.value;
 
   return (
-    <IzziHeaderLanding navbarData={navbarData} apibarData={apibarData} />  
+    <IzziHeaderLanding navbarData={navbarData} apibarData={apibarData} clienteTitulo={clienteTitulo as string} llamanosTitulo={llamanosTitulo as string}/>  
   );
 }

@@ -17,8 +17,9 @@ import ButtonModal from '../atoms/ButtonModal';
 import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
 import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 
-export default function IzziHeaderLanding({apibarData, navbarData}: HeaderLandingComponentProps) {
+export default function IzziHeaderLanding({apibarData, navbarData, clienteTitulo, llamanosTitulo}: HeaderLandingComponentProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    
 
     // Función helper para renderizar el modal correcto basado en typeModal
     const renderModalComponent = (typeModal?: 'TeLlamamos' | 'TeAyudamos') => {
@@ -50,21 +51,24 @@ export default function IzziHeaderLanding({apibarData, navbarData}: HeaderLandin
 
     // Normaliza URLs para que sean absolutas (agrega '/' si falta)
     const normalizeUrl = (url: string) => url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
-console.log("🥑🥑🥑  navbarContent ", navbarContent)
+console.log("🥑🥑🥑  clienteTitulo ", clienteTitulo)
+console.log("🥑🥑🥑  llamanosTitulo ", llamanosTitulo)
+
     return (
     <>
         
         <Navbar onMenuOpenChange={setIsMenuOpen}
         classNames={{
-        wrapper: "max-w-full h-[88px] pl-4 pr-6 bg-white-0"
+        wrapper: "max-w-full h-[88px] pl-4 pr-0 bg-white-0"
       }}>
       <NavbarContent className="!grow-0">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="xl:hidden pl-2"
+          className="2xl:hidden pl-2"
         />
         
       </NavbarContent>
+{/*  */}
       <NavbarContent className={`${isMenuOpen ? 'ps-0': 'pl-16'} !grow-0 lg:justify-start sm:justify-center lg:pl-0 lg:ps-0`}>
         <NavbarBrand>
           <Link href="/">
@@ -72,7 +76,8 @@ console.log("🥑🥑🥑  navbarContent ", navbarContent)
           </Link>
           </NavbarBrand>
       </NavbarContent>
-      <NavbarContent className="hidden xl:flex gap-[32px] min-[1024px]:gap-[12px] min-[1095]:gap-[17px] min-[1150px]:gap-[15px]" justify="start">
+{/* Opciones de navegacion */}
+      <NavbarContent className="hidden 2xl:flex gap-[32px] min-[1024px]:gap-[12px] min-[1095]:gap-[17px] min-[1150px]:gap-[15px]" justify="start">
         { navbar[0].fields?.navigation?.map((link, index) => (    
         <NavbarItem key={`${link}-${index}`}>
           
@@ -86,36 +91,22 @@ console.log("🥑🥑🥑  navbarContent ", navbarContent)
 
 
 {/* Modales Botones */}      
-      <NavbarContent justify="end" className="!grow-0">
-        {navbarButtons[0].fields?.navigation?.map((link, index) => (    
-            <NavbarItem key={`${link}-${index}`} className="hidden xl:flex ">
-              {
-                (link.fields.typeModal === 'TeLlamamos' || link.fields.typeModal === 'TeAyudamos') ? (
-                  <ButtonModal
-                    textBtn={link.fields.navigationTitle}
-                    classStyles={`${index == 2 ? 'bg-black-0 text-white-0' :'bg-color-trasparent'} 
-                        h-[48px] border-[2px] border-solid rounded-md text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[16px] min-[1150px]:text-[18px]`}
-                    closeButtonStroke="black"
-                    modalContentClassName="w-full h-[52dvh] sm:h-[52vh] sm:w-[80vw] xl:h-auto xl:w-[80vw] 2xl:w-[52vw] 2xl:h-auto"
-                    backdropColor='black-0/80'
-                    startContent={<Image className='max-w-[24px] h-auto' src={`https:${link.fields.linkIcon?.fields.file.url}`} alt={`${link.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />}
-                  >
-                    {renderModalComponent(link.fields.typeModal)}
-                  </ButtonModal>
-                ) : (
-                  <Button as={Link} className={`${index == 2 ? 'bg-black-0 text-white-0' :'bg-color-trasparent'} 
-                      h-[48px] border-[2px] border-solid rounded-md text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[16px] min-[1150px]:text-[18px]`}
-                      startContent={<Image className='max-w-[24px] h-auto' src={`https:${link.fields.linkIcon?.fields.file.url}`} alt={`${link.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />}
-                          href={link.fields.navigationUrl}>
-                      {link.fields.navigationTitle}
-                  </Button>
-                )
-              }
-            </NavbarItem>
-        ))}
+      <NavbarContent justify="end" className=" !grow-0">
+        <NavbarItem className=" w-[400px] hidden 3xl:flex h-full ">
+          <div className='border-r-1 border-gray-150 bg-gray-100 w-1/2 h-full flex flex-col justify-center align-middle items-center'>
+            <p className=''>{clienteTitulo}</p>
+            <p className='font-bold '>800 120 5000</p>
+          </div>
+          <div className=' bg-gray-100 w-1/2 h-full flex flex-col justify-center align-middle items-center'>
+            <p className=''>{llamanosTitulo}</p>
+            <p className='font-bold '>800 607 7082</p>
+          </div>
+        </NavbarItem>
+        
+{/* Icono de persona */}
         {mobileNavbarButton[0].fields?.navigation?.map((link, index) => ( 
         <NavbarItem key={`${link}-${index}`}
-            className={isMenuOpen ? "hidden" : "xl:hidden sm:flex"}>
+            className={isMenuOpen ? "hidden" : "3xl:hidden sm:flex pr-6"}>
           <Button as={Link} href={normalizeUrl(link.fields.navigationUrl)} className="bg-color-trasparent justify-end px-0">
             <Image src={`https:${mobileNavbarButton[0].fields?.brandLogo?.fields?.file?.url}`} alt={link.fields.navigationTitle} width={32} height={32} priority ></Image>
           </Button>
