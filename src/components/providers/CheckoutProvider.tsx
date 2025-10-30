@@ -1,6 +1,6 @@
 'use client'
 import { ResumenIcon } from '@/types/ConfiguradorTypes'
-import { DatosContratacion, ProcessStatus, StatusFlujo } from '@/types/Contratacion'
+import { DatosContratacion, PaymentReference, ProcessStatus, StatusFlujo } from '@/types/Contratacion'
 import { EntrySkeletonType } from 'contentful'
 import { redirect } from 'next/navigation'
 import React, { createContext, useContext, useState, useCallback, useRef } from 'react'
@@ -32,6 +32,8 @@ interface CheckoutContextType {
   setProcessStatus: React.Dispatch<React.SetStateAction<Partial<ProcessStatus>>>
   statusStep: Partial<StatusFlujo>
   setStatusStep: React.Dispatch<React.SetStateAction<Partial<StatusFlujo>>>
+  paymentReference: Partial<PaymentReference> | undefined,
+  setPaymentReference: React.Dispatch<React.SetStateAction<Partial<PaymentReference>| undefined>>
 
   // Navigation functions
   goToStep: (step: number) => void
@@ -77,6 +79,7 @@ export const CheckoutProvider = ({
   const [isStepValid, setIsStepValid] = useState(false)
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [getCapacity, setGetCapacity] = useState<Record<string, string>[] | null>(null);
+  const [paymentReference, setPaymentReference] = useState<Partial<PaymentReference>>();
   const [getIntentosInstalacion, setGetIntentosInstalacion] = useState<number>(1);
   const [statusStep, setStatusStep] = useState<Partial<StatusFlujo>>({
     step1: { completado: true },
@@ -209,6 +212,8 @@ export const CheckoutProvider = ({
     setProcessStatus,
     statusStep,
     setStatusStep,
+    paymentReference,
+    setPaymentReference,
   }
 
   return (

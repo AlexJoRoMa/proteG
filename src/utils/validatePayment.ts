@@ -1,4 +1,5 @@
-import { DatosContratacion, ProcessStatus } from "@/types/Contratacion";
+import { useCheckout } from "@/components/providers/CheckoutProvider";
+import { DatosContratacion, PaymentReference, ProcessStatus } from "@/types/Contratacion";
 
 interface ValidatePayment {
     datosContratacion: DatosContratacion,
@@ -8,8 +9,8 @@ interface ValidatePayment {
     }
 }
 
-export async function validatePayment(datosContratacion: Partial<DatosContratacion>, setDatosContratacion: React.Dispatch<React.SetStateAction<Partial<DatosContratacion>>>, processStatus: Partial<ProcessStatus>) {
-
+export async function validatePayment(datosContratacion: Partial<DatosContratacion>, setDatosContratacion: React.Dispatch<React.SetStateAction<Partial<DatosContratacion>>>, processStatus: Partial<ProcessStatus>, paymentReference: Partial<PaymentReference> | undefined) {
+    
     const account = processStatus.accountNumber;
 
     try {
@@ -23,7 +24,7 @@ export async function validatePayment(datosContratacion: Partial<DatosContrataci
                 }
             }));
             console.log("pago Tecnico", datosContratacion.Pago)
-            return;
+            return true;
         };
 
         const validateAPI = async (isPayPal: boolean) => {
@@ -38,7 +39,7 @@ export async function validatePayment(datosContratacion: Partial<DatosContrataci
                 });
 
                 const body = JSON.stringify({
-                    "referencia": datosContratacion.DatosPersonales?.personal.email || "700433240814-20250512183533",
+                    "referencia": isPayPal ? `${paymentReference?.paypalReference}` : `${paymentReference?.cardReference}`,
                     "cuenta": account,
                     "paypal": isPayPal,
                 });
@@ -76,7 +77,7 @@ export async function validatePayment(datosContratacion: Partial<DatosContrataci
                 }
             }));
             console.log("pago paypal", datosContratacion.Pago)
-            return;
+            return true;
         } else if (okCard) {
             setDatosContratacion((prev) => ({
                 ...prev,
@@ -86,7 +87,7 @@ export async function validatePayment(datosContratacion: Partial<DatosContrataci
                 }
             }));
             console.log("pago Tarjeta", datosContratacion.Pago)
-            return;
+            return true;
         } else {
             setDatosContratacion((prev) => ({
                 ...prev,
@@ -95,8 +96,10 @@ export async function validatePayment(datosContratacion: Partial<DatosContrataci
                     success: false,
                 }
             }));
+            return false;
         }
     } catch (err) {
         console.error("Error validando pago:", err);
+        return false;
     }
 }

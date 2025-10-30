@@ -2,11 +2,12 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { PayPalScriptProvider, PayPalButtons, type ReactPayPalScriptOptions } from "@paypal/react-paypal-js";
+import { useCheckout } from "@/components/providers/CheckoutProvider";
 
 interface TabPayPalProps {
     amount: number;
     rptGetOffer: string;
-    account: string;
+    account: string | undefined;
     isRecurrent: boolean;
 }
 
@@ -19,6 +20,7 @@ const parsePaypalUrl = (url: string): Record<string, string> => {
 export default function PayPalScript({ amount, rptGetOffer, account, isRecurrent }: TabPayPalProps) {
     const [paypalOptions, setPaypalOptions] = useState<ReactPayPalScriptOptions | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const { setPaymentReference, currentStep } = useCheckout();
 
     let payPalPaymentRef: string | undefined;
     let PaypalStatus: string | undefined;
@@ -52,6 +54,10 @@ export default function PayPalScript({ amount, rptGetOffer, account, isRecurrent
             if (!data.order || !data) throw new Error("Invalid response from server");
 
             payPalPaymentRef = data.reference;
+            setPaymentReference((prev) => ({
+                ...prev,
+                paypalReference: payPalPaymentRef,
+            }));
             return data.order;
         } catch (err) {
             console.error("Error creating PayPal order", err);
@@ -163,7 +169,9 @@ export default function PayPalScript({ amount, rptGetOffer, account, isRecurrent
             }
         };
 
-        fetchPaypalConfig();
+        if (currentStep === 6) {
+            fetchPaypalConfig();
+        }
     }, []);
 
     if (error) return <div style={{ color: "red" }}>{error}</div>;
@@ -172,7 +180,7 @@ export default function PayPalScript({ amount, rptGetOffer, account, isRecurrent
     return (
         <PayPalScriptProvider options={paypalOptions}>
             <div
-                style={{ width: "100%", marginTop: "8px", display: "flex", justifyContent: "center", alignItems: "center" }}
+                style={{ width: "100%", marginTop: "8px", display: "flex", justifyContent: "center", alignItems: "center", zIndex: "10", position: "relative" }}
             >
                 {/* <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                     <input type="checkbox" id="pago_recurrente_paypal" />

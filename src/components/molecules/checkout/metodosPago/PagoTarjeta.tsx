@@ -10,7 +10,7 @@ export default function PagoTarjeta() {
 
     const [isRecurrent, setIsRecurrent] = useState(false);
     const [urlFrame, setUrlFrame] = useState("");
-    const { currentStep } = useCheckout();
+    const { currentStep, setPaymentReference } = useCheckout();
     const { getValue } = useMicrocopies('contratacion-pago');
 
     const hasFetched = useRef(false);
@@ -26,6 +26,10 @@ export default function PagoTarjeta() {
                 if (result?.response) {
 
                     setUrlFrame(result.response.html);
+                    setPaymentReference((prev) => ({
+                        ...prev,
+                        cardReference: result.response.reference,
+                    }));
                 }
 
             } catch (err) {

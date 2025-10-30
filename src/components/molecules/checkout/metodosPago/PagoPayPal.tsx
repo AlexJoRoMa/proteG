@@ -8,7 +8,7 @@ import { useMicrocopies } from '@/hooks/useMicrocopies';
 
 export default function PagoPayPal() {
 
-    const { paypalIcon } = useCheckout();
+    const { paypalIcon, processStatus } = useCheckout();
     const {getValue} = useMicrocopies('contratacion-pago');
     const [isRecurrent, setIsRecurrent] = useState(false);
 
@@ -46,7 +46,7 @@ export default function PagoPayPal() {
                 )
             }
 
-            <PayPalScript amount={470} rptGetOffer={'000'} account={'43402700'} isRecurrent={isRecurrent} />
+            <PayPalScript amount={470} rptGetOffer={'000'} account={processStatus.accountNumber} isRecurrent={isRecurrent} />
 
             <div className='flex flex-col gap-[27px] text-center text-sm md:text-base leading-[24px] mt-[8px]'>
                 <p className='text-start md:text-center'>

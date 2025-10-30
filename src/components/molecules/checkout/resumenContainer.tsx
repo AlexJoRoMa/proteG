@@ -50,6 +50,7 @@ export default function ResumenContainer() {
         statusStep,
         setStatusStep,
         copyResumen,
+        paymentReference
     } = useCheckout();
 
     const datosContratacionRef = useRef<Partial<DatosContratacion>>(null);
@@ -75,15 +76,29 @@ export default function ResumenContainer() {
         goToStep(5);
     }
 
+    function handleModalClose() {
+        setModalNewDate(false)
+    }
+
+    function runAttachFiles() {
+        runAttachIne();
+        runAttachComprobante();
+    }
+
     const showModaluntilAction = async (
         action: () => Promise<any>,
         modalKey: string
     ) => {
         try {
+            setProcessStatus((prev) => ({ ...prev, waitingForAction: false }));
             setModalName(modalKey)
             setModalLoading(true);
 
             const result = await action();
+            if (result?.error) {
+                setModalLoading(false)
+                return result;
+            }
 
             await new Promise<void>((resolve) => {
                 const interval = setInterval(() => {
@@ -110,7 +125,8 @@ export default function ResumenContainer() {
             const res = await GetSubmitOffer(izziEnrrollRef.current);
             const data = await res;
             if (data?.code) {
-                throw new Error("Error del servicio submitOffer");
+                console.error("Error del servicio submitOffer");
+                router.push("/error");
             }
 
             return data;
@@ -128,7 +144,7 @@ export default function ResumenContainer() {
         action: async () => {
             const attachInfo = datosContratacionRef.current?.DocumentosTitular && datosContratacionRef.current?.DocumentosTitular.ine;
 
-            const res = await GetAttachFile(processStatus, attachInfo);
+            const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
             console.log('data attachIne:', data)
             return data;
@@ -136,7 +152,7 @@ export default function ResumenContainer() {
         resetKey: `step-4-attachFileIne`,
         autoExecute: false,
         // onSuccess: (data) => console.log('submitOffer success.', data),
-        // onError: (err) => console.error('submitOffer error:', err),
+        onError: (err) => setModalLoading(false),
         // onLoadingChange: (loading) => setModalLoading(loading),
     });
 
@@ -144,7 +160,7 @@ export default function ResumenContainer() {
         action: async () => {
             const attachInfo = datosContratacionRef.current?.DocumentosTitular && datosContratacionRef.current?.DocumentosTitular.comprobante;
 
-            const res = await GetAttachFile(processStatus, attachInfo);
+            const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
             console.log('data attachComprobante:', data)
             return data;
@@ -152,7 +168,7 @@ export default function ResumenContainer() {
         resetKey: `step-4-attachFileComprobante`,
         autoExecute: false,
         // onSuccess: (data) => console.log('submitOffer success.', data),
-        // onError: (err) => console.error('submitOffer error:', err),
+        onError: (err) => setModalLoading(false),
         // onLoadingChange: (loading) => setModalLoading(loading),
     });
 
@@ -161,7 +177,8 @@ export default function ResumenContainer() {
             const res = await GetCapacity(izziEnrrollRef.current);
             const data = await res;
             if (data?.code) {
-                throw new Error("Error del servicio getCapacity");
+                console.error("Error del servicio getCapacity");
+                router.push("/error");
             }
             setGetCapacity(data.quotaSchedule);
 
@@ -173,39 +190,49 @@ export default function ResumenContainer() {
         // onLoadingChange: (loading) => setModalLoading(loading),
     });
 
-    const { trigger: runCheckCapacity, isLoading: loadingCheckCapacity } = useControlledAction({
-        action: async () => {
-            const res = await GetCapacity(izziEnrrollRef.current);
-            const data = await res;
+    // const { trigger: runCheckCapacity, isLoading: loadingCheckCapacity } = useControlledAction({
+    //     action: async () => {
+    //         const res = await GetCapacity(izziEnrrollRef.current);
+    //         const data = await res;
+    //         let available;
 
-            if (data?.code) {
-                throw new Error("Error del servicio getCapacity");
-            }
+    //         if (data?.code) {
+    //             throw new Error("Error del servicio getCapacity");
+    //         }
 
-            const checkData = data.quotaSchedule;
-            const available = checkData.find((info: { cvTimeslot: string | undefined; requestedShipDate: string | undefined; }) =>
-                info.cvTimeslot === datosContratacionRef.current?.Instalacion?.cvTimeslot &&
-                info.requestedShipDate === datosContratacionRef.current?.Instalacion?.requestedShipDate);
+    //         const checkData = data.quotaSchedule;
+    //         if (checkData) {
+    //             available = !!checkData.find((info: { cvTimeslot: string | undefined; requestedShipDate: string | undefined; }) =>
+    //                 info.cvTimeslot === datosContratacionRef.current?.Instalacion?.cvTimeslot &&
+    //                 info.requestedShipDate === datosContratacionRef.current?.Instalacion?.requestedShipDate);
+    //         } else {
+    //             available = false;
+    //         }
 
-            if (available) {
-                setCheckInstalacion(true);
-            } else {
-                setCheckInstalacion(false);
-            }
-        },
-        resetKey: `step-6-getCapacity`,
-        autoExecute: false,
+    //         if (available) {
+    //             setCheckInstalacion(true);
+    //         } else {
+    //             setCheckInstalacion(false);
+    //         }
+    //     },
+    //     resetKey: `step-6-getCapacity`,
+    //     autoExecute: false,
         // onSuccess: (data) => console.log('submitOffer success.', data),
         // onError: (err) => console.error('submitOffer error:', err),
         // onLoadingChange: (loading) => setModalLoading(loading),
-    });
+    // });
 
     const { trigger: runSubmitCapacity, isLoading: loadingSubmitCapacity } = useControlledAction({
         action: async () => {
             const res = await GetSubmitCapacity(izziEnrrollRef.current, datosContratacionRef);
             const data = await res;
             if (data?.code) {
-                throw new Error("Error del servicio getCapacity");
+                console.error("Error del servicio getCapacity");
+                return false;
+            }
+
+            if (data.accountNumber) {
+                return true;
             }
         },
         resetKey: `step-6-submitCapacity`,
@@ -301,16 +328,16 @@ export default function ResumenContainer() {
                     };
 
                     try {
-                        await Promise.all([
-                            // AttachFiles
-                            await showModaluntilAction(async () => await runAttachIne(), "modal-documentos"),
-                            await showModaluntilAction(async () => await runAttachComprobante(), "modal-documentos"),
+                        // await Promise.all([
+                        // AttachFiles
+                        await showModaluntilAction(async () => await runAttachFiles(), "modal-documentos"),
+                            // await showModaluntilAction(async () => await runAttachComprobante(), "modal-documentos"),
 
                             // GetCapacity() 
                             await showModaluntilAction(async () => await runGetCapacity(), "modal-disponibilidad"),
-                        ]);
+                            // ]);
 
-                        setIsStepValid(false)
+                            setIsStepValid(false)
                         nextStep()
 
                     } catch (err) {
@@ -336,9 +363,9 @@ export default function ResumenContainer() {
                     break
                 }
                 case 6: {
-                    await validatePayment(datosContratacion, setDatosContratacion, processStatusRef.current);
+                    const response = await validatePayment(datosContratacion, setDatosContratacion, processStatusRef.current, paymentReference);
 
-                    if (datosContratacionRef.current?.Pago?.success === true) {
+                    if (response === true) {
                         setStatusStep((prev) => ({
                             ...prev,
                             [`step${currentStep}`]: {
@@ -346,19 +373,23 @@ export default function ResumenContainer() {
                             }
                         }));
 
-                        if (getIntentosInstalacion <= 3) {
-                            await runCheckCapacity();
+                        // if (getIntentosInstalacion <= 3) {
+                        //     await runCheckCapacity();
 
-                            if (checkInstalacion) {
-                                await runSubmitCapacity();
-                                //TODO: redireccion a thank you page
-                            } else {
-                                setGetIntentosInstalacion(getIntentosInstalacion + 1)
-                                setModalNewDate(true);
-                            }
-                        } else {
-                            //TODO: redireccion a thank you page
+                        //     if (checkInstalacion) {
+                        const submitResponse = await runSubmitCapacity();
+
+                        if (submitResponse) {
+                            router.push("/thank-you");
                         }
+
+                        // } else {
+                        //     setGetIntentosInstalacion(getIntentosInstalacion + 1)
+                        //     setModalNewDate(true);
+                        // }
+                        // } else {
+                        //     router.push("/thank-you");
+                        // }
                     }
 
                     setIsStepValid(true)
@@ -421,7 +452,7 @@ export default function ResumenContainer() {
 
                 </div>
                 <ModalContratacion isOpen={modalLoading} name={modalName} />
-                <ModalFechaInvalida isOpen={modalNewDate} setModal={handleModalNewDate} />
+                {/* <ModalFechaInvalida isOpen={modalNewDate} setModal={handleModalNewDate} setClose={handleModalClose} /> */}
             </div>
 
             <Drawer

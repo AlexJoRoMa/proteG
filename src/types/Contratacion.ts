@@ -99,6 +99,11 @@ export interface StatusFlujo {
     },
 }
 
+export interface PaymentReference {
+    cardReference: string,
+    paypalReference: string
+}
+
 export type AttachFilesProps = {
     processStatus: {
         accountNumber?: string,
