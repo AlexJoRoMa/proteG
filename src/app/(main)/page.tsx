@@ -2,6 +2,7 @@ import { Entry, EntrySkeletonType } from "contentful";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import ButtonFixed from "@/components/atoms/ButtonSticky";
+import CookieConsent from "@/components/organisms/cookieConsent";
 
 
 export default async function Home() {
@@ -28,6 +29,7 @@ export default async function Home() {
           )
         }
         <ButtonFixed />
+        <CookieConsent />
     </main>
   );
 }
