@@ -4,7 +4,6 @@ export type IzziNavbar = {
     fields: {
         internalName: string;
         brandLogo?: Logo;
-        landingCombos: boolean;
         navigation: Array<Navigation>;
     }
 }

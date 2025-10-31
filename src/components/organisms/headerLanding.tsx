@@ -35,9 +35,6 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
     };
     
     
-/*     const getBarData = navbarData as unknown as IzziNavbar;
-    const hasCombos = getBarData.fields.landingCombos === true ? 'Navbar Landing  wCombos' : 'Navbar Landing  noCombos'; */
-    
     const navbarContent = apibarData as unknown as Array<IzziNavbar>;
 
     const borderStyle = {

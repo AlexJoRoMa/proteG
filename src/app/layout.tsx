@@ -1,5 +1,6 @@
 import { Lato } from 'next/font/google';
 import "../styles/globals.css";
+import TimeIndicator from '@/components/atoms/TimeIndicator';
 
 const lato = Lato({
   weight: '400',
@@ -7,7 +8,7 @@ const lato = Lato({
   variable: '--font-lato',
 })
 
-
+export const revalidate = 10;
 //TODO descomentar metadata cuando se tenga el contenido tomado desde contentful
 
 /*export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${lato.variable}`}>
+      <TimeIndicator />
       <body>
         {children}
       </body>
