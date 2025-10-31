@@ -42,8 +42,6 @@ export default function PlanesMovil({ step }: StepProps) {
     const [selectedTabKey, setSelectedTabKey] = useState<string>(defaultKey);
     const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
-    console.log(plansInfo)
-
     function formatData(data: OfferItem[], copys: OffersCopys) {
 
         const contrato12 = data.filter(item => item.titulo.includes("12 meses"));
