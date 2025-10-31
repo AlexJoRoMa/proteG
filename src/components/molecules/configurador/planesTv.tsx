@@ -19,6 +19,7 @@ export default function PlanesTv({ step }: StepProps) {
     const offersCopys = copysConfigurador as unknown as OffersCopys;
 
     const plansInfo = tvPlans as unknown as OfferItem[];
+    const precioTv = configuradorEntry?.offers.TV.find((offer) => offer.titulo === 'izzi tv')?.precioPaquete;
 
     function updateTvAnswers(selectedTv: OfferItem) {
         setUserAnswers(prev => (
@@ -38,6 +39,7 @@ export default function PlanesTv({ step }: StepProps) {
         if (internet) {
 
             const tvLight = configuradorEntry?.offers.TV.filter(item => item.titulo.includes("light")) as OfferItem[];
+            const tvPremium = configuradorEntry?.offers.TV.filter(item => item.titulo.includes("premium")) as OfferItem[];
             const triplePlay: OfferItem[] = configuradorEntry?.offers.TRIPLE_PLAY
             .filter(item => item.velocidadMinima === internet.paquete?.velocidadMinima)
             .map(item => {
@@ -47,24 +49,24 @@ export default function PlanesTv({ step }: StepProps) {
             ) || 0;
 
             const precioTachado = (
-                Number(item.precioPaquete || 0) - totalAhorros - Number(userAnswers.internet?.paquete?.precioTachado)
+                Number(item.precioPaquete || 0) - totalAhorros - Number(internet?.paquete?.precioTachado)
             ).toString();
 
             return {
                 ...item,
                 titulo: offersCopys.tv.cards.titulo,
                 precioPaquete: precioTachado,
-                precioTachado: item.precioPaquete
+                precioTachado: precioTv
             };
             }) ?? []
 
 
-            const tvOffers = [...triplePlay, ...tvLight]
+            const tvOffers = [...triplePlay, ...tvPremium, ...tvLight]
             setTvPlans(tvOffers);
 
         } else {
             const tvOffers = configuradorEntry?.offers.TV.map((item) => {
-                if (!item.titulo.includes("light")) {
+                if (!item.titulo.includes("light") && !item.titulo.includes("premium")) {
                     return {
                         ...item,
                         titulo: offersCopys.tv.cards.tituloPlus
@@ -79,7 +81,9 @@ export default function PlanesTv({ step }: StepProps) {
         configuradorEntry?.offers.TV,
         offersCopys.tv.cards.titulo,
         offersCopys.tv.cards.tituloPlus,
-        userAnswers.internet?.paquete
+        userAnswers.internet?.paquete,
+        userAnswers.internet,
+        precioTv
     ]);
 
     useEffect(() => {
@@ -164,7 +168,7 @@ export default function PlanesTv({ step }: StepProps) {
 
     function handleIsPressable(card: OfferItem): boolean {
 
-        if (card.titulo.includes('light') && (userAnswers.internet?.paquete)) {
+        if ((card.titulo.includes('light') || card.titulo.includes('premium')) && (userAnswers.internet?.paquete)) {
             return false
         } else {
             return true

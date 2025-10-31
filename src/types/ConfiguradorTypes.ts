@@ -271,6 +271,7 @@ export type OttProps = {
     maximo: number,
     productId: string,
     titulo: string,
+    nombreSiebel: string;
     costo: string,
     descripcion: string,
     grupo?: number,

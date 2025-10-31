@@ -21,4 +21,6 @@ export type DataFields = {
     setCoberturaData: React.Dispatch<React.SetStateAction<CoberturaType>>,
     promoData: Promotion,
     setPromoData: React.Dispatch<React.SetStateAction<Promotion>>,
+    precioTotal: number,
+    setPrecioTotal: React.Dispatch<React.SetStateAction<number>>
 }

@@ -97,7 +97,9 @@ export default function ResumenContainerConfigurador() {
                                 <h4>{resumenCopys.promociones.textoAhorro}</h4>
                                 {
                                     promoData?.promoPackage?.map((promo, index) => {
-                                        totalDiscount = totalDiscount + Number(promo.amount);
+                                        if(promo.amount !== '0'){
+                                            totalDiscount = totalDiscount + Number(promo.amount);
+                                        }
                                         return (<h4 key={index}>${totalDiscount}</h4>)
                                     })
                                 }

@@ -7,6 +7,8 @@ import ButtonGhost from "@/components/atoms/ButtonGhost";
 import { useEffect, useState } from "react";
 import ResumenContainerConfigurador from "./resumenContainerConfigurador";
 import { ResumenData } from "@/types/ResumenCompra";
+import { useIzziContent } from "@/utils/IzziProvider";
+import { FormatCurrency } from "@/utils/Currency";
 
 export const ArrowUpIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
@@ -31,6 +33,7 @@ function hasData(obj: unknown): boolean {
 export default function ResumenPedido() {
 
     const { userAnswers, copysResumen, setCheckedPromotions, checkedPromotions, infoDrawerContent } = useContent();
+    const { precioTotal } = useIzziContent();
     const [infoPaquetes, setInfoPaquetes] = useState<string>("");
 
     const resumenCopys = copysResumen as ResumenData;
@@ -93,7 +96,7 @@ export default function ResumenPedido() {
                                 <div className="flex flex-col gap-[8px]">
                                     <div className="flex gap-[4px] font-normal text-base leading-[24px] text-gray-500 items-baseline">
                                         <h3 className="font-extrabold text-[32px] leading-[32px] text-black-0">
-                                            $XXXX
+                                            {FormatCurrency(precioTotal)}
                                         </h3>
                                         <h5>{resumenCopys.infoDrawer.plazo}</h5>
                                         <p>|</p>
