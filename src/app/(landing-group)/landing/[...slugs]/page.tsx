@@ -1,10 +1,17 @@
-import ButtonFixed from "@/components/atoms/ButtonSticky";
+import ButtonFixedContracLanding from "@/components/atoms/ButtonStickyContrataLanding";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import { Entry, EntrySkeletonType } from "contentful";
 import { notFound } from "next/navigation";
-import {SeoFieldSkeleton, DynamicPageProps} from "@/types/SEOTypes";
+import {SeoFieldSkeleton} from "@/types/SEOTypes";
 import SEOHead from '@/components/atoms/SEOHead';
+/* import NavigationLanding from '@/components/molecules/navigationLandingComponent'; */
+
+interface DynamicPageProps {
+    params: Promise<{
+        slugs: string[];
+    }>;
+}
 
 export default async function LandingPage({ params }: DynamicPageProps) {
     const { slugs } = await params; //Sugerencia de NextJS para obtener los parametros de la ruta
@@ -29,6 +36,7 @@ export default async function LandingPage({ params }: DynamicPageProps) {
         {seo && <SEOHead seo={seo} slug={fullPath} />}
         
         <main>
+            
             {components[0]?.fields.components &&
                 Array.isArray(components[0].fields.components) &&
                 components[0].fields.components.length > 0 ? (
@@ -45,7 +53,7 @@ export default async function LandingPage({ params }: DynamicPageProps) {
             ) : (
                 <p>No existen componentes cargados.</p>
             )}
-            <ButtonFixed />
+            <ButtonFixedContracLanding />
         </main>
         </>
     );

@@ -34,11 +34,13 @@ export interface StepTabEntryFields extends EntrySkeletonType{
   textTiempo?: string
   incluye?: string;
   adicionales?: Asset[];
-  textBoton1?: string;
-  linkBoton1?: string;
   content?: Document;
   image?: Asset;
   imageResponsive?: Asset;
+  textBoton1?: string;
+  linkBoton1?: string;
+  landing?: boolean;
+  terminos?: string;
 }
 
 export interface StepTabEntrySkeleton extends EntrySkeletonType{
