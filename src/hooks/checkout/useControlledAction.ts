@@ -106,9 +106,9 @@ export function useControlledAction<T>({
     }, [autoExecute, data?.waitingForAction, action, onSuccess, onError, onLoadingChange]);
 
     /** trigger manual opcional */
-    const trigger = useCallback(async () => {
+    const trigger = useCallback(async (force = false) => {
 
-        if (!data?.waitingForAction) {
+        if (!force && !data?.waitingForAction) {
             if (!waitingPromiseRef.current) {
                 waitingPromiseRef.current = new Promise<void>((resolve) => {
                     resolveWaitingRef.current = resolve;

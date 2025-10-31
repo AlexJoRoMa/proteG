@@ -179,6 +179,7 @@ export default function ResumenContainer() {
         action: async () => {
             const res = await GetCapacity(izziEnrrollRef.current);
             const data = await res;
+
             if (data?.code) {
                 console.error("Error del servicio getCapacity");
                 router.push("/error");
@@ -337,7 +338,7 @@ export default function ResumenContainer() {
                             // await showModaluntilAction(async () => await runAttachComprobante(), "modal-documentos"),
 
                             // GetCapacity() 
-                            await showModaluntilAction(async () => await runGetCapacity(), "modal-disponibilidad"),
+                            await showModaluntilAction(async () => await runGetCapacity(true), "modal-disponibilidad"),
                             // ]);
 
                             setIsStepValid(false)
