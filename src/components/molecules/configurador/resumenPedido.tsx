@@ -7,6 +7,8 @@ import ButtonGhost from "@/components/atoms/ButtonGhost";
 import { useEffect, useState } from "react";
 import ResumenContainerConfigurador from "./resumenContainerConfigurador";
 import { ResumenData } from "@/types/ResumenCompra";
+import { useIzziContent } from "@/utils/IzziProvider";
+import { FormatCurrency } from "@/utils/Currency";
 
 export const ArrowUpIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
@@ -30,8 +32,10 @@ function hasData(obj: unknown): boolean {
 
 export default function ResumenPedido() {
 
-    const { userAnswers, copysResumen, setCheckedPromotions, checkedPromotions, infoDrawerContent } = useContent();
+    const { userAnswers, copysResumen, setCheckedPromotions, checkedPromotions, infoDrawerContent, configuradorEntry, izziSelection } = useContent();
+    const { precioTotal, coberturaData, setPromoData } = useIzziContent();
     const [infoPaquetes, setInfoPaquetes] = useState<string>("");
+    const [loading, setLoading] = useState(false);
 
     const resumenCopys = copysResumen as ResumenData;
     const internet = userAnswers.internet as unknown as internetComponentFields | undefined;
@@ -73,6 +77,61 @@ export default function ResumenPedido() {
         onOpen()
     }
 
+    const handleClick = async () => {
+        setLoading(true);
+        const extrasBody = [];
+
+        
+            if(izziSelection?.extrasMap){
+                izziSelection?.extrasMap?.ott?.map((extra) => {
+                    extrasBody.push({
+                        "extId": extra.idExtra, 
+                        "nuevaCantidad": 1, 
+                        "combo": true
+                    })
+                })
+            }
+            if(izziSelection?.extras){
+                extrasBody.push({
+                    "extId":  izziSelection.extras?.idExtra, 
+                    "nuevaCantidad": 1, 
+                    "combo": false, 
+                    "tipoEntrega": "DOMICILIO", 
+                    "sucursalId": "N/A", 
+                    "portabilidadMovil": "N"
+                })
+            }
+
+        try {
+        const res = await fetch("/api/configurador/resumen", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                    "rpt": configuradorEntry?.rptCode,
+                    "postalCode": coberturaData.zipCode,
+                    "hub": configuradorEntry?.hub,
+                    "coverageType": configuradorEntry?.coverageType,
+                    "requestedServices": {
+                        "extras": extrasBody,
+                        "product": izziSelection?.idPaquete
+                    },
+                    "offnet": configuradorEntry?.offnetIzzi && configuradorEntry?.offnetSky
+                }
+            ),
+        });
+    
+        const data = await res.json();
+        setPromoData(data);
+        } catch (error) {
+            setCheckedPromotions(false);
+            console.error("Error al obtener el token:", error);
+        } finally {
+        setLoading(false);
+        }
+    };
+
 
     return (
         <div className="xl:border xl:rounded-md xl:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 xl:bg-white-0">
@@ -93,7 +152,7 @@ export default function ResumenPedido() {
                                 <div className="flex flex-col gap-[8px]">
                                     <div className="flex gap-[4px] font-normal text-base leading-[24px] text-gray-500 items-baseline">
                                         <h3 className="font-extrabold text-[32px] leading-[32px] text-black-0">
-                                            $XXXX
+                                            {FormatCurrency(precioTotal)}
                                         </h3>
                                         <h5>{resumenCopys.infoDrawer.plazo}</h5>
                                         <p>|</p>
@@ -111,7 +170,11 @@ export default function ResumenPedido() {
                             {!checkedPromotions ?
                                 <button
                                     className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                                    onClick={() => CheckPromotions()}
+                                    onClick={() => {
+                                            handleClick();
+                                            CheckPromotions();
+                                        }
+                                    }
                                 >
                                     {resumenCopys.boton.comprobarPromociones}
                                 </button>
@@ -160,7 +223,11 @@ export default function ResumenPedido() {
                                             {!checkedPromotions ?
                                                 <button
                                                     className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                                                    onClick={() => CheckPromotions()}
+                                                    onClick={() => {
+                                                        handleClick();
+                                                        CheckPromotions();
+                                                    }
+                                                }
                                                 >
                                                     {resumenCopys.boton.comprobarPromociones}
                                                 </button>

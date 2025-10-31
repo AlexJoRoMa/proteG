@@ -20,9 +20,6 @@ export default function ResumenContainerConfigurador() {
     
     const handleClick = async () => {
         setLoading(true);
-
-        console.log('extrasMap', izziSelection?.extrasMap)
-        console.log('extras', izziSelection?.extras)
         const extrasBody = [];
 
         
@@ -69,7 +66,8 @@ export default function ResumenContainerConfigurador() {
         const data = await res.json();
         setPromoData(data);
         } catch (error) {
-        console.error("Error al obtener el token:", error);
+            setCheckedPromotions(false);
+            console.error("Error al obtener el token:", error);
         } finally {
         setLoading(false);
         }
@@ -97,7 +95,9 @@ export default function ResumenContainerConfigurador() {
                                 <h4>{resumenCopys.promociones.textoAhorro}</h4>
                                 {
                                     promoData?.promoPackage?.map((promo, index) => {
-                                        totalDiscount = totalDiscount + Number(promo.amount);
+                                        if(promo.amount !== '0'){
+                                            totalDiscount = totalDiscount + Number(promo.amount);
+                                        }
                                         return (<h4 key={index}>${totalDiscount}</h4>)
                                     })
                                 }
