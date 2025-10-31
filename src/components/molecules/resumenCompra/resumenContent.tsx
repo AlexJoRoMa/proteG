@@ -2,6 +2,7 @@ import ResumenPaquetes from "./resumenPaquetes";
 import { FormatCurrency } from "@/utils/Currency";
 import { ResumenContentProps } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/utils/IzziProvider";
+import { useEffect } from "react";
 
 export default function ResumenContent({ copys, userSelection }: ResumenContentProps) {
 
@@ -43,12 +44,16 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
 
     const totalSinDescuento = Number(userSelection?.internet?.paquete?.precioPaquete || 0) 
     + Number(userSelection?.movil?.paquete?.precioTachado || 0) 
-    + Number(userSelection?.tv?.paquete?.precioTachado)
+    + Number(userSelection?.tv?.paquete?.precioTachado || 0)
     + (totalOttPrice || 0);
 
     const precioTotal = totalSinDescuento && ahorroCombinado ? totalSinDescuento - ahorroCombinado : globalIzziSelection?.precioPaquete;
-    setPrecioCombinado(ahorroCombinado as number);
-    setPrecioTotal(precioTotal as number);
+
+    
+    useEffect(() => {
+        setPrecioCombinado(ahorroCombinado as number);
+        setPrecioTotal(precioTotal as number);
+    }, [ahorroCombinado, precioTotal, setPrecioCombinado, setPrecioTotal]);
 
     return (
         <>
