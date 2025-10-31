@@ -46,6 +46,8 @@ export default function CoberturaForm() {
         setNeighborhood,
         locality, 
         setLocality,
+        state,
+        setState,
         name, 
         setName,
         phone, 
@@ -118,7 +120,17 @@ export default function CoberturaForm() {
         e.preventDefault();
         setFormattedAddress(`${street}, ${streetNumber}, ${locality}`);
         setGlobalFlag(true);
-        setCoberturaData({lat: lat.toString(), lng: lng.toString(), zipCode: postalCode, address: `${street}, ${streetNumber}, ${locality}`});
+        setCoberturaData({
+            lat: lat.toString(), 
+            lng: lng.toString(), 
+            zipCode: postalCode, 
+            address: `${street}, ${streetNumber}, ${locality}`, 
+            municipio: locality, 
+            colonia: neighborhood,
+            calle: street,
+            numExt: streetNumber,
+            estado: state
+        });
         await createCookie({lat: lat.toString(), lng: lng.toString(), zipCode: postalCode, address: `${street}, ${streetNumber}, ${locality}`});
     };
 
@@ -163,6 +175,9 @@ export default function CoberturaForm() {
                     break;
                 case 'locality':
                     setLocality(item.long_name)
+                    break;
+                case 'administrative_area_level_1':
+                    setState(item.long_name)
                     break;
                 default:
                     break;
@@ -270,8 +285,8 @@ export default function CoberturaForm() {
                 labelPlacement="outside"
                 name="state"
                 type="text"
-                value={locality}
-                onValueChange={setLocality}
+                value={state}
+                onValueChange={setState}
                 classNames={inputStyles}
             />
             : <></>}

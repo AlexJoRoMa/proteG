@@ -7,10 +7,11 @@ type ButtonProps = {
    classStyles: string,
    text: string,
    href?: string, // Nueva prop para el enlace
-   external?: boolean // Para enlaces externos
+   external?: boolean, // Para enlaces externos
+   disabled?: boolean
 }
 
-const ButtonGhost = ({classStyles, text, external, href}:ButtonProps) => {
+const ButtonGhost = ({classStyles, text, external, href, disabled}:ButtonProps) => {
   return (
     <>
         <Button color="primary" variant="ghost"
@@ -20,6 +21,7 @@ const ButtonGhost = ({classStyles, text, external, href}:ButtonProps) => {
         href={href || '#'} // Usa href si está definido, de lo contrario, usa '#'
         target={external ? '_blank' : '_self'} // Si es externo, abre en nueva pestaña
         rel={external ? 'noopener noreferrer' : undefined} // Añade seguridad para enlaces externos
+        isDisabled={disabled}
         >
           {text}
         </Button>

@@ -373,7 +373,12 @@ export interface CoberturaType {
     lat?: string,
     lng?: string,
     zipCode?: string,
-    address?: string
+    address?: string,
+    municipio?: string,
+    colonia?: string,
+    calle?: string,
+    numExt?: string,
+    estado?: string
 }
 
 export type ClientProps = {

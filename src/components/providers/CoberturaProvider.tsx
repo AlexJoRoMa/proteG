@@ -25,6 +25,7 @@ export const CoberturaProvider = ({
     const [aptNumber, setAptNumber] = useState<string>('');
     const [neighborhood, setNeighborhood] = useState<string>('');
     const [locality, setLocality] = useState<string>('');
+    const [state, setState] = useState<string>('');
     const [name, setName] = useState<string>('');
     const [phone, setPhone] = useState<string>('');
     const [lat, setLat] = useState<number>(0);
@@ -51,6 +52,8 @@ export const CoberturaProvider = ({
                 setNeighborhood,
                 locality, 
                 setLocality,
+                state,
+                setState,
                 name, 
                 setName,
                 phone, 

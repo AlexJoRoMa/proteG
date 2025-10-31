@@ -27,6 +27,9 @@ export const IzziProvider = ({
     const [promoData, setPromoData] = useState<Promotion>({});
     const [precioTotal, setPrecioTotal] = useState<number>(0);
     const [precioCombinado, setPrecioCombinado] = useState<number>(0);
+    const [rpt, setRpt] = useState<string>('');
+    const [offnetIzzi, setOffnetIzzi] = useState<boolean>(false);
+    const [offnetSky, setOffnetSky] = useState<boolean>(false);
 
     return (
         <izziContext.Provider value={{globalFlag, setGlobalFlag,
@@ -43,7 +46,13 @@ export const IzziProvider = ({
                 precioTotal,
                 setPrecioTotal,
                 precioCombinado,
-                setPrecioCombinado
+                setPrecioCombinado,
+                rpt, 
+                setRpt,
+                offnetIzzi, 
+                setOffnetIzzi,
+                offnetSky, 
+                setOffnetSky
         }}>
             {children}
         </izziContext.Provider>

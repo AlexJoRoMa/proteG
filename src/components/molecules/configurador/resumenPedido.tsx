@@ -36,6 +36,7 @@ export default function ResumenPedido() {
     const { precioTotal, coberturaData, setPromoData } = useIzziContent();
     const [infoPaquetes, setInfoPaquetes] = useState<string>("");
     const [loading, setLoading] = useState(false);
+    const [promoError, setPromoError] = useState(false);
 
     const resumenCopys = copysResumen as ResumenData;
     const internet = userAnswers.internet as unknown as internetComponentFields | undefined;
@@ -126,6 +127,7 @@ export default function ResumenPedido() {
         setPromoData(data);
         } catch (error) {
             setCheckedPromotions(false);
+            setPromoError(true);
             console.error("Error al obtener el token:", error);
         } finally {
         setLoading(false);
@@ -180,6 +182,7 @@ export default function ResumenPedido() {
                                 </button>
                                 :
                                 <ButtonGhost
+                                    disabled={loading && promoError}
                                     classStyles={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center"}
                                     text={resumenCopys.boton.contratar.titulo}
                                     href={resumenCopys.boton.contratar.url}
@@ -233,6 +236,7 @@ export default function ResumenPedido() {
                                                 </button>
                                                 :
                                                 <ButtonGhost
+                                                    disabled={loading && promoError}
                                                     classStyles={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg"}
                                                     text={resumenCopys.boton.contratar.titulo}
                                                     href={resumenCopys.boton.contratar.url}

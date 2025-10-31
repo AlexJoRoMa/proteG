@@ -7,6 +7,7 @@ import { ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/utils/IzziProvider";
 import { useState } from "react";
 import ButtonGhost from "@/components/atoms/ButtonGhost";
+// import ModalFechaInvalida from "../checkout/modals/ModalFechaInvalida";
 
 export default function ResumenContainerConfigurador() {
 
@@ -14,7 +15,8 @@ export default function ResumenContainerConfigurador() {
     const { promoData, setPromoData } = useIzziContent();
     const resumenCopys = copysResumen as ResumenData;
     const [loading, setLoading] = useState(false);
-    const { coberturaData } = useIzziContent();
+    const [promoError, setPromoError] = useState(false);
+    const { coberturaData, setRpt, setOffnetIzzi, setOffnetSky } = useIzziContent();
 
     let totalDiscount = 0;
     
@@ -65,11 +67,15 @@ export default function ResumenContainerConfigurador() {
     
         const data = await res.json();
         setPromoData(data);
+        setRpt(configuradorEntry?.rptCode as string);
+        setOffnetIzzi(configuradorEntry?.offnetIzzi as boolean);
+        setOffnetSky(configuradorEntry?.offnetSky as boolean);
         } catch (error) {
             setCheckedPromotions(false);
+            setPromoError(true);
             console.error("Error al obtener el token:", error);
         } finally {
-        setLoading(false);
+            setLoading(false);
         }
     };
 
@@ -128,12 +134,13 @@ export default function ResumenContainerConfigurador() {
                     //     {resumenCopys.boton.contratar.titulo}
                     // </button>
                     <ButtonGhost
-                        
+                        disabled={loading && promoError}
                         classStyles={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center"}
                         text={resumenCopys.boton.contratar.titulo}
                         href={resumenCopys.boton.contratar.url}
                     />
                 }
+                {/* <ModalFechaInvalida isOpen={promoError} /> */}
             </div>
 
         </>

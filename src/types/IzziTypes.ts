@@ -24,5 +24,11 @@ export type DataFields = {
     precioTotal: number,
     setPrecioTotal: React.Dispatch<React.SetStateAction<number>>,
     precioCombinado: number,
-    setPrecioCombinado: React.Dispatch<React.SetStateAction<number>>
+    setPrecioCombinado: React.Dispatch<React.SetStateAction<number>>,
+    rpt: string,
+    setRpt: React.Dispatch<React.SetStateAction<string>>,
+    offnetIzzi: boolean,
+    setOffnetIzzi: React.Dispatch<React.SetStateAction<boolean>>,
+    offnetSky: boolean,
+    setOffnetSky: React.Dispatch<React.SetStateAction<boolean>>
 }

@@ -157,7 +157,9 @@ export default function AccordionPlanesExtras() {
             >
                 {loadingOtts &&
                     <div className="flex justify-center py-[56px] w-full">
-                        <LoaderIcon />
+                        <div className="w-[104px] h-[104px]">
+                            <LoaderIcon />
+                        </div>
                     </div>
                 }
 
