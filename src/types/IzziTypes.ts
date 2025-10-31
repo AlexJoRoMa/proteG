@@ -22,5 +22,7 @@ export type DataFields = {
     promoData: Promotion,
     setPromoData: React.Dispatch<React.SetStateAction<Promotion>>,
     precioTotal: number,
-    setPrecioTotal: React.Dispatch<React.SetStateAction<number>>
+    setPrecioTotal: React.Dispatch<React.SetStateAction<number>>,
+    precioCombinado: number,
+    setPrecioCombinado: React.Dispatch<React.SetStateAction<number>>
 }

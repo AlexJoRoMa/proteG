@@ -8,7 +8,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     const resumenCopys = copys;
     const userAnswers = userSelection;
 
-    const { promoData, globalIzziSelection, setPrecioTotal } = useIzziContent();
+    const { promoData, globalIzziSelection, setPrecioTotal, setPrecioCombinado } = useIzziContent();
 
     
     const ottPromos = promoData?.promos?.filter(promo =>
@@ -47,6 +47,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     + (totalOttPrice || 0);
 
     const precioTotal = totalSinDescuento && ahorroCombinado ? totalSinDescuento - ahorroCombinado : globalIzziSelection?.precioPaquete;
+    setPrecioCombinado(ahorroCombinado as number);
     setPrecioTotal(precioTotal as number);
 
     return (

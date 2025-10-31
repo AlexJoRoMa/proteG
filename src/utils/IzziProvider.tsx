@@ -26,6 +26,7 @@ export const IzziProvider = ({
     const [coberturaData, setCoberturaData] = useState<CoberturaType>({});
     const [promoData, setPromoData] = useState<Promotion>({});
     const [precioTotal, setPrecioTotal] = useState<number>(0);
+    const [precioCombinado, setPrecioCombinado] = useState<number>(0);
 
     return (
         <izziContext.Provider value={{globalFlag, setGlobalFlag,
@@ -40,7 +41,9 @@ export const IzziProvider = ({
                 promoData,
                 setPromoData,
                 precioTotal,
-                setPrecioTotal
+                setPrecioTotal,
+                precioCombinado,
+                setPrecioCombinado
         }}>
             {children}
         </izziContext.Provider>
