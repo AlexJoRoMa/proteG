@@ -3,6 +3,7 @@ import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import { Entry, EntrySkeletonType } from "contentful";
 import { notFound } from "next/navigation";
+import { setTelNumber } from '@/services/izzi/getTelNumbers';
 
 /* import NavigationLanding from '@/components/molecules/navigationLandingComponent'; */
 
@@ -62,16 +63,15 @@ export default async function LandingPage({ params }: DynamicPageProps) {
     const page = await fetchComponentsBySlugPage(fullPath);
     const components = page.items || [];
 
-   
+    const validateNumber = setTelNumber(paqueteKey)
+  
 
 
     if (page.total !== 1) {
         notFound();
     }
 
-    console.log('👽 slugs ', slugs)
-    console.log('👽 paqueteKey ', paqueteKey)
-    console.log('👽 fullPath ', fullPath)
+     console.log(' 👽 validateNumber', validateNumber)
 
 
     return (

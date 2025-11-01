@@ -27,6 +27,8 @@ export default function NavigationLanding() {
   const clienteTitulo = getClienteTitulo?.[0]?.fields?.value;
   const llamanosTitulo = getLlamanosTitulo?.[0]?.fields?.value;
 
+
+  
   return (
     <IzziHeaderLanding apibarData={apibarData} clienteTitulo={clienteTitulo as string} llamanosTitulo={llamanosTitulo as string}/>  
   );

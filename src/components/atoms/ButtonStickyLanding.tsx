@@ -1,9 +1,5 @@
 import React from 'react'
 import ButtonModal from './ButtonModal';
-import { getAllCopy, getMicroCopy } from '@/services/contentful/components';
-import { ContactIcon } from './ModalIcons';
-import { ResourceType } from '@/types/ButtonTypes';
-import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
 
 interface ButtonLandingProps {
