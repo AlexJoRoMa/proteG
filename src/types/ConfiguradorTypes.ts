@@ -72,6 +72,7 @@ export interface OfferItem {
     idPaquete: number,
     idExtra: number,
     titulo: string,
+    tituloTriplePlay?: string,
     descripcion: string,
     precioPaquete: string,
     periodicidad: string,
@@ -86,6 +87,7 @@ export interface OfferItem {
     descuentoPaquete?: string,
     precioDomiciliacion?: string,
     precioTachado?: string;
+    precioTriplePlay?: string
 }
 
 export interface Ahorro {
@@ -235,6 +237,7 @@ export interface IzziSelection {
     idPaquete?: number,
     idExtra?: number,
     titulo?: string,
+    tituloTriplePlay?: string,
     periodicidad?: string,
     descripcion?: string,
     precioPaquete?: string,

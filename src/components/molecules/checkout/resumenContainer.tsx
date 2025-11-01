@@ -19,6 +19,7 @@ import { ArrowDownIcon, ArrowUpIcon } from "@/constants/IconsConstants";
 import { ResumenData } from "@/types/ResumenCompra";
 import ResumenContent from "../resumenCompra/resumenContent";
 import { useIzziContent } from "@/utils/IzziProvider";
+import { FormatCurrency } from "@/utils/Currency";
 
 export default function ResumenContainer() {
 
@@ -31,7 +32,7 @@ export default function ResumenContainer() {
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-    const { globalUserAnswers } = useIzziContent();
+    const { globalUserAnswers, coberturaData, offnetIzzi, offnetSky, globalIzziSelection, precioTotal, infoPaquetes, precioCombinado } = useIzziContent();
     const {
         nextStep,
         goToStep,
@@ -125,7 +126,7 @@ export default function ResumenContainer() {
 
     const { trigger: runSubmitOffer, isLoading: loadingOrder } = useControlledAction({
         action: async () => {
-            const res = await GetSubmitOffer(izziEnrrollRef.current);
+            const res = await GetSubmitOffer(izziEnrrollRef.current, globalIzziSelection, precioTotal, globalUserAnswers, offnetIzzi, offnetSky);
             const data = await res;
             if (data?.code) {
                 console.error("Error del servicio submitOffer");
@@ -296,7 +297,7 @@ export default function ResumenContainer() {
 
                     try {
                         // IzziEnroll
-                        const resultIzziEnroll = await GetIzziEnroll();
+                        const resultIzziEnroll = await GetIzziEnroll(coberturaData, datosContratacion, offnetIzzi, offnetSky);
                         setIzziEnroll(resultIzziEnroll);
 
                         // // ProcessStatus
@@ -414,17 +415,15 @@ export default function ResumenContainer() {
                         <div className="flex flex-col gap-[8px]">
                             <div className="flex gap-[4px] font-normal text-base leading-[24px] text-gray-500 items-baseline">
                                 <h3 className="font-extrabold text-[32px] leading-[32px] text-black-0">
-                                    $XXXX
+                                    {FormatCurrency(Number(precioTotal))}
                                 </h3>
                                 <h5>{resumenCopys.infoDrawer.plazo}</h5>
                                 <p>|</p>
-                                <h5 className="font-bold">test</h5>
+                                <h5 className="font-bold">{infoPaquetes}</h5>
 
-                                {/* <h5 className="font-bold">{infoPaquetes}</h5> */}
                             </div>
-                            <div className="font-bold">¡Te ahorras XXXX al combinar!</div>
+                            <div className="font-bold">{`¡Te ahorras ${FormatCurrency(Number(precioCombinado))} al combinar!`}</div>
 
-                            {/* <div className="font-bold">{infoDrawerContent}</div> */}
                         </div>
                         <button
                             className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"

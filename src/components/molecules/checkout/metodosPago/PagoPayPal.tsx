@@ -5,11 +5,13 @@ import { useState } from 'react';
 import { Switch } from '@heroui/react';
 import PayPalScript from './PayPalScript';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
+import { useIzziContent } from '@/utils/IzziProvider';
 
 export default function PagoPayPal() {
 
+    const { rpt, precioTotal } = useIzziContent();
     const { paypalIcon, processStatus } = useCheckout();
-    const {getValue} = useMicrocopies('contratacion-pago');
+    const { getValue } = useMicrocopies('contratacion-pago');
     const [isRecurrent, setIsRecurrent] = useState(false);
 
     return (
@@ -46,7 +48,7 @@ export default function PagoPayPal() {
                 )
             }
 
-            <PayPalScript amount={470} rptGetOffer={'000'} account={processStatus.accountNumber} isRecurrent={isRecurrent} />
+            <PayPalScript amount={precioTotal} rptGetOffer={rpt} account={processStatus.accountNumber} isRecurrent={isRecurrent} />
 
             <div className='flex flex-col gap-[27px] text-center text-sm md:text-base leading-[24px] mt-[8px]'>
                 <p className='text-start md:text-center'>

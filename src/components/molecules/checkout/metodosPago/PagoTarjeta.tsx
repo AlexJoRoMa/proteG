@@ -5,12 +5,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { GetLigaPago } from "@/utils/GetLigaPago";
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
+import { useIzziContent } from "@/utils/IzziProvider";
 
 export default function PagoTarjeta() {
 
+    const {rpt, precioTotal} = useIzziContent();
     const [isRecurrent, setIsRecurrent] = useState(false);
     const [urlFrame, setUrlFrame] = useState("");
-    const { currentStep, setPaymentReference } = useCheckout();
+    const { currentStep, setPaymentReference, processStatus, datosContratacion } = useCheckout();
     const { getValue } = useMicrocopies('contratacion-pago');
 
     const hasFetched = useRef(false);
@@ -21,7 +23,7 @@ export default function PagoTarjeta() {
 
         (async () => {
             try {
-                const result = await GetLigaPago();
+                const result = await GetLigaPago(rpt, precioTotal, processStatus, datosContratacion);
 
                 if (result?.response) {
 

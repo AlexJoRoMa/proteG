@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, InputOtp, Radio, RadioGroup } from '@heroui/react'
+import { Button, Form, InputOtp, radio, Radio, RadioGroup } from '@heroui/react'
 import { useStep3Form } from '@/hooks/checkout/useStep3Form';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
+import { useIzziContent } from '@/utils/IzziProvider';
+import { useCheckout } from '@/components/providers/CheckoutProvider';
+import { GetEnvioCodigo } from '@/utils/GetEnvioCodigo';
 
 const RadioStyles = {
   base: "flex items-center p-0 xl:py-0 w-full m-0",
@@ -10,40 +13,12 @@ const RadioStyles = {
   label: "text-base xl:text-lg"
 }
 
-const DUMMY_BODY = {
-  "phone": "5540318268 ",
-  "mail": "juanarodriguez@deloitte.com",
-  "name": "JUAN-TEST",
-  "lastname": "NBVN",
-  "package": "izzi 1000 + izzitv HD",
-  "descriptionPackage": "Llamadas ilimitadas. Internet de 1000 Megas. izzitv HD con más de 60 canales en vivo, además de acceso a izzi go y kids",
-  "price": 1170,
-  "addons": [
-    { "name": "Netflix Estándar", "price": "249" },
-    { "name": "izzi móvil 5 12 meses", "price": "240" },
-    { "name": "izzi móvil 5 12 meses", "price": "240" }
-  ],
-  "promos": [
-    { "name": "izzi movil 5 12 meses", "amount": "120", "duration": "", "permanent": "SI", "startMonth": "1" },
-    { "name": "izzi movil 5 12 meses", "amount": "120", "duration": "", "permanent": "SI", "startMonth": "1" }
-  ],
-  "priceAddons": 249,
-  "priceWithoutPromo": 1899,
-  "priceWithPromo": 1659,
-  "priceMobile": 480,
-  "promoMobile": 240,
-  "promoPackage": [
-    { "name": "Vix Premium", "amount": "119", "duration": 12, "permanent": "NO", "startMonth": 1 },
-    { "name": "AppleTV+", "amount": "129", "duration": 12, "permanent": "NO", "startMonth": 1 },
-    { "name": "HBO Max básico con anuncios", "amount": "149", "duration": 12, "permanent": "NO", "startMonth": 1 },
-    { "name": "LALIGA EA sports", "amount": 0, "duration": 0, "permanent": "SI", "startMonth": 1 },
-    { "name": "Skeelo", "amount": 0, "duration": 0, "permanent": "SI", "startMonth": 1 },
-    { "name": "izzi ahorro", "amount": 120, "duration": 0, "permanent": "SI", "startMonth": 1 }
-  ]
-}
+
 
 const Step3 = () => {
 
+  const { globalUserAnswers, globalIzziSelection, promoData, precioTotal } = useIzziContent();
+  const { datosContratacion } = useCheckout();
   const [radioState, setRadioState] = useState('');
   const [inputCode, setInputCode] = useState('');
   const [sendCode, setSendCode] = useState(false);
@@ -71,34 +46,8 @@ const Step3 = () => {
     setInputCode('');
     startTimer();
 
-    try {
-      const body = JSON.stringify({
-        ...DUMMY_BODY,
-        idTransaction,
-      });
+    GetEnvioCodigo(datosContratacion, globalIzziSelection, promoData, precioTotal, idTransaction, radioState);
 
-      const headers = new Headers({
-        "Content-Type": "application/json",
-        "x-origin": "PORTALVL",
-        "medio": radioState === "Correo Electrónico" ? "CORREO" : radioState === "WhatsApp" ? "WHATSAPP" : "SMS",
-        "oferta": "IZZI",
-        //TODO: validar tipo de oferta IZZI / SKY
-      });
-
-      const response = await fetch("/api/contratacion/verificacionContacto/envioCodigo", {
-        method: "POST",
-        headers,
-        body,
-      });
-
-      const data = await response.json();
-      if (!data) throw new Error("Invalid response from server");
-
-      return data;
-    } catch (err) {
-      console.error("Error al enviar codigo", err);
-      throw err;
-    }
   }
 
   function hanldeResendCode() {
@@ -161,18 +110,18 @@ const Step3 = () => {
             value={getValue('verificacion.radio.value.whatsapp')}
             classNames={RadioStyles}
           >
-            <b>{getValue('verificacion.radio.titulo.whatsapp')}</b> 55 XXXX XXXX
+            <b>{getValue('verificacion.radio.titulo.whatsapp')}</b> {datosContratacion.DatosPersonales?.personal.phone}
           </Radio>
           <Radio
             value={getValue('verificacion.radio.value.sms')}
             classNames={RadioStyles}
-          > <b>{getValue('verificacion.radio.titulo.sms')}</b> 55 XXXX XXXX
+          > <b>{getValue('verificacion.radio.titulo.sms')}</b> {datosContratacion.DatosPersonales?.personal.phone}
           </Radio>
           <Radio
             value={getValue('verificacion.radio.value.correo')}
             classNames={RadioStyles}
           >
-            <b>{getValue('verificacion.radio.titulo.correo')}</b> mail@gmail.com
+            <b>{getValue('verificacion.radio.titulo.correo')}</b> {datosContratacion.DatosPersonales?.personal.email}
           </Radio>
         </RadioGroup>
 

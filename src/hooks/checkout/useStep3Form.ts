@@ -40,7 +40,6 @@ export const useStep3Form = (radioState: string) => {
                 "medio": radioState === "Correo Electrónico" ? "CORREO" : radioState === "WhatsApp" ? "WHATSAPP" : "SMS",
                 "oferta": "IZZI",
                 "x-origin": "PORTALVL",
-                //TODO: validar tipo de oferta IZZI / SKY
             });
 
             const response = await fetch("/api/contratacion/verificacionContacto/verificaCodigo", {
@@ -56,9 +55,9 @@ export const useStep3Form = (radioState: string) => {
             const data = await response.json();
 
             if (data?.izziErrorCode === "000") {
-            setIsValid(true);
-            setIsStepValid(true);
-            LastVerifiedCodeRef.current = codigo
+                setIsValid(true);
+                setIsStepValid(true);
+                LastVerifiedCodeRef.current = codigo
             } else {
                 setIsValid(false);
                 setIsStepValid(false);

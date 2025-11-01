@@ -55,8 +55,10 @@ export default function PlanesTv({ step }: StepProps) {
             return {
                 ...item,
                 titulo: offersCopys.tv.cards.titulo,
+                tituloTriplePlay: item.titulo,
                 precioPaquete: precioTachado,
-                precioTachado: precioTv
+                precioTachado: precioTv,
+                precioTriplePlay: item.precioPaquete
             };
             }) ?? []
 
