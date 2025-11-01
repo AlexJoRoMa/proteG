@@ -33,8 +33,7 @@ function hasData(obj: unknown): boolean {
 export default function ResumenPedido() {
 
     const { userAnswers, copysResumen, setCheckedPromotions, checkedPromotions, infoDrawerContent, configuradorEntry, izziSelection } = useContent();
-    const { precioTotal, coberturaData, setPromoData } = useIzziContent();
-    const [infoPaquetes, setInfoPaquetes] = useState<string>("");
+    const { precioTotal, coberturaData, setPromoData, infoPaquetes, setInfoPaquetes } = useIzziContent();;
     const [loading, setLoading] = useState(false);
     const [promoError, setPromoError] = useState(false);
 

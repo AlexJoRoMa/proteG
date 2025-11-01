@@ -30,6 +30,7 @@ export const IzziProvider = ({
     const [rpt, setRpt] = useState<string>('');
     const [offnetIzzi, setOffnetIzzi] = useState<boolean>(false);
     const [offnetSky, setOffnetSky] = useState<boolean>(false);
+    const [infoPaquetes, setInfoPaquetes] = useState<string>("");
 
     return (
         <izziContext.Provider value={{globalFlag, setGlobalFlag,
@@ -52,7 +53,9 @@ export const IzziProvider = ({
                 offnetIzzi, 
                 setOffnetIzzi,
                 offnetSky, 
-                setOffnetSky
+                setOffnetSky,
+                infoPaquetes, 
+                setInfoPaquetes
         }}>
             {children}
         </izziContext.Provider>

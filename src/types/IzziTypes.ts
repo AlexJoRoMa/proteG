@@ -31,4 +31,6 @@ export type DataFields = {
     setOffnetIzzi: React.Dispatch<React.SetStateAction<boolean>>,
     offnetSky: boolean,
     setOffnetSky: React.Dispatch<React.SetStateAction<boolean>>
+    infoPaquetes: string
+    setInfoPaquetes: React.Dispatch<React.SetStateAction<string>>
 }
