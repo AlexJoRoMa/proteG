@@ -1,7 +1,8 @@
 import "@/styles/globals.css";
 import { Lato } from "next/font/google";
-
+import NavigationLanding from "@/components/molecules/navigationLandingComponent";
 const lato = Lato({ subsets: ['latin'], weight: ['400', '700'] })
+import FooterLanding from "@/components/molecules/footerLandingComponent";
 
 
 //TODO descomentar metadata cuando se tenga el contenido tomado desde contentful
@@ -19,8 +20,10 @@ export default function CheckoutLayout({
     return (
         <div className={lato.className}>
             {/* header de las landing */}
+            <NavigationLanding />
             {children}
             {/* footer de las landing */}
+            <FooterLanding />
         </div>
     );
 }

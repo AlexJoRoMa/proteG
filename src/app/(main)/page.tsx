@@ -2,6 +2,8 @@ import { Entry, EntrySkeletonType } from "contentful";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import ButtonFixed from "@/components/atoms/ButtonSticky";
+import {SeoFieldSkeleton} from "@/types/SEOTypes";
+import SEOHead from '@/components/atoms/SEOHead';
 import CookieConsent from "@/components/organisms/cookieConsent";
 
 
@@ -11,9 +13,16 @@ export default async function Home() {
 
   const page = await fetchComponentsBySlugPage("home");
 
-   const components = page.items || [];
-
+  const components = page.items || [];
+  const slug = components[0]?.fields.slug as string;
+  const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
+  const seo = seoEntry?.fields;
+  
   return (
+    <>
+    
+    {seo && <SEOHead seo={seo} slug={slug} />}
+    
     <main className="">
 
         {
@@ -31,5 +40,6 @@ export default async function Home() {
         <ButtonFixed />
         <CookieConsent />
     </main>
+    </>
   );
 }

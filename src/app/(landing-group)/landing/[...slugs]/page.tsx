@@ -1,8 +1,11 @@
-import ButtonFixed from "@/components/atoms/ButtonSticky";
+import ButtonFixedContracLanding from "@/components/atoms/ButtonStickyContrataLanding";
 import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import { Entry, EntrySkeletonType } from "contentful";
 import { notFound } from "next/navigation";
+import {SeoFieldSkeleton} from "@/types/SEOTypes";
+import SEOHead from '@/components/atoms/SEOHead';
+/* import NavigationLanding from '@/components/molecules/navigationLandingComponent'; */
 
 interface DynamicPageProps {
     params: Promise<{
@@ -18,12 +21,22 @@ export default async function LandingPage({ params }: DynamicPageProps) {
     const page = await fetchComponentsBySlugPage(fullPath);
     const components = page.items || [];
 
+    const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
+    const seo = seoEntry?.fields;
+
+
     if (page.total !== 1) {
         notFound();
     }
 
+   
     return (
+        <>
+        
+        {seo && <SEOHead seo={seo} slug={fullPath} />}
+        
         <main>
+            
             {components[0]?.fields.components &&
                 Array.isArray(components[0].fields.components) &&
                 components[0].fields.components.length > 0 ? (
@@ -40,7 +53,8 @@ export default async function LandingPage({ params }: DynamicPageProps) {
             ) : (
                 <p>No existen componentes cargados.</p>
             )}
-            <ButtonFixed />
+            <ButtonFixedContracLanding />
         </main>
+        </>
     );
 }
