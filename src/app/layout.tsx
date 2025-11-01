@@ -1,6 +1,6 @@
 import { Lato } from 'next/font/google';
 import "../styles/globals.css";
-import TimeIndicator from '@/components/atoms/TimeIndicator';
+
 
 const lato = Lato({
   weight: '400',
@@ -23,7 +23,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${lato.variable}`}>
-      <TimeIndicator />
       <body>
         {children}
       </body>
