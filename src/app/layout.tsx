@@ -1,5 +1,6 @@
 import { Lato } from 'next/font/google';
 import "../styles/globals.css";
+import { IzziProvider } from '@/utils/IzziProvider';
 
 
 const lato = Lato({
@@ -7,7 +8,6 @@ const lato = Lato({
   subsets: ['latin'],
   variable: '--font-lato',
 })
-
 export const revalidate = 10;
 //TODO descomentar metadata cuando se tenga el contenido tomado desde contentful
 
@@ -24,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${lato.variable}`}>
       <body>
+        <IzziProvider>
         {children}
+        </IzziProvider>
       </body>
     </html>
   );

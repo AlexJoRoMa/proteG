@@ -3,6 +3,7 @@
 import { internetComponentFields, movilComponentFields, tvComponentFields } from "@/types/ConfiguradorTypes";
 import { ResumenData } from "@/types/ResumenCompra";
 import { useContent } from "@/utils/ConfiguradorProvider";
+import { useIzziContent } from "@/utils/IzziProvider";
 import { Alert } from "@heroui/react";
 import { useEffect, useState } from "react";
 
@@ -23,6 +24,7 @@ export default function ResumenInfo() {
     // Componente de popups - notificaciones
 
     const { userAnswers, copysResumen, setInfoDrawerContent, cobertura } = useContent();
+    const { precioCombinado } = useIzziContent();
     const resumenCopys = copysResumen as ResumenData;
 
     const internet = userAnswers.internet as unknown as internetComponentFields | undefined;
@@ -78,7 +80,7 @@ export default function ResumenInfo() {
                         });
                     } else {
                         if (isFirstLoad.tv) {
-                            showNotification(`${resumenCopys.info.combinacion.prevPrice} $XXXX ${resumenCopys.info.combinacion.postPrice}`, "");
+                            showNotification(`${resumenCopys.info.combinacion.prevPrice} $${precioCombinado} ${resumenCopys.info.combinacion.postPrice}`, "");
                         }
                         setIsFirstLoad((prev) => {
                             return {
@@ -89,7 +91,7 @@ export default function ResumenInfo() {
                     }
                 }
                 if (!(tv?.paquete.titulo.includes('light'))) {
-                    setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $XXXX ${resumenCopys.infoDrawer.combinacion.postPrice}`)
+                    setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $${precioCombinado} ${resumenCopys.infoDrawer.combinacion.postPrice}`)
                 } else {
                     setInfoDrawerContent(resumenCopys.infoDrawer.nuevoFlujo)
                 }
@@ -105,7 +107,7 @@ export default function ResumenInfo() {
                         }
                     });
                 }
-                setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $XXXX ${resumenCopys.infoDrawer.combinacion.postPrice}`)
+                setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $${precioCombinado} ${resumenCopys.infoDrawer.combinacion.postPrice}`)
             } else {
                 setIsVisible(false);
             }
@@ -135,7 +137,7 @@ export default function ResumenInfo() {
                     }
                 }
                 if (!(tv?.paquete.titulo.includes('light'))) {
-                    setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $XXXX ${resumenCopys.infoDrawer.combinacion.postPrice}`)
+                    setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $${precioCombinado} ${resumenCopys.infoDrawer.combinacion.postPrice}`)
                 } else {
                     setInfoDrawerContent(resumenCopys.infoDrawer.nuevoFlujo)
                 }
@@ -149,7 +151,7 @@ export default function ResumenInfo() {
                         }
                     });
                 }
-                setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $XXXX ${resumenCopys.infoDrawer.combinacion.postPrice}`)
+                setInfoDrawerContent(`${resumenCopys.infoDrawer.combinacion.prePrice} $${precioCombinado} ${resumenCopys.infoDrawer.combinacion.postPrice}`)
             }
         }
 

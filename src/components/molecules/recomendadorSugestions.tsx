@@ -84,7 +84,9 @@ export default function RecomendadorSugestions({ newSelectionAction }: Recomenda
                     <Suspense
                         fallback={
                             <div className="flex justify-center py-[80px] md:mx-md 2xl:mx-xl">
-                                <LoaderIcon />
+                                <div className="w-[104px] h-[104px]">
+                                    <LoaderIcon />
+                                </div>
                             </div>
                         }
                     >

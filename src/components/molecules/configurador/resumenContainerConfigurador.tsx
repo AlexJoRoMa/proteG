@@ -4,11 +4,80 @@ import ResumenContent from "../resumenCompra/resumenContent";
 import Image from "next/image";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { ResumenData } from "@/types/ResumenCompra";
+import { useIzziContent } from "@/utils/IzziProvider";
+import { useState } from "react";
+import ButtonGhost from "@/components/atoms/ButtonGhost";
+// import ModalFechaInvalida from "../checkout/modals/ModalFechaInvalida";
 
 export default function ResumenContainerConfigurador() {
 
-    const { copysResumen, checkedPromotions, setCheckedPromotions, resumenIcon, userAnswers } = useContent();
+    const { copysResumen, checkedPromotions, setCheckedPromotions, resumenIcon, userAnswers, configuradorEntry, izziSelection } = useContent();
+    const { promoData, setPromoData } = useIzziContent();
     const resumenCopys = copysResumen as ResumenData;
+    const [loading, setLoading] = useState(false);
+    const [promoError, setPromoError] = useState(false);
+    const { coberturaData, setRpt, setOffnetIzzi, setOffnetSky } = useIzziContent();
+
+    let totalDiscount = 0;
+    
+    const handleClick = async () => {
+        setLoading(true);
+        const extrasBody = [];
+
+        
+            if(izziSelection?.extrasMap){
+                izziSelection?.extrasMap?.ott?.map((extra) => {
+                    extrasBody.push({
+                        "extId": extra.idExtra, 
+                        "nuevaCantidad": 1, 
+                        "combo": true
+                    })
+                })
+            }
+            if(izziSelection?.extras){
+                extrasBody.push({
+                    "extId":  izziSelection.extras?.idExtra, 
+                    "nuevaCantidad": 1, 
+                    "combo": false, 
+                    "tipoEntrega": "DOMICILIO", 
+                    "sucursalId": "N/A", 
+                    "portabilidadMovil": "N"
+                })
+            }
+
+        try {
+        const res = await fetch("/api/configurador/resumen", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                    "rpt": configuradorEntry?.rptCode,
+                    "postalCode": coberturaData.zipCode,
+                    "hub": configuradorEntry?.hub,
+                    "coverageType": configuradorEntry?.coverageType,
+                    "requestedServices": {
+                        "extras": extrasBody,
+                        "product": izziSelection?.idPaquete
+                    },
+                    "offnet": configuradorEntry?.offnetIzzi && configuradorEntry?.offnetSky
+                }
+            ),
+        });
+    
+        const data = await res.json();
+        setPromoData(data);
+        setRpt(configuradorEntry?.rptCode as string);
+        setOffnetIzzi(configuradorEntry?.offnetIzzi as boolean);
+        setOffnetSky(configuradorEntry?.offnetSky as boolean);
+        } catch (error) {
+            setCheckedPromotions(false);
+            setPromoError(true);
+            console.error("Error al obtener el token:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <>
@@ -30,7 +99,14 @@ export default function ResumenContainerConfigurador() {
                             <h3 className="font-bold text-xl text-white-0">{resumenCopys.promociones.titulo}</h3>
                             <div className="flex gap-[4px] font-normal text-lg leading-[24px] text-white-0">
                                 <h4>{resumenCopys.promociones.textoAhorro}</h4>
-                                <h4>$XXXX</h4>
+                                {
+                                    promoData?.promoPackage?.map((promo, index) => {
+                                        if(promo.amount !== '0'){
+                                            totalDiscount = totalDiscount + Number(promo.amount);
+                                        }
+                                        return (<h4 key={index}>${totalDiscount}</h4>)
+                                    })
+                                }
                             </div>
                         </div>
                     </div>
@@ -43,23 +119,28 @@ export default function ResumenContainerConfigurador() {
                 {!checkedPromotions ?
                     <button
                         className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                        onClick={() => setCheckedPromotions(true)}
+                        onClick={() => {
+                            setCheckedPromotions(true);
+                            handleClick();
+                        }}
                     >
                         {resumenCopys.boton.comprobarPromociones}
                     </button>
                     :
-                    <button
-                        disabled
-                        className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                    >
-                        {resumenCopys.boton.contratar.titulo}
-                    </button>
-                    // <ButtonGhost
-                    //     classStyles={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center"}
-                    //     text={resumenCopys.boton.contratar.titulo}
-                    //     href={resumenCopys.boton.contratar.url}
-                    // />
+                    // <button
+                    //     disabled={loading}
+                    //     className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
+                    // >
+                    //     {resumenCopys.boton.contratar.titulo}
+                    // </button>
+                    <ButtonGhost
+                        disabled={loading && promoError}
+                        classStyles={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center"}
+                        text={resumenCopys.boton.contratar.titulo}
+                        href={resumenCopys.boton.contratar.url}
+                    />
                 }
+                {/* <ModalFechaInvalida isOpen={promoError} /> */}
             </div>
 
         </>

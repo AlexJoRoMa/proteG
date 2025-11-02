@@ -8,6 +8,7 @@ import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import geocodeApi from '@/services/google-maps/api';
 import { GeocodeType } from '@/types/CoberturaTypes';
+import { useIzziContent } from '@/utils/IzziProvider';
 
 const inputStyles = {
     label: "text-black/50",
@@ -45,6 +46,8 @@ export default function CoberturaForm() {
         setNeighborhood,
         locality, 
         setLocality,
+        state,
+        setState,
         name, 
         setName,
         phone, 
@@ -53,8 +56,9 @@ export default function CoberturaForm() {
         setLat,
         lng,
         setLng,
-        setFormattedAddress
       } = useContent();
+
+      const { setGlobalFlag, setFormattedAddress, setCoberturaData } = useIzziContent();
     
     interface PlaceAutocompleteProps {
         onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
@@ -115,6 +119,18 @@ export default function CoberturaForm() {
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setFormattedAddress(`${street}, ${streetNumber}, ${locality}`);
+        setGlobalFlag(true);
+        setCoberturaData({
+            lat: lat.toString(), 
+            lng: lng.toString(), 
+            zipCode: postalCode, 
+            address: `${street}, ${streetNumber}, ${locality}`, 
+            municipio: locality, 
+            colonia: neighborhood,
+            calle: street,
+            numExt: streetNumber,
+            estado: state
+        });
         await createCookie({lat: lat.toString(), lng: lng.toString(), zipCode: postalCode, address: `${street}, ${streetNumber}, ${locality}`});
     };
 
@@ -159,6 +175,9 @@ export default function CoberturaForm() {
                     break;
                 case 'locality':
                     setLocality(item.long_name)
+                    break;
+                case 'administrative_area_level_1':
+                    setState(item.long_name)
                     break;
                 default:
                     break;
@@ -266,8 +285,8 @@ export default function CoberturaForm() {
                 labelPlacement="outside"
                 name="state"
                 type="text"
-                value={locality}
-                onValueChange={setLocality}
+                value={state}
+                onValueChange={setState}
                 classNames={inputStyles}
             />
             : <></>}
@@ -294,10 +313,14 @@ export default function CoberturaForm() {
                 value={phone}
                 onValueChange={setPhone}
                 classNames={inputStyles}
-            />
-            <Checkbox isRequired={true} isSelected={isSelected} onValueChange={setIsSelected} defaultSelected={false} color="default" className='text-gray-450 pt-4 pb-8'>
-                {getValue('cobertura.form.privacidad.label')}
-            </Checkbox>
+            /> 
+            <div>
+            <Checkbox isRequired={true} isSelected={isSelected} onValueChange={setIsSelected} defaultSelected={false} color="default" className='text-gray-450 pt-4 pb-8' />
+                <span className='mr-1'>{getValue('cobertura.form.privacidad.label')}</span>
+                <a target='_blank' href={getValue('cobertura.form.privacidad.Aviso.link') as string} >
+                <span className='font-bold'>{getValue('cobertura.form.privacidad.Aviso') as string}</span>
+                </a>
+            </div>
             <div className='w-full pb-4 lg:flex lg:col-2 gap-4'>
                 <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange}>
                 {getValue('cobertura.button.ubicacion')}

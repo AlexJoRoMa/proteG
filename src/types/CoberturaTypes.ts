@@ -90,6 +90,8 @@ export type DataFields = {
   setNeighborhood: React.Dispatch<React.SetStateAction<string>>
   locality: string,
   setLocality: React.Dispatch<React.SetStateAction<string>>
+  state: string,
+  setState: React.Dispatch<React.SetStateAction<string>>
   name: string,
   setName: React.Dispatch<React.SetStateAction<string>>
   phone: string,
@@ -98,6 +100,4 @@ export type DataFields = {
   setLat: React.Dispatch<React.SetStateAction<number>>,
   lng: number,
   setLng: React.Dispatch<React.SetStateAction<number>>,
-  formattedAddress: string,
-  setFormattedAddress: React.Dispatch<React.SetStateAction<string>>
 }

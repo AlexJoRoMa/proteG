@@ -1,7 +1,7 @@
-import { CoberturaType, PackageInfo } from "@/types/ConfiguradorTypes";
+import { CoberturaType, PackageInfo, QuoteInfo } from "@/types/ConfiguradorTypes";
 import { redirect } from "next/navigation";
 
-async function getToken() {
+export async function getToken() {
     try {
         const response = await fetch(
             "https://test.izziapiweb.mx/modifyservices/purchase/oauth2/token",
@@ -67,6 +67,51 @@ export async function getOfertas(dataCobertura: CoberturaType) {
                     "longitude": Number(dataCobertura.lng),
                     "negocios": false,
                     "sky": false
+                }),
+                cache: "no-store",
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(`Error en la petición: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('response', data);
+        return data;
+
+    } catch (error) {
+        console.error("Error al obtener las ofertas", error)
+        throw new Error("Error al obtener las ofertas");
+    }
+}
+
+export async function getQuote(body: QuoteInfo) {
+
+    try {
+
+        const accessToken = await getToken();
+
+        if (!accessToken) {
+            console.error("No se pudo obtener el accessToken");
+            redirect("/error");
+        }
+
+        const response = await fetch(
+            "https://test.izziapiweb.mx/test/izzi/ms/purchaseServices/purchase/v2/quote",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({
+                    "rpt": body.rpt,
+                    "hub": body.hub, 
+                    "coverageType": body.coverageType,
+                    "postalCode": body.postalCode,
+                    "offnet": body.offnet, // depende de offnetIzzi y offnetSky 
+                    "requestedServices": body.requestedServices,
                 }),
                 cache: "no-store",
             }

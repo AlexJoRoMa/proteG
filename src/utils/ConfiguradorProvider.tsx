@@ -3,6 +3,7 @@
 import { DataFields, IzziSelection, ProviderProps, UserAnswers } from "@/types/ConfiguradorTypes";
 import { createContext, useContext, useEffect, useState } from "react";
 import { IzziSelectionGuard } from "./guards/IzziSelectionGuard";
+import { useIzziContent } from "./IzziProvider";
 
 const configuradorContext = createContext<DataFields | undefined>(undefined);
 
@@ -30,6 +31,8 @@ export const ConfiguradorProvider = ({
     const [infoDrawerContent, setInfoDrawerContent] = useState<string>("");
     const [disabled, setDisabled] = useState<boolean>(false);
 
+    const { setGlobalUserAnswers, setGlobalIzziSelection } = useIzziContent();
+
     useEffect(() => IzziSelectionGuard(userAnswers, setIzziSelection), [userAnswers])
 
     useEffect(() => {
@@ -52,6 +55,9 @@ export const ConfiguradorProvider = ({
         });
     }, [userAnswers.internet, userAnswers.tv, userAnswers.movil])
 
+    useEffect(() => setGlobalUserAnswers(userAnswers), [userAnswers, setGlobalUserAnswers]);
+    useEffect(() => setGlobalIzziSelection(izziSelection), [izziSelection, setGlobalIzziSelection]);
+
     return (
         <configuradorContext.Provider
             value={{
@@ -70,7 +76,7 @@ export const ConfiguradorProvider = ({
                 infoDrawerContent,
                 setInfoDrawerContent,
                 disabled,
-                setDisabled
+                setDisabled,
             }
             }
         >

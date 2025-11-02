@@ -16,7 +16,26 @@ export default function PlanesMovil({ step }: StepProps) {
     const plans = configuradorEntry?.offers.MOVIL as unknown as OfferItem[];
     const offersCopys = copysConfigurador as unknown as OffersCopys;
 
-    const plansInfo = formatData(plans, offersCopys) as unknown as MovilPlansInfo[];
+    const plansPrev = formatData(plans, offersCopys) as unknown as MovilPlansInfo[];
+
+    
+    const plansInfo = plansPrev.map(offer => {
+        const cardsActualizadas = offer.cards?.map(card => {
+        const precioTachado = Number(card.precioPaquete) * 0.5;
+    
+        return {
+            ...card,
+            precioPaquete: precioTachado.toString(),
+            precioTachado: card.precioPaquete
+        };
+        }) ?? [];
+    
+        return {
+        ...offer,
+        cards: cardsActualizadas
+        };
+    });
+  
 
     const defaultKey = plansInfo[0].tituloTab;
 
@@ -134,23 +153,20 @@ export default function PlanesMovil({ step }: StepProps) {
                                         <CardFooter>
                                             <div className="flex flex-col w-full gap-[8px]">
                                                 <div className="flex flex-row items-baseline text-start gap-[4px]">
-                                                    {
-                                                        // card.precioAhorro ?
-                                                        //     <>
-                                                        //         <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioPaquete)}</p>
-                                                        //         <div className="flex flex-row items-baseline">
-                                                        //             <p className="text-lg font-bold">{FormatCurrency(card.precioAhorro)}</p>
-                                                        //             <p className="text-sm font-normal">{offersCopys.movil.cards.periodo}</p>
-                                                        //         </div>
-                                                        //     </>
-                                                        //     :
                                                         <>
                                                             <div className="flex flex-row items-baseline">
+                                                            {
+                                                            card.precioTachado ? 
+                                                                <>
+                                                                <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioTachado)}</p>
+                                                                <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete as string)}</p>
+                                                                </>
+                                                                :
                                                                 <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
+                                                            }
                                                                 <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
                                                             </div>
                                                         </>
-                                                    }
 
                                                 </div>
                                                 <div className="flex flex-row gap-[16px] items-center justify-between">
