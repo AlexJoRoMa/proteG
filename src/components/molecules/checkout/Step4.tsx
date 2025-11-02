@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useRef, useState } from 'react';
 import { Form, Input } from '@heroui/react'
 import { DeleteIcon, UploadICon } from '@/constants/IconsConstants';
