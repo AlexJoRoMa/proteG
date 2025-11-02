@@ -155,7 +155,7 @@ export default function ResumenInfo() {
             }
         }
 
-    }, [userAnswers])
+    }, [cobertura, internet, isFirstLoad.configurador, isFirstLoad.movil, isFirstLoad.tv, isFirstLoad.tvLight, movil, precioCombinado, resumenCopys.info.combinacion.postPrice, resumenCopys.info.combinacion.prevPrice, resumenCopys.info.existeCobertura, resumenCopys.info.portabilidad, resumenCopys.info.sinCobertura.subTitulo, resumenCopys.info.sinCobertura.titulo, resumenCopys.info.tvLight, resumenCopys.infoDrawer.combinacion.postPrice, resumenCopys.infoDrawer.combinacion.prePrice, resumenCopys.infoDrawer.nuevoFlujo, setInfoDrawerContent, tv, userAnswers])
 
     return (
         <>

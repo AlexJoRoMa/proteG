@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const CheckIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
         <svg

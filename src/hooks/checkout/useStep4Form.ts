@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 async function processFileToBase64(file: File): Promise<string> {
+    // eslint-disable-next-line prefer-const
     let processedFile = file;
 
     if (processedFile.size > 4 * 1024 * 1024) {

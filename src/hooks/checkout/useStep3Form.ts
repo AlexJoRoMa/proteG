@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useCallback, useEffect, useRef, useState } from "react";
 

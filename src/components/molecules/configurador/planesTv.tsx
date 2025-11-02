@@ -128,7 +128,7 @@ export default function PlanesTv({ step }: StepProps) {
             return;
 
         }
-    }, [tvPlans, selectedIndex, offersCopys.tv.cards.titulo, offersCopys.tv.cards.tituloPlus]);
+    }, [tvPlans, selectedIndex, offersCopys.tv.cards.titulo, offersCopys.tv.cards.tituloPlus, userAnswers.tv?.paquete, updateTvAnswers]);
 
     function clearSelection() {
         setSelectedIndex(null);

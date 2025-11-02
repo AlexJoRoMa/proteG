@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { DateValue } from "@heroui/react";
 import { CalendarDate } from "@internationalized/date";

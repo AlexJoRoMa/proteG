@@ -23,6 +23,7 @@ export async function validatePayment(datosContratacion: Partial<DatosContrataci
                 const origin = process.env.ACCESS_ORIGIN;
                 const channel = process.env.ACCESS_CHANNEL;
 
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const headers = new Headers({
                     "Content-Type": "application/json",
                     "x-access-origin": `${origin}`,

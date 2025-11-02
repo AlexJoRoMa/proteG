@@ -44,7 +44,7 @@ const Step2 = () => {
     if (!necesitaFacturar) {
       setFacturarOtraDireccion(false);
     }
-  }, [necesitaFacturar])
+  }, [necesitaFacturar, setFacturarOtraDireccion])
 
 
   return (

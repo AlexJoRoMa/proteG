@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import { useCheckout } from "@/components/providers/CheckoutProvider"
@@ -90,6 +91,7 @@ export default function ResumenContainer() {
     }
 
     const showModaluntilAction = async (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         action: () => Promise<any>,
         modalKey: string
     ) => {
@@ -335,6 +337,7 @@ export default function ResumenContainer() {
                     try {
                         // await Promise.all([
                         // AttachFiles
+                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                         await showModaluntilAction(async () => await runAttachFiles(), "modal-documentos"),
                             // await showModaluntilAction(async () => await runAttachComprobante(), "modal-documentos"),
 

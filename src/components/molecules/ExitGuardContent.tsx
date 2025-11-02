@@ -109,7 +109,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
         document.addEventListener("click", onDocumentClick, true);
         return () => document.removeEventListener("click", onDocumentClick, true);
 
-    }, [onOpen, scopePrefix]);
+    }, [onOpen, scopePrefix, shouldGuard]);
 
     //Confirmar salida del flujo.
 

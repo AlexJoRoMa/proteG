@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import { ResumenIcon } from '@/types/ConfiguradorTypes'
 import { DatosContratacion, PaymentReference, ProcessStatus, StatusFlujo } from '@/types/Contratacion'

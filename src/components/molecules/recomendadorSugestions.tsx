@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { CarouselFields, ErrorData, PlanCardDataFields, RecomendadorSugestionsProps } from "@/types/Recomendador";

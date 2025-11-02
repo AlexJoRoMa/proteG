@@ -68,7 +68,7 @@ export default function ResumenPedido() {
         if (hasData(internet) && hasData(movil) && hasData(tv)) {
             setInfoPaquetes(resumenCopys.infoDrawer.paquetes["internet&tv&movil"]);
         }
-    }, [userAnswers])
+    }, [internet, movil, resumenCopys.infoDrawer.paquetes, setCheckedPromotions, setInfoPaquetes, tv, userAnswers])
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 

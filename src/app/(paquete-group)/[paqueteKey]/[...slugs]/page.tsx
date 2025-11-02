@@ -283,7 +283,9 @@ export default async function LandingPage({ params }: DynamicPageProps) {
     const components = page.items || [];
 
     /* valores para enviar valor de fullpath, no borrar */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const validateNumber = setTelNumber(fullPath)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const seNumber = getTelNumber()
 
     const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;

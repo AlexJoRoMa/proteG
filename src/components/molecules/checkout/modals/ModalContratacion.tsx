@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { LoaderIcon } from "@/constants/IconsConstants";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
 import { Modal, ModalBody, ModalContent, useDisclosure } from "@heroui/react";

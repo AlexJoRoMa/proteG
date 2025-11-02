@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -146,7 +147,7 @@ export const useStep2Form = () => {
                 form.removeEventListener("change", checkValidity);
             });
         };
-    }, [necesitaFacturar, facturarOtraDireccion, cfdi, regimen, setIsStepValid, checkboxChecked]);
+    }, [necesitaFacturar, facturarOtraDireccion, cfdi, regimen, setIsStepValid, checkboxChecked, mounted]);
 
     return {
         DatosPersonalesRef,

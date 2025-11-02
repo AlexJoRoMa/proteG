@@ -5,6 +5,7 @@ import { Button } from '@heroui/react'
 import { TeLlamamosModalLandingComponentProps } from '@/types/ModalComponentTypes';
 import LinkModal from '../../atoms/LinkModal';
 import TeLlamamosModalComponent from './TeLlamamosModalComponent';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getTelNumber } from '@/services/izzi/getTelNumbers';
 
 

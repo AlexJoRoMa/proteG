@@ -31,7 +31,7 @@ export function useGlobalProcessStatus(onFinalizado?: (data: ProcessStatusRespon
         if (!response) throw new Error('Error al obtener processStatus');
 
         return response;
-    }, [izziEnroll]);
+    }, [izziEnroll, setProcessStatus]);
 
     const { data, mutate } = useSWR<ProcessStatusResponse>(
         puedeEjecutar ? ['processStatus', izziEnroll] : null,
