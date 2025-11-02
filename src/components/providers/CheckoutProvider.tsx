@@ -1,9 +1,10 @@
 'use client'
 import { ResumenIcon } from '@/types/ConfiguradorTypes'
 import { DatosContratacion, PaymentReference, ProcessStatus, StatusFlujo } from '@/types/Contratacion'
+import { useIzziContent } from '@/utils/IzziProvider'
 import { EntrySkeletonType } from 'contentful'
 import { redirect } from 'next/navigation'
-import React, { createContext, useContext, useState, useCallback, useRef } from 'react'
+import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
 
 export type StepValidator = () => Promise<boolean>
 type FormDataGetter = () => any
@@ -33,7 +34,7 @@ interface CheckoutContextType {
   statusStep: Partial<StatusFlujo>
   setStatusStep: React.Dispatch<React.SetStateAction<Partial<StatusFlujo>>>
   paymentReference: Partial<PaymentReference> | undefined,
-  setPaymentReference: React.Dispatch<React.SetStateAction<Partial<PaymentReference>| undefined>>
+  setPaymentReference: React.Dispatch<React.SetStateAction<Partial<PaymentReference> | undefined>>
 
   // Navigation functions
   goToStep: (step: number) => void
@@ -79,7 +80,7 @@ export const CheckoutProvider = ({
   const [isStepValid, setIsStepValid] = useState(false)
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [getCapacity, setGetCapacity] = useState<Record<string, string>[] | null>(null);
-  const [paymentReference, setPaymentReference] = useState<Partial<PaymentReference>>();
+  const [paymentReference, setPaymentReference] = useState<Partial<PaymentReference> | undefined>(undefined);
   const [getIntentosInstalacion, setGetIntentosInstalacion] = useState<number>(1);
   const [statusStep, setStatusStep] = useState<Partial<StatusFlujo>>({
     step1: { completado: true },
@@ -90,12 +91,17 @@ export const CheckoutProvider = ({
     step6: { completado: false },
   });
 
+  const { setGlobalDatosContratacion, setGlobalProcessStatus } = useIzziContent();
+
   // states con informacion del los steps
   const [datosContratacion, setDatosContratacion] = useState<Partial<DatosContratacion>>({});
 
   // states con informacion de las apis
   const [izziEnroll, setIzziEnroll] = useState<string>("");
   const [processStatus, setProcessStatus] = useState<Partial<ProcessStatus>>({});
+
+  useEffect(() => setGlobalDatosContratacion(datosContratacion), [datosContratacion, setGlobalDatosContratacion]);
+  useEffect(() => setGlobalProcessStatus(processStatus), [processStatus, setGlobalProcessStatus]);
 
   const goToStep = useCallback((step: number) => {
     if (step === 1) {

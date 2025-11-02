@@ -1,38 +1,55 @@
+import { IzziSelection, UserAnswers } from "@/types/ConfiguradorTypes";
 
-const DUMMY_BODY = {
-    "requestedServices": {
-        "product": 38008,
-        "productName": "izzi80m_izzitvhd",
-        "negocios": false,
-        "termExemptionPrice": 1500,
-        "extras": [
-            {
-                "extId": 28039,
-                "nuevaCantidad": 1,
-                "combo": true
-            },
-            {
-                "extId": 28009,
+export async function GetSubmitOffer(processId: string, globalIzziSelection: IzziSelection | null, precioTotal: number, globalUserAnswers: UserAnswers, offNetIzzi: boolean, offNetSky: boolean) {
+
+    function getAddoms() {
+        const extrasMovil = globalIzziSelection?.extras;
+        const extrasOtts = globalIzziSelection?.extrasMap?.ott;
+
+        const addomsMovil = extrasMovil ?
+            [{
+                "extId": extrasMovil.idExtra,
                 "extra": {
-                    "title": "izzi móvil 5 12 meses"
+                    "title": extrasMovil.titulo
                 },
                 "nuevaCantidad": 1,
                 "combo": false,
                 "tipoEntrega": "DOMICILIO",
                 "sucursalId": "N/A",
-                "portabilidadMovil": "Y",
+                "portabilidadMovil": "N",
                 "imei": ""
-            }
-        ],
-        "priceToPay": "810.0",
-        "vel": 80
-    },
-    "salesChannel": "WEB",
-    "offNetSky": false,
-    "offNetIzzi": false
-}
+            }]
+            : [];
 
-export async function GetSubmitOffer(processId: string) {
+        const addomsOtts = Array.isArray(extrasOtts)
+            ? extrasOtts.map((item) => ({
+                "extId": item.idExtra,
+                "nuevaCantidad": 1,
+                "combo": false
+            }))
+            : [];
+
+        const addoms = [...addomsMovil, ...addomsOtts];
+
+        return addoms;
+    }
+
+    const extrasAdoms = getAddoms();
+
+    const DUMMY_BODY = {
+        "requestedServices": {
+            "product": Number(globalIzziSelection?.idPaquete),
+            "productName": globalIzziSelection?.tituloTriplePlay ? globalIzziSelection.tituloTriplePlay : globalIzziSelection?.titulo,
+            "negocios": false,
+            "termExemptionPrice": 0,
+            "extras": extrasAdoms,
+            "priceToPay": `${precioTotal}`,
+            "vel": globalUserAnswers.internet?.paquete?.velocidadMinima ? globalUserAnswers.internet?.paquete?.velocidadMinima : 0
+        },
+        "salesChannel": "WEB",
+        "offNetSky": offNetSky,
+        "offNetIzzi": offNetIzzi
+    }
 
     try {
         const body = JSON.stringify({

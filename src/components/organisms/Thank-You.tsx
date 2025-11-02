@@ -20,25 +20,9 @@ type Shift = {
     shift: string,
 };
 
-const DUMMY = {
-    product: {
-        description: "internet con izzi tv y móvil 8gb",
-        price: "479",
-        instalacion: {
-            cvTimeslot: " Vespertino Instalation 14-18",
-            requestedShipDate: "26/10/2025",
-        }
-    },
-    order: {
-        numeroCuenta: "46300608",
-        numeroOrden: "97438881214519",
-        metodoPago: "Pago con Tarjeta"
-    }
-}
-
 export default function ThankYou() {
 
-    const { globalUserAnswers } = useIzziContent();
+    const { globalUserAnswers, globalDatosContratacion, globalIzziSelection, globalProcessStatus } = useIzziContent();
     const { icon, copys, copyResumen } = useThankYou();
 
     const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
@@ -47,7 +31,7 @@ export default function ThankYou() {
     const resumenCopys = copyResumen as ResumenData;
 
     useEffect(() => {
-        const horario = DUMMY.product.instalacion;
+        const horario = globalDatosContratacion.Instalacion;
 
         if (!horario?.requestedShipDate || !horario.cvTimeslot) {
             setSelectedShift(null);
@@ -70,7 +54,7 @@ export default function ThankYou() {
             shift: shift,
         })
 
-    }, []);
+    }, [globalDatosContratacion.Instalacion]);
 
     const itemClasses = {
         indicator: "data-[open=true]:rotate-180",
@@ -99,11 +83,9 @@ export default function ThankYou() {
                     </div>
                 )}
                 <p className="flex flex-col gap-[8px] text-white-0 font-semibold text-lg xl:text-xl xl:py-[13px] leading-[24px] whitespace-normal">
-                    <span className="font-semibold text-xl xl:text-2xl">{DUMMY.product.description}</span>
-                    <span className="font-semibold text-xl xl:text-2xl">{`${FormatCurrency(DUMMY.product.price)} ${copy.banner.currency}`}</span>
-                    {selectedShift !== null && (
-                        <span className="font-semibold text-base xl:text-lg">{`${copy.banner.instalacion} ${selectedShift?.day} de ${selectedShift?.longMonth} de ${selectedShift?.year} de ${selectedShift?.shift}`}</span>
-                    )}
+                    <span className="font-semibold text-xl xl:text-2xl">{globalIzziSelection?.tituloTriplePlay ? globalIzziSelection.tituloTriplePlay : globalIzziSelection?.titulo}</span>
+                    <span className="font-semibold text-xl xl:text-2xl">{`${FormatCurrency(Number(globalIzziSelection?.precioPaquete))} ${copy.banner.currency}`}</span>
+                    <span className="font-semibold text-base xl:text-lg">{`${copy.banner.instalacion} ${selectedShift?.day} de ${selectedShift?.longMonth} de ${selectedShift?.year} de ${selectedShift?.shift}`}</span>
                 </p>
             </div>
 
@@ -131,7 +113,7 @@ export default function ThankYou() {
                                 >
                                     <CardBody>
                                         <div>
-                                            Contenido resumen de compra
+                                            <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
                                         </div>
                                     </CardBody>
                                 </Card>
@@ -155,21 +137,21 @@ export default function ThankYou() {
                             <div className="flex flex-col gap-[12px] text-sm xl:text-base">
                                 <p>
                                     <span>{`${copy.info.numeroCuenta} `}</span>
-                                    <span className="font-bold">{DUMMY.order.numeroCuenta}</span>
+                                    <span className="font-bold">{globalProcessStatus.accountNumber}</span>
                                 </p>
                                 <p>
                                     <span>{`${copy.info.numeroOrden} `}</span>
-                                    <span className="font-bold">{`#${DUMMY.order.numeroOrden}`}</span>
+                                    <span className="font-bold">{`#${globalProcessStatus.orderNumber}`}</span>
                                 </p>
                                 {selectedShift !== null && (
                                     <p>
                                         <span>{`${copy.info.horaInstalacion} `}</span>
-                                        <span className="font-bold">{`${DUMMY.product.instalacion.requestedShipDate} | ${selectedShift?.shift}`}</span>
+                                        <span className="font-bold">{`${globalDatosContratacion.Instalacion?.requestedShipDate} | ${selectedShift?.shift}`}</span>
                                     </p>
                                 )}
                                 <p>
                                     <span>{`${copy.info.metodoPago} `}</span>
-                                    <span className="font-bold">{DUMMY.order.metodoPago}</span>
+                                    <span className="font-bold">{globalDatosContratacion.Pago?.metodoPago}</span>
                                 </p>
                             </div>
 

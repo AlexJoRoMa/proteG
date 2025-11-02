@@ -75,7 +75,8 @@ export type DatosContratacion = {
 export interface ProcessStatus {
     accountNumber: string,
     accountId: string,
-    waitingForAction: boolean
+    waitingForAction: boolean,
+    orderNumber: string
 }
 
 export interface StatusFlujo {

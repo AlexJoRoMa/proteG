@@ -1,21 +1,23 @@
-const DUMMY_BODY = {
-    "cuenta": "43399384",
-    "monto": "970.0",
-    "canal": "CHANNEL_IZZI_VL",
-    "correo": "juanarodriguez@deloitte.com",
-    "exencion": false,
-    "paypal": false,
-    "telefono": "7772085039",
-    "plataforma": "PLATFORM_IZZI_VL",
-    "rpt": "460",
-    "usuario": "CVVENSINCOMISION",
-    "order": "1-194529080532",
-    "oferta": "IZZI",
-    "vl": true
-}
+import { DatosContratacion, ProcessStatus } from "@/types/Contratacion";
 
-export async function GetLigaPago() {
+export async function GetLigaPago(rpt: string, precioTotal: number, processStatus: Partial<ProcessStatus>, datosContratacion: Partial<DatosContratacion>) {
     try {
+        const DUMMY_BODY = {
+            "cuenta": `${processStatus.accountNumber}`,
+            "monto": `${precioTotal}`,
+            "canal": "CHANNEL_IZZI_VL",
+            "correo": `${datosContratacion.DatosPersonales?.personal.email}`,
+            "exencion": false,
+            "paypal": false,
+            "telefono": `${datosContratacion.DatosPersonales?.personal.phone}`,
+            "plataforma": "PLATFORM_IZZI_VL",
+            "rpt": `${rpt}`,
+            "usuario": "CVVENSINCOMISION",
+            "order": `${processStatus.orderNumber}`,
+            "oferta": "IZZI",
+            "vl": true
+        }
+
         const body = JSON.stringify(DUMMY_BODY);
         const origin = process.env.ACCESS_ORIGIN;
         const channel = process.env.ACCESS_CHANNEL;

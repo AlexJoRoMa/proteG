@@ -3,6 +3,7 @@
 import { DataFields, ProviderProps } from "@/types/IzziTypes";
 import { createContext, useContext, useState } from "react";
 import { CoberturaType, IzziSelection, Promotion, UserAnswers } from "@/types/ConfiguradorTypes";
+import { DatosContratacion, ProcessStatus } from "@/types/Contratacion";
 
 const izziContext = createContext<DataFields | undefined>(undefined);
 
@@ -16,12 +17,14 @@ export const useIzziContent = () => {
     return ctx;
 }
 
-export const IzziProvider = ({ 
+export const IzziProvider = ({
     children,
-}: ProviderProps) => { 
+}: ProviderProps) => {
     const [globalFlag, setGlobalFlag] = useState<boolean>(false);
     const [globalUserAnswers, setGlobalUserAnswers] = useState<UserAnswers>({});
     const [globalIzziSelection, setGlobalIzziSelection] = useState<IzziSelection | null>(null);
+    const [globalDatosContratacion, setGlobalDatosContratacion] = useState<Partial<DatosContratacion>>({});
+    const [globalProcessStatus, setGlobalProcessStatus] = useState<Partial<ProcessStatus>>({});
     const [formattedAddress, setFormattedAddress] = useState<string>('');
     const [coberturaData, setCoberturaData] = useState<CoberturaType>({});
     const [promoData, setPromoData] = useState<Promotion>({});
@@ -33,29 +36,34 @@ export const IzziProvider = ({
     const [infoPaquetes, setInfoPaquetes] = useState<string>("");
 
     return (
-        <izziContext.Provider value={{globalFlag, setGlobalFlag,
-                globalUserAnswers,
-                setGlobalUserAnswers,
-                globalIzziSelection,
-                setGlobalIzziSelection,
-                formattedAddress,
-                setFormattedAddress,
-                coberturaData, 
-                setCoberturaData,
-                promoData,
-                setPromoData,
-                precioTotal,
-                setPrecioTotal,
-                precioCombinado,
-                setPrecioCombinado,
-                rpt, 
-                setRpt,
-                offnetIzzi, 
-                setOffnetIzzi,
-                offnetSky, 
-                setOffnetSky,
-                infoPaquetes, 
-                setInfoPaquetes
+        <izziContext.Provider value={{
+            globalFlag, setGlobalFlag,
+            globalUserAnswers,
+            setGlobalUserAnswers,
+            globalIzziSelection,
+            setGlobalIzziSelection,
+            globalDatosContratacion,
+            setGlobalDatosContratacion,
+            globalProcessStatus,
+            setGlobalProcessStatus,
+            formattedAddress,
+            setFormattedAddress,
+            coberturaData,
+            setCoberturaData,
+            promoData,
+            setPromoData,
+            precioTotal,
+            setPrecioTotal,
+            precioCombinado,
+            setPrecioCombinado,
+            rpt,
+            setRpt,
+            offnetIzzi,
+            setOffnetIzzi,
+            offnetSky,
+            setOffnetSky,
+            infoPaquetes,
+            setInfoPaquetes
         }}>
             {children}
         </izziContext.Provider>

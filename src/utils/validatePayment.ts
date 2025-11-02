@@ -1,13 +1,4 @@
-import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { DatosContratacion, PaymentReference, ProcessStatus } from "@/types/Contratacion";
-
-interface ValidatePayment {
-    datosContratacion: DatosContratacion,
-    setDatosContratacion: React.Dispatch<React.SetStateAction<DatosContratacion>>,
-    processStatus: {
-        accountNumber: string
-    }
-}
 
 export async function validatePayment(datosContratacion: Partial<DatosContratacion>, setDatosContratacion: React.Dispatch<React.SetStateAction<Partial<DatosContratacion>>>, processStatus: Partial<ProcessStatus>, paymentReference: Partial<PaymentReference> | undefined) {
     
