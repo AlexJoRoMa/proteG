@@ -4,8 +4,9 @@ import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import RichTextComponent from "../molecules/RichTextComponent";
 import '@/styles/TopBannerComponent.css'
+import ButtonLanding from '@/components/atoms/ButtonStickyLanding'
 
-
+import ButtonGhost from '../atoms/ButtonGhost'
 const ConIzziTv = async ({id} : ConIzziTvID) =>{
     
     const callComponents: Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
@@ -15,7 +16,11 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
             'fields.imagenMovil',
             'fields.content',
             'fields.image',
-            'fields.imageResponsive'
+            'fields.imageResponsive',
+            'fields.textBoton1',
+            'fields.linkBoton1',
+            'fields.landing',
+            'fields.terminos'
              ],
             include: 2,
         }).then((entriesResponse) => {
@@ -28,13 +33,15 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
     
     const getComponentContent= callComponents[0] as unknown as Entry<StepTabEntrySkeleton>;
    
-    const { imagen, imagenMovil, content, image, imageResponsive }= getComponentContent.fields as StepTabEntryFields;
+    const { imagen, imagenMovil, content, image, imageResponsive, textBoton1, linkBoton1, landing, terminos }= getComponentContent.fields as StepTabEntryFields;
 
     const assetImage = imagen?.fields?.image as Asset | undefined;
     const imgURL = assetImage?.fields?.file?.url;
 
     const movilImage = imagenMovil?.fields?.image as Asset | undefined;
     const movilURL = movilImage?.fields?.file?.url;
+
+    
 
     return(
     <div className={` relative bg-black flex md:w-full xsm:w-full h-auto overflow-hidden 4xl:px-[200px] 2xl:px-[144px] xl:px-[80px] md:px-[80px] xsm:px-[16px] md:py-10  xsm:py-15 ${!content && 'min-h-[520px]'}`}>
@@ -43,13 +50,30 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
 
             {/*Nueva version con RichText */}
 
-            <div className="relative md:order-none xsm:order-1 z-10  h-auto md:max-w-6/12 mb-10 md:mb-0">
-               {content && <RichTextComponent document={content} className="topBannerComponent" />}
+            <div className=" relative md:order-none xsm:order-1 z-10  h-auto md:max-w-6/12 ">
+                <div className="xsm:flex xsm:flex-col xsm:items-center md:items-start">
+                    {content && <RichTextComponent document={content} className="topBannerComponent" />}
+                    
+                    {landing === true && (
+                        <ButtonLanding textBoton={textBoton1 as string} landing={landing} />
+                    )} 
+                    {linkBoton1 && (
+                        <ButtonGhost  classStyles='md:w-[320px] xsm:w-[256px] h-[48px] rounded-md bg-white text-black
+                         border-none font-bold text-[16px] md:text-[18px] mt-5 mb-5'
+                        text={textBoton1 as string} href={linkBoton1 as string}  />
+                    )}
+                    
+                    {terminos && (
+                        <p className="text-[14px] text-white mt-5 mb-5">
+                            {terminos}
+                        </p>
+                    )}
+                </div>
             </div>
 
-            {/*Imagen del lado derecho del banner */}
+            {/*Imagen del lado derecho del banner mb-10 md:mb-0*/}
 
-            <div className={`z-1 md:m-auto 3xl:mt-0 ml-auto xsm:order-2 md-order-none xsm:mt ${movilURL && !image && 'md:hidden'}`}>
+            <div className={`z-1  xsm:mt-5 md:m-auto 3xl:mt-0 ml-auto xsm:order-2 md-order-none ${movilURL && !image && 'md:hidden'}`}>
                 <picture>
                     <source media="(max-width:576px)" srcSet={`https:${imageResponsive?.fields?.file?.url || movilURL}`}/>
                     {( image?.fields?.file?.url && imageResponsive?.fields?.file?.url || movilURL ) && (

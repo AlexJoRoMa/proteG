@@ -106,6 +106,32 @@ export interface TeLlamamosModalComponentProps {
   };
 }
 
+export interface TeLlamamosModalLandingComponentProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+  modalData?: {
+    title: string;
+    column1: {
+      title: string;
+      row1: {
+        text: string;
+        tel: string;
+      };
+      row2: {
+        link: string;
+      };
+      row3: {
+        wpp: {
+          text: string;
+          tel: string;
+          promoText: string;
+        };
+      };
+    };
+  };
+  telNumber: string;
+}
+
 export interface TeLlamamosFormModalProps {
   modalData?: {
     title: string;

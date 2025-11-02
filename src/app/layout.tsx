@@ -2,12 +2,13 @@ import { Lato } from 'next/font/google';
 import "../styles/globals.css";
 import { IzziProvider } from '@/utils/IzziProvider';
 
+
 const lato = Lato({
   weight: '400',
   subsets: ['latin'],
   variable: '--font-lato',
 })
-
+export const revalidate = 10;
 //TODO descomentar metadata cuando se tenga el contenido tomado desde contentful
 
 /*export const metadata: Metadata = {

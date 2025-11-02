@@ -34,3 +34,12 @@ export type Navigation = {
 export type HeaderComponentProps = {
     navbarData: Entry<EntrySkeletonType, undefined, string>[] | null,
 }
+
+export type HeaderLandingComponentProps = {
+    /* navbarData: Entry<EntrySkeletonType, undefined, string> | null, */
+    apibarData: Entry<EntrySkeletonType, undefined, string>[] | null,
+    clienteTitulo: string,
+    llamanosTitulo: string,
+    llamanosNum: string,
+    getNumTel: string,
+}
