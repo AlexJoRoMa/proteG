@@ -9,7 +9,7 @@ export async function createCookie(data: CoberturaType) {
 
   cookieStore.set({
     name: 'lat',
-    value: data.lat,
+    value: data.lat as string,
     httpOnly: true,
     path: '/',
     maxAge: 1800
@@ -17,7 +17,7 @@ export async function createCookie(data: CoberturaType) {
 
   cookieStore.set({
     name: 'lng',
-    value: data.lng,
+    value: data.lng as string,
     httpOnly: true,
     path: '/',
     maxAge: 1800
@@ -25,7 +25,7 @@ export async function createCookie(data: CoberturaType) {
 
   cookieStore.set({
     name: 'zipCode',
-    value: data.zipCode,
+    value: data.zipCode as string,
     httpOnly: true,
     path: '/',
     maxAge: 1800
@@ -33,7 +33,7 @@ export async function createCookie(data: CoberturaType) {
 
   cookieStore.set({
     name: 'formattedAddress',
-    value: data.address,
+    value: data.address as string,
     httpOnly: true,
     path: '/',
     maxAge: 1800
