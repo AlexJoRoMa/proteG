@@ -119,11 +119,11 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
         <NavbarItem className=" w-[400px] hidden 3xl:flex h-full ">
           <div className='border-r-1 border-gray-150 bg-gray-100 w-1/2 h-full flex flex-col justify-center align-middle items-center'>
             <p className=''>{clienteTitulo}</p>
-            <p className='font-bold '>800 120 5000</p>
+            <p className='font-bold '>{llamanosNum || '800 120 5000'}</p>
           </div>
           <div className=' bg-gray-100 w-1/2 h-full flex flex-col justify-center align-middle items-center'>
             <p className=''>{llamanosTitulo}</p>
-            <p className='font-bold '>800 607 7082</p>
+            <p className='font-bold '>{ getNumTel || '000 000 0000' }</p>
           </div>
         </NavbarItem>
         
