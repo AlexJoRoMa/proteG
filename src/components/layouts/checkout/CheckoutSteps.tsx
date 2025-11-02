@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react'
 import { CheckoutSteps as CheckoutStepsConstants } from '@/constants/CheckoutSteps'
 import { useCheckout } from '@/components/providers/CheckoutProvider'
