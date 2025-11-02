@@ -27,6 +27,7 @@ const Step6 = () => {
         }
       }));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep]);
 
   function handleTabChange(key: React.Key) {

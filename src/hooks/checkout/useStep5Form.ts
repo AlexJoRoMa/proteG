@@ -52,6 +52,7 @@ export function useStep5Form() {
         const wanted = shiftMap[selectedShift];
         return normalizarCapacity.filter(item => item.shift === wanted)
             .map(item => item.isoDate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedShift, normalizarCapacity]);
 
     //validacion de step5

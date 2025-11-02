@@ -21,6 +21,7 @@ export default function PlanesTv({ step }: StepProps) {
     const plansInfo = tvPlans as unknown as OfferItem[];
     const precioTv = configuradorEntry?.offers.TV.find((offer) => offer.titulo === 'izzi tv')?.precioPaquete;
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     function updateTvAnswers(selectedTv: OfferItem) {
         setUserAnswers(prev => (
             {
