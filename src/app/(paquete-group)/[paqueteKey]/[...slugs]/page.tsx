@@ -3,6 +3,8 @@ import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import { Entry, EntrySkeletonType } from "contentful";
 import { notFound } from "next/navigation";
+import {SeoFieldSkeleton} from "@/types/SEOTypes";
+import SEOHead from '@/components/atoms/SEOHead';
 import { setTelNumber, getTelNumber } from '@/services/izzi/getTelNumbers';
 
 /* import NavigationLanding from '@/components/molecules/navigationLandingComponent'; */
@@ -270,8 +272,6 @@ export default async function LandingPage({ params }: DynamicPageProps) {
     'paquetes7/goo/pr2/izzitv',
     'paquetes7/goo/pr2/4p'
     ];
-
-    
     
     const fullPath = [paqueteKey, ...slugs].join('/');
 
@@ -282,9 +282,12 @@ export default async function LandingPage({ params }: DynamicPageProps) {
     const page = await fetchComponentsBySlugPage(fullPath);
     const components = page.items || [];
 
-    /* valor para enviar valor de fullpath, no borrar */
+    /* valores para enviar valor de fullpath, no borrar */
     const validateNumber = setTelNumber(fullPath)
     const seNumber = getTelNumber()
+
+    const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
+    const seo = seoEntry?.fields;
 
 
 
@@ -295,6 +298,8 @@ export default async function LandingPage({ params }: DynamicPageProps) {
 
     return (
         <>
+
+        {seo && <SEOHead seo={seo} slug={fullPath} />}
         
         <main>
             
