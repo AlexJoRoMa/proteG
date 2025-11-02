@@ -6,6 +6,7 @@ import TeAyudamosLandingModalComponent from '../layouts/modals/TeAyudamosModalLa
 import { ResourceType } from '@/types/ButtonTypes';
 import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
+import { getTelNumber } from '@/services/izzi/getTelNumbers';
 
 const ButtonFixedContracLanding = async() => {
 
@@ -35,6 +36,8 @@ const ButtonFixedContracLanding = async() => {
       return item?.fields?.value || '';
     };
 
+    const getNumberTelValue = getTelNumber();
+    const setValue = `+52${getNumberTelValue.replace(/\s+/g, '')}`;
     
 
     // Mapear los datos del modal
@@ -59,7 +62,6 @@ const ButtonFixedContracLanding = async() => {
       },
     };
 
-    console.log('👽 setWhatsNumber ', setWhatsNumber )
     return (
       <>
           <ButtonModal
@@ -79,7 +81,7 @@ const ButtonFixedContracLanding = async() => {
              [background-clip:padding-box,border-box]
              hidden md:flex'
           >
-              <TeAyudamosLandingModalComponent modalData={modalData} />
+              <TeAyudamosLandingModalComponent modalData={modalData} telNumber={getNumberTelValue}/>
           </ButtonModal>
 
 {/* Botones sticky para movil */}
@@ -93,7 +95,7 @@ const ButtonFixedContracLanding = async() => {
              flex md:hidden  w-[116px]'
           >
               <a className='flex items-center justify-center w-full' 
-              href={`tel:${setWhatsNumber}`} >
+              href={`tel:${setValue}`} >
               { stikyLlamanos || 'stikyLlamanos'}
               </a>
           </div>

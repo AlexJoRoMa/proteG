@@ -17,7 +17,8 @@ import ButtonModal from '../atoms/ButtonModal';
 import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
 import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 
-export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTitulo}: HeaderLandingComponentProps) {
+
+export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTitulo, llamanosNum, getNumTel}: HeaderLandingComponentProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     
 
@@ -35,9 +36,6 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
     };
     
     
-/*     const getBarData = navbarData as unknown as IzziNavbar;
-    const hasCombos = getBarData.fields.landingCombos === true ? 'Navbar Landing  wCombos' : 'Navbar Landing  noCombos'; */
-    
     const navbarContent = apibarData as unknown as Array<IzziNavbar>;
 
     const borderStyle = {
@@ -50,13 +48,12 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
     const navbar = navbarContent?.filter((data) => data.fields.internalName === 'Navbar Landing  wCombos' );
     const navbarButtons = navbarContent?.filter((data) => data.fields.internalName == "NavbarButtons Landing");
     const mobileNavbarButton = navbarContent?.filter((data) => data.fields.internalName == "MobileAccountButton");
-    const mobileCoberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaMobile");
-    const coberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaDesktop");
+    /* const mobileCoberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaMobile");
+    const coberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaDesktop"); */
 
 
     // Normaliza URLs para que sean absolutas (agrega '/' si falta)
     const normalizeUrl = (url: string) => url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
-/* console.log("🥑🥑🥑  clienteTitulo ", clienteTitulo) */
 
 
     return (
@@ -72,11 +69,11 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
             <NavbarItem className=" w-full 3xl:hidden flex h-full ">
               <div className='border-r-1 border-gray-150 bg-gray-100 w-1/2 h-full flex flex-col justify-center align-middle items-center'>
               <p className=''>{clienteTitulo}</p>
-              <p className='font-bold '>800 120 5000</p>
+              <p className='font-bold '>{llamanosNum || '800 120 5000'}</p>
               </div>
               <div className=' bg-gray-100 w-1/2 h-full flex flex-col justify-center align-middle items-center'>
               <p className=''>{llamanosTitulo}</p>
-              <p className='font-bold '>800 607 7082</p>
+              <p className='font-bold '>{ getNumTel || '000 000 0000' }</p>
               </div>
               </NavbarItem>    
           </NavbarContent>
@@ -122,11 +119,11 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
         <NavbarItem className=" w-[400px] hidden 3xl:flex h-full ">
           <div className='border-r-1 border-gray-150 bg-gray-100 w-1/2 h-full flex flex-col justify-center align-middle items-center'>
             <p className=''>{clienteTitulo}</p>
-            <p className='font-bold '>800 120 5000</p>
+            <p className='font-bold '>{llamanosNum || '800 120 5000'}</p>
           </div>
           <div className=' bg-gray-100 w-1/2 h-full flex flex-col justify-center align-middle items-center'>
             <p className=''>{llamanosTitulo}</p>
-            <p className='font-bold '>800 607 7082</p>
+            <p className='font-bold '>{ getNumTel || '000 000 0000' }</p>
           </div>
         </NavbarItem>
         

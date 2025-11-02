@@ -129,6 +129,7 @@ export interface TeLlamamosModalLandingComponentProps {
       };
     };
   };
+  telNumber: string;
 }
 
 export interface TeLlamamosFormModalProps {

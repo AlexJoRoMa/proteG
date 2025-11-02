@@ -4,7 +4,6 @@ export type IzziNavbar = {
     fields: {
         internalName: string;
         brandLogo?: Logo;
-        landingCombos: boolean;
         navigation: Array<Navigation>;
     }
 }
@@ -41,4 +40,6 @@ export type HeaderLandingComponentProps = {
     apibarData: Entry<EntrySkeletonType, undefined, string>[] | null,
     clienteTitulo: string,
     llamanosTitulo: string,
+    llamanosNum: string,
+    getNumTel: string,
 }

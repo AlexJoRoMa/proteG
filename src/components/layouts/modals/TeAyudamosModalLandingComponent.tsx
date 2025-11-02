@@ -5,10 +5,10 @@ import { Button } from '@heroui/react'
 import { TeLlamamosModalLandingComponentProps } from '@/types/ModalComponentTypes';
 import LinkModal from '../../atoms/LinkModal';
 import TeLlamamosModalComponent from './TeLlamamosModalComponent';
+import { getTelNumber } from '@/services/izzi/getTelNumbers';
 
 
-
-const TeAyudamosLandingModalComponent = ({ isOpen = true, onClose, modalData }: TeLlamamosModalLandingComponentProps) => {
+const TeAyudamosLandingModalComponent = ({ isOpen = true, onClose, modalData, telNumber }: TeLlamamosModalLandingComponentProps) => {
   if (!isOpen) return null;
 
   // Valores por defecto en caso de que no se pasen datos
@@ -22,6 +22,7 @@ const TeAyudamosLandingModalComponent = ({ isOpen = true, onClose, modalData }: 
     }
   };
 
+
   const data = modalData || defaultData;
     
   return (
@@ -31,7 +32,7 @@ const TeAyudamosLandingModalComponent = ({ isOpen = true, onClose, modalData }: 
         <div className='flex justify-evenly flex-col xl:flex-row'>
             <div className='flex flex-col'>
                 <strong className='mb-6'>{data.column1.title}</strong>
-                <p className='flex xl:mb-3.5 mb-4 gap-3'><CallMeIcon/>{data.column1.row1.text}<b>{data.column1.row1.tel}</b></p>
+                <p className='flex xl:mb-3.5 mb-4 gap-3'><CallMeIcon/>{data.column1.row1.text}<b>{telNumber || '800 607 7082'}</b></p>
                 <LinkModal
                   classNames='flex xl:mb-3.5 mb-4 gap-3 underline text-black font-bold text-[16px] cursor-pointer' 
                   text={<><CallMeIcon/>{data.column1.row2.link}</>}
