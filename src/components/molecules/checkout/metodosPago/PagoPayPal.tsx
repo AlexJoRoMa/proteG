@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Switch } from '@heroui/react';
 import PayPalScript from './PayPalScript';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
-import { useIzziContent } from '@/utils/IzziProvider';
+import { useIzziContent } from '@/components/providers/IzziProvider';
 
 export default function PagoPayPal() {
 

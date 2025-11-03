@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { GetLigaPago } from "@/utils/GetLigaPago";
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
-import { useIzziContent } from "@/utils/IzziProvider";
+import { useIzziContent } from "@/components/providers/IzziProvider";
 
 export default function PagoTarjeta() {
 

@@ -9,7 +9,7 @@ import { DatosFacturacionForm } from './formularios/DatosFacturacionForm';
 import { useCheckout } from '@/components/providers/CheckoutProvider';
 import ButtonGhost from '@/components/atoms/ButtonGhost';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
-import { useIzziContent } from '@/utils/IzziProvider';
+import { useIzziContent } from '@/components/providers/IzziProvider';
 
 const Step2 = () => {
   const { setCheckboxChecked } = useCheckout();

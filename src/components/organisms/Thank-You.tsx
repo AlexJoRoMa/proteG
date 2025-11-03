@@ -9,8 +9,9 @@ import { FormatCurrency } from "@/utils/Currency";
 import { useEffect, useState } from "react";
 import ButtonGhost from "../atoms/ButtonGhost";
 import ResumenContent from "../molecules/resumenCompra/resumenContent";
-import { useIzziContent } from "@/utils/IzziProvider";
+import { useIzziContent } from "@/components/providers/IzziProvider";
 import { ResumenData } from "@/types/ResumenCompra";
+import { redirect } from "next/navigation";
 
 type Shift = {
     day: number | string,
@@ -22,7 +23,7 @@ type Shift = {
 
 export default function ThankYou() {
 
-    const { globalUserAnswers, globalDatosContratacion, globalIzziSelection, globalProcessStatus } = useIzziContent();
+    const { globalUserAnswers, globalDatosContratacion, globalIzziSelection, globalProcessStatus, clearCheckoutFlow } = useIzziContent();
     const { icon, copys, copyResumen } = useThankYou();
 
     const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
@@ -55,6 +56,11 @@ export default function ThankYou() {
         })
 
     }, [globalDatosContratacion.Instalacion]);
+
+    function handleEndFlow() {
+        clearCheckoutFlow();
+        redirect(`${copy.boton.url}`);
+    }
 
     const itemClasses = {
         indicator: "data-[open=true]:rotate-180",
@@ -177,11 +183,12 @@ export default function ThankYou() {
                     </div>
 
                     <div className="flex justify-center">
-                        <ButtonGhost
-                            classStyles={"py-[14px] px-[16px] w-[348px] h-[50px] rounded-md border-black-0 bg-black-0 text-white-0 font-semibold leading-[24px] text-lg"}
-                            text={copy.boton.titulo as string}
-                            href={copy.boton.url}
-                        />
+                        <button
+                            className={"py-[14px] px-[16px] w-[348px] h-[50px] rounded-md border-black-0 bg-black-0 text-white-0 font-semibold leading-[24px] text-lg"}
+                            onClick={handleEndFlow}
+                        >
+                            {copy.boton.titulo as string}
+                        </button>
                     </div>
 
                 </div>

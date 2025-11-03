@@ -3,7 +3,7 @@
 import { DataFields, IzziSelection, ProviderProps, UserAnswers } from "@/types/ConfiguradorTypes";
 import { createContext, useContext, useEffect, useState } from "react";
 import { IzziSelectionGuard } from "./guards/IzziSelectionGuard";
-import { useIzziContent } from "./IzziProvider";
+import { useIzziContent } from "../components/providers/IzziProvider";
 
 const configuradorContext = createContext<DataFields | undefined>(undefined);
 

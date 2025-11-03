@@ -4,7 +4,7 @@ import ResumenContent from "../resumenCompra/resumenContent";
 import Image from "next/image";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { ResumenData } from "@/types/ResumenCompra";
-import { useIzziContent } from "@/utils/IzziProvider";
+import { useIzziContent } from "@/components/providers/IzziProvider";
 import { useState } from "react";
 import ButtonGhost from "@/components/atoms/ButtonGhost";
 // import ModalFechaInvalida from "../checkout/modals/ModalFechaInvalida";

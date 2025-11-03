@@ -1,6 +1,6 @@
 import { Lato } from 'next/font/google';
 import "../styles/globals.css";
-import { IzziProvider } from '@/utils/IzziProvider';
+import { IzziProvider } from '@/components/providers/IzziProvider';
 
 
 const lato = Lato({
