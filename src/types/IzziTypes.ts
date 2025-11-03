@@ -38,4 +38,5 @@ export type DataFields = {
     setOffnetSky: React.Dispatch<React.SetStateAction<boolean>>
     infoPaquetes: string
     setInfoPaquetes: React.Dispatch<React.SetStateAction<string>>
+    clearCheckoutFlow: () => void
 }

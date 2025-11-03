@@ -3,7 +3,7 @@
 'use client'
 import { ResumenIcon } from '@/types/ConfiguradorTypes'
 import { DatosContratacion, PaymentReference, ProcessStatus, StatusFlujo } from '@/types/Contratacion'
-import { useIzziContent } from '@/utils/IzziProvider'
+import { useIzziContent } from '@/components/providers/IzziProvider'
 import { EntrySkeletonType } from 'contentful'
 import { redirect } from 'next/navigation'
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'

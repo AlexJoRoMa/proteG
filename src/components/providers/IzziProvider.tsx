@@ -1,7 +1,7 @@
 'use client'
 
 import { DataFields, ProviderProps } from "@/types/IzziTypes";
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 import { CoberturaType, IzziSelection, Promotion, UserAnswers } from "@/types/ConfiguradorTypes";
 import { DatosContratacion, ProcessStatus } from "@/types/Contratacion";
 
@@ -35,6 +35,14 @@ export const IzziProvider = ({
     const [offnetSky, setOffnetSky] = useState<boolean>(false);
     const [infoPaquetes, setInfoPaquetes] = useState<string>("");
 
+    const clearCheckoutFlow = useCallback(async () => {
+        setGlobalDatosContratacion({});
+        setGlobalIzziSelection(null);
+        setGlobalProcessStatus({});
+        setGlobalUserAnswers({});
+    }, [])
+
+
     return (
         <izziContext.Provider value={{
             globalFlag, setGlobalFlag,
@@ -63,7 +71,8 @@ export const IzziProvider = ({
             offnetSky,
             setOffnetSky,
             infoPaquetes,
-            setInfoPaquetes
+            setInfoPaquetes,
+            clearCheckoutFlow
         }}>
             {children}
         </izziContext.Provider>

@@ -7,7 +7,7 @@ import ButtonGhost from "@/components/atoms/ButtonGhost";
 import { useEffect, useState } from "react";
 import ResumenContainerConfigurador from "./resumenContainerConfigurador";
 import { ResumenData } from "@/types/ResumenCompra";
-import { useIzziContent } from "@/utils/IzziProvider";
+import { useIzziContent } from "@/components/providers/IzziProvider";
 import { FormatCurrency } from "@/utils/Currency";
 
 export const ArrowUpIcon = (props: React.SVGProps<SVGSVGElement>) => {
