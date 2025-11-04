@@ -148,7 +148,7 @@ export default function PlanesTv({ step }: StepProps) {
     );
 
     useEffect(() => {
-        if(!params.plan || !tvPlans?.length) return;
+        if (!params.plan || !tvPlans?.length) return;
 
         const planCode = params.plan;
         const isSoloTv = planCode.toLowerCase().startsWith("izzitv");
@@ -180,6 +180,16 @@ export default function PlanesTv({ step }: StepProps) {
             setSelectedIndex(index);
         }
     }, [params.plan, tvPlans]);
+
+    useEffect(() => {
+        const tvPaquete = userAnswers.tv?.paquete;
+        if (!tvPaquete || !tvPlans?.length) return;
+
+        const index = tvPlans.findIndex(offer => offer.idPaquete === tvPaquete.idPaquete);
+        if (index !== -1) {
+            setSelectedIndex(index);
+        }
+    }, [userAnswers.tv?.paquete, tvPlans]);
 
     function handleSelect(index: number, card: OfferItem) {
 

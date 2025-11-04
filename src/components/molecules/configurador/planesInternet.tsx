@@ -122,7 +122,7 @@ export default function PlanesInternet({ step }: StepProps) {
             return;
         }
         const index = offersByType.findIndex(offer => String(offer.idPaquete) === matchedId);
-        if (index !== -1 ) {
+        if (index !== -1) {
             setSelectedIndex(index);
         }
 
@@ -138,7 +138,7 @@ export default function PlanesInternet({ step }: StepProps) {
             const tvCatalog = configuradorEntry?.offers.TRIPLE_PLAY ?? [];
             const matchedTv = (tvCatalog as any[]).find(tv => tv.nombreCode === tvCode);
 
-            if(matchedTv) {
+            if (matchedTv) {
                 const currentTvId = String(userAnswers.tv?.paquete?.idPaquete ?? '');
                 const matchedTvId = String(matchedTv.idPaquete);
 
@@ -155,6 +155,16 @@ export default function PlanesInternet({ step }: StepProps) {
         }
 
     }, [params.plan, offersIds, userAnswers.internet?.paquete?.idPaquete, userAnswers.tv?.paquete?.idPaquete, selectedIndex]);
+
+    useEffect(() => {
+        const internetPaquete = userAnswers.internet?.paquete;
+        if (!internetPaquete || !offersByType.length) return;
+
+        const index = offersByType.findIndex(offer => offer.idPaquete === internetPaquete.idPaquete);
+        if (index !== -1) {
+            setSelectedIndex(index);
+        }
+    }, [userAnswers.internet?.paquete, offersByType]);
 
     return (
         <div className="flex flex-col gap-[24px]">

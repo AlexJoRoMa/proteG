@@ -131,6 +131,21 @@ export default function PlanesMovil({ step }: StepProps) {
 
     }, [movilOffersIds, params.movil, userAnswers.movil?.paquete?.idPaquete]);
 
+    useEffect(() => {
+        const movilPaquete = userAnswers.movil?.paquete;
+        if (!movilPaquete || !plansInfo.length) return;
+
+        const parentTab = plansInfo.find(tab =>
+            tab.cards?.some(card => card.idPaquete === movilPaquete.idPaquete)
+        );
+
+        if (parentTab && parentTab.tituloTab) {
+            setSelectedTabKey(parentTab.tituloTab);
+        }
+
+        setSelectedCardId(movilPaquete.idPaquete);
+    }, [userAnswers.movil?.paquete, plansInfo]);
+
     return (
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>

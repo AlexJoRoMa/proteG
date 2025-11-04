@@ -31,7 +31,7 @@ export const ConfiguradorProvider = ({
     const [infoDrawerContent, setInfoDrawerContent] = useState<string>("");
     const [disabled, setDisabled] = useState<boolean>(false);
 
-    const { setGlobalUserAnswers, setGlobalIzziSelection } = useIzziContent();
+    const { setGlobalUserAnswers, setGlobalIzziSelection, globalUserAnswers } = useIzziContent();
 
     useEffect(() => IzziSelectionGuard(userAnswers, setIzziSelection), [userAnswers])
 
@@ -57,6 +57,16 @@ export const ConfiguradorProvider = ({
 
     useEffect(() => setGlobalUserAnswers(userAnswers), [userAnswers, setGlobalUserAnswers]);
     useEffect(() => setGlobalIzziSelection(izziSelection), [izziSelection, setGlobalIzziSelection]);
+
+    useEffect(() => {
+        if (!globalUserAnswers) return;
+
+        const hasLocalAnswers = userAnswers.internet || userAnswers.tv || userAnswers.movil;
+
+        if (!hasLocalAnswers) {
+            setUserAnswers(globalUserAnswers);
+        }
+    }, []);
 
     return (
         <configuradorContext.Provider
