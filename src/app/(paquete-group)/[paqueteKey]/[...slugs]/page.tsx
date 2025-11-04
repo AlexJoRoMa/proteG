@@ -291,7 +291,7 @@ export default async function LandingPage({ params }: DynamicPageProps) {
     const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
     const seo = seoEntry?.fields;
 
-
+     
 
     if (page.total !== 1) {
         notFound();
