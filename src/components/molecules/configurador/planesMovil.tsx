@@ -2,40 +2,42 @@
 
 import LinkModal from "@/components/atoms/LinkModal";
 import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
+import { useIzziContent } from "@/components/providers/IzziProvider";
 import { CheckPlanesIcon } from "@/constants/IconsConstants";
 import { MovilPlansInfo, OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader, Tab, Tabs } from "@heroui/react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function PlanesMovil({ step }: StepProps) {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { configuradorEntry, setUserAnswers, userAnswers, copysConfigurador } = useContent();
+    const { params } = useIzziContent();
     const plans = configuradorEntry?.offers.MOVIL as unknown as OfferItem[];
     const offersCopys = copysConfigurador as unknown as OffersCopys;
 
     const plansPrev = formatData(plans, offersCopys) as unknown as MovilPlansInfo[];
 
-    
+
     const plansInfo = plansPrev.map(offer => {
         const cardsActualizadas = offer.cards?.map(card => {
-        const precioTachado = Number(card.precioPaquete) * 0.5;
-    
-        return {
-            ...card,
-            precioPaquete: precioTachado.toString(),
-            precioTachado: card.precioPaquete
-        };
+            const precioTachado = Number(card.precioPaquete) * 0.5;
+
+            return {
+                ...card,
+                precioPaquete: precioTachado.toString(),
+                precioTachado: card.precioPaquete
+            };
         }) ?? [];
-    
+
         return {
-        ...offer,
-        cards: cardsActualizadas
+            ...offer,
+            cards: cardsActualizadas
         };
     });
-  
+
 
     const defaultKey = plansInfo[0].tituloTab;
 
@@ -83,6 +85,51 @@ export default function PlanesMovil({ step }: StepProps) {
             return rest
         });
     }
+
+    const movilOffersIds = useMemo(() => {
+        const allCards = plansInfo.flatMap(tab => tab.cards ?? []);
+        return allCards.map(card => String(card.idPaquete)).join('|');
+    }, [plansInfo]);
+
+    useEffect(() => {
+        if (!params.movil) return;
+
+        const mobileCode = String(params.movil);
+        if (!plansInfo || plansInfo.length === 0) return;
+
+        const allCards = plansInfo.flatMap(tab => tab.cards ?? []);
+        const matched = allCards.find(card => card.nombreCode === mobileCode);
+        if (!matched) return;
+
+        const matchedId = String(matched.idPaquete);
+        const currentId = String(userAnswers.movil?.paquete?.idPaquete ?? '');
+
+        if (currentId === matchedId) {
+            const parentTab = plansInfo.find(tab => tab.cards?.some(card => String(card.idPaquete) === matchedId));
+            if (parentTab && parentTab.tituloTab !== selectedTabKey) {
+                setSelectedTabKey(parentTab.tituloTab);
+            }
+            if (selectedCardId !== matched.idPaquete) {
+                setSelectedCardId(matched.idPaquete);
+            }
+            return;
+        }
+
+        setUserAnswers(prev => ({
+            ...prev,
+            movil: {
+                paquete: matched,
+                total: Number(matched.precioPaquete) || 0,
+            },
+        }));
+
+        const parentTab = plansInfo.find(tab => tab.cards.some(card => String(card.idPaquete) === matchedId));
+        if (parentTab) {
+            setSelectedTabKey(parentTab.tituloTab);
+        }
+        setSelectedCardId(matched.idPaquete);
+
+    }, [movilOffersIds, params.movil, userAnswers.movil?.paquete?.idPaquete]);
 
     return (
         <div className="flex flex-col gap-[24px]">
@@ -153,20 +200,20 @@ export default function PlanesMovil({ step }: StepProps) {
                                         <CardFooter>
                                             <div className="flex flex-col w-full gap-[8px]">
                                                 <div className="flex flex-row items-baseline text-start gap-[4px]">
-                                                        <>
-                                                            <div className="flex flex-row items-baseline">
+                                                    <>
+                                                        <div className="flex flex-row items-baseline">
                                                             {
-                                                            card.precioTachado ? 
-                                                                <>
-                                                                <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioTachado)}</p>
-                                                                <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete as string)}</p>
-                                                                </>
-                                                                :
-                                                                <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
+                                                                card.precioTachado ?
+                                                                    <>
+                                                                        <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioTachado)}</p>
+                                                                        <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete as string)}</p>
+                                                                    </>
+                                                                    :
+                                                                    <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
                                                             }
-                                                                <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
-                                                            </div>
-                                                        </>
+                                                            <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
+                                                        </div>
+                                                    </>
 
                                                 </div>
                                                 <div className="flex flex-row gap-[16px] items-center justify-between">

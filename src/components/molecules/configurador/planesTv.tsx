@@ -3,16 +3,18 @@
 import LinkModal from "@/components/atoms/LinkModal";
 import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
 import AccordionPlanesExtras from "@/components/molecules/configurador/accordionPlanesExtras";
+import { useIzziContent } from "@/components/providers/IzziProvider";
 import { CheckPlanesIcon } from "@/constants/IconsConstants";
 import { OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function PlanesTv({ step }: StepProps) {
 
     const { configuradorEntry, setUserAnswers, setDisabled, userAnswers, copysConfigurador } = useContent();
+    const { params } = useIzziContent();
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const [tvPlans, setTvPlans] = useState<OfferItem[] | undefined>(configuradorEntry?.offers.TV);
 
@@ -42,26 +44,26 @@ export default function PlanesTv({ step }: StepProps) {
             const tvLight = configuradorEntry?.offers.TV.filter(item => item.titulo.includes("light")) as OfferItem[];
             const tvPremium = configuradorEntry?.offers.TV.filter(item => item.titulo.includes("premium")) as OfferItem[];
             const triplePlay: OfferItem[] = configuradorEntry?.offers.TRIPLE_PLAY
-            .filter(item => item.velocidadMinima === internet.paquete?.velocidadMinima)
-            .map(item => {
-            const totalAhorros = item.izziAhorros?.reduce(
-                (acc, ahorro) => acc + Number(ahorro.monto),
-                0
-            ) || 0;
+                .filter(item => item.velocidadMinima === internet.paquete?.velocidadMinima)
+                .map(item => {
+                    const totalAhorros = item.izziAhorros?.reduce(
+                        (acc, ahorro) => acc + Number(ahorro.monto),
+                        0
+                    ) || 0;
 
-            const precioTachado = (
-                Number(item.precioPaquete || 0) - totalAhorros - Number(internet?.paquete?.precioTachado)
-            ).toString();
+                    const precioTachado = (
+                        Number(item.precioPaquete || 0) - totalAhorros - Number(internet?.paquete?.precioTachado)
+                    ).toString();
 
-            return {
-                ...item,
-                titulo: offersCopys.tv.cards.titulo,
-                tituloTriplePlay: item.titulo,
-                precioPaquete: precioTachado,
-                precioTachado: precioTv,
-                precioTriplePlay: item.precioPaquete
-            };
-            }) ?? []
+                    return {
+                        ...item,
+                        titulo: offersCopys.tv.cards.titulo,
+                        tituloTriplePlay: item.titulo,
+                        precioPaquete: precioTachado,
+                        precioTachado: precioTv,
+                        precioTriplePlay: item.precioPaquete
+                    };
+                }) ?? []
 
 
             const tvOffers = [...triplePlay, ...tvPremium, ...tvLight]
@@ -141,6 +143,43 @@ export default function PlanesTv({ step }: StepProps) {
         setDisabled(false);
     }
 
+    const tvOffersIds = useMemo(() => (tvPlans ?? []).map(offer => String(offer.idPaquete)).join('|'),
+        [tvPlans]
+    );
+
+    useEffect(() => {
+        if(!params.plan || !tvPlans?.length) return;
+
+        const planCode = params.plan;
+        const isSoloTv = planCode.toLowerCase().startsWith("izzitv");
+        const isTriplePlay = !isSoloTv && planCode.toLowerCase().includes("_");
+
+        let matchedOffer;
+
+        if (isSoloTv) {
+            matchedOffer = tvPlans.find(offer => offer.nombreCode.toLowerCase() === planCode);
+        } else if (isTriplePlay) {
+            const tvCodePart = planCode.split("_")[1];
+            matchedOffer = tvPlans.find(offer => offer.nombreCode.toLowerCase().includes(tvCodePart));
+        } else {
+            return;
+        }
+
+        if (!matchedOffer) return;
+
+        setUserAnswers(prev => ({
+            ...prev,
+            tv: {
+                paquete: matchedOffer,
+                total: Number(matchedOffer.precioPaquete) || 0,
+            },
+        }));
+
+        const index = tvPlans.findIndex(offer => offer.idPaquete === matchedOffer.idPaquete);
+        if (index !== -1) {
+            setSelectedIndex(index);
+        }
+    }, [params.plan, tvPlans]);
 
     function handleSelect(index: number, card: OfferItem) {
 
@@ -224,18 +263,18 @@ export default function PlanesTv({ step }: StepProps) {
                                         <div className="flex flex-col gap-[8px] w-full">
                                             <div className="flex flex-row items-baseline text-start gap-[4px]">
                                                 <>
-                                                <div className="flex flex-row items-baseline">
-                                                    {
-                                                    userAnswers.internet && card.precioTachado ? 
-                                                        <>
-                                                        <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioTachado)}</p>
-                                                        <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete as string)}</p>
-                                                        </>
-                                                        :
-                                                        <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
-                                                    }
-                                                    <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
-                                                </div>
+                                                    <div className="flex flex-row items-baseline">
+                                                        {
+                                                            userAnswers.internet && card.precioTachado ?
+                                                                <>
+                                                                    <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioTachado)}</p>
+                                                                    <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete as string)}</p>
+                                                                </>
+                                                                :
+                                                                <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
+                                                        }
+                                                        <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
+                                                    </div>
                                                 </>
 
                                             </div>

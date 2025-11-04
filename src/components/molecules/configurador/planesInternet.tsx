@@ -2,40 +2,40 @@
 
 import LinkModal from "@/components/atoms/LinkModal";
 import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
+import { useIzziContent } from "@/components/providers/IzziProvider";
 import { CheckPlanesIcon } from "@/constants/IconsConstants";
 import { OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function PlanesInternet({ step }: StepProps) {
 
     const { configuradorEntry, setUserAnswers, disabled, userAnswers, copysConfigurador } = useContent();
+    const { params } = useIzziContent();
     const plans = configuradorEntry?.offers?.DOBLE_PLAY;
     const offersCopys = copysConfigurador as unknown as OffersCopys;
     const coverageType = configuradorEntry?.coverageType.includes('FTTH') ? 'FTTH' : 'HFC';
 
     const plansPrev = plans as unknown as OfferItem[];
 
-  
+
     const plansInfo: OfferItem[] = plansPrev.map(offer => {
         const totalAhorros = offer.izziAhorros?.reduce((acc, ahorro) => acc + Number(ahorro.monto), 0) || 0;
         const nuevoPrecio = (
-        Number(offer.precioPaquete) -
-        totalAhorros -
-        Number(offer.descuentoPaquete || 0) -
-        Number(offer.precioDomiciliacion || 0)
+            Number(offer.precioPaquete) -
+            totalAhorros -
+            Number(offer.descuentoPaquete || 0) -
+            Number(offer.precioDomiciliacion || 0)
         ).toString();
         const precioTachado = (Number(offer.precioPaquete) - totalAhorros).toString();
         return {
-        ...offer,
-        precioPaquete: nuevoPrecio,
-        precioTachado: precioTachado
+            ...offer,
+            precioPaquete: nuevoPrecio,
+            precioTachado: precioTachado
         };
     })
-  
-  
 
     const mapOffersByType = {
         hfc: [
@@ -93,6 +93,68 @@ export default function PlanesInternet({ step }: StepProps) {
             });
         }
     }, [disabled, setUserAnswers, userAnswers.internet?.paquete])
+
+    const offersIds = useMemo(() => offersByType.map(offer => String(offer.idPaquete)).join('|'),
+        [offersByType]
+    );
+
+    useEffect(() => {
+        if (!params.plan || !offersByType.length) return;
+
+        // split para triplePlay: 'izzi80m_izzitvhd' -> ['izzi80m', 'izzitvhd']
+        const [internetCode, tvCode] = String(params.plan).split('_', 2);
+
+        let matchedOffer = offersByType.find(offer => offer.nombreCode === params.plan);
+
+        if (!matchedOffer && internetCode) {
+            matchedOffer = offersByType.find(offer => offer.nombreCode === internetCode);
+        }
+        if (!matchedOffer) return;
+
+        const matchedId = String(matchedOffer.idPaquete);
+        const currentInternetId = String(userAnswers.internet?.paquete?.idPaquete ?? '');
+
+        if (currentInternetId === matchedId) {
+            const index = offersByType.findIndex(offer => String(offer.idPaquete) === matchedId);
+            if (index !== -1 && selectedIndex !== index) {
+                setSelectedIndex(index);
+            }
+            return;
+        }
+        const index = offersByType.findIndex(offer => String(offer.idPaquete) === matchedId);
+        if (index !== -1 ) {
+            setSelectedIndex(index);
+        }
+
+        setUserAnswers(prev => ({
+            ...prev,
+            internet: {
+                paquete: matchedOffer,
+                total: Number(matchedOffer.precioPaquete) || 0,
+            },
+        }));
+
+        if (tvCode) {
+            const tvCatalog = configuradorEntry?.offers.TRIPLE_PLAY ?? [];
+            const matchedTv = (tvCatalog as any[]).find(tv => tv.nombreCode === tvCode);
+
+            if(matchedTv) {
+                const currentTvId = String(userAnswers.tv?.paquete?.idPaquete ?? '');
+                const matchedTvId = String(matchedTv.idPaquete);
+
+                if (currentTvId !== matchedTvId) {
+                    setUserAnswers(prev => ({
+                        ...prev,
+                        tv: {
+                            paquete: matchedTv,
+                            total: Number(matchedTv.precioPaquete) || 0,
+                        },
+                    }));
+                }
+            }
+        }
+
+    }, [params.plan, offersIds, userAnswers.internet?.paquete?.idPaquete, userAnswers.tv?.paquete?.idPaquete, selectedIndex]);
 
     return (
         <div className="flex flex-col gap-[24px]">

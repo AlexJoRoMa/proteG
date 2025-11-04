@@ -79,7 +79,7 @@ const CardHomeComponent = async({card}:CardPropType) => {
                 }
 
                 <ButtonGhost classStyles='w-full h-[48px] rounded-md bg-white text-black border-none font-bold text-[16px] md:text-[18px]'
-                text={card?.fields?.textBtn2 as string} href={card?.fields?.urlBtn2 as string} />
+                text={card?.fields?.textBtn2 as string} href={`${card?.fields?.urlBtn2}?plan=${card.fields.nombreCodePlan ?? null}&movil=${card.fields.nombreCodeMovil ?? null}`} />
             </div>
         </div>
     </div>
