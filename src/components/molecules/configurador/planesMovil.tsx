@@ -44,6 +44,22 @@ export default function PlanesMovil({ step }: StepProps) {
     const [selectedTabKey, setSelectedTabKey] = useState<string>(defaultKey);
     const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
+    useEffect(() => {
+        const movilPaquete = userAnswers.movil?.paquete;
+        if (!movilPaquete || !plansInfo.length) return;
+
+        const parentTab = plansInfo.find(tab =>
+            tab.cards?.some(card => card.idPaquete === movilPaquete.idPaquete)
+        );
+
+        if (parentTab && parentTab.tituloTab) {
+            setSelectedTabKey(parentTab.tituloTab);
+        }
+
+        setSelectedCardId(movilPaquete.idPaquete);
+    }, [userAnswers.movil?.paquete, plansInfo]);
+
+
     function formatData(data: OfferItem[], copys: OffersCopys) {
 
         const contrato12 = data.filter(item => item.titulo.includes("12 meses"));
@@ -93,58 +109,32 @@ export default function PlanesMovil({ step }: StepProps) {
 
     useEffect(() => {
         if (!params.movil) return;
+        if (!plansInfo.length) return;
 
         const mobileCode = String(params.movil);
-        if (!plansInfo || plansInfo.length === 0) return;
-
         const allCards = plansInfo.flatMap(tab => tab.cards ?? []);
         const matched = allCards.find(card => card.nombreCode === mobileCode);
         if (!matched) return;
 
-        const matchedId = String(matched.idPaquete);
-        const currentId = String(userAnswers.movil?.paquete?.idPaquete ?? '');
+        const parentTab = plansInfo.find(tab => tab.cards?.some(card => card.idPaquete === matched.idPaquete));
 
-        if (currentId === matchedId) {
-            const parentTab = plansInfo.find(tab => tab.cards?.some(card => String(card.idPaquete) === matchedId));
-            if (parentTab && parentTab.tituloTab !== selectedTabKey) {
-                setSelectedTabKey(parentTab.tituloTab);
-            }
-            if (selectedCardId !== matched.idPaquete) {
-                setSelectedCardId(matched.idPaquete);
-            }
-            return;
+        if (userAnswers.movil?.paquete?.idPaquete === matched.idPaquete) return;
+
+        setSelectedCardId(matched.idPaquete);
+        if (parentTab) {
+            setSelectedTabKey(parentTab.tituloTab);
         }
 
         setUserAnswers(prev => ({
             ...prev,
             movil: {
                 paquete: matched,
+                contrato: parentTab?.tituloTab || "",
                 total: Number(matched.precioPaquete) || 0,
             },
         }));
 
-        const parentTab = plansInfo.find(tab => tab.cards.some(card => String(card.idPaquete) === matchedId));
-        if (parentTab) {
-            setSelectedTabKey(parentTab.tituloTab);
-        }
-        setSelectedCardId(matched.idPaquete);
-
-    }, [movilOffersIds, params.movil, userAnswers.movil?.paquete?.idPaquete]);
-
-    useEffect(() => {
-        const movilPaquete = userAnswers.movil?.paquete;
-        if (!movilPaquete || !plansInfo.length) return;
-
-        const parentTab = plansInfo.find(tab =>
-            tab.cards?.some(card => card.idPaquete === movilPaquete.idPaquete)
-        );
-
-        if (parentTab && parentTab.tituloTab) {
-            setSelectedTabKey(parentTab.tituloTab);
-        }
-
-        setSelectedCardId(movilPaquete.idPaquete);
-    }, [userAnswers.movil?.paquete, plansInfo]);
+    }, [params.movil, plansInfo]);
 
     return (
         <div className="flex flex-col gap-[24px]">
