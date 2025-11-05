@@ -262,7 +262,6 @@ export function setTelNumber(fullPath: string): PhoneNumber | undefined {
     const mapNumber = (fullPath in phone_List) ? phone_List[fullPath as SlugPath] : undefined;
     cachedNumber = mapNumber;
     
-    /* console.log(' 🎴 setTelNumber ', cachedNumber) */
     return mapNumber;
 }
 

@@ -66,7 +66,7 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
     // Normaliza URLs para que sean absolutas (agrega '/' si falta)
     const normalizeUrl = (url: string) => url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
 
-console.log('🎴 urlTracking ' , urlTracking)
+
     return (
     <>
       <Navbar style={borderStyle}
