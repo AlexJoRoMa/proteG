@@ -275,11 +275,16 @@ export default async function LandingPage({ params }: DynamicPageProps) {
     
     const fullPath = [paqueteKey, ...slugs].join('/');
 
+    const contentfulSlug = slugs.length > 0 ? slugs[slugs.length - 1] : undefined;
+
+    console.log('👽 fullPath ', contentfulSlug) 
+
     if(!urlList.includes(fullPath)){
         return notFound();
     }
 
-    const page = await fetchComponentsBySlugPage(fullPath);
+    const page = await fetchComponentsBySlugPage(contentfulSlug as string);
+   /*  const page = await fetchComponentsBySlugPage(fullPath); */
     const components = page.items || [];
 
     /* valores para enviar valor de fullpath, no borrar */
