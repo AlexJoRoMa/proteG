@@ -202,7 +202,6 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
             const cleanPhone = phoneValue.replace(/\D/g, '');
 
             const setUTM = persistUTM || null;
-            console.log('👿 setUTM ', setUTM)
             
             const response = await fetch('/api/te-llamamos', {
                 method: 'POST',
