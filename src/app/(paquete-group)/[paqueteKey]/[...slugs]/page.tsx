@@ -7,18 +7,20 @@ import {SeoFieldSkeleton} from "@/types/SEOTypes";
 import SEOHead from '@/components/atoms/SEOHead';
 import { setTelNumber } from '@/services/izzi/getTelNumbers';
 import { setFullPath } from "@/services/izzi/getURL";
+import UrlPersister from "@/utils/utmTrack";
 
 /* import NavigationLanding from '@/components/molecules/navigationLandingComponent'; */
 
 interface DynamicPageProps {
-    params: Promise<{
+    params: {
         slugs: string[];
         paqueteKey: string;
-    }>;
+    };
 }
 
-export default async function LandingPage({ params }: DynamicPageProps) {
-    const { slugs, paqueteKey } = await params; //Sugerencia de NextJS para obtener los parametros de la ruta
+export default async function LandingPage({ params}: DynamicPageProps) {
+    const { slugs, paqueteKey } = await params;
+    //Sugerencia de NextJS para obtener los parametros de la ruta
     // Unir segmentos anidados en un solo slug, p.ej. ['television', 'canales'] -> 'television/canales'
 
     const urlList = [
@@ -290,7 +292,7 @@ export default async function LandingPage({ params }: DynamicPageProps) {
 
 
     
-    /* console.log('👽 fullPath ', contentfulSlug)  */
+   /*  console.log('👽 fullPath ', fullPath)  */
 
     const page = await fetchComponentsBySlugPage(contentfulSlug as string);
    /*  const page = await fetchComponentsBySlugPage(fullPath); */
@@ -311,6 +313,7 @@ export default async function LandingPage({ params }: DynamicPageProps) {
         <>
 
         {seo && <SEOHead seo={seo} slug={fullPath} />}
+        <UrlPersister />
         
         <main>
             

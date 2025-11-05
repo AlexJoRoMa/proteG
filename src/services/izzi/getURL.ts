@@ -2,7 +2,6 @@
 let currentFullPath: string | null = null;
 
 export function setFullPath(path: string) {
-    /* console.log('👽 setFullPa ' , path) */
     currentFullPath = path;
 }
 
