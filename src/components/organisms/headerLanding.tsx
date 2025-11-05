@@ -18,7 +18,7 @@ import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent
 import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 
 
-export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTitulo, llamanosNum, getNumTel}: HeaderLandingComponentProps) {
+export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTitulo, llamanosNum, getNumTel, urlTracking}: HeaderLandingComponentProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     
 
@@ -34,6 +34,17 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
 
         return null;
     };
+
+    //url track
+    const buildTracking = (contentfulSlug: string) =>{
+
+      if(urlTracking && contentfulSlug !== '/'){
+        const slug = contentfulSlug.startsWith('/') ? contentfulSlug.substring(1) : contentfulSlug;
+        return `${urlTracking}/${slug}`
+      }
+
+      return normalizeUrl(contentfulSlug);
+    }
     
     
     const navbarContent = apibarData as unknown as Array<IzziNavbar>;
@@ -55,7 +66,7 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
     // Normaliza URLs para que sean absolutas (agrega '/' si falta)
     const normalizeUrl = (url: string) => url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
 
-
+console.log('🎴 urlTracking ' , urlTracking)
     return (
     <>
       <Navbar style={borderStyle}
@@ -105,7 +116,7 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
         { navbar[0].fields?.navigation?.map((link, index) => (    
         <NavbarItem key={`${link}-${index}`}>
           
-            <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href={normalizeUrl(link.fields.navigationUrl)}>
+            <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href={buildTracking(link.fields.navigationUrl)}>
               {link.fields.navigationTitle}
             </Link>
           

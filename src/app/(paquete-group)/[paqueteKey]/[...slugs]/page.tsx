@@ -5,7 +5,8 @@ import { Entry, EntrySkeletonType } from "contentful";
 import { notFound } from "next/navigation";
 import {SeoFieldSkeleton} from "@/types/SEOTypes";
 import SEOHead from '@/components/atoms/SEOHead';
-import { setTelNumber, getTelNumber } from '@/services/izzi/getTelNumbers';
+import { setTelNumber } from '@/services/izzi/getTelNumbers';
+import { setFullPath } from "@/services/izzi/getURL";
 
 /* import NavigationLanding from '@/components/molecules/navigationLandingComponent'; */
 
@@ -277,21 +278,24 @@ export default async function LandingPage({ params }: DynamicPageProps) {
 
     const contentfulSlug = slugs.length > 0 ? slugs[slugs.length - 1] : undefined;
 
-    console.log('👽 fullPath ', contentfulSlug) 
+    
 
     if(!urlList.includes(fullPath)){
         return notFound();
     }
 
+    /* valores para enviar valor de fullpath, no borrar */
+    setTelNumber(fullPath)
+    setFullPath(fullPath)
+
+
+    
+    /* console.log('👽 fullPath ', contentfulSlug)  */
+
     const page = await fetchComponentsBySlugPage(contentfulSlug as string);
    /*  const page = await fetchComponentsBySlugPage(fullPath); */
     const components = page.items || [];
-
-    /* valores para enviar valor de fullpath, no borrar */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const validateNumber = setTelNumber(fullPath)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const seNumber = getTelNumber()
+    
 
     const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
     const seo = seoEntry?.fields;

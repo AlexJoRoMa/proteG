@@ -197,7 +197,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
                     telefono: cleanPhone,
                     recaptchaToken,
                     url: window.location.href,
-                    utm: null
+                    utm: modalData?.utm || null,
                 }),
             });
 
