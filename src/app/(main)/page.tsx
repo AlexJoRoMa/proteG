@@ -4,6 +4,7 @@ import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import ButtonFixed from "@/components/atoms/ButtonSticky";
 import {SeoFieldSkeleton} from "@/types/SEOTypes";
 import SEOHead from '@/components/atoms/SEOHead';import CookieConsent from "@/components/organisms/cookieConsent";
+import { getMicroCopy } from '@/services/contentful/components';
 
 
 export default async function Home() {
@@ -16,6 +17,22 @@ export default async function Home() {
   const slug = components[0]?.fields.slug as string;
   const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
   const seo = seoEntry?.fields;
+
+  const getCookieTitulo = await getMicroCopy('cookie.title');
+  const getLonTitulo = await getMicroCopy('cookie.LongText');
+  const getAceptar = await getMicroCopy('cookie.aceptar');
+  const getRechazar = await getMicroCopy('cookie.rechazar');
+  const getCookiesAceptar = await getMicroCopy('cookie.AceptarCookies');
+  const getCookiesAutoriza = await getMicroCopy('cookie.Autoriza');
+  
+  const cookieTitulo = getCookieTitulo?.[0]?.fields?.value as string;
+  const cookieLong = getLonTitulo?.[0]?.fields?.valueLong as string;
+  const cookieAceptar = getAceptar?.[0]?.fields?.value as string;
+  const cookieRechazar = getRechazar?.[0]?.fields?.value as string;
+  const cookieTextAcept = getCookiesAceptar?.[0]?.fields?.value as string;
+  const cookieAutoriza = getCookiesAutoriza?.[0]?.fields?.value as string;
+  
+
   
   return (
     <>
@@ -37,7 +54,14 @@ export default async function Home() {
           )
         }
         <ButtonFixed />
-        <CookieConsent />
+        <CookieConsent 
+        title={cookieTitulo} 
+        long={cookieLong}
+        aceptar={cookieAceptar}
+        rechzar={cookieRechazar}
+        cookieAcept={cookieTextAcept}
+        cookieAutoriza={cookieAutoriza}
+          />
     </main>
     </>
   );
