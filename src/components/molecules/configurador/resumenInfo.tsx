@@ -3,7 +3,7 @@
 import { internetComponentFields, movilComponentFields, tvComponentFields } from "@/types/ConfiguradorTypes";
 import { ResumenData } from "@/types/ResumenCompra";
 import { useContent } from "@/utils/ConfiguradorProvider";
-import { useIzziContent } from "@/utils/IzziProvider";
+import { useIzziContent } from "@/components/providers/IzziProvider";
 import { Alert } from "@heroui/react";
 import { useEffect, useState } from "react";
 

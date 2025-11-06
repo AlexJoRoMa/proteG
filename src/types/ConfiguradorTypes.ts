@@ -69,6 +69,7 @@ export interface Offers {
 }
 
 export interface OfferItem {
+    autoinstalacion: boolean,
     idPaquete: number,
     idExtra: number,
     titulo: string,
@@ -86,8 +87,11 @@ export interface OfferItem {
     izziAhorros?: Ahorro[],
     descuentoPaquete?: string,
     precioDomiciliacion?: string,
-    precioTachado?: string;
-    precioTriplePlay?: string
+    precioTachado?: string,
+    precioTriplePlay?: string,
+    nombreCode: string,
+    paqName: string,
+    tiempoPlan: string,
 }
 
 export interface Ahorro {
@@ -184,6 +188,7 @@ export type DataFields = {
     setInfoDrawerContent: React.Dispatch<React.SetStateAction<string>>,
     disabled: boolean,
     setDisabled: React.Dispatch<React.SetStateAction<boolean>>,
+    rehydrated: boolean,
 }
 
 export interface Promotion {

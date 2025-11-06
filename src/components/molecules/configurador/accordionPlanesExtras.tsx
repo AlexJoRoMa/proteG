@@ -5,7 +5,7 @@ import { FormatCurrency } from "@/utils/Currency";
 import { Accordion, AccordionItem, Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { EntrySkeletonType } from "contentful";
 import Image from "next/image";
-import { Key, useState } from "react";
+import { Key, useEffect, useState } from "react";
 import useSWR from "swr";
 
 const fetchMicrocopies = async (key: string) => {
@@ -139,6 +139,13 @@ export default function AccordionPlanesExtras() {
             }
         })
     }
+
+    useEffect(() => {
+        const ottsPlanes = content.userAnswers.tv?.ott?.planes;
+        if (ottsPlanes && ottsPlanes.length > 0) {
+            setSelectedCard(ottsPlanes);
+        }
+    }, [content.userAnswers.tv?.ott?.planes]);
 
 
 

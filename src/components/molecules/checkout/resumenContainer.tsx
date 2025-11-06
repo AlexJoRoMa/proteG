@@ -14,12 +14,11 @@ import { useEffect, useRef, useState } from "react";
 import { GetSubmitCapacity } from "@/utils/GetSubmitCapacity";
 import { useRouter } from "next/navigation";
 import ModalContratacion from "./modals/ModalContratacion";
-import ModalFechaInvalida from "./modals/ModalFechaInvalida";
 import { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, useDisclosure } from "@heroui/react";
 import { ArrowDownIcon, ArrowUpIcon } from "@/constants/IconsConstants";
 import { ResumenData } from "@/types/ResumenCompra";
 import ResumenContent from "../resumenCompra/resumenContent";
-import { useIzziContent } from "@/utils/IzziProvider";
+import { useIzziContent } from "@/components/providers/IzziProvider";
 import { FormatCurrency } from "@/utils/Currency";
 
 export default function ResumenContainer() {
@@ -197,38 +196,6 @@ export default function ResumenContainer() {
         // onLoadingChange: (loading) => setModalLoading(loading),
     });
 
-    // const { trigger: runCheckCapacity, isLoading: loadingCheckCapacity } = useControlledAction({
-    //     action: async () => {
-    //         const res = await GetCapacity(izziEnrrollRef.current);
-    //         const data = await res;
-    //         let available;
-
-    //         if (data?.code) {
-    //             throw new Error("Error del servicio getCapacity");
-    //         }
-
-    //         const checkData = data.quotaSchedule;
-    //         if (checkData) {
-    //             available = !!checkData.find((info: { cvTimeslot: string | undefined; requestedShipDate: string | undefined; }) =>
-    //                 info.cvTimeslot === datosContratacionRef.current?.Instalacion?.cvTimeslot &&
-    //                 info.requestedShipDate === datosContratacionRef.current?.Instalacion?.requestedShipDate);
-    //         } else {
-    //             available = false;
-    //         }
-
-    //         if (available) {
-    //             setCheckInstalacion(true);
-    //         } else {
-    //             setCheckInstalacion(false);
-    //         }
-    //     },
-    //     resetKey: `step-6-getCapacity`,
-    //     autoExecute: false,
-        // onSuccess: (data) => console.log('submitOffer success.', data),
-        // onError: (err) => console.error('submitOffer error:', err),
-        // onLoadingChange: (loading) => setModalLoading(loading),
-    // });
-
     const { trigger: runSubmitCapacity, isLoading: loadingSubmitCapacity } = useControlledAction({
         action: async () => {
             const res = await GetSubmitCapacity(izziEnrrollRef.current, datosContratacionRef);
@@ -300,6 +267,9 @@ export default function ResumenContainer() {
                     try {
                         // IzziEnroll
                         const resultIzziEnroll = await GetIzziEnroll(coberturaData, datosContratacion, offnetIzzi, offnetSky);
+                        if (!resultIzziEnroll) {
+                            router.push("/error");
+                        }
                         setIzziEnroll(resultIzziEnroll);
 
                         // // ProcessStatus
@@ -335,15 +305,12 @@ export default function ResumenContainer() {
                     };
 
                     try {
-                        // await Promise.all([
                         // AttachFiles
                         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                         await showModaluntilAction(async () => await runAttachFiles(), "modal-documentos"),
-                            // await showModaluntilAction(async () => await runAttachComprobante(), "modal-documentos"),
 
                             // GetCapacity() 
                             await showModaluntilAction(async () => await runGetCapacity(true), "modal-disponibilidad"),
-                            // ]);
 
                             setIsStepValid(false)
                         nextStep()
@@ -371,6 +338,7 @@ export default function ResumenContainer() {
                     break
                 }
                 case 6: {
+                    // ValidaPago
                     const response = await validatePayment(datosContratacion, setDatosContratacion, processStatusRef.current, paymentReference);
 
                     if (response === true) {
@@ -381,23 +349,12 @@ export default function ResumenContainer() {
                             }
                         }));
 
-                        // if (getIntentosInstalacion <= 3) {
-                        //     await runCheckCapacity();
-
-                        //     if (checkInstalacion) {
+                        // SubmitCapacity
                         const submitResponse = await runSubmitCapacity();
 
                         if (submitResponse) {
                             router.push("/thank-you");
                         }
-
-                        // } else {
-                        //     setGetIntentosInstalacion(getIntentosInstalacion + 1)
-                        //     setModalNewDate(true);
-                        // }
-                        // } else {
-                        //     router.push("/thank-you");
-                        // }
                     }
 
                     setIsStepValid(true)
@@ -440,7 +397,7 @@ export default function ResumenContainer() {
                 <div className="hidden xl:block">
                     <h1 className="font-bold leading-[24px] text-xl mb-[32px]">{resumenCopys.titulo}</h1>
 
-                    <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers}/>
+                    <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
 
                 </div>
 
@@ -455,7 +412,6 @@ export default function ResumenContainer() {
 
                 </div>
                 <ModalContratacion isOpen={modalLoading} name={modalName} />
-                {/* <ModalFechaInvalida isOpen={modalNewDate} setModal={handleModalNewDate} setClose={handleModalClose} /> */}
             </div>
 
             <Drawer
@@ -486,11 +442,7 @@ export default function ResumenContainer() {
                             </DrawerHeader>
 
                             <DrawerBody>
-                                {/* <ResumenContent copys={resumenCopys} userSelection={userAnswers}/> */}
-
-                                <div className="mb-[24px]">
-                                    {'Contenido resumen de compra'}
-                                </div>
+                                <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
                             </DrawerBody>
 
                             <DrawerFooter>
