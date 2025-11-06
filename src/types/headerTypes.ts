@@ -42,4 +42,5 @@ export type HeaderLandingComponentProps = {
     llamanosTitulo: string,
     llamanosNum: string,
     getNumTel: string,
+    urlTracking: string,
 }

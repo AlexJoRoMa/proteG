@@ -28,6 +28,7 @@ const CheckoutPage = async () => {
   const copysResumen = await getCopyForComponent('Resumen-de-Compra').then((entry) => {
     return entry.resumen
   });
+  
 
   return (
     <main className="min-h-screen w-full">
