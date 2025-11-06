@@ -12,7 +12,7 @@ export async function createCookie(data: CoberturaType) {
     value: data.lat as string,
     httpOnly: true,
     path: '/',
-    maxAge: 1800
+    maxAge: 3600
   });
 
   cookieStore.set({
@@ -20,7 +20,7 @@ export async function createCookie(data: CoberturaType) {
     value: data.lng as string,
     httpOnly: true,
     path: '/',
-    maxAge: 1800
+    maxAge: 3600
   });
 
   cookieStore.set({
@@ -28,7 +28,7 @@ export async function createCookie(data: CoberturaType) {
     value: data.zipCode as string,
     httpOnly: true,
     path: '/',
-    maxAge: 1800
+    maxAge: 3600
   });
 
   cookieStore.set({
@@ -36,7 +36,7 @@ export async function createCookie(data: CoberturaType) {
     value: data.address as string,
     httpOnly: true,
     path: '/',
-    maxAge: 1800
+    maxAge: 3600
   });
 
   revalidatePath('/configurador')

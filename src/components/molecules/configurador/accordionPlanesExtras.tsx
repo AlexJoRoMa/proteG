@@ -72,7 +72,8 @@ export default function AccordionPlanesExtras() {
     let planesExtras: OttProps[] | null = null;
 
     if (ottsData && ottsData.extrasMap?.ott) {
-        planesExtras = ottsData.extrasMap.ott;
+        const planes: OttProps[] = ottsData.extrasMap.ott;
+        planesExtras = planes?.filter(extra => extra.categoriaExtra?.includes('Netflix') || extra.categoriaExtra?.includes('Disney+'))
     }
 
     // Helper para encontrar valores por key

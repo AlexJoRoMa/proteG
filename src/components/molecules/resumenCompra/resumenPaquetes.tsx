@@ -22,7 +22,7 @@ export default function ResumenPaquetes({userSelection, copys}: ResumenContentPr
                     <div className="flex justify-between w-full font-bold leading-[24px] text-lg">
                         <h5>{resumenCopys.paquetes.internet.titulo}</h5>
                         <h5>
-                            {FormatCurrency(internet.total)}
+                            {FormatCurrency(Number(internet.paquete.precioTachado))}
                         </h5>
                     </div>
 
@@ -49,7 +49,14 @@ export default function ResumenPaquetes({userSelection, copys}: ResumenContentPr
                     <div className="flex flex-col gap-[8px] border-b-1 border-b-gray-150 pt-[24px]">
                         <div className="flex justify-between w-full font-bold leading-[24px] text-lg">
                             <h5>{tv.paquete.titulo}</h5>
-                            <h5>{FormatCurrency(tv.total)}</h5>
+                            {
+                                internet &&
+                                <h5>{FormatCurrency(Number(tv.paquete.precioTachado))}</h5>
+                            }
+                            {
+                                !internet &&
+                                <h5>{FormatCurrency(Number(tv.paquete.precioPaquete))}</h5>
+                            }
                         </div>
 
                         <p className="mb-[24px] w-full font-normal leading-[24px] text-base text-gray-250">
@@ -66,7 +73,14 @@ export default function ResumenPaquetes({userSelection, copys}: ResumenContentPr
                 <div className="flex flex-col gap-[8px] border-b-1 border-b-gray-150 pt-[24px]">
                     <div className="flex justify-between w-full font-bold leading-[24px] text-lg">
                         <h5>{resumenCopys.paquetes.movil.titulo}</h5>
-                        <h5>{FormatCurrency(movil.total)}</h5>
+                        {
+                                internet &&
+                                <h5>{FormatCurrency(Number(movil.paquete.precioTachado))}</h5>
+                            }
+                            {
+                                !internet &&
+                                <h5>{FormatCurrency(Number(movil.paquete.precioPaquete))}</h5>
+                            }
                     </div>
 
                     <div className="flex-flex-col gap-[8px] pb-[24px] w-full font-normal leading-[24px] text-base text-gray-250">
@@ -87,7 +101,7 @@ export default function ResumenPaquetes({userSelection, copys}: ResumenContentPr
                 <div className="flex flex-col gap-[8px] pt-[24px] border-b-1 border-b-gray-150">
                     <div className="flex justify-between items-center w-full font-bold leading-[24px] text-lg">
                         <h5>{resumenCopys.paquetes.tv.ott.titulo}</h5>
-                        <h5>{`$${tv.ott?.total}`}</h5>
+                        <h5>{FormatCurrency(tv.ott?.total)}</h5>
                     </div>
                     <div className="flex flex-col gap-[8px] pb-[24px]">
                         {tv.ott?.planes.map((item, index) => (
@@ -96,7 +110,7 @@ export default function ResumenPaquetes({userSelection, copys}: ResumenContentPr
                                 className="flex justify-between w-full font-normal leading-[24px] text-base text-gray-250"
                             >
                                 <h5>
-                                    {`+ ${item.titulo} (descripcion)`}
+                                    {`+ ${item.titulo}`}
                                 </h5>
                             </div>
                         ))}

@@ -1,7 +1,10 @@
+import { OttsImages } from "@/types/ConfiguradorTypes";
 import { ConfiguradorCardsModalProps, IconProps, ModalData } from "@/types/ModalComponentTypes";
+import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { dataModel } from "@/utils/modal/ConfiguradorDataModal";
 import { Button } from "@heroui/react";
+import { EntrySkeletonType } from "contentful";
 import Image from "next/image";
 import Link from "next/link";
 import useSWR from "swr";
@@ -78,6 +81,10 @@ const ConfiguradorCardsModalContent = ({ modalData, onClose, variables, type }: 
 
     let headerContent;
     let bodyContent;
+
+    const content = useContent();
+
+    const ottsImages = content.ottsImages as unknown as EntrySkeletonType<OttsImages>[];
 
     switch (type) {
         case "internet":
@@ -201,6 +208,29 @@ const ConfiguradorCardsModalContent = ({ modalData, onClose, variables, type }: 
                     </div>
 
                     <div className="flex flex-col gap-[24px] mb-[32px] mt-[24px] text-base">
+                        <div className="flex flex-row items-center gap-x-2">
+                        {ottsImages.map((icon, index) => {
+                            const match = variables?.extras?.find(
+                                (extra) => extra.idProducto === icon.fields.idModalExtra
+                            );
+
+                            return (
+                                icon.fields.type.includes('ExtraModal') && match && (
+                                <div key={index}>
+                                    <Image
+                                    src={`https:${icon.fields.ottImage.fields.image.fields.file.url}`}
+                                    alt={icon.fields.ottImage.fields.altText}
+                                    width={60}
+                                    height={40}
+                                    />
+                                    <p className="text-[10px] text-center">
+                                        {icon.fields.vigencia}
+                                    </p>
+                                </div>
+                                )
+                            );
+                        })}
+                        </div>
                         <p>
                             {bodyContent}
                         </p>

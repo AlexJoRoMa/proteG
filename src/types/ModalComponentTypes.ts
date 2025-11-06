@@ -1,5 +1,6 @@
 import { Asset } from "contentful";
 import { ColorOption } from "@/constants/ColorModalConstants";
+import { ExtrasIncluidos } from "./ConfiguradorTypes";
 
 export type FeatureListItemComponentProps = {
   title?: string;
@@ -169,6 +170,7 @@ export interface ConfiguradorCardsModalProps {
     periodo?: string,
     domicilio?: string,
     canales?: string,
+    extras?: ExtrasIncluidos[]
   },
   type: "internet" | "tv" | "movil",
 }
