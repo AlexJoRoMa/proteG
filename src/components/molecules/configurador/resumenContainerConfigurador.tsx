@@ -7,6 +7,7 @@ import { ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { useState } from "react";
 import ButtonGhost from "@/components/atoms/ButtonGhost";
+import { useRouter } from "next/navigation";
 // import ModalFechaInvalida from "../checkout/modals/ModalFechaInvalida";
 
 export default function ResumenContainerConfigurador() {
@@ -16,42 +17,43 @@ export default function ResumenContainerConfigurador() {
     const resumenCopys = copysResumen as ResumenData;
     const [loading, setLoading] = useState(false);
     const [promoError, setPromoError] = useState(false);
-    const { coberturaData, setRpt, setOffnetIzzi, setOffnetSky } = useIzziContent();
+    const { coberturaData, setRpt, setOffnetIzzi, setOffnetSky, setParams } = useIzziContent();
 
+    const router = useRouter();
     let totalDiscount = 0;
-    
+
     const handleClick = async () => {
         setLoading(true);
         const extrasBody = [];
 
-        
-            if(izziSelection?.extrasMap){
-                izziSelection?.extrasMap?.ott?.map((extra) => {
-                    extrasBody.push({
-                        "extId": extra.idExtra, 
-                        "nuevaCantidad": 1, 
-                        "combo": true
-                    })
-                })
-            }
-            if(izziSelection?.extras){
+
+        if (izziSelection?.extrasMap) {
+            izziSelection?.extrasMap?.ott?.map((extra) => {
                 extrasBody.push({
-                    "extId":  izziSelection.extras?.idExtra, 
-                    "nuevaCantidad": 1, 
-                    "combo": false, 
-                    "tipoEntrega": "DOMICILIO", 
-                    "sucursalId": "N/A", 
-                    "portabilidadMovil": "N"
+                    "extId": extra.idExtra,
+                    "nuevaCantidad": 1,
+                    "combo": true
                 })
-            }
+            })
+        }
+        if (izziSelection?.extras) {
+            extrasBody.push({
+                "extId": izziSelection.extras?.idExtra,
+                "nuevaCantidad": 1,
+                "combo": false,
+                "tipoEntrega": "DOMICILIO",
+                "sucursalId": "N/A",
+                "portabilidadMovil": "N"
+            })
+        }
 
         try {
-        const res = await fetch("/api/configurador/resumen", {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
+            const res = await fetch("/api/configurador/resumen", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
                     "rpt": configuradorEntry?.rptCode,
                     "postalCode": coberturaData.zipCode,
                     "hub": configuradorEntry?.hub,
@@ -62,14 +64,14 @@ export default function ResumenContainerConfigurador() {
                     },
                     "offnet": configuradorEntry?.offnetIzzi && configuradorEntry?.offnetSky
                 }
-            ),
-        });
-    
-        const data = await res.json();
-        setPromoData(data);
-        setRpt(configuradorEntry?.rptCode as string);
-        setOffnetIzzi(configuradorEntry?.offnetIzzi as boolean);
-        setOffnetSky(configuradorEntry?.offnetSky as boolean);
+                ),
+            });
+
+            const data = await res.json();
+            setPromoData(data);
+            setRpt(configuradorEntry?.rptCode as string);
+            setOffnetIzzi(configuradorEntry?.offnetIzzi as boolean);
+            setOffnetSky(configuradorEntry?.offnetSky as boolean);
         } catch (error) {
             setCheckedPromotions(false);
             setPromoError(true);
@@ -78,6 +80,11 @@ export default function ResumenContainerConfigurador() {
             setLoading(false);
         }
     };
+
+    function handleContratar() {
+        setParams({ plan: null, movil: null });
+        router.push(`${resumenCopys.boton.contratar.url}`)
+    }
 
     return (
         <>
@@ -101,7 +108,7 @@ export default function ResumenContainerConfigurador() {
                                 <h4>{resumenCopys.promociones.textoAhorro}</h4>
                                 {
                                     promoData?.promoPackage?.map((promo, index) => {
-                                        if(promo.amount !== '0'){
+                                        if (promo.amount !== '0') {
                                             totalDiscount = totalDiscount + Number(promo.amount);
                                         }
                                         return (<h4 key={index}>${totalDiscount}</h4>)
@@ -113,7 +120,7 @@ export default function ResumenContainerConfigurador() {
                 </div>
             }
 
-            <ResumenContent copys={resumenCopys} userSelection={userAnswers}/>
+            <ResumenContent copys={resumenCopys} userSelection={userAnswers} />
 
             <div className="hidden xl:block">
                 {!checkedPromotions ?
@@ -133,12 +140,13 @@ export default function ResumenContainerConfigurador() {
                     // >
                     //     {resumenCopys.boton.contratar.titulo}
                     // </button>
-                    <ButtonGhost
+                    <button
+                        className={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"}
+                        onClick={handleContratar}
                         disabled={loading && promoError}
-                        classStyles={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center"}
-                        text={resumenCopys.boton.contratar.titulo}
-                        href={resumenCopys.boton.contratar.url}
-                    />
+                    >
+                        {resumenCopys.boton.contratar.titulo}
+                    </button>
                 }
                 {/* <ModalFechaInvalida isOpen={promoError} /> */}
             </div>
