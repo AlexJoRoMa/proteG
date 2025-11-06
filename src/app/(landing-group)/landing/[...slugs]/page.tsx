@@ -28,7 +28,6 @@ export default async function LandingPage({ params }: DynamicPageProps) {
     if (page.total !== 1) {
         notFound();
     }
-
    
     return (
         <>

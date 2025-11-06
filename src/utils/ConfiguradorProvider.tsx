@@ -3,7 +3,7 @@
 import { DataFields, IzziSelection, ProviderProps, UserAnswers } from "@/types/ConfiguradorTypes";
 import { createContext, useContext, useEffect, useState } from "react";
 import { IzziSelectionGuard } from "./guards/IzziSelectionGuard";
-import { useIzziContent } from "./IzziProvider";
+import { useIzziContent } from "../components/providers/IzziProvider";
 
 const configuradorContext = createContext<DataFields | undefined>(undefined);
 
@@ -30,8 +30,9 @@ export const ConfiguradorProvider = ({
     const [checkedPromotions, setCheckedPromotions] = useState<boolean>(false);
     const [infoDrawerContent, setInfoDrawerContent] = useState<string>("");
     const [disabled, setDisabled] = useState<boolean>(false);
+    const [rehydrated, setRehydrated] = useState(false);
 
-    const { setGlobalUserAnswers, setGlobalIzziSelection } = useIzziContent();
+    const { setGlobalUserAnswers, setGlobalIzziSelection, globalUserAnswers } = useIzziContent();
 
     useEffect(() => IzziSelectionGuard(userAnswers, setIzziSelection), [userAnswers])
 
@@ -58,6 +59,17 @@ export const ConfiguradorProvider = ({
     useEffect(() => setGlobalUserAnswers(userAnswers), [userAnswers, setGlobalUserAnswers]);
     useEffect(() => setGlobalIzziSelection(izziSelection), [izziSelection, setGlobalIzziSelection]);
 
+    useEffect(() => {
+        if (!globalUserAnswers || rehydrated) return;
+
+        const hasLocalAnswers = userAnswers.internet || userAnswers.tv || userAnswers.movil;
+
+        if (!hasLocalAnswers) {
+            setUserAnswers(globalUserAnswers);
+        }
+        setRehydrated(true);
+    }, [globalUserAnswers, rehydrated]);
+
     return (
         <configuradorContext.Provider
             value={{
@@ -77,6 +89,7 @@ export const ConfiguradorProvider = ({
                 setInfoDrawerContent,
                 disabled,
                 setDisabled,
+                rehydrated,
             }
             }
         >

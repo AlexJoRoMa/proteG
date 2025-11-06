@@ -7,6 +7,7 @@ import { EntrySkeletonType } from "contentful";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useIzziContent } from "../providers/IzziProvider";
 
 export const CloseIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
@@ -38,6 +39,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
     const pendingRouteRef = useRef<string | null>(null);
     const isMobile = useIsMobile(768);
     const scopePrefix = ["/configurador", "/checkout", "/thank-you"];
+    const { clearCheckoutFlow } = useIzziContent();
 
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -117,6 +119,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
     const confirmExit = () => {
         const toRoute = pendingRouteRef.current;
         pendingRouteRef.current = null;
+        clearCheckoutFlow();
         onClose();
 
         if (toRoute) {

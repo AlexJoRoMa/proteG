@@ -58,14 +58,14 @@ const phone_List = {
     'paquetes7/goo/dsp/3pm': '800 120 9715',
     'paquetes7/goo/dsp/izzitv': '800 120 9715',
     'paquetes7/goo/dsp/4p': '800 120 9715',
-    'paquetes7/goo/vid/ul': '800 120 9715',
-    'paquetes7/goo/vid/3p': '800 120 9715',
-    'paquetes7/goo/vid/2p': '800 120 9715',
-    'paquetes7/goo/vid/ml': '800 120 9715',
-    'paquetes7/goo/vid/pm': '800 120 9715',
-    'paquetes7/goo/vid/3pm': '800 120 9715',
-    'paquetes7/goo/vid/izzitv': '800 120 9715',
-    'paquetes7/goo/vid/4p': '800 120 9715',
+    'paquetes7/goo/vid/ul': '800 607 7098',
+    'paquetes7/goo/vid/3p': '800 607 7098',
+    'paquetes7/goo/vid/2p': '800 607 7098',
+    'paquetes7/goo/vid/ml': '800 607 7098',
+    'paquetes7/goo/vid/pm': '800 607 7098',
+    'paquetes7/goo/vid/3pm': '800 607 7098',
+    'paquetes7/goo/vid/izzitv': '800 607 7098',
+    'paquetes7/goo/vid/4p': '800 607 7098',
     'paquetes7/goo/dsc/ul': '800 120 9719',
     'paquetes7/goo/dsc/3p': '800 120 9719',
     'paquetes7/goo/dsc/2p': '800 120 9719',
@@ -262,7 +262,6 @@ export function setTelNumber(fullPath: string): PhoneNumber | undefined {
     const mapNumber = (fullPath in phone_List) ? phone_List[fullPath as SlugPath] : undefined;
     cachedNumber = mapNumber;
     
-    /* console.log(' 🎴 setTelNumber ', cachedNumber) */
     return mapNumber;
 }
 

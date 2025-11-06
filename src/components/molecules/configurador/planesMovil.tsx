@@ -2,92 +2,134 @@
 
 import LinkModal from "@/components/atoms/LinkModal";
 import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
+import { useIzziContent } from "@/components/providers/IzziProvider";
 import { CheckPlanesIcon } from "@/constants/IconsConstants";
 import { MovilPlansInfo, OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader, Tab, Tabs } from "@heroui/react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function PlanesMovil({ step }: StepProps) {
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { configuradorEntry, setUserAnswers, userAnswers, copysConfigurador } = useContent();
-    const plans = configuradorEntry?.offers.MOVIL as unknown as OfferItem[];
+    const { params } = useIzziContent();
+    const plans = configuradorEntry?.offers.MOVIL as unknown as OfferItem[] || [];
     const offersCopys = copysConfigurador as unknown as OffersCopys;
 
-    const plansPrev = formatData(plans, offersCopys) as unknown as MovilPlansInfo[];
+    function formatData(data: OfferItem[], copys: OffersCopys) {
+        const contrato12 = data.filter(item => item.titulo.includes("12 meses"));
+        const sinPlazo = data.filter(item => !item.titulo.includes("12 meses"));
+        return [
+            { tituloTab: copys.movil.tabs.contrato, cards: contrato12 },
+            { tituloTab: copys.movil.tabs.sinPlazo, cards: sinPlazo }
+        ] as MovilPlansInfo[];
+    }
 
-    
-    const plansInfo = plansPrev.map(offer => {
-        const cardsActualizadas = offer.cards?.map(card => {
-        const precioTachado = Number(card.precioPaquete) * 0.5;
-    
-        return {
-            ...card,
-            precioPaquete: precioTachado.toString(),
-            precioTachado: card.precioPaquete
-        };
-        }) ?? [];
-    
-        return {
-        ...offer,
-        cards: cardsActualizadas
-        };
-    });
-  
+    // Memoizar plansInfo para mantener data estable entre renders
+    const plansInfo = useMemo(() => {
+        const raw = formatData(plans, offersCopys);
+        return raw.map(offer => {
+            const cardsActualizadas = offer.cards?.map(card => {
+                const precioTachado = Number(card.precioPaquete) * 0.5;
+                return {
+                    ...card,
+                    precioPaquete: precioTachado.toString(),
+                    precioTachado: card.precioPaquete
+                };
+            }) ?? [];
+            return { ...offer, cards: cardsActualizadas };
+        });
+    }, [plans, offersCopys]);
 
-    const defaultKey = plansInfo[0].tituloTab;
+    const defaultKey = plansInfo[0]?.tituloTab ?? '';
 
     const [selectedTabKey, setSelectedTabKey] = useState<string>(defaultKey);
     const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
-    function formatData(data: OfferItem[], copys: OffersCopys) {
+    const allCards = useMemo(() => plansInfo.flatMap(t => t.cards ?? []), [plansInfo]);
 
-        const contrato12 = data.filter(item => item.titulo.includes("12 meses"));
-        const sinPlazo = data.filter(item => !item.titulo.includes("12 meses"));
-
-        const resultado = [
-            { tituloTab: copys.movil.tabs.contrato, cards: contrato12 },
-            { tituloTab: copys.movil.tabs.sinPlazo, cards: sinPlazo }
-        ];
-
-        return resultado;
-    }
-
-    function handleSelect(cardId: number, card: OfferItem) {
-
-        if (selectedCardId !== null) {
-            if (selectedCardId === cardId) {
-                clearSelection();
-                return;
-            }
-        }
-
-        setSelectedCardId(cardId);
+    // Helper: setear datos de movil en userAnswers
+    const applyUserAnswersMovil = (card: OfferItem, contrato?: string) => {
         setUserAnswers(prev => ({
             ...prev,
             movil: {
                 paquete: card,
-                contrato: selectedTabKey,
-                total: Number(card.precioPaquete) || 0
-            },
-        }))
+                contrato: contrato ?? (prev.movil?.contrato ?? selectedTabKey),
+                total: Number(card.precioPaquete) || 0,
+            }
+        }));
+    };
+
+    function handleSelect(cardId: number, card: OfferItem) {
+
+        if (selectedCardId !== null && selectedCardId === cardId) {
+            setSelectedCardId(null);
+            setUserAnswers(prev => {
+                const { movil, ...rest } = prev;
+                return rest;
+            });
+            return;
+        }
+
+        setSelectedCardId(cardId);
+        applyUserAnswersMovil(card, selectedTabKey);
     }
 
     function clearSelection() {
         setSelectedCardId(null);
         setUserAnswers(prev => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { movil, ...rest } = prev;
-            return rest
+            return rest;
         });
     }
+
+    // preseleccionar datos de los params solo si no hay datos previos en userAnswers
+    useEffect(() => {
+        if (!params?.movil) return;
+        if (!plansInfo || plansInfo.length === 0) return;
+        // no sobreescribir una seleccion
+        if (userAnswers.movil?.paquete) return;
+
+        const mobileCode = String(params.movil);
+        const matched = allCards.find(card => String(card.nombreCode) === mobileCode);
+        if (!matched) return;
+
+        const parentTab = plansInfo.find(tab => tab.cards?.some(c => String(c.idPaquete) === String(matched.idPaquete)));
+        if (parentTab) setSelectedTabKey(parentTab.tituloTab);
+
+        queueMicrotask(() => {
+            setSelectedCardId(matched.idPaquete);
+            applyUserAnswersMovil(matched, parentTab?.tituloTab);
+        });
+    }, [params?.movil, plansInfo]);
+
+    useEffect(() => {
+        const paquete = userAnswers.movil?.paquete;
+        if (!paquete) {
+            setSelectedCardId(null);
+            return;
+        }
+
+        const matchedId = String(paquete.idPaquete);
+        const currentSelected = selectedCardId !== null ? String(selectedCardId) : null;
+        if (currentSelected !== matchedId) {
+            setSelectedCardId(Number(matchedId));
+        }
+
+        const parentTab = plansInfo.find(tab => tab.cards?.some(c => String(c.idPaquete) === matchedId));
+        if (parentTab && parentTab.tituloTab !== selectedTabKey) {
+            setSelectedTabKey(parentTab.tituloTab);
+        }
+    }, [String(userAnswers.movil?.paquete?.idPaquete), plansInfo]);
+
+    const onTabChange = (key: string) => {
+        setSelectedTabKey(key);
+    };
 
     return (
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
-                <p className="w-[40px] h-[40px] text-white-0 bg-black-0  rounded-full font-semibold text-base leading-[24px] flex justify-center items-center">
+                <p className="w-[40px] h-[40px] text-white-0 bg-black-0 rounded-full font-semibold text-base leading-[24px] flex justify-center items-center">
                     {step}
                 </p>
                 <h3 className="font-semibold text-xl leading-[24px] text-black-0">
@@ -107,7 +149,7 @@ export default function PlanesMovil({ step }: StepProps) {
                         fullWidth={true}
                         defaultSelectedKey={defaultKey}
                         selectedKey={selectedTabKey}
-                        onSelectionChange={(key) => setSelectedTabKey(key as string)}
+                        onSelectionChange={(key) => onTabChange(key as string)}
                         classNames={{
                             tabContent: "group-data-[selected=true]:font-semibold group-data-[selected=true]:text-black-0 text-black-0 px-auto whitespace-normal font-medium leading-[24px] text-base",
                             panel: "w-full p-0",
@@ -118,16 +160,14 @@ export default function PlanesMovil({ step }: StepProps) {
                         }}
                     >
                         {(item: MovilPlansInfo) => (
-                            <Tab
-                                key={item.tituloTab}
-                                title={item.tituloTab}
-                            />
+                            <Tab key={item.tituloTab} title={item.tituloTab} />
                         )}
                     </Tabs>
+
                     <div className="grid grid-cols-2 2xl:grid-cols-4 gap-[16px] 2xl:gap-[24px] auto-rows-fr auto-cols-fr">
-                        {plansInfo.find((tab) => tab.tituloTab === selectedTabKey)?.cards.map((card: OfferItem, index) => {
+                        {plansInfo.find(tab => tab.tituloTab === selectedTabKey)?.cards.map((card: OfferItem, index) => {
                             const cardId = card.idPaquete;
-                            const isSelected = selectedCardId === cardId;
+                            const isSelected = String(selectedCardId) === String(cardId);
 
                             return (
                                 <div
@@ -145,30 +185,26 @@ export default function PlanesMovil({ step }: StepProps) {
                                         }}>
                                         <CardHeader>
                                             <div className="flex flex-col text-start">
-                                                <h1 className="text-2xl font-extrabold leading-[27px] 2xl:text-[21px] 3xl:text-2xl 4xl:leading-[32px]">{card.titulo}</h1>
+                                                <h1 className="text-2xl font-extrabold leading-[27px]">{card.titulo}</h1>
                                             </div>
                                         </CardHeader>
-                                        <CardBody>
-                                        </CardBody>
+                                        <CardBody />
                                         <CardFooter>
                                             <div className="flex flex-col w-full gap-[8px]">
                                                 <div className="flex flex-row items-baseline text-start gap-[4px]">
-                                                        <>
-                                                            <div className="flex flex-row items-baseline">
-                                                            {
-                                                            card.precioTachado ? 
-                                                                <>
+                                                    <div className="flex flex-row items-baseline">
+                                                        {card.precioTachado ?
+                                                            <>
                                                                 <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioTachado)}</p>
                                                                 <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete as string)}</p>
-                                                                </>
-                                                                :
-                                                                <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
-                                                            }
-                                                                <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
-                                                            </div>
-                                                        </>
-
+                                                            </>
+                                                            :
+                                                            <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
+                                                        }
+                                                        <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
+                                                    </div>
                                                 </div>
+
                                                 <div className="flex flex-row gap-[16px] items-center justify-between">
                                                     <LinkModal
                                                         classNames='underline text-black-0 text-[16px] cursor-pointer'
@@ -185,6 +221,7 @@ export default function PlanesMovil({ step }: StepProps) {
                                                             type="movil"
                                                         />
                                                     </LinkModal>
+
                                                     <span
                                                         className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
                                                         aria-pressed={isSelected}
@@ -193,7 +230,6 @@ export default function PlanesMovil({ step }: StepProps) {
                                                     </span>
                                                 </div>
                                             </div>
-
                                         </CardFooter>
                                     </Card>
                                 </div>
@@ -203,5 +239,5 @@ export default function PlanesMovil({ step }: StepProps) {
                 </div>
             </div>
         </div>
-    )
+    );
 }

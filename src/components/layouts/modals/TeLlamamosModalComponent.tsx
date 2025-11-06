@@ -1,9 +1,10 @@
 "use client";
 
 import { Button, Checkbox, Form, Input, Link } from '@heroui/react'
-import { useState, lazy, Suspense } from 'react'
+import { useState, lazy, Suspense, useEffect } from 'react'
 import { TeLlamamosFormModalProps } from '@/types/ModalComponentTypes';
 import useSWR from 'swr';
+import { getPersistentQueryString } from '@/services/izzi/trackService';
 
 // Carga dinámica del componente ReCAPTCHA para mejor performance
 const ReCAPTCHA = lazy(() => import('react-google-recaptcha'));
@@ -25,6 +26,16 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [persistUTM, setPersistUTM] = useState<string | null>(null);
+
+    useEffect(() => {
+        const getPersist = getPersistentQueryString();
+        if(getPersist){
+            setPersistUTM(getPersist);
+        }
+    }, []);
+
+
 
     // Site key directamente desde variable de entorno pública
     const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
@@ -189,6 +200,8 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
 
         try {
             const cleanPhone = phoneValue.replace(/\D/g, '');
+
+            const setUTM = persistUTM || null;
             
             const response = await fetch('/api/te-llamamos', {
                 method: 'POST',
@@ -197,7 +210,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
                     telefono: cleanPhone,
                     recaptchaToken,
                     url: window.location.href,
-                    utm: null
+                    utm: setUTM || null,
                 }),
             });
 

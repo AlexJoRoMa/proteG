@@ -5,19 +5,22 @@ import { Entry, EntrySkeletonType } from "contentful";
 import { notFound } from "next/navigation";
 import {SeoFieldSkeleton} from "@/types/SEOTypes";
 import SEOHead from '@/components/atoms/SEOHead';
-import { setTelNumber, getTelNumber } from '@/services/izzi/getTelNumbers';
+import { setTelNumber } from '@/services/izzi/getTelNumbers';
+import { setFullPath } from "@/services/izzi/getURL";
+import UrlPersister from "@/utils/utmTrack";
 
 /* import NavigationLanding from '@/components/molecules/navigationLandingComponent'; */
 
 interface DynamicPageProps {
-    params: Promise<{
+    params: {
         slugs: string[];
         paqueteKey: string;
-    }>;
+    };
 }
 
-export default async function LandingPage({ params }: DynamicPageProps) {
-    const { slugs, paqueteKey } = await params; //Sugerencia de NextJS para obtener los parametros de la ruta
+export default async function LandingPage({ params}: DynamicPageProps) {
+    const { slugs, paqueteKey } = await params;
+    //Sugerencia de NextJS para obtener los parametros de la ruta
     // Unir segmentos anidados en un solo slug, p.ej. ['television', 'canales'] -> 'television/canales'
 
     const urlList = [
@@ -275,23 +278,31 @@ export default async function LandingPage({ params }: DynamicPageProps) {
     
     const fullPath = [paqueteKey, ...slugs].join('/');
 
+    const contentfulSlug = slugs.length > 0 ? slugs[slugs.length - 1] : undefined;
+
+    
+
     if(!urlList.includes(fullPath)){
         return notFound();
     }
 
-    const page = await fetchComponentsBySlugPage(fullPath);
-    const components = page.items || [];
-
     /* valores para enviar valor de fullpath, no borrar */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const validateNumber = setTelNumber(fullPath)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const seNumber = getTelNumber()
+    setTelNumber(fullPath)
+    setFullPath(fullPath)
+
+
+    
+   /*  console.log('👽 fullPath ', fullPath)  */
+
+    const page = await fetchComponentsBySlugPage(contentfulSlug as string);
+   /*  const page = await fetchComponentsBySlugPage(fullPath); */
+    const components = page.items || [];
+    
 
     const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
     const seo = seoEntry?.fields;
 
-
+     
 
     if (page.total !== 1) {
         notFound();
@@ -302,6 +313,7 @@ export default async function LandingPage({ params }: DynamicPageProps) {
         <>
 
         {seo && <SEOHead seo={seo} slug={fullPath} />}
+        <UrlPersister />
         
         <main>
             

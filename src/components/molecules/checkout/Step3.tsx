@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, InputOtp, radio, Radio, RadioGroup } from '@heroui/react'
 import { useStep3Form } from '@/hooks/checkout/useStep3Form';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
-import { useIzziContent } from '@/utils/IzziProvider';
+import { useIzziContent } from '@/components/providers/IzziProvider';
 import { useCheckout } from '@/components/providers/CheckoutProvider';
 import { GetEnvioCodigo } from '@/utils/GetEnvioCodigo';
 

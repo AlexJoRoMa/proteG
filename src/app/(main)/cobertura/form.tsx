@@ -8,7 +8,7 @@ import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import geocodeApi from '@/services/google-maps/api';
 import { GeocodeType } from '@/types/CoberturaTypes';
-import { useIzziContent } from '@/utils/IzziProvider';
+import { useIzziContent } from '@/components/providers/IzziProvider';
 
 const inputStyles = {
     label: "text-black/50",
