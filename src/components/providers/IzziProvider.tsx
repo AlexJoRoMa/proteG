@@ -36,11 +36,12 @@ export const IzziProvider = ({
     const [infoPaquetes, setInfoPaquetes] = useState<string>("");
     const [params, setParams] = useState<ConfigParams>({ plan: null, movil: null });
 
-    const clearCheckoutFlow = useCallback(async () => {
+    const clearCheckoutFlow = useCallback(() => {
         setGlobalDatosContratacion({});
         setGlobalIzziSelection(null);
         setGlobalProcessStatus({});
         setGlobalUserAnswers({});
+        setParams({ plan: null, movil: null })
     }, [])
 
 
