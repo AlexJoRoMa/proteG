@@ -188,6 +188,7 @@ export type DataFields = {
     setInfoDrawerContent: React.Dispatch<React.SetStateAction<string>>,
     disabled: boolean,
     setDisabled: React.Dispatch<React.SetStateAction<boolean>>,
+    rehydrated: boolean,
 }
 
 export interface Promotion {
