@@ -116,7 +116,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                     <div className="flex flex-col gap-[8px] mb-[32px]">
                         <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
                             <h5>{resumenCopys.ahorro.domicilio}</h5>
-                            <h5>-{FormatCurrency(Number(globalIzziSelection?.precioDomiciliacion !== "0" ? globalIzziSelection?.precioDomiciliacion : '50'))}</h5>
+                            <h5>-{FormatCurrency(Number(globalIzziSelection?.precioDomiciliacion && globalIzziSelection?.precioDomiciliacion !=="0" ? globalIzziSelection?.precioDomiciliacion : '50'))}</h5>
                         </div>
                         <h5 className="w-full font-normal leading-[24px] text-base text-gray-250">
                             {resumenCopys.ahorro.infoAdicional}
