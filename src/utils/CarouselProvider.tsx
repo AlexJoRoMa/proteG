@@ -79,7 +79,7 @@ export const CarouselProvider = ({
   const allRefs = [carousel1[0], carousel2[0], carousel3[0], carousel4[0]] as ((node: HTMLDivElement | null) => void)[]
   const allApis = useMemo(() => [carousel1[1], carousel2[1], carousel3[1], carousel4[1]], [carousel1, carousel2, carousel3, carousel4])
   
-
+console.log('🚇 carousel1', allRefs[activeIndex]  )
   const emblaRef = allRefs[activeIndex] 
   const emblaApi = allApis[activeIndex]
 

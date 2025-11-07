@@ -1,81 +1,19 @@
-'use client'
-import React, { useEffect } from 'react'
-import { APIProvider } from '@vis.gl/react-google-maps';
-import IzziMap from './map';
-import CoberturaForm from './form';
-import { CoberturaProvider } from '@/components/providers/CoberturaProvider';
-import { useMicrocopies } from '@/hooks/useMicrocopies';
-import { useSearchParams } from 'next/navigation';
-import { useIzziContent } from '@/components/providers/IzziProvider';
+import Cobertura from "./cobertura";
+import React, {Suspense} from "react";
+import { LoaderIcon } from '@/constants/IconsConstants';
 
-const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
+export default function CoberturaPage() {
 
-export default function Cobertura() {
-    const { getValue } = useMicrocopies('cobertura');
-    const searchParams = useSearchParams();
-    const planParam = searchParams.get("plan"); //ej: izzi80m_izzitvhd
-    const movilParam = searchParams.get("movil"); //ej: movil10gb
-
-    const { setParams } = useIzziContent();
-
-    useEffect(() => {
-        setParams({
-            plan: planParam ?? null,
-            movil: movilParam ?? null,
-        });
-    }, [planParam, movilParam, setParams])
-
-    return (
+    return(
         <>
-            <CoberturaProvider
-                addressSelected={false}
-                selectedPlace={null}
-                setSelectedPlace={null}
-                markerPosition={{ lat: 0, lng: 0 }}
-                setMarkerPosition={{ lat: 0, lng: 0 }}
-                postalCode={''}
-                setPostalCode={''}
-                street={''}
-                setStreet={''}
-                streetNumber={''}
-                setStreetNumber={''}
-                aptNumber={''}
-                setAptNumber={''}
-                neighborhood={''}
-                setNeighborhood={''}
-                locality={''}
-                setLocality={''}
-                name={''}
-                setName={''}
-                phone={''}
-                setPhone={''}
-                lat={0}
-                setLat={0}
-                lng={0}
-                setLng={0}
-                formattedAddress=''
-                setFormattedAddress=''>
-                <div className="items-center justify-center mb-8 mx-sm xl:mx-xl xl:justify-start">
-                    <div className='flex flex-col'>
-                        <p className="text-[32px] font-bold">{getValue('cobertura.title')}</p>
-                        <p className="text-[18px]">{getValue('cobertura.subtitle')}</p>
-                    </div>
-                    <APIProvider
-                        solutionChannel='2'
-                        apiKey={`${mapsKey}`}>
-                        <div className='lg:flex lg:flex-col-2 mt-8'>
-                            <div className='lg:w-1/2'>
-                                <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-                                    <CoberturaForm />
-                                </div>
-                            </div>
-                            <div className='lg:w-1/2'>
-                                <IzziMap />
-                            </div>
-                        </div>
-                    </APIProvider>
-                </div>
-            </CoberturaProvider>
+        <Suspense  fallback={
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70">
+            <div className="w-[104px] h-[104px]">
+                <LoaderIcon />
+            </div>
+            </div>}>
+            <Cobertura />
+        </Suspense>
         </>
     )
 }

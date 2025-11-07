@@ -69,8 +69,8 @@ const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
         ) : null
       }
         
-        <div className="relative z-10 w-full h-full">
-          <CarouselProvider qtyCarousels={1} carouselConfigs={[{ options: { align: 'start' } }]} colorArrow={colorArrow}>
+        <div className="relative z-10 w-full h-full ">
+          <CarouselProvider qtyCarousels={1} carouselConfigs={[{ options: { align: 'center'} }]} colorArrow={colorArrow}>
              <CarouselComponent buttons={true} dots={true}>
                 {
                   entryCarousel && entryCarousel[0]?.fields.cardsCarousel && Array.isArray(entryCarousel[0].fields.cardsCarousel) && (entryCarousel[0].fields.cardsCarousel as Entry<EntrySkeletonType, undefined, string>[]).map((card:Entry<EntrySkeletonType, undefined, string>, index:number) => {

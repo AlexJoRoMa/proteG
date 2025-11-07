@@ -8,6 +8,7 @@ import SEOHead from '@/components/atoms/SEOHead';
 import { setTelNumber } from '@/services/izzi/getTelNumbers';
 import { setFullPath } from "@/services/izzi/getURL";
 import UrlPersister from "@/utils/utmTrack";
+import { Suspense } from "react";
 
 /* import NavigationLanding from '@/components/molecules/navigationLandingComponent'; */
 
@@ -313,7 +314,10 @@ export default async function LandingPage({ params}: DynamicPageProps) {
         <>
 
         {seo && <SEOHead seo={seo} slug={fullPath} />}
-        <UrlPersister />
+        <Suspense 
+        fallback={null}>
+            <UrlPersister />
+        </Suspense>
         
         <main>
             
