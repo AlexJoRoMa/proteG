@@ -35,6 +35,7 @@ export const IzziProvider = ({
     const [offnetSky, setOffnetSky] = useState<boolean>(false);
     const [infoPaquetes, setInfoPaquetes] = useState<string>("");
     const [params, setParams] = useState<ConfigParams>({ plan: null, movil: null });
+    const [globalCheckedPromotions, setGlobalCheckedPromotions] = useState<boolean>(false);
 
     const clearCheckoutFlow = useCallback(() => {
         setGlobalDatosContratacion({});
@@ -76,7 +77,9 @@ export const IzziProvider = ({
             setInfoPaquetes,
             clearCheckoutFlow,
             params,
-            setParams
+            setParams,
+            globalCheckedPromotions,
+            setGlobalCheckedPromotions
         }}>
             {children}
         </izziContext.Provider>
