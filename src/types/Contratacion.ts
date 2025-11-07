@@ -126,3 +126,59 @@ export type AttachFilesProps = {
     }
 
 }
+
+export interface SendCodeProps {
+    body: Record<string, unknown>;
+    headers: {
+        medio: string;
+        oferta: string;
+        origin: string;
+    }
+}
+
+export interface EnrollProps {
+    body: Record<string, unknown>;
+    headers: {
+        Cookie: string;
+    }
+}
+
+export interface ProcessStatusProps {
+    headers: {
+        processId: string
+    }
+}
+
+export interface SubmitOfferProps {
+    body: Record<string, unknown>;
+}
+
+export interface AttachFilesServiceProps {
+    body: Record<string, unknown>;
+}
+
+export interface GetCapacityProps {
+    headers: {
+        processId: string;
+    }
+}
+
+export interface LigaPagoProps {
+    body: Record<string, unknown>;
+    headers: {
+        origin: string,
+        channel: string
+    }
+}
+
+export interface VerificaPago {
+    body: Record<string, unknown>;
+    headers: {
+        origin: string,
+        channel: string
+    }
+}
+
+export interface SubmitCapacityProps {
+    body: Record<string, unknown>;
+}

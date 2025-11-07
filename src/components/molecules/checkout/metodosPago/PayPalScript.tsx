@@ -53,7 +53,6 @@ export default function PayPalScript({ amount, rptGetOffer, account, isRecurrent
             });
 
             const data = await res.json();
-            console.log("Response externa createOrder:", data)
             if (!data.order || !data) throw new Error("Invalid response from server");
 
             payPalPaymentRef = data.reference;
@@ -151,7 +150,6 @@ export default function PayPalScript({ amount, rptGetOffer, account, isRecurrent
                 if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
 
                 const data = await res.json();
-                console.log("Response externa paypalScript:", parsePaypalUrl(data.paypal_url))
 
                 if (data?.paypal_url) {
                     const options = parsePaypalUrl(data.paypal_url);

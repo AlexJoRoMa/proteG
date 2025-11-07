@@ -14,7 +14,6 @@ export async function validatePayment(datosContratacion: Partial<DatosContrataci
                     success: true,
                 }
             }));
-            console.log("pago Tecnico", datosContratacion.Pago)
             return true;
         };
 
@@ -43,7 +42,6 @@ export async function validatePayment(datosContratacion: Partial<DatosContrataci
                 });
 
                 const data = await response.json();
-                console.log('response getVerificaPago:', data)
 
                 if (!data) throw new Error("Invalid response from server");
                 if (data.izziErrorCode !== "000") throw new Error("No se ha reflejado el Pago");
@@ -68,7 +66,6 @@ export async function validatePayment(datosContratacion: Partial<DatosContrataci
                     success: true,
                 }
             }));
-            console.log("pago paypal", datosContratacion.Pago)
             return true;
         } else if (okCard) {
             setDatosContratacion((prev) => ({
@@ -78,7 +75,6 @@ export async function validatePayment(datosContratacion: Partial<DatosContrataci
                     success: true,
                 }
             }));
-            console.log("pago Tarjeta", datosContratacion.Pago)
             return true;
         } else {
             setDatosContratacion((prev) => ({

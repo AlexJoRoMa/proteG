@@ -26,7 +26,6 @@ export function useGlobalProcessStatus(onFinalizado?: (data: ProcessStatusRespon
 
     const fetchProcessStatus = useCallback(async () => {
         const response = await GetProcessStatus(izziEnroll);
-        console.log('response processStatus (swr):', response)
         setProcessStatus(response);
         if (!response) throw new Error('Error al obtener processStatus');
 
