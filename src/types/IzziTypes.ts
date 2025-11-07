@@ -45,5 +45,7 @@ export type DataFields = {
     setInfoPaquetes: React.Dispatch<React.SetStateAction<string>>
     clearCheckoutFlow: () => void
     params: ConfigParams
-    setParams: React.Dispatch<React.SetStateAction<ConfigParams>>
+    setParams: React.Dispatch<React.SetStateAction<ConfigParams>>,
+    globalCheckedPromotions: boolean,
+    setGlobalCheckedPromotions: React.Dispatch<React.SetStateAction<boolean>>
 }

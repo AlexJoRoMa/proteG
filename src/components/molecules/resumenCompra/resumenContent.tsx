@@ -10,6 +10,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     const userAnswers = userSelection;
 
     const { promoData, globalIzziSelection, setPrecioTotal, setPrecioCombinado } = useIzziContent();
+    const { globalCheckedPromotions } = useIzziContent();
 
     
     const ottPromos = promoData?.promos?.filter(promo =>
@@ -58,7 +59,8 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                         <h5 className="font-bold">{FormatCurrency(Number(totalSinDescuento))}</h5>
                     </div>
                 </div>
-
+                {
+                    globalCheckedPromotions &&
                     <div className="flex flex-col gap-[8px] py-[24px] border-b-1 border-b-gray-150">
                         <h1 className="font-bold text-base leading-[24px] mb-[24px]">{resumenCopys.ahorro.titulo}</h1>
                         
@@ -81,6 +83,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                         </div>
                         </div>
                     </div>
+                }
                 
             </>
 
