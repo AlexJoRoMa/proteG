@@ -2,10 +2,10 @@ import { CoberturaType, PackageInfo, QuoteInfo } from "@/types/ConfiguradorTypes
 import { redirect } from "next/navigation";
 
 export async function getToken() {
+
+    const url = process.env.GET_TOKEN;
     try {
-        const response = await fetch(
-            "https://test.izziapiweb.mx/modifyservices/purchase/oauth2/token",
-            {
+        const response = await fetch(`${url}`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
@@ -39,6 +39,8 @@ export async function getToken() {
 
 export async function getOfertas(dataCobertura: CoberturaType) {
 
+    const url = process.env.GET_OFERTAS;
+
     try {
 
         if ( !dataCobertura.zipCode || !dataCobertura.lat || !dataCobertura.lng ) {
@@ -53,9 +55,7 @@ export async function getOfertas(dataCobertura: CoberturaType) {
             redirect("/error");
         }
 
-        const response = await fetch(
-            "https://test.izziapiweb.mx/izzi/ms/purchaseServices/sales/offersByType",
-            {
+        const response = await fetch(`${url}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -88,6 +88,8 @@ export async function getOfertas(dataCobertura: CoberturaType) {
 
 export async function getQuote(body: QuoteInfo) {
 
+    const url = process.env.GET_QUOTE;
+
     try {
 
         const accessToken = await getToken();
@@ -97,9 +99,7 @@ export async function getQuote(body: QuoteInfo) {
             redirect("/error");
         }
 
-        const response = await fetch(
-            "https://test.izziapiweb.mx/test/izzi/ms/purchaseServices/purchase/v2/quote",
-            {
+        const response = await fetch(`${url}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -133,11 +133,10 @@ export async function getQuote(body: QuoteInfo) {
 
 export async function getPackageInfo(paqueteInfo: PackageInfo) {
 
+    const url = process.env.GET_PACKAGE_INFO;
     const accessToken = await getToken();
 
-    const response = await fetch(
-        "https://test.izziapiweb.mx/izzi/ms/purchaseServices/sales/packageInfo",
-        {
+    const response = await fetch(`${url}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
