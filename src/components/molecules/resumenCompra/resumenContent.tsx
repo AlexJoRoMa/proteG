@@ -98,11 +98,13 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                                     return (
                                         <>
                                         {
-                                            promo.permanente.toLowerCase() === 'no' ??
+                                            promo.permanente.toLowerCase() === 'no' ?
                                             <div key={index} className="flex justify-between w-full font-normal leading-[24px] text-lg">
                                                 <h5>Después de {promo.meses} meses pagarás</h5>
                                                 <h5>{FormatCurrency(precioTotal + (totalAfterPromos + Math.abs(Number(promo.promoPrice))))}</h5>
                                             </div>
+                                            :
+                                            <></>
                                         }
                                         </>
                                     )
