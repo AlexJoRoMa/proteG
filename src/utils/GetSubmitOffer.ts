@@ -43,7 +43,7 @@ export async function GetSubmitOffer(processId: string, globalIzziSelection: Izz
             "negocios": false,
             "termExemptionPrice": 0,
             "extras": extrasAdoms,
-            "priceToPay": `${precioTotal}`,
+            "priceToPay": String(precioTotal),
             "vel": globalUserAnswers.internet?.paquete?.velocidadMinima ? globalUserAnswers.internet?.paquete?.velocidadMinima : 0
         },
         "salesChannel": "WEB",
@@ -67,7 +67,6 @@ export async function GetSubmitOffer(processId: string, globalIzziSelection: Izz
         });
 
         const data = await response.json();
-        // if (!data) throw new Error("Invalid response from server");
 
         return data;
 

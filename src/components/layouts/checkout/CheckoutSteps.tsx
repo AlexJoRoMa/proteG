@@ -105,12 +105,12 @@ const CheckoutSteps = () => {
               </button>
             ))}
           </div>
-        </div> */}
+        </div>
       </div>
 
       <div className='block xl:hidden'>
         {/* Espacio para posibles futuros elementos laterales */}
-        <div className='h-[190px]'>
+        <div className='block xl:hidden h-[190px]'>
           <ResumenContainer />
         </div>
       </div>

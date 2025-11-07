@@ -1,63 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
 
+import { AttachFilesServiceProps, EnrollProps, GetCapacityProps, LigaPagoProps, ProcessStatusProps, SendCodeProps, SubmitCapacityProps, SubmitOfferProps, VerificaPago } from "@/types/Contratacion";
 import { getToken } from "./configurador";
-
-interface SendCodeProps {
-    body: Record<string, unknown>;
-    headers: {
-        medio: string;
-        oferta: string;
-        origin: string;
-    }
-}
-
-interface EnrollProps {
-    body: Record<string, unknown>;
-    headers: {
-        Cookie: string;
-    }
-}
-
-interface ProcessStatusProps {
-    headers: {
-        processId: string
-    }
-}
-
-interface SubmitOfferProps {
-    body: Record<string, unknown>;
-}
-
-interface AttachFilesProps {
-    body: Record<string, unknown>;
-}
-
-interface GetCapacityProps {
-    headers: {
-        processId: string;
-    }
-}
-
-interface LigaPagoProps {
-    body: Record<string, unknown>;
-    headers: {
-        origin: string,
-        channel: string
-    }
-}
-
-interface VerificaPago {
-    body: Record<string, unknown>;
-    headers: {
-        origin: string,
-        channel: string
-    }
-}
-
-interface SubmitCapacityProps {
-    body: Record<string, unknown>;
-}
 
 export async function getSendCode({
     body,
@@ -224,13 +169,12 @@ export async function getSubmitOffer({
 
 export async function getAttachFiles({
     body,
-}: AttachFilesProps): Promise<any> {
+}: AttachFilesServiceProps): Promise<any> {
 
     const url = process.env.ATTACH_FILES_PATH;
     const accessToken = await getToken();
 
     try {
-        console.log('Ejecutando AttachFiles...');
 
         const response = await fetch(`${url}`, {
             method: "POST",
@@ -247,7 +191,6 @@ export async function getAttachFiles({
 
         const text = await response.text();
         const data = text ? JSON.parse(text) : null;
-        console.log('response AttachFiles:', data)
         return data;
 
     } catch (err) {
@@ -311,7 +254,6 @@ export async function getLigaPago({
         // }
 
         const data = await response.json();
-        console.log('response ligaPago:', data)
         return data;
 
     } catch (err) {
@@ -330,7 +272,6 @@ export async function getVerificaPago({
     const Authorization = process.env.AUTHORIZATION_KEY;
 
     try {
-        console.log('Ejecutando VerificaPago...');
 
         const response = await fetch(`${url}`, {
             method: "POST",
@@ -348,7 +289,6 @@ export async function getVerificaPago({
         }
 
         const data = await response.json();
-        console.log('response VerificaPago:', data)
         return data;
 
     } catch (err) {

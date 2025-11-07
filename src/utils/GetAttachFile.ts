@@ -4,7 +4,6 @@ export async function GetAttachFile(processStatus: Partial<ProcessStatus>, attac
 
 
     try {
-        console.log("datosTitular", attachInfo)
         const attachBody = {
             "accountNumber": processStatus.accountNumber,
             "accountId": processStatus.accountId,
@@ -28,8 +27,6 @@ export async function GetAttachFile(processStatus: Partial<ProcessStatus>, attac
         });
 
         const data = await response.json();
-        console.log('response getAttachFile:', data)
-        // if (data.status !== 200) throw new Error("Invalid response from server");
 
         return data;
 

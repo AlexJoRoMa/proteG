@@ -1,20 +1,20 @@
 import { DatosContratacion, ProcessStatus } from "@/types/Contratacion";
 
-export async function GetLigaPago(rpt: string, precioTotal: number, processStatus: Partial<ProcessStatus>, datosContratacion: Partial<DatosContratacion>) {
+export async function GetLigaPago(rpt: string, precioTotal: number, processStatus: Partial<ProcessStatus>, datosContratacion: Partial<DatosContratacion>, offNetSky: boolean) {
     try {
         const DUMMY_BODY = {
-            "cuenta": `${processStatus.accountNumber}`,
-            "monto": `${precioTotal}`,
+            "cuenta": String(processStatus.accountNumber),
+            "monto": String(precioTotal),
             "canal": "CHANNEL_IZZI_VL",
-            "correo": `${datosContratacion.DatosPersonales?.personal.email}`,
+            "correo": String(datosContratacion.DatosPersonales?.personal.email),
             "exencion": false,
             "paypal": false,
-            "telefono": `${datosContratacion.DatosPersonales?.personal.phone}`,
+            "telefono": String(datosContratacion.DatosPersonales?.personal.phone),
             "plataforma": "PLATFORM_IZZI_VL",
-            "rpt": `${rpt}`,
+            "rpt": rpt,
             "usuario": "CVVENSINCOMISION",
-            "order": `${processStatus.orderNumber}`,
-            "oferta": "IZZI",
+            "order": String(processStatus.orderNumber),
+            "oferta": offNetSky ? "SKY" : "IZZI",
             "vl": true
         }
 
@@ -36,7 +36,6 @@ export async function GetLigaPago(rpt: string, precioTotal: number, processStatu
 
         // if (!data.ok) throw new Error(`Error HTTP ${data.status}`);
 
-        console.log("Response pago con tarjeta:", data);
         return data;
 
     } catch (err) {
