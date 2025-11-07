@@ -13,7 +13,9 @@ import { useEffect, useMemo, useState } from "react";
 export default function PlanesMovil({ step }: StepProps) {
     const { configuradorEntry, setUserAnswers, userAnswers, copysConfigurador } = useContent();
     const { params } = useIzziContent();
-    const plans = configuradorEntry?.offers.MOVIL as unknown as OfferItem[] || [];
+    const plans = useMemo(() => {
+        return configuradorEntry?.offers.MOVIL as unknown as OfferItem[] || [];
+    }, [configuradorEntry?.offers.MOVIL]);
     const offersCopys = copysConfigurador as unknown as OffersCopys;
 
     function formatData(data: OfferItem[], copys: OffersCopys) {
