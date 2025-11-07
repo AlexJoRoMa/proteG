@@ -3,7 +3,6 @@ import { FormatCurrency } from "@/utils/Currency";
 import { ResumenContentProps } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { useEffect } from "react";
-import { useContent } from "@/utils/ConfiguradorProvider";
 
 export default function ResumenContent({ copys, userSelection }: ResumenContentProps) {
 
@@ -11,7 +10,6 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     const userAnswers = userSelection;
 
     const { promoData, globalIzziSelection, setPrecioTotal, setPrecioCombinado } = useIzziContent();
-    const { checkedPromotions } = useContent();
 
     
     const ottPromos = promoData?.promos?.filter(promo =>
@@ -60,8 +58,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                         <h5 className="font-bold">{FormatCurrency(Number(totalSinDescuento))}</h5>
                     </div>
                 </div>
-                {
-                    checkedPromotions && 
+
                     <div className="flex flex-col gap-[8px] py-[24px] border-b-1 border-b-gray-150">
                         <h1 className="font-bold text-base leading-[24px] mb-[24px]">{resumenCopys.ahorro.titulo}</h1>
                         
@@ -84,7 +81,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                         </div>
                         </div>
                     </div>
-                }
+                
             </>
 
             <div className="flex flex-col gap-[32px]">

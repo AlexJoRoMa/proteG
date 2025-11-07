@@ -68,7 +68,7 @@ export const ConfiguradorProvider = ({
             setUserAnswers(globalUserAnswers);
         }
         setRehydrated(true);
-    }, [globalUserAnswers, rehydrated]);
+    }, [globalUserAnswers, rehydrated, userAnswers.internet, userAnswers.movil, userAnswers.tv]);
 
     return (
         <configuradorContext.Provider
