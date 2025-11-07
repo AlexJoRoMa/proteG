@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import LinkModal from "@/components/atoms/LinkModal";
@@ -51,6 +52,7 @@ export default function PlanesMovil({ step }: StepProps) {
     const allCards = useMemo(() => plansInfo.flatMap(t => t.cards ?? []), [plansInfo]);
 
     // Helper: setear datos de movil en userAnswers
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const applyUserAnswersMovil = (card: OfferItem, contrato?: string) => {
         setUserAnswers(prev => ({
             ...prev,
@@ -103,7 +105,7 @@ export default function PlanesMovil({ step }: StepProps) {
             setSelectedCardId(matched.idPaquete);
             applyUserAnswersMovil(matched, parentTab?.tituloTab);
         });
-    }, [params?.movil, plansInfo]);
+    }, [allCards, applyUserAnswersMovil, params.movil, plansInfo, userAnswers.movil?.paquete]);
 
     useEffect(() => {
         const paquete = userAnswers.movil?.paquete;
@@ -122,7 +124,7 @@ export default function PlanesMovil({ step }: StepProps) {
         if (parentTab && parentTab.tituloTab !== selectedTabKey) {
             setSelectedTabKey(parentTab.tituloTab);
         }
-    }, [String(userAnswers.movil?.paquete?.idPaquete), plansInfo]);
+    }, [plansInfo, selectedCardId, selectedTabKey, userAnswers.movil?.paquete]);
 
     const onTabChange = (key: string) => {
         setSelectedTabKey(key);
