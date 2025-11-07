@@ -14,6 +14,7 @@ export default function PlanesInternet({ step }: StepProps) {
     const { configuradorEntry, setUserAnswers, disabled, userAnswers, copysConfigurador, rehydrated } = useContent();
     const { params } = useIzziContent();
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const plans = configuradorEntry?.offers?.DOBLE_PLAY as OfferItem[] || [];
     const offersCopys = copysConfigurador as unknown as OffersCopys;
     const coverageType = configuradorEntry?.coverageType.includes('FTTH') ? 'FTTH' : 'HFC';
@@ -37,7 +38,7 @@ export default function PlanesInternet({ step }: StepProps) {
             coverageType === 'HFC' ? mapOffersByType.hfc.includes(plan.velocidadMinima as number)
                 : mapOffersByType.ftth.includes(plan.velocidadMinima as number)
         );
-    }, [plansInfo, coverageType]);
+    }, [plansInfo, coverageType, mapOffersByType.hfc, mapOffersByType.ftth]);
 
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const userInteracted = useRef(false);
@@ -76,7 +77,7 @@ export default function PlanesInternet({ step }: StepProps) {
         if (userAnswers.internet?.paquete) return;
         if (userInteracted.current) return;
 
-        const [internetCode, tvCode] = String(params.plan).split('_', 2);
+        const [internetCode] = String(params.plan).split('_', 2);
         let matchedOffer = offersByType.find(o => String(o.nombreCode) === String(params.plan));
 
         if (!matchedOffer && internetCode) {
@@ -94,14 +95,14 @@ export default function PlanesInternet({ step }: StepProps) {
                 internet: { paquete: matchedOffer!, total: Number(matchedOffer!.precioPaquete) || 0 }
             }));
         });
-    }, [params?.plan, offersIds, rehydrated]);
+    }, [params.plan, offersIds, rehydrated, offersByType, userAnswers.internet?.paquete, setUserAnswers]);
 
     useEffect(() => {
         const internetPaquete = userAnswers.internet?.paquete;
         if (!internetPaquete || !offersByType.length) return;
         const index = offersByType.findIndex(offer => String(offer.idPaquete) === String(internetPaquete.idPaquete));
         if (index !== -1 && selectedIndex !== index) setSelectedIndex(index);
-    }, [String(userAnswers.internet?.paquete?.idPaquete), offersByType]);
+    }, [offersByType, selectedIndex, userAnswers.internet?.paquete]);
 
     return (
         <div className="flex flex-col gap-[24px]">
@@ -111,50 +112,79 @@ export default function PlanesInternet({ step }: StepProps) {
             </div>
 
             <div className="grid grid-cols-2 2xl:grid-cols-4 gap-[16px] 2xl:gap-[24px] auto-rows-fr">
-                {offersByType.map((card: OfferItem, index) => {
-                    const isSelected = selectedIndex === index;
-                    return (
-                        <div key={index} className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}>
-                            <Card isPressable={!disabled} onPress={() => handleSelect(index, card)} isDisabled={disabled} classNames={{
-                                base: "flex flex-col rounded-xs shadow-none h-full w-full",
-                                header: "pt-[16px] pb-[8px]",
-                                body: "py-0",
-                                footer: "pb-[16px] mt-[16px] 2xl:mt-[40px] pt-0"
-                            }}>
-                                <CardHeader>
-                                    <div className="flex flex-col text-start">
-                                        <p className="text-base font-normal leading-[27px]">{`${offersCopys.internet.cards.preVelocidad} ${card.velocidadMinima} ${offersCopys.internet.cards.posVelocidad}`}</p>
-                                        <p className="leading-[27px] font-extrabold text-2xl">{`${card.velocidadMaxima} ${offersCopys.internet.cards.unidadVelocidad}`}</p>
-                                    </div>
-                                </CardHeader>
-                                <CardBody>
-                                    <div className="flex items-stretch">
-                                        {card.extrasIncluidos && <p className="leading-[18px] font-normal text-sm text-gray-300">{card?.extrasIncluidos[0].titulo}</p>}
-                                    </div>
-                                </CardBody>
-                                <CardFooter>
-                                    <div className="flex flex-col w-full gap-[8px]">
-                                        <div className="flex flex-row items-baseline gap-[4px]">
-                                            <span className="text-sm font-normal text-gray-200 line-through">{FormatCurrency(card.precioTachado as string)}</span>
-                                            <div className="flex flex-row items-baseline">
-                                                <span className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</span>
-                                                <span className="text-sm font-normal">{`/${card.periodicidad}`}</span>
+                {
+                    offersByType && offersByType.map((card: OfferItem, index) => {
+                        const isSelected = selectedIndex === index;
+
+                        return (
+                            <div
+                                key={index}
+                                className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
+                            >
+                                <Card
+                                    isPressable={!disabled}
+                                    onPress={() => handleSelect(index, card)}
+                                    isDisabled={disabled}
+                                    classNames={{
+                                        base: "flex flex-col rounded-xs shadow-none h-full w-full",
+                                        header: "pt-[16px] pb-[8px]",
+                                        body: "py-0",
+                                        footer: "pb-[16px] mt-[16px] 2xl:mt-[40px] pt-0"
+                                    }}>
+                                    <CardHeader>
+                                        <div className="flex flex-col text-start">
+                                            <p className="text-base font-normal leading-[27px]">{`${offersCopys.internet.cards.preVelocidad} ${card.velocidadMinima} ${offersCopys.internet.cards.posVelocidad}`}</p>
+                                            <p className="leading-[27px] font-extrabold text-2xl">{`${card.velocidadMaxima} ${offersCopys.internet.cards.unidadVelocidad}`}</p>
+                                        </div>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <div className="flex items-stretch">
+                                            {card.extrasIncluidos &&
+                                                <p className="leading-[18px] font-normal text-sm text-gray-300">{card?.extrasIncluidos[0].titulo}</p>
+                                            }
+                                        </div>
+                                    </CardBody>
+                                    <CardFooter>
+                                        <div className="flex flex-col w-full gap-[8px]">
+                                            <div className="flex flex-row items-baseline gap-[4px]">
+                                                <span className="text-sm font-normal text-gray-200 line-through">{FormatCurrency(card.precioTachado as string)}</span>
+                                                <div className="flex flex-row items-baseline">
+                                                    <span className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</span>
+                                                    <span className="text-sm font-normal">{`/${card.periodicidad}`}</span>
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-row gap-[16px] items-center justify-between">
+                                                <LinkModal
+                                                    classNames='underline text-black-0 text-[16px] cursor-pointer'
+                                                    text={offersCopys.internet.cards.info}
+                                                    closeButtonStroke='black'
+                                                    modalContentClassName="w-full h-auto sm:w-[80vw] xl:h-auto xl:w-[90vw] 2xl:w-[62vw] 2xl:h-auto"
+                                                    backdropColor='black-0/80'
+                                                    idModal={""}>
+                                                    <ConfiguradorCardsModalComponent
+                                                        variables={{
+                                                            velocidadMinima: card.velocidadMinima,
+                                                            velocidadMaxima: card.velocidadMaxima,
+                                                            precioPaquete: card.precioPaquete,
+                                                            extras: card.extrasIncluidos
+                                                        }}
+                                                        type="internet"
+                                                    />
+                                                </LinkModal>
+                                                <span
+                                                    className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`}
+                                                    aria-pressed={isSelected}
+                                                >
+                                                    {isSelected && <CheckPlanesIcon className="w-[16px] h-[16px] text-white-0" />}
+                                                </span>
                                             </div>
                                         </div>
-                                        <div className="flex flex-row gap-[16px] items-center justify-between">
-                                            <LinkModal classNames='underline text-black-0 text-[16px] cursor-pointer' text={offersCopys.internet.cards.info} closeButtonStroke='black' modalContentClassName="w-full h-auto sm:w-[80vw] xl:h-auto xl:w-[90vw] 2xl:w-[62vw] 2xl:h-auto" backdropColor='black-0/80' idModal={""}>
-                                                <ConfiguradorCardsModalComponent variables={{ velocidadMinima: card.velocidadMinima, velocidadMaxima: card.velocidadMaxima, precioPaquete: card.precioPaquete }} type="internet" />
-                                            </LinkModal>
-                                            <span className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`} aria-pressed={isSelected}>
-                                                {isSelected && <CheckPlanesIcon className="w-[16px] h-[16px] text-white-0" />}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </CardFooter>
-                            </Card>
-                        </div>
-                    );
-                })}
+                                    </CardFooter>
+                                </Card>
+                            </div>
+                        )
+                    })
+                }
             </div>
         </div>
     );

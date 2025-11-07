@@ -103,7 +103,8 @@ export interface Ahorro {
 export interface ExtrasIncluidos {
     titulo: string,
     plazo: string,
-    categoria: string
+    categoria: string,
+    idProducto?: string
 }
 
 export interface MovilPlansInfo {
@@ -128,6 +129,8 @@ export interface ResumenIcon {
 export interface OttsImages {
     internalName: string,
     type: string,
+    idModalExtra?: string,
+    vigencia?: string,
     ottImage: {
         fields: {
             altText: string,

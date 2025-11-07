@@ -2,7 +2,7 @@
 import { useContent } from '@/components/providers/CoberturaProvider';
 import {Button, Form, Input, Checkbox} from '@heroui/react';
 import { createCookie } from './actions';
-import { LocationIcon } from '@/constants/IconsConstants';
+import { LoaderIcon, LocationIcon } from '@/constants/IconsConstants';
 import { useEffect, useRef, useState } from 'react';
 import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
@@ -32,6 +32,7 @@ export default function CoberturaForm() {
     const map = useMap();
     const [isSelected, setIsSelected] = useState<boolean>(false);
     const [error] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const { getValue } = useMicrocopies('cobertura');
     const { addressSelected, setAddress, setSelectedPlace, setMarkerPosition,
         postalCode, 
@@ -74,7 +75,8 @@ export default function CoberturaForm() {
           if (!places || !inputRef.current) return;
       
           const options = {
-            fields: ['name', 'formatted_address', 'geometry.location']
+            fields: ['name', 'formatted_address', 'geometry.location'],
+            componentRestrictions: { country: ['mx'] }
           };
       
           setPlaceAutocomplete(new places.Autocomplete(inputRef.current, options));
@@ -131,6 +133,7 @@ export default function CoberturaForm() {
             numExt: streetNumber,
             estado: state
         });
+        setIsLoading(true);
         await createCookie({lat: lat.toString(), lng: lng.toString(), zipCode: postalCode, address: `${street}, ${streetNumber}, ${locality}`});
     };
 
@@ -188,6 +191,15 @@ export default function CoberturaForm() {
 
       return (
         <>
+        {isLoading &&
+            
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70">
+            <div className="w-[104px] h-[104px]">
+                <LoaderIcon />
+            </div>
+        </div>
+
+        }
         <Form className="w-full max-w-[95%]" onSubmit={onSubmit}>
             {addressSelected && (
             <Input

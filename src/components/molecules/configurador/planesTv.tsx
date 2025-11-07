@@ -12,7 +12,7 @@ import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export default function PlanesTv({ step }: StepProps) {
-    const { configuradorEntry, setUserAnswers, setDisabled, userAnswers, copysConfigurador, rehydrated } = useContent();
+    const { configuradorEntry, setUserAnswers, setDisabled, userAnswers, copysConfigurador } = useContent();
     const { params } = useIzziContent();
 
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -50,12 +50,13 @@ export default function PlanesTv({ step }: StepProps) {
                 return item as OfferItem;
             });
         }
-    }, [userAnswers.internet?.paquete?.idPaquete, configuradorEntry?.offers.TRIPLE_PLAY, configuradorEntry?.offers.TV, offersCopys.tv.cards.titulo, offersCopys.tv.cards.tituloPlus, precioTv]);
+    }, [userAnswers.internet, configuradorEntry?.offers.TV, configuradorEntry?.offers.TRIPLE_PLAY, offersCopys.tv.cards.titulo, offersCopys.tv.cards.tituloPlus, precioTv]);
 
     useEffect(() => {
         setTvPlans(builtTvPlans);
     }, [builtTvPlans]);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const updateTvAnswers = (selectedTv: OfferItem) => {
         setUserAnswers(prev => ({ 
             ...prev, 
@@ -75,6 +76,7 @@ export default function PlanesTv({ step }: StepProps) {
             tvUserInteracted.current = true;
             setSelectedIndex(null);
             setUserAnswers(prev => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { tv, ...rest } = prev;
                 return rest;
             });
@@ -127,7 +129,7 @@ export default function PlanesTv({ step }: StepProps) {
         queueMicrotask(() => {
             setUserAnswers(prev => ({ ...prev, tv: { paquete: matchedOffer!, total: Number(matchedOffer!.precioPaquete) || 0 } }));
         });
-    }, [params?.plan, tvPlans]);
+    }, [params.plan, setUserAnswers, tvPlans, userAnswers.tv?.paquete]);
 
     useEffect(() => {
         const tvPaquete = userAnswers.tv?.paquete;
@@ -137,13 +139,12 @@ export default function PlanesTv({ step }: StepProps) {
         }
         const index = (tvPlans || []).findIndex(offer => String(offer.idPaquete) === String(tvPaquete.idPaquete));
         if (index !== -1 && selectedIndex !== index) setSelectedIndex(index);
-    }, [String(userAnswers.tv?.paquete?.idPaquete), tvPlans]);
+    }, [selectedIndex, tvPlans, userAnswers.tv?.paquete]);
 
     useEffect(() => {
         if (!tvPlans || tvPlans.length === 0) return;
 
         const currentTv = userAnswers.tv?.paquete;
-        const selectedTv = selectedIndex !== null ? tvPlans[selectedIndex] : null;
 
         if (currentTv && currentTv.titulo === offersCopys.tv.cards.tituloPlus) {
             const izziTv = tvPlans.find((offer) => offer.titulo === offersCopys.tv.cards.titulo);
@@ -180,7 +181,7 @@ export default function PlanesTv({ step }: StepProps) {
 
         }
 
-    }, [userAnswers.tv?.paquete, tvPlans, selectedIndex]);
+    }, [userAnswers.tv?.paquete, tvPlans, selectedIndex, offersCopys.tv.cards.tituloPlus, offersCopys.tv.cards.titulo, updateTvAnswers]);
 
     return (
         <div className="flex flex-col gap-[24px]">
@@ -224,7 +225,7 @@ export default function PlanesTv({ step }: StepProps) {
                                         </div>
                                         <div className="flex flex-row gap-[16px] items-center justify-between">
                                             <LinkModal classNames='underline text-black-0 text-[16px] cursor-pointer' text={offersCopys.internet.cards.info} closeButtonStroke='black' modalContentClassName="w-full h-auto sm:w-[80vw] xl:h-auto xl:w-[90vw] 2xl:w-[62vw] 2xl:h-auto" backdropColor='black-0/80' idModal={""}>
-                                                <ConfiguradorCardsModalComponent variables={{ canales: card.canales, precioPaquete: card.precioPaquete }} type="tv" />
+                                                <ConfiguradorCardsModalComponent variables={{ canales: card.canales, precioPaquete: card.precioPaquete, extras: card.extrasIncluidos }} type="tv" />
                                             </LinkModal>
                                             <span className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`} aria-pressed={isSelected}>
                                                 {isSelected && <CheckPlanesIcon className="w-[16px] h-[16px] text-white-0" />}

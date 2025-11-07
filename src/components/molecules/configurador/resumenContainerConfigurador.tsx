@@ -6,8 +6,8 @@ import { useContent } from "@/utils/ConfiguradorProvider";
 import { ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { useState } from "react";
-import ButtonGhost from "@/components/atoms/ButtonGhost";
 import { useRouter } from "next/navigation";
+import { FormatCurrency } from "@/utils/Currency";
 // import ModalFechaInvalida from "../checkout/modals/ModalFechaInvalida";
 
 export default function ResumenContainerConfigurador() {
@@ -18,9 +18,16 @@ export default function ResumenContainerConfigurador() {
     const [loading, setLoading] = useState(false);
     const [promoError, setPromoError] = useState(false);
     const { coberturaData, setRpt, setOffnetIzzi, setOffnetSky, setParams } = useIzziContent();
+    const router = useRouter(); 
+    const totalPromoPackage = promoData?.promoPackage
+    ?.filter(promo => promo.amount !== "0")
+    ?.reduce((acc, promo) => acc + Number(promo.amount), 0);
 
-    const router = useRouter();
-    let totalDiscount = 0;
+    const totalPromos = promoData?.promos
+    ?.filter(promo => promo.promoPrice !== 0)
+    ?.reduce((acc, promo) => acc + Math.abs(Number(promo.promoPrice)), 0);
+
+    const totalDiscount = Number(totalPromos) + Number(totalPromoPackage);
 
     const handleClick = async () => {
         setLoading(true);
@@ -78,6 +85,7 @@ export default function ResumenContainerConfigurador() {
             console.error("Error al obtener el token:", error);
         } finally {
             setLoading(false);
+            setCheckedPromotions(true);
         }
     };
 
@@ -106,14 +114,7 @@ export default function ResumenContainerConfigurador() {
                             <h3 className="font-bold text-xl text-white-0">{resumenCopys.promociones.titulo}</h3>
                             <div className="flex gap-[4px] font-normal text-lg leading-[24px] text-white-0">
                                 <h4>{resumenCopys.promociones.textoAhorro}</h4>
-                                {
-                                    promoData?.promoPackage?.map((promo, index) => {
-                                        if (promo.amount !== '0') {
-                                            totalDiscount = totalDiscount + Number(promo.amount);
-                                        }
-                                        return (<h4 key={index}>${totalDiscount}</h4>)
-                                    })
-                                }
+                                <h4>{FormatCurrency(Number(totalDiscount))}</h4>
                             </div>
                         </div>
                     </div>
@@ -127,7 +128,6 @@ export default function ResumenContainerConfigurador() {
                     <button
                         className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
                         onClick={() => {
-                            setCheckedPromotions(true);
                             handleClick();
                         }}
                     >

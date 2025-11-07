@@ -21,34 +21,25 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
         0
     );
 
-
-    const totalPromoPrice = ottPromos?.reduce(
+    const totalOttPromoPrice = ottPromos?.reduce(
         (acc, promo) => acc + Number(promo.promoPrice),
         0
     );
 
-    const precioTachadoTotal =
-    Number(userSelection?.internet?.paquete?.precioPaquete || 0) +
-    Number(userSelection?.tv?.paquete?.precioTachado || 0) +
-    Number(userSelection?.movil?.paquete?.precioTachado || 0) +
-    Number(totalOttPrice || 0);
-  
-    const precioPaqueteTotal =
-        Number(userSelection?.internet?.paquete?.precioPaquete || 0) +
-        Number(userSelection?.tv?.paquete?.precioPaquete || 0) +
-        Number(userSelection?.movil?.paquete?.precioPaquete || 0) +
-        Number(totalOttPrice || 0) -
-        Math.abs(Number(totalPromoPrice || 0));
-    
-    const ahorroCombinado = precioTachadoTotal - precioPaqueteTotal;
+    const izziAhorro = promoData?.promoPackage?.find(promo => promo.name.toLowerCase().includes('izzi ahorro'));
+    const pagoAnticipado = promoData?.promos?.find(promo => promo.promoName.toLowerCase().includes('pago anticipado'));
+    const totalAfterPromos = (Math.abs(Number(izziAhorro?.amount)) || 0 ) + Math.abs(Number((pagoAnticipado?.promoPrice || 0)));
+    const descuentoInternet = Math.abs((Number(userSelection?.internet?.paquete?.precioTachado) - 50) - (Number(userSelection?.internet?.paquete?.precioPaquete)));
+    const descuentoTv = Math.abs((Number(userSelection?.tv?.paquete?.precioPaquete)) - (Number(userSelection?.tv?.paquete?.precioTachado)));
+    const descuentoMovil = Math.abs((Number(userSelection?.movil?.paquete?.precioPaquete)) - (Number(userSelection?.movil?.paquete?.precioTachado)));
 
-    const totalSinDescuento = Number(userSelection?.internet?.paquete?.precioPaquete || 0) 
+    const ahorroCombinado = (descuentoInternet || 0) + (descuentoTv || 0) + (descuentoMovil || 0) - (totalOttPromoPrice || 0);
+
+    const totalSinDescuento = Number(userSelection?.internet?.paquete?.precioTachado || 0) 
     + Number(userSelection?.movil?.paquete?.precioTachado || 0) 
-    + Number(userSelection?.tv?.paquete?.precioTachado || 0)
+    + Number(userSelection?.tv?.paquete?.precioTachado || userSelection?.tv?.paquete?.precioPaquete || 0)
     + (totalOttPrice || 0);
-
-    const precioTotal = totalSinDescuento && ahorroCombinado ? totalSinDescuento - ahorroCombinado : globalIzziSelection?.precioPaquete;
-
+    const precioTotal = totalSinDescuento && ahorroCombinado ? totalSinDescuento - ahorroCombinado - (Number(izziAhorro?.amount) || 0) - (Math.abs(Number(pagoAnticipado?.promoPrice)) || 0) : Number(globalIzziSelection?.precioPaquete) + (totalOttPrice ? totalOttPrice : 0);
     
     useEffect(() => {
         setPrecioCombinado(ahorroCombinado as number);
@@ -68,22 +59,29 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-[8px] py-[24px] border-b-1 border-b-gray-150">
-                    <h1 className="font-bold text-base leading-[24px] mb-[24px]">{resumenCopys.ahorro.titulo}</h1>
-                    <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
-                        <h5>{resumenCopys.ahorro.paquete}</h5>
-                        <h5>-{FormatCurrency(ahorroCombinado)}</h5>
-                    </div>
-
-                    {/* {
-                        ((userAnswers.internet && userAnswers.tv && !userAnswers.movil) || (userAnswers.internet && !userAnswers.tv && userAnswers.movil)) &&
-                        <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
-                            <h5>{resumenCopys.ahorro.pagoAnticipado}</h5>
-                            <h5>-${pagoAnticipado}</h5>
+                    <div className="flex flex-col gap-[8px] py-[24px] border-b-1 border-b-gray-150">
+                        <h1 className="font-bold text-base leading-[24px] mb-[24px]">{resumenCopys.ahorro.titulo}</h1>
+                        
+                        <div className="w-full font-normal leading-[24px] text-lg space-y-2">
+                        {izziAhorro && (
+                            <div className="flex justify-between w-full">
+                            <h5 className="text-left">Izzi Ahorro</h5>
+                            <h5 className="text-right">-{FormatCurrency(izziAhorro.amount)}</h5>
+                            </div>
+                        )}
+                        {pagoAnticipado && (
+                            <div className="flex justify-between w-full">
+                            <h5 className="text-left">{resumenCopys.ahorro.pagoAnticipado}</h5>
+                            <h5 className="text-right">-{FormatCurrency(Math.abs(pagoAnticipado.promoPrice))}</h5>
+                            </div>
+                        )}
+                        <div className="flex justify-between w-full">
+                            <h5 className="text-left">{resumenCopys.ahorro.paquete}</h5>
+                            <h5 className="text-right">-{FormatCurrency(ahorroCombinado)}</h5>
                         </div>
-                    } */}
-
-                </div>
+                        </div>
+                    </div>
+                
             </>
 
             <div className="flex flex-col gap-[32px]">
@@ -93,41 +91,35 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                         <h2>{resumenCopys.total.titulo}</h2>
                         <h2>{FormatCurrency(Number(precioTotal))}</h2>
                     </div>
-
-                    {
-                        ((userAnswers.internet && userAnswers.tv && !userAnswers.movil) || (userAnswers.internet && !userAnswers.tv && userAnswers.movil)) &&
-                        <>
-                            <div className="flex flex-col gap-[8px]">
-                                {
-                                    ottPromos?.map((promo, index) => {
-                                        return (
-                                            <>
-                                            {
-                                                promo.permanente.toLowerCase() === 'no' ?
-                                                <div key={index} className="flex justify-between w-full font-normal leading-[24px] text-lg">
-                                                    <h5>Después de {promo.meses} meses pagarás</h5>
-                                                    <h5>{FormatCurrency(Number(precioTotal) + Math.abs(Number(promo.promoPrice)))}</h5>
-                                                </div>
-                                            :
-                                            <></>
-                                            }
-                                            </>
-                                        )
-                                    })
-                                }
-                                
-                                {/* <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
-                                    <h5>A partir del 7to mes pagarás</h5>
-                                    <h5>$XXXX</h5>
-                                </div> */}
-                            </div>
-                        </>
-                    }
-
+                        <div className="flex flex-col gap-[8px]">
+                            {
+                                ottPromos &&
+                                ottPromos?.map((promo, index) => {
+                                    return (
+                                        <>
+                                        {
+                                            promo.permanente.toLowerCase() === 'no' ??
+                                            <div key={index} className="flex justify-between w-full font-normal leading-[24px] text-lg">
+                                                <h5>Después de {promo.meses} meses pagarás</h5>
+                                                <h5>{FormatCurrency(precioTotal + (totalAfterPromos + Math.abs(Number(promo.promoPrice))))}</h5>
+                                            </div>
+                                        }
+                                        </>
+                                    )
+                                })
+                            }
+                            {
+                                totalAfterPromos &&
+                                <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
+                                    <h5>Después del primer meses pagarás</h5>
+                                    <h5>{FormatCurrency(precioTotal + totalAfterPromos)}</h5>
+                                </div>
+                            }
+                        </div>
                     <div className="flex flex-col gap-[8px] mb-[32px]">
                         <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
                             <h5>{resumenCopys.ahorro.domicilio}</h5>
-                            <h5>-{FormatCurrency(Number(globalIzziSelection?.precioDomiciliacion))}</h5>
+                            <h5>-{FormatCurrency(Number(globalIzziSelection?.precioDomiciliacion !=="0" ? globalIzziSelection?.precioDomiciliacion : '50'))}</h5>
                         </div>
                         <h5 className="w-full font-normal leading-[24px] text-base text-gray-250">
                             {resumenCopys.ahorro.infoAdicional}
