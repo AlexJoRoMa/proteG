@@ -66,7 +66,6 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
     // Normaliza URLs para que sean absolutas (agrega '/' si falta)
     const normalizeUrl = (url: string) => url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
 
-
     return (
     <>
       <Navbar style={borderStyle}
@@ -150,12 +149,12 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
       </NavbarContent>
 
 {/* Movil hamburgues */}
-      <NavbarMenu className="bg-white-0 mt-[26px] gap-[26px]">
+      <NavbarMenu className=" bg-white-0 mt-[110px] gap-[20px]">
         {navbar[0].fields?.navigation?.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
+          <NavbarMenuItem key={`${item}-${index}`} >
             <Link
               className="w-full text-black-0 text-[20px]"
-              href={normalizeUrl(item.fields.navigationUrl)}
+              href={buildTracking(item.fields.navigationUrl)}
             >
               {item.fields.navigationTitle}
             </Link>
