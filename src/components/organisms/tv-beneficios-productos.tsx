@@ -33,7 +33,7 @@ const TVBeneficiosProductos = async ({id} : TVBeneficiosProductosID) => {
 
         {/* Body */}
         <div className="  md:w-full xsm:w-[90%] lg:mt-5 md:mt-0 xsm:mt-7 
-        flex flex-row 2xl:gap-6 md:gap-4 xsm:gap-4 justify-start items-center 
+        flex flex-row 2xl:gap-6 md:gap-4 xsm:gap-4 xsm:justify-start lg:justify-center items-center 
         overflow-x-auto custom-scrollbar">
             
             {/* componentes cards */}

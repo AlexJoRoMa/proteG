@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
         return new Response(JSON.stringify(data), { status: 200 });
     } catch (e) {
-        console.log("Error de API")
+        console.error("Error de API")
         return new Response(JSON.stringify({ error: 'API fetch error', e }), { status: 500 });
     }
 }

@@ -32,7 +32,7 @@ export const ConfiguradorProvider = ({
     const [disabled, setDisabled] = useState<boolean>(false);
     const [rehydrated, setRehydrated] = useState(false);
 
-    const { setGlobalUserAnswers, setGlobalIzziSelection, globalUserAnswers } = useIzziContent();
+    const { setGlobalUserAnswers, setGlobalIzziSelection, globalUserAnswers, setGlobalCheckedPromotions } = useIzziContent();
 
     useEffect(() => IzziSelectionGuard(userAnswers, setIzziSelection), [userAnswers])
 
@@ -58,6 +58,7 @@ export const ConfiguradorProvider = ({
 
     useEffect(() => setGlobalUserAnswers(userAnswers), [userAnswers, setGlobalUserAnswers]);
     useEffect(() => setGlobalIzziSelection(izziSelection), [izziSelection, setGlobalIzziSelection]);
+    useEffect(() => setGlobalCheckedPromotions(checkedPromotions), [checkedPromotions, setGlobalCheckedPromotions]);
 
     useEffect(() => {
         if (!globalUserAnswers || rehydrated) return;

@@ -1,6 +1,4 @@
 
-import { Entry, EntrySkeletonType } from "contentful"
-
 export type CookiesProps = {
     title?:string;
     long?:string;

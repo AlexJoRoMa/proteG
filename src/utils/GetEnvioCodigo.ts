@@ -60,7 +60,6 @@ export async function GetEnvioCodigo(datosContratacion: Partial<DatosContratacio
         "spMovil": globalIzziSelection?.spMovil,
         "spTv": globalIzziSelection?.spTV,
     }
-    console.log('body - envioCodigo:', BODY)
 
     try {
 

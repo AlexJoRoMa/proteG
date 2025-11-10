@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import LinkModal from "@/components/atoms/LinkModal";
@@ -13,6 +14,7 @@ import { useEffect, useMemo, useState } from "react";
 export default function PlanesMovil({ step }: StepProps) {
     const { configuradorEntry, setUserAnswers, userAnswers, copysConfigurador } = useContent();
     const { params } = useIzziContent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const plans = configuradorEntry?.offers.MOVIL as unknown as OfferItem[] || [];
     const offersCopys = copysConfigurador as unknown as OffersCopys;
 
@@ -101,6 +103,7 @@ export default function PlanesMovil({ step }: StepProps) {
             setSelectedCardId(matched.idPaquete);
             applyUserAnswersMovil(matched, parentTab?.tituloTab);
         });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params?.movil, plansInfo]);
 
     useEffect(() => {
@@ -120,6 +123,7 @@ export default function PlanesMovil({ step }: StepProps) {
         if (parentTab && parentTab.tituloTab !== selectedTabKey) {
             setSelectedTabKey(parentTab.tituloTab);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [String(userAnswers.movil?.paquete?.idPaquete), plansInfo]);
 
     const onTabChange = (key: string) => {

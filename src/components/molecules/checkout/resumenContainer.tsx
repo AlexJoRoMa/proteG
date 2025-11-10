@@ -24,9 +24,7 @@ import { FormatCurrency } from "@/utils/Currency";
 export default function ResumenContainer() {
 
     const [loading, setLoading] = useState(false);
-    const [checkInstalacion, setCheckInstalacion] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
-    const [modalNewDate, setModalNewDate] = useState(false);
     const [modalName, setModalName] = useState<string>("modal-generico");
     const router = useRouter();
 
@@ -37,7 +35,6 @@ export default function ResumenContainer() {
         nextStep,
         goToStep,
         currentStep,
-        totalSteps,
         validateCurrentStep,
         getAllFormData,
         isStepValid,
@@ -49,8 +46,6 @@ export default function ResumenContainer() {
         izziEnroll,
         processStatus,
         setProcessStatus,
-        getIntentosInstalacion,
-        setGetIntentosInstalacion,
         statusStep,
         setStatusStep,
         copyResumen,
@@ -74,15 +69,6 @@ export default function ResumenContainer() {
     useEffect(() => {
         processStatusRef.current = processStatus;
     }, [processStatus]);
-
-    function handleModalNewDate() {
-        setModalNewDate(false);
-        goToStep(5);
-    }
-
-    function handleModalClose() {
-        setModalNewDate(false)
-    }
 
     function runAttachFiles() {
         runAttachIne();
@@ -120,7 +106,6 @@ export default function ResumenContainer() {
     };
 
     const { iniciarPolling } = useGlobalProcessStatus((finalData) => {
-        console.log('proceso finalizado', finalData);
         router.push('/thank-you');
         // logica adicional
     });
@@ -151,7 +136,6 @@ export default function ResumenContainer() {
 
             const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
-            console.log('data attachIne:', data)
             return data;
         },
         resetKey: `step-4-attachFileIne`,
@@ -167,7 +151,6 @@ export default function ResumenContainer() {
 
             const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
-            console.log('data attachComprobante:', data)
             return data;
         },
         resetKey: `step-4-attachFileComprobante`,
@@ -283,6 +266,7 @@ export default function ResumenContainer() {
 
                     } catch (err) {
                         console.error('Error en step3', err)
+                        router.push("/error");
                     }
 
                     break
@@ -309,10 +293,10 @@ export default function ResumenContainer() {
                         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                         await showModaluntilAction(async () => await runAttachFiles(), "modal-documentos"),
 
-                            // GetCapacity() 
-                            await showModaluntilAction(async () => await runGetCapacity(true), "modal-disponibilidad"),
+                        // GetCapacity() 
+                        await showModaluntilAction(async () => await runGetCapacity(true), "modal-disponibilidad"),
 
-                            setIsStepValid(false)
+                        setIsStepValid(false)
                         nextStep()
 
                     } catch (err) {

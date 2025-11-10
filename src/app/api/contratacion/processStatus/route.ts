@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
         return new Response(JSON.stringify(data), { status: 200 });
     } catch (e) {
-        console.log("Error de API:", e)
+        console.error("Error de API:", e)
         return new Response(JSON.stringify({ error: 'API fetch error' }), { status: 500 });
     }
 }

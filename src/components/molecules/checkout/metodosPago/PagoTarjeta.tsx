@@ -11,10 +11,11 @@ import { useIzziContent } from "@/components/providers/IzziProvider";
 
 export default function PagoTarjeta() {
 
-    const {rpt, precioTotal} = useIzziContent();
+    const { rpt, precioTotal } = useIzziContent();
     const [isRecurrent, setIsRecurrent] = useState(false);
     const [urlFrame, setUrlFrame] = useState("");
     const { currentStep, setPaymentReference, processStatus, datosContratacion } = useCheckout();
+    const { offnetSky } = useIzziContent();
     const { getValue } = useMicrocopies('contratacion-pago');
 
     const hasFetched = useRef(false);
@@ -25,7 +26,7 @@ export default function PagoTarjeta() {
 
         (async () => {
             try {
-                const result = await GetLigaPago(rpt, precioTotal, processStatus, datosContratacion);
+                const result = await GetLigaPago(rpt, precioTotal, processStatus, datosContratacion, offnetSky);
 
                 if (result?.response) {
 
