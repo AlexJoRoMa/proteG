@@ -16,11 +16,12 @@ import { IzziNavbar, HeaderLandingComponentProps } from "@/types/headerTypes";
 import ButtonModal from '../atoms/ButtonModal';
 import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
 import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
+import { usePathname } from 'next/navigation';
 
 
 export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTitulo, llamanosNum, getNumTel, urlTracking}: HeaderLandingComponentProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-    
+    const pathname = usePathname();
 
     // Función helper para renderizar el modal correcto basado en typeModal
     const renderModalComponent = (typeModal?: 'TeLlamamos' | 'TeAyudamos') => {
@@ -66,6 +67,14 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
     // Normaliza URLs para que sean absolutas (agrega '/' si falta)
     const normalizeUrl = (url: string) => url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
 
+    const isLinkActive = (href: string) => {
+      const normalizeHref = normalizeUrl(href).split('?')[0];
+      const normalizePath = pathname.split('?')[0];
+
+      return normalizePath === normalizeHref;
+    };
+
+
     return (
     <>
       <Navbar style={borderStyle}
@@ -92,7 +101,24 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
 {/* Bar de Navegacion */}
       <Navbar onMenuOpenChange={setIsMenuOpen}
         classNames={{
-        wrapper: "max-w-full h-[88px] pl-4 pr-0 bg-white-0"
+        wrapper: "max-w-full h-[88px] pl-4 pr-0 bg-white-0",
+        item: `
+        relative flex items-center h-full
+        data-[active=true]:after:content-['']
+        data-[active=true]:after:absolute
+        data-[active=true]:after:bottom-[12px]
+        data-[active=true]:before:bottom-[12px]
+        data-[active=true]:after:left-0
+        data-[active=true]:after:right-0
+        data-[active=true]:after:h-[2px]
+        data-[active=true]:after:bg-black
+        data-[active=true]:before:content-['']
+        data-[active=true]:before:absolute
+        data-[active=true]:before:left-0
+        data-[active=true]:before:right-0
+        data-[active=true]:before:h-[2px]
+        data-[active=true]:before:bg-gray-500
+        `
       }}>
       <NavbarContent className="!grow-0">
         <NavbarMenuToggle
@@ -112,15 +138,23 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
       
 {/* Opciones de navegacion */}
       <NavbarContent className="hidden 2xl:flex gap-[32px] min-[1024px]:gap-[12px] min-[1095]:gap-[17px] min-[1150px]:gap-[15px]" justify="start">
-        { navbar[0].fields?.navigation?.map((link, index) => (    
-        <NavbarItem key={`${link}-${index}`}>
-          
-            <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href={buildTracking(link.fields.navigationUrl)}>
+        { navbar[0].fields?.navigation?.map((link, index) => {    
+          const href = buildTracking(link.fields.navigationUrl);
+          const isActive = isLinkActive(href);
+
+          return(
+            <NavbarItem key={`${link}-${index}`} isActive={isActive}>
+              <Link
+              className={`xl:text-wrap 2xl:text-nonwrap ${isActive ? 'font-bold text-black' : 'text-foreground'}`}
+              color="foreground"
+              href={href}
+              >
               {link.fields.navigationTitle}
-            </Link>
-          
-        </NavbarItem>
-        ))}
+              </Link>
+            </NavbarItem>
+          )
+
+        })}
       </NavbarContent>
 
 
