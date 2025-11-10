@@ -155,6 +155,7 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
             <Link
               className="w-full text-black-0 text-[20px]"
               href={buildTracking(item.fields.navigationUrl)}
+              
             >
               {item.fields.navigationTitle}
             </Link>
