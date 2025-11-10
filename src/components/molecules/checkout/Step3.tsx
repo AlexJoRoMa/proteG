@@ -182,21 +182,28 @@ const Step3 = () => {
             )}
 
             {isValid === false && (
-              <div className='flex flex-col'>
-                <p
-                  className='text-base xl:text-[18px] font-bold leading-6 mb-6 text-center mt-6 text-(--color-red-700)'
-                >
-                  {getValue('verificacion.error.codigoInvalido')}
-                </p>
-                <button
-                  className='text-black-0 underline font-bold text-base xl:text-lg'
-                  onClick={() => {
-                    setIsValid(null);
-                    hanldeResendCode();
-                  }}
-                >
-                  {getValue('verificacion.error.nuevoCodigo')}
-                </button>
+              <div className='countdown-timer flex flex-col gap-[8px] text-center mt-6 text-(--color-red-700) font-bold text-base xl:text-lg'>
+                <span>{formatTime(timer)}</span>
+                <div className='flex flex-col font-bold leading-[24px] text-base xl:text-lg'>
+                  <p
+                    className='text-base xl:text-[18px] font-bold leading-6 text-center text-(--color-red-700)'
+                  >
+                    {getValue('verificacion.error.codigoInvalido')}
+                  </p>
+                </div>
+                {
+                  timer <= 0 && (
+                    <button
+                      className='text-black-0 underline font-bold text-base xl:text-lg'
+                      onClick={() => {
+                        setIsValid(null);
+                        hanldeResendCode();
+                      }}
+                    >
+                      {getValue('verificacion.error.nuevoCodigo')}
+                    </button>
+                  )
+                }
               </div>
             )}
 

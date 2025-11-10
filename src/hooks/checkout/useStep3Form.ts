@@ -118,7 +118,7 @@ export const useStep3Form = (radioState: string) => {
     //temporizador (60 segundos)
     const startTimer = useCallback(() => {
         if (timerRef.current) clearInterval(timerRef.current);
-        setTimer(350);
+        setTimer(60);
 
         timerRef.current = setInterval(() => {
             setTimer((t) => {
