@@ -129,13 +129,19 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
           </NavbarBrand>
       </NavbarContent>
       <NavbarContent className="hidden xl:flex gap-[32px] min-[1024px]:gap-[16px] min-[1095]:gap-[24px] min-[1150px]:gap-[32px]" justify="start">
-        {navbar[0].fields?.navigation?.map((link, index) => (    
-        <NavbarItem key={`${link}-${index}`}>
-            <Link className='xl:text-wrap 2xl:text-nowrap' color="foreground" href={normalizeUrl(link.fields.navigationUrl)}>
+        {navbar[0].fields?.navigation?.map((link, index) => {    
+          const href = normalizeUrl(link.fields.navigationUrl);
+          const isActive = isLinkActive(href);
+
+          return(
+        <NavbarItem key={`${link}-${index}`} isActive={isActive}>
+            <Link className={`xl:text-wrap 2xl:text-nowrap ${isActive ? 'font-bold text-black' : 'text-foreground'}`} color="foreground" href={normalizeUrl(link.fields.navigationUrl)}>
             {link.fields.navigationTitle}
             </Link>
         </NavbarItem>
-        ))}
+        )
+      
+      })}
       </NavbarContent>
       <NavbarContent justify="end" className="!grow-0">
         {navbarButtons[0].fields?.navigation?.map((link, index) => (    
