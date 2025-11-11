@@ -28,7 +28,7 @@ const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
         const getLinkType =  linkBoton1 as string;
         const assetImage = image?.fields?.image as Asset | undefined;
         const imgURL = assetImage?.fields?.file?.url;
-console.log('🦄 ', linkBoton1)
+
         return(
           <div key={card.sys.id} className=" flex flex-col lg:flex-row md:flex-row w-full h-full text-white">
             {/*  div del contenido izq  */}
