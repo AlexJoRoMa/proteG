@@ -293,7 +293,7 @@ export default async function LandingPage({ params}: DynamicPageProps) {
 
 
     
-   /*  console.log('👽 fullPath ', fullPath)  */
+
 
     const page = await fetchComponentsBySlugPage(contentfulSlug as string);
    /*  const page = await fetchComponentsBySlugPage(fullPath); */

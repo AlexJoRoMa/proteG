@@ -3,6 +3,7 @@ import { AccesoConfiguradorID, StepTabEntryFields, StepTabEntrySkeleton } from '
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
+import ButtonLanding from '@/components/atoms/ButtonStickyLanding'
 
 
 const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
@@ -63,10 +64,14 @@ const AccesoConfigurador = async ({id}: AccesoConfiguradorID) => {
                     </div>
 
                     <div className="lg:mt-8 md:mt-8 md:mt-3">
+                        {linkBoton1 === 'landing' ? (
+                            <ButtonLanding textBoton={textBoton1 as string} landing={linkBoton1 as string} />
+                        ) : (
                         <ButtonGhost classStyles="border-black text-white text-[16px] leading-6 font-bold bg-black hover:!bg-white hover:!text-black w-full h-[48px] rounded-md
                         lg:w-[320px] md:w-[320px] xsm:w-[320px]"
                         text={textBoton1 as string} href={linkBoton1 as string}
                         />
+                        )}
                     </div>
                         
                 </div>

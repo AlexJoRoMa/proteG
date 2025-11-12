@@ -32,7 +32,7 @@ const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
 
   return (
     <div 
-      className="CarouselCardComponent relative w-full h-full flex justify-center items-center flex-wrap"
+      className="CarouselCardComponent relative w-full h-full flex justify-center items-center flex-wrap "
       style={{ 
         backgroundColor: entryCarousel?.[0].fields?.bgColor 
           ? (entryCarousel?.[0].fields?.bgColor as colorPickerType)?.value 
@@ -69,7 +69,7 @@ const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
         ) : null
       }
         
-        <div className="relative z-10 w-full h-full ">
+        <div className="relative z-10 w-full h-full  2xl:ml-lg  ">
           <CarouselProvider qtyCarousels={1} carouselConfigs={[{ options: { align: 'center'} }]} colorArrow={colorArrow}>
              <CarouselComponent buttons={true} dots={true}>
                 {
