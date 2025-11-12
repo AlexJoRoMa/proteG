@@ -40,7 +40,7 @@ export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratac
             "numeroCelularAdicionalAmericano": false,
             "numeroCelularAdicionalTipo": null,
             "numeroCelularAdicionalWhatsapp": false,
-            "codigoVerificacionCel": String(datosContratacion.VerificacionContacto?.codigoVerificacion),
+            "codigoVerificacionCel": "",
             "portability": "",
             "rfc": datosContratacion.DatosPersonales?.facturacion?.rfc ?? "",
             "curp": datosContratacion.DatosPersonales?.personal.curp,
