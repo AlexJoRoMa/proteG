@@ -19,7 +19,8 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
 
     const gridType =  assetsLength > 4 ? 'grid-cols-4 grid-rows-2 gap-x-4' : 'grid-cols-2 grid-rows-2'
 
-console.log('🦄 ',  card?.fields.esModal)
+console.log('🦄 ',  card?.fields)
+console.log('🦄🦄 ',  card?.fields?.tagPromo)
 
   return (
     <div className='px-[16px] md:px-[24px] py-[32px] bg-white 3xl:h-[660px] 2xl:h-[690px] md:h-[660px] xsm:h-[670px] rounded-md relative flex-col flex'>
