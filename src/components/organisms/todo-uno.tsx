@@ -3,7 +3,7 @@ import { TodoEnUnoCompID, StepTabEntrySkeleton, StepTabEntryFields } from '@/typ
 import { contentfulClient } from "@/services/contentful/client";
 import { Asset, Entry, EntrySkeletonType } from "contentful";
 import ButtonGhost from "../atoms/ButtonGhost";
-
+import ButtonLanding from '@/components/atoms/ButtonStickyLanding'
 
 const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
 
@@ -25,6 +25,7 @@ const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
       {getCardsContent && getCardsContent.map((card: Entry<StepTabEntrySkeleton>) => {
         const { entryTitle, entryBody, desactivarBoton, textBoton1, linkBoton1, image }= card.fields as StepTabEntryFields;
          
+        const getLinkType =  linkBoton1 as string;
         const assetImage = image?.fields?.image as Asset | undefined;
         const imgURL = assetImage?.fields?.file?.url;
 
@@ -47,10 +48,14 @@ const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
               
               <div className=" md:mx-md 2xl:mx-xl flex lg:justify-start md:justify-start xsm:justify-center">
                 {desactivarBoton === false && (
+                   getLinkType === 'landing' ? (
+                    <ButtonLanding textBoton={textBoton1 as string} landing={linkBoton1 as string} />
+                  ) : (
                   <ButtonGhost classStyles="border-white text-white text-[16px] leading-6 font-bold hover:!bg-white hover:!text-black w-full h-[48px] rounded-md
                    md:max-w-[320px] xsm:w-[256px]"
                     text={textBoton1 as string} href={linkBoton1 as string}
                     />
+                    )
                   )}
               </div>
             

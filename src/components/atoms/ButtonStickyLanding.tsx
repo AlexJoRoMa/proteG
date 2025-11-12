@@ -12,7 +12,7 @@ const ButtonLanding: React.FC<ButtonLandingProps> = async(
   try {
 
     const marginTop = landing ===  true ? 'mt-5' : ''
-    const btnColor = landing ===  true ? 'bg-white' : 'bg-black'
+    const btnColor = landing ===  true ? 'bg-white border-none' : 'bg-black border border-white'
     const textColor = landing === true ? 'text-black' : 'text-white'
     const wBtn = landing ===  true ? 'md:w-[320px] xsm:w-[256px]' : 'w-full'
 
@@ -29,7 +29,7 @@ const ButtonLanding: React.FC<ButtonLandingProps> = async(
                 { textBoton || 'contratar ahora'}
               </>
             }
-            classStyles={`${wBtn} rounded-md ${btnColor} ${textColor} ${marginTop} border-none font-bold text-[16px] md:text-[18px]`}
+            classStyles={`${wBtn} rounded-md ${btnColor} ${textColor} ${marginTop}  font-bold text-[16px] md:text-[18px]`}
           >
               <TeLlamamosModalComponent  />
           </ButtonModal>
