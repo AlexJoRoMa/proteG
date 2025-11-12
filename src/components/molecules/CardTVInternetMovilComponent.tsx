@@ -19,9 +19,6 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
 
     const gridType =  assetsLength > 4 ? 'grid-cols-4 grid-rows-2 gap-x-2' : 'grid-cols-2 grid-rows-2'
 
-    const widtSize = assetsLength > 4 ? 56 : 100;
-    const heightSize = assetsLength > 4 ? 14 : 27;
-
 
 
   return (
@@ -98,8 +95,8 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
                                 key={index}
                                 src={`https:${assetAdd.fields?.file?.url}` as string}
                                 alt={`Add ${index + 1}`}
-                                width={widtSize}
-                                height={heightSize}
+                                width={100}
+                                height={27}
                                 priority
                                 className='max-w-[100%] h-[97%] object-contain'/>
                           </div>

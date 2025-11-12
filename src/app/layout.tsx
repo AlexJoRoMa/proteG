@@ -8,7 +8,7 @@ const lato = Lato({
   subsets: ['latin'],
   variable: '--font-lato',
 })
-export const revalidate = 900;
+
 //TODO descomentar metadata cuando se tenga el contenido tomado desde contentful
 
 /*export const metadata: Metadata = {
