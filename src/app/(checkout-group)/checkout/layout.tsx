@@ -22,11 +22,9 @@ export default function CheckoutLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${lato.variable}`}>
-      <body>
-          <CheckoutHeader />
-          {children}
-      </body>
-    </html>
+    <div lang="es" className={`${lato.variable}`}>
+      <CheckoutHeader />
+      {children}
+    </div>
   );
 }
