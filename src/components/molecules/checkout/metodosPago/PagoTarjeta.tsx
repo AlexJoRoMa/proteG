@@ -72,7 +72,7 @@ export default function PagoTarjeta() {
                         src={urlFrame}
                         width={300}
                         height={300}
-                        className="w-full"
+                        className="w-full h-[100vh] overflow-x-hidden"
                     />
                 </div>
             )}
