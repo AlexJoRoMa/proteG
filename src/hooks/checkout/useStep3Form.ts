@@ -15,7 +15,7 @@ function generateTransactionId(): string {
 }
 
 export const useStep3Form = (radioState: string) => {
-    const { registerStepValidator, registerFormData, setIsStepValid, datosContratacion } = useCheckout();
+    const { registerStepValidator, registerFormData, setIsStepValid, isStepCompleted, currentStep } = useCheckout();
 
     const CodigoVerificacionRef = useRef<HTMLFormElement | null>(null);
     const LastVerifiedCodeRef = useRef<string | null>(null);
@@ -28,7 +28,7 @@ export const useStep3Form = (radioState: string) => {
 
     // verifica codigo
     const verificarCodigo = useCallback(async (codigo: string) => {
-        if (isLoading || isValid === false || LastVerifiedCodeRef.current === codigo) return;
+        if (isLoading || LastVerifiedCodeRef.current === codigo) return;
         setIsLoading(true);
         setIsStepValid(false);
 
@@ -94,21 +94,23 @@ export const useStep3Form = (radioState: string) => {
 
     // registar datos del formulario
     useEffect(() => {
-        registerFormData(3, () => {
-            const allData = {
-                idTransaction: idTransaction,
-                codigoVerificacion: otpValue || getFormData(CodigoVerificacionRef),
-            };
+        if (LastVerifiedCodeRef.current !== null) {
+            registerFormData(3, () => {
+                const allData = {
+                    idTransaction: idTransaction,
+                    codigoVerificacion: LastVerifiedCodeRef.current || "",
+                };
 
-            return allData;
-        });
+                return allData;
+            });
+        }
     }, [registerFormData, otpValue, idTransaction]);
 
     useEffect(() => {
-        if (otpValue.length === 4 && !isLoading && isValid !== false) {
+        if (otpValue.length === 4 && !isLoading) {
             verificarCodigo(otpValue);
         }
-    }, [verificarCodigo, otpValue, isValid]);
+    }, [verificarCodigo, otpValue]);
 
     //Handler para comunicar cambios del OTP
     const handleOtpChange = useCallback((value: string) => {

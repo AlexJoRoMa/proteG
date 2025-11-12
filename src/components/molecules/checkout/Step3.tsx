@@ -18,7 +18,7 @@ const RadioStyles = {
 
 const Step3 = () => {
 
-  const { globalUserAnswers, globalIzziSelection, promoData, precioTotal } = useIzziContent();
+  const { globalIzziSelection, promoData, precioTotal } = useIzziContent();
   const { datosContratacion } = useCheckout();
   const [radioState, setRadioState] = useState('');
   const [inputCode, setInputCode] = useState('');
