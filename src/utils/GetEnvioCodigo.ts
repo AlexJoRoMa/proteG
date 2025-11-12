@@ -36,9 +36,30 @@ export async function GetEnvioCodigo(datosContratacion: Partial<DatosContratacio
         return promoTotal;
     }
 
+    function getPromos() {
+        const promosQuote = promoData.promos;
+
+        if (!promosQuote) return [];
+
+        const promosMap = Array.isArray(promosQuote)
+            ? promosQuote.map((item) => ({
+                "name": item.promoName,
+                "amount": item.promoPrice,
+                "duration": item.meses,
+                "permanent": item.permanente,
+                "startMonth": item.mesInicio
+            }))
+            : [];
+
+        const promos = [...promosMap];
+
+        return promos;
+    }
+
     const izziAhorros = promoData?.promoPackage ? promoData?.promoPackage.find((promo) => promo.name === "izzi ahorro")?.amount : 0;
     const addoms = getAddoms();
     const promoMobile = getPromoMobile();
+    const promos = getPromos();
 
 
     const BODY = {
@@ -50,7 +71,7 @@ export async function GetEnvioCodigo(datosContratacion: Partial<DatosContratacio
         "descriptionPackage": `${globalIzziSelection?.descripcion}`,
         "price": Number(Number(globalIzziSelection?.precioPaquete) - Number(izziAhorros)),
         "addons": addoms.addoms ? addoms.addoms : [],
-        "promos": promoData.promos ? promoData.promos : [],
+        "promos": promos,
         "priceAddons": addoms.totalAddoms ? addoms.totalAddoms : 0,
         "priceWithoutPromo": Number(Number(globalIzziSelection?.precioPaquete) + (Number(addoms.totalAddoms) || 0)),
         "priceWithPromo": precioTotal,
