@@ -15,7 +15,10 @@ export type ResumenData = {
         pagoAnticipado: string,
         paquete: string,
         infoAdicional: string,
-        titulo: string
+        titulo: string,
+        izziAhorro: string,
+        internet: string,
+        mes: string
     },
     boton: {
         comprobarPromociones: string,
