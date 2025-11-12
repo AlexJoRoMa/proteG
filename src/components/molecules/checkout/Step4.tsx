@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useRef, useState } from 'react';
+
+import React, { useRef, useState } from 'react';
 import { Form, Input } from '@heroui/react'
 import { DeleteIcon, UploadICon } from '@/constants/IconsConstants';
 import { useStep4Form } from '@/hooks/checkout/useStep4Form';
@@ -98,11 +98,12 @@ const Step4 = () => {
           accept='.jpg, .jpeg, .png, .pdf'
           radius='sm'
           classNames={{
-            label: 'font-bold text-lg leading-[24px] text-[#11181C] mt-[25px] px-[24px]',
+            base: 'data-[hover=true]:!cursor-pointer',
+            label: 'font-bold text-lg leading-[24px] text-[#11181C] mt-[25px] px-[24px] cursor-pointer',
             mainWrapper: 'mb-[16px] pointer',
             input: "cursor-pointer file:!hidden text-indent-[-9999px] text-transparent h-full",
-            inputWrapper: ` rounded-xl shadow-none h-[78px] ${borderClass(!!ineFile, !!errorIne)}`,
-            innerWrapper: "!items-center bg-white-0 rounded-md px-[24px] !border-0 group-data-[focus=true]:border-0",
+            inputWrapper: `cursor-pointer rounded-xl shadow-none h-[78px] ${borderClass(!!ineFile, !!errorIne)}`,
+            innerWrapper: "!items-center cursor-pointer bg-white-0 rounded-md px-[24px] !border-0 group-data-[focus=true]:border-0",
           }}
           required
           className='w-full'
@@ -135,11 +136,12 @@ const Step4 = () => {
           radius='sm'
           accept='.jpg, .jpeg, .png, .pdf'
           classNames={{
-            label: 'font-bold text-lg leading-[24px] text-[#11181C] mt-[25px] px-[24px]',
+            base: 'data-[hover=true]:!cursor-pointer',
+            label: 'font-bold text-lg leading-[24px] text-[#11181C] mt-[25px] px-[24px] cursor-pointer',
             mainWrapper: 'mb-[16px] pointer',
             input: "cursor-pointer file:!hidden text-indent-[-9999px] text-transparent",
-            inputWrapper: ` rounded-xl shadow-none h-[78px] ${borderClass(!!comprobanteFile, !!errorComprobante)}`,
-            innerWrapper: "!items-center bg-white-0 rounded-md px-[24px] !border-0 group-data-[focus=true]:border-0 group-data-[hover=true]:!border-0",
+            inputWrapper: `cursor-pointer rounded-xl shadow-none h-[78px] ${borderClass(!!comprobanteFile, !!errorComprobante)}`,
+            innerWrapper: "!items-center cursor-pointer bg-white-0 rounded-md px-[24px] !border-0 group-data-[focus=true]:border-0 group-data-[hover=true]:!border-0",
           }}
           required
           className='w-full'
