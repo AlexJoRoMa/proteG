@@ -61,7 +61,7 @@ const TodoEnUnoComp = async ({id} : TodoEnUnoCompID) =>{
             
             </div>
 
-            {/*  div del contenido derecho  */}
+            {/*  div del contenido derecho */}
             <div className=" relative w-full lg:w-1/2 md:w-1/2 h-64 lg:h-auto xsm:h-1/2 md:h-auto order-first lg:order-none md:order-none overflow-hidden">
             {imgURL && (
               <Image
