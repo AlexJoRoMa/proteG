@@ -182,12 +182,12 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
                                     </h3>
                                     <span
                                         onClick={confirmExit}
-                                        className="font-bold text-lg leading-[24px] underline"
+                                        className="font-bold text-lg leading-[24px] underline cursor-pointer"
                                     >{text.textoAbandonoFlujo}</span>
                                 </div>
                                 <button
                                     onClick={handleCancel}
-                                    className="w-[320px] py-[14px] px-[16px] rounded-md bg-black-0 font-bold text-lg leading-[24px] text-white-0"
+                                    className="cursor-pointer w-[320px] py-[14px] px-[16px] rounded-md bg-black-0 font-bold text-lg leading-[24px] text-white-0"
                                 >{text.textoPermanenciaFlujo}</button>
                                 <div>
                                     <p className="text-lg leading-[24px] text-center">

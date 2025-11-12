@@ -8,26 +8,18 @@ import { useIzziContent } from "@/components/providers/IzziProvider";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FormatCurrency } from "@/utils/Currency";
+import { Button } from "@heroui/react";
 // import ModalFechaInvalida from "../checkout/modals/ModalFechaInvalida";
 
 export default function ResumenContainerConfigurador() {
 
     const { copysResumen, checkedPromotions, setCheckedPromotions, resumenIcon, userAnswers, configuradorEntry, izziSelection } = useContent();
-    const { promoData, setPromoData } = useIzziContent();
+    const { setPromoData } = useIzziContent();
     const resumenCopys = copysResumen as ResumenData;
     const [loading, setLoading] = useState(false);
     const [promoError, setPromoError] = useState(false);
-    const { coberturaData, setRpt, setOffnetIzzi, setOffnetSky, setParams } = useIzziContent();
-    const router = useRouter(); 
-    const totalPromoPackage = promoData?.promoPackage
-    ?.filter(promo => promo.amount !== "0")
-    ?.reduce((acc, promo) => acc + Number(promo.amount), 0);
-
-    const totalPromos = promoData?.promos
-    ?.filter(promo => promo.promoPrice !== 0)
-    ?.reduce((acc, promo) => acc + Math.abs(Number(promo.promoPrice)), 0);
-
-    const totalDiscount = Number(totalPromos) + Number(totalPromoPackage);
+    const { coberturaData, setRpt, setOffnetIzzi, setOffnetSky, setParams, ahorroTotal } = useIzziContent();
+    const router = useRouter();
 
     const handleClick = async () => {
         setLoading(true);
@@ -114,7 +106,7 @@ export default function ResumenContainerConfigurador() {
                             <h3 className="font-bold text-xl text-white-0">{resumenCopys.promociones.titulo}</h3>
                             <div className="flex gap-[4px] font-normal text-lg leading-[24px] text-white-0">
                                 <h4>{resumenCopys.promociones.textoAhorro}</h4>
-                                <h4>{FormatCurrency(Number(totalDiscount))}</h4>
+                                <h4>{FormatCurrency(Number(ahorroTotal))}</h4>
                             </div>
                         </div>
                     </div>
@@ -125,14 +117,13 @@ export default function ResumenContainerConfigurador() {
 
             <div className="hidden xl:block">
                 {!checkedPromotions ?
-                    <button
+                    <Button
                         className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                        onClick={() => {
-                            handleClick();
-                        }}
+                        onPress={handleClick}
+                        isDisabled={loading}
                     >
                         {resumenCopys.boton.comprobarPromociones}
-                    </button>
+                    </Button>
                     :
                     // <button
                     //     disabled={loading}
@@ -140,13 +131,13 @@ export default function ResumenContainerConfigurador() {
                     // >
                     //     {resumenCopys.boton.contratar.titulo}
                     // </button>
-                    <button
+                    <Button
                         className={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"}
-                        onClick={handleContratar}
-                        disabled={loading && promoError}
+                        onPress={handleContratar}
+                        isDisabled={loading && promoError}
                     >
                         {resumenCopys.boton.contratar.titulo}
-                    </button>
+                    </Button>
                 }
                 {/* <ModalFechaInvalida isOpen={promoError} /> */}
             </div>
