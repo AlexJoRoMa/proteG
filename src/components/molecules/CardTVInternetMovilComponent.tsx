@@ -19,7 +19,7 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
 
     const gridType =  assetsLength > 4 ? 'grid-cols-4 grid-rows-2 gap-x-4' : 'grid-cols-2 grid-rows-2'
 
-
+console.log('🦄 ',  card?.fields.esModal)
 
   return (
     <div className='px-[16px] md:px-[24px] py-[32px] bg-white 3xl:h-[660px] 2xl:h-[690px] md:h-[660px] xsm:h-[670px] rounded-md relative flex-col flex'>
@@ -111,9 +111,9 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
         )
       }          
         <div className='mt-auto'>
-            {card?.fields.isModal == 'si' ? (
+            {card?.fields.esModal == true ? (
                     <ButtonModal
-                        classStyles='w-full mb-4 border-[1px solid black] rounded-md text-black text-[16px] md:text-[18px] font-bold'
+                        classStyles='w-full mb-4 border-[2px] border-black bg-transparent  rounded-md text-black text-[16px] md:text-[18px] font-bold'
                         textBtn={card?.fields?.textBtn1 as string}
                         idModal={typeof card?.fields?.modal === 'object' && card?.fields?.modal !== null && 'sys' in card.fields.modal ? (card.fields.modal as { sys: { id: string } }).sys.id : ''}
                         modalContentClassName="xl:h-auto h-full"
