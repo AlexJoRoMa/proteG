@@ -30,7 +30,7 @@ const CarouselComponent = ({children, carouselIndex = 0, buttons = false, dots =
 
 
   return (
-        <div className="embla " >
+        <div className="embla" >
           <div className="embla__viewport"  ref={emblaRef}>
             <div className={`embla__container flex ${justifyCenter ? 'justify-center' : ''}`}>
                 {childrenArray.map((child, index) => (
