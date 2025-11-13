@@ -181,14 +181,15 @@ const Step2 = () => {
         }}
       >
         {getValue('datosPersonales.terminos.textoPrevio')}
-        <ButtonGhost
-          classStyles='text-black underline font-bold text-[16px] leading-6 underline p-0 border-0 ml-[4px]'
-          text={getValue('datosPersonales.terminos.textoPrincipal')}
-          href={getValue('datosPersonales.terminos.url')}
-        >
-        </ButtonGhost>
-
       </Checkbox>
+      <ButtonGhost
+        classStyles='text-black underline font-bold text-[16px] leading-6 underline p-0 border-0 ml-[4px]'
+        text={getValue('datosPersonales.terminos.textoPrincipal')}
+        href={getValue('datosPersonales.terminos.url')}
+        external={true}
+      >
+      </ButtonGhost>
+
 
     </div>
   )
