@@ -16,7 +16,7 @@ const Step2 = () => {
   const { getValue } = useMicrocopies('contratacion-datosPersonales');
   const [checked, setChecked] = useState(false);
   const { formattedAddress } = useIzziContent();
- 
+
   const {
     DatosPersonalesRef,
     DireccionEnvioRef,
@@ -69,7 +69,7 @@ const Step2 = () => {
           <Switch
             aria-label="Extrangero"
             isSelected={esExtranjero}
-            onValueChange={setEsExtranjero}
+            onValueChange={(checked) => setEsExtranjero(checked)}
             classNames={{
               wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
               thumb: "bg-white-0"
@@ -124,7 +124,7 @@ const Step2 = () => {
         <Switch
           aria-label="Facturacion"
           isSelected={necesitaFacturar}
-          onValueChange={setNecesitaFacturar}
+          onValueChange={(checked) => setNecesitaFacturar(checked)}
           classNames={{
             wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
             thumb: "bg-white-0"
@@ -148,7 +148,7 @@ const Step2 = () => {
               <Switch
                 aria-label="Direccion Diferente"
                 isSelected={facturarOtraDireccion}
-                onValueChange={setFacturarOtraDireccion}
+                onValueChange={(checked) => setFacturarOtraDireccion(checked)}
                 classNames={{
                   wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
                   thumb: "bg-white-0"

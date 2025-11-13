@@ -1,6 +1,9 @@
+'use client'
+import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { CodigosCFDI, RegimenFiscal } from "@/constants/ContratacionConstants";
 import { inputStyles, SelectStyles } from "@/constants/StylesConstants";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
+import { DatosContratacion } from "@/types/Contratacion";
 import { InputFilter } from "@/utils/inputFilters";
 import { Form, Input, Select, SelectItem } from "@heroui/react";
 import { FC, RefObject } from "react";
@@ -16,6 +19,11 @@ interface Props {
 export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regimen, setRegimen }) => {
 
     const { getValue } = useMicrocopies('formulario-facturacion');
+    const { datosContratacion } = useCheckout();
+
+    const facturacion: Partial<DatosContratacion> = datosContratacion ?? {};
+    const datosFacturacion = facturacion.DatosPersonales?.facturacion;
+
 
     const triggerFormChange = () => {
         if (formRef.current) {
@@ -44,6 +52,7 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 errorMessage={getValue('facturacion.error.rfc')}
                 onInput={(e) => InputFilter(e, 'alfanumerico')}
                 onChange={triggerFormChange}
+                defaultValue={datosFacturacion?.rfc}
             />
             <Select
                 label={getValue('facturacion.label.cfdi')}
@@ -61,6 +70,7 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                     triggerFormChange();
                 }}
                 errorMessage="Ingresa un CFDI valido"
+                defaultSelectedKeys={datosFacturacion?.comprobanteFiscal ? [datosFacturacion.comprobanteFiscal] : []}
             >
                 {
                     CodigosCFDI.map((codigo, index, arr) => (
@@ -86,6 +96,7 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                     triggerFormChange();
                 }}
                 errorMessage="Ingresa un regimen fiscal valido"
+                defaultSelectedKeys={datosFacturacion?.regimenFiscal ? [datosFacturacion.regimenFiscal] : []}
             >
                 {RegimenFiscal.map((regimenItem, index, arr) => (
                     <SelectItem key={regimenItem.key} className={`h-[38px] ${index !== arr.length - 1 ? "border-b-1 border-black-0 rounded-none" : ""}`}>

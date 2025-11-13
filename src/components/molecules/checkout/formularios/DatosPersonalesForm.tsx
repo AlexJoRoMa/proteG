@@ -6,6 +6,8 @@ import { inputStyles } from "@/constants/StylesConstants";
 import { InputFilter } from "@/utils/inputFilters";
 import ButtonGhost from "@/components/atoms/ButtonGhost";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
+import { useCheckout } from "@/components/providers/CheckoutProvider";
+import { DatosContratacion } from "@/types/Contratacion";
 
 interface Props {
     formRef: RefObject<HTMLFormElement | null>
@@ -13,7 +15,11 @@ interface Props {
 }
 
 export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
+    const { datosContratacion } = useCheckout();
     const { getValue } = useMicrocopies('formulario-datosPersonales');
+
+    const personal: Partial<DatosContratacion> = datosContratacion ?? {};
+    const datosPersonales = personal.DatosPersonales?.personal
 
     return (
         <Form
@@ -36,6 +42,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     placeholder={getValue('datosPersonales.placeholder.nombre')}
                     errorMessage={getValue('datosPersonales.error.nombre')}
                     onInput={(e) => InputFilter(e, 'letras')}
+                    defaultValue={datosPersonales?.firstName}
                 />
             </div>
 
@@ -52,6 +59,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     className='w-full'
                     placeholder={getValue('datosPersonales.placeholder.segundoNombre')}
                     onInput={(e) => InputFilter(e, 'letras')}
+                    defaultValue={datosPersonales?.secondName}
                 />
             </div>
 
@@ -70,6 +78,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     placeholder={getValue('datosPersonales.placeholder.apellidoPaterno')}
                     errorMessage={getValue('datosPersonales.error.apellido')}
                     onInput={(e) => InputFilter(e, 'letras')}
+                    defaultValue={datosPersonales?.firstLastName}
                 />
             </div>
 
@@ -88,6 +97,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     placeholder={getValue('datosPersonales.placeholder.apellidoMaterno')}
                     errorMessage={getValue('datosPersonales.error.apellido')}
                     onInput={(e) => InputFilter(e, 'letras')}
+                    defaultValue={datosPersonales?.secondLastName}
                 />
             </div>
 
@@ -106,6 +116,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     placeholder={getValue('datosPersonales.placeholder.telefono')}
                     errorMessage={getValue('datosPersonales.error.telefono')}
                     onInput={(e) => InputFilter(e, 'numeros')}
+                    defaultValue={datosPersonales?.phone}
                 />
             </div>
 
@@ -122,6 +133,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     className='w-full'
                     placeholder={getValue('datosPersonales.placeholder.telefono')}
                     onInput={(e) => InputFilter(e, 'numeros')}
+                    defaultValue={datosPersonales?.aditionalTel}
                 />
             </div>
 
@@ -142,6 +154,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                             onInput={(e) => InputFilter(e, 'alfanumerico')}
                             placeholder={getValue('datosPersonales.placeholder.pasaporte')}
                             errorMessage={getValue('datosPersonales.error.pasaporte')}
+                            defaultValue={datosPersonales?.passport}
                         /> :
                         <Input
                             label={getValue('datosPersonales.label.curp')}
@@ -156,6 +169,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                             onInput={(e) => InputFilter(e, 'alfanumerico')}
                             placeholder={getValue('datosPersonales.placeholder.curp')}
                             errorMessage={getValue('datosPersonales.error.curp')}
+                            defaultValue={datosPersonales?.curp}
                         />
                 }
                 <div className='w-full text-end'>
@@ -183,6 +197,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     className='w-full'
                     placeholder={getValue('datosPersonales.placeholder.correo')}
                     errorMessage={getValue('datosPersonales.error.correo')}
+                    defaultValue={datosPersonales?.email}
                 />
             </div>
         </Form>
