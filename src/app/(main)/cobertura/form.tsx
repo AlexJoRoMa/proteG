@@ -161,33 +161,40 @@ export default function CoberturaForm() {
         alert("Sorry, no position available.");
     }
 
-    function mapAddressFields (data: GeocodeType) {
-        if (data && data.results) data.results[0].address_components.map(item => {
-            switch (item.types[0]) {
-                case 'postal_code':
-                    setPostalCode(item.long_name)
-                    break;
-                case 'route':
-                    setStreet(item.long_name)
-                    break;
-                case 'street_number':
-                    setStreetNumber(item.long_name)
-                    break;
-                case 'neighborhood':
-                    setNeighborhood(item.long_name)
-                    break;
-                case 'locality':
-                    setLocality(item.long_name)
-                    break;
-                case 'administrative_area_level_1':
-                    setState(item.long_name)
-                    break;
-                default:
-                    break;
-            }
-    
-        })
+function mapAddressFields(data: GeocodeType) {
+    const components = data?.results?.[0]?.address_components ?? [];
+  
+    for (const item of components) {
+      const value = item.long_name;
+  
+      for (const type of item.types) {
+        switch (type) {
+          case 'postal_code':
+            setPostalCode(value);
+            break;
+          case 'route':
+            setStreet(value);
+            break;
+          case 'street_number':
+            setStreetNumber(value);
+            break;
+          case 'neighborhood':
+          case 'sublocality':
+          case 'sublocality_level_1': 
+            setNeighborhood(value);
+            break;
+          case 'locality':
+            setLocality(value);
+            break;
+          case 'administrative_area_level_1':
+            setState(value);
+            break;
+          default:
+            break;
+        }
+      }
     }
+  }
 
       return (
         <>

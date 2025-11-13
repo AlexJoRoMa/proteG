@@ -48,4 +48,6 @@ export type DataFields = {
     setParams: React.Dispatch<React.SetStateAction<ConfigParams>>,
     globalCheckedPromotions: boolean,
     setGlobalCheckedPromotions: React.Dispatch<React.SetStateAction<boolean>>
+    ahorroTotal: number,
+    setAhorroTotal: React.Dispatch<React.SetStateAction<number>>
 }
