@@ -3,7 +3,7 @@
 import { internetComponentFields, movilComponentFields, tvComponentFields } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider"
 import { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, useDisclosure } from "@heroui/react";
-import ButtonGhost from "@/components/atoms/ButtonGhost";
+import { Button } from '@heroui/react';
 import { useEffect, useState } from "react";
 import ResumenContainerConfigurador from "./resumenContainerConfigurador";
 import { ResumenData } from "@/types/ResumenCompra";
@@ -181,12 +181,13 @@ export default function ResumenPedido() {
                                     {resumenCopys.boton.comprobarPromociones}
                                 </button>
                                 :
-                                <ButtonGhost
-                                    disabled={loading && promoError}
-                                    classStyles={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center"}
-                                    text={resumenCopys.boton.contratar.titulo}
+                                <Button
+                                    isDisabled={loading || promoError}
+                                    className={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center"}
                                     href={resumenCopys.boton.contratar.url}
-                                />
+                                >
+                                    {resumenCopys.boton.contratar.titulo}
+                                </Button>
                             }
                         </div>
                     </div>
@@ -235,12 +236,13 @@ export default function ResumenPedido() {
                                                     {resumenCopys.boton.comprobarPromociones}
                                                 </button>
                                                 :
-                                                <ButtonGhost
-                                                    disabled={loading && promoError}
-                                                    classStyles={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg"}
-                                                    text={resumenCopys.boton.contratar.titulo}
+                                                <Button
+                                                    isDisabled={loading || promoError}
+                                                    className={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg"}
                                                     href={resumenCopys.boton.contratar.url}
-                                                />
+                                                >
+                                                    {resumenCopys.boton.contratar.titulo}
+                                                </Button>
                                             }
                                         </div>
 

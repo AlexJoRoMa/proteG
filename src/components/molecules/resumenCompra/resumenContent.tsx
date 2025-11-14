@@ -41,7 +41,8 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
         + Number(userSelection?.tv?.paquete?.precioTachado || userSelection?.tv?.paquete?.precioPaquete || 0)
         + (totalOttPrice || 0);
     const precioTotal = totalSinDescuento && ahorroCombinado ? totalSinDescuento - ahorroCombinado - (Number(izziAhorro?.amount) || 0) - (Math.abs(Number(pagoAnticipado?.promoPrice)) || 0) : Number(globalIzziSelection?.precioPaquete) + (totalOttPrice ? totalOttPrice : 0);
-    const ahorroTotal = (Number(descuentoInternet || 0) + Number(izziAhorro) || 0) + (Number(ahorroCombinado) || 0) + (Number(pagoAnticipado) || 0);
+    const ahorroTotal = (Number(descuentoInternet || 0) + Number(izziAhorro?.amount) || 0) + (Number(ahorroCombinado) || 0) + (Number(pagoAnticipado) || 0);
+
     useEffect(() => {
         setAhorroTotal(ahorroTotal);
         setPrecioCombinado(ahorroCombinado as number);
