@@ -3,7 +3,7 @@ export type CookiesProps = {
     title?:string;
     long?:string;
     aceptar?:string;
-    rechzar?:string;
+    rechazar?:string;
     cookieAcept?:string;
     cookieAutoriza?:string;
 
