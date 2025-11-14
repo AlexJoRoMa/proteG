@@ -13,7 +13,7 @@ type Shift = '09:00 - 14:00' | '14:00 - 18:00';
 
 export function useStep5Form() {
 
-    const { registerStepValidator, registerFormData, setIsStepValid, getCapacity, datosContratacion } = useCheckout();
+    const { registerStepValidator, registerFormData, setIsStepValid, getCapacity, datosContratacion, currentStep } = useCheckout();
 
     const [selectedShift, setSelectedShift] = useState<Shift>('09:00 - 14:00');
     const [selectedDateIso, setSelectedDateIso] = useState<string | null>(null);
@@ -52,7 +52,7 @@ export function useStep5Form() {
         const wanted = shiftMap[selectedShift];
         return normalizarCapacity.filter(item => item.shift === wanted)
             .map(item => item.isoDate);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedShift, normalizarCapacity]);
 
     //validacion de step5
@@ -112,12 +112,40 @@ export function useStep5Form() {
         return !availableIsos.includes(iso);
     };
 
-    // convertir la ISO seelccionada a DateValue
+    // convertir la ISO seleccionada a DateValue
     const selectedDateValue: DateValue | null = selectedDateIso ?
         (() => {
             const [year, month, day] = selectedDateIso.split("-").map(Number);
             return new CalendarDate(year, month, day);
         })() : null;
+
+    //hidratar datos el regresar al step
+    useEffect(() => {
+        if (currentStep === 5) {
+            const prev = datosContratacion?.Instalacion;
+            if (prev?.cvTimeslot && prev?.requestedShipDate && normalizarCapacity.length) {
+                const [day, month, year] = prev.requestedShipDate.split("/");
+                const iso = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+
+                const lower = prev.cvTimeslot.toLowerCase();
+                const shift = lower.includes("vespertino") ? "14:00 - 18:00" : "09:00 - 14:00";
+
+                const found = normalizarCapacity.find((item) => item.isoDate === iso && item.original.cvTimeslot === prev.cvTimeslot);
+
+                if (found) {
+                    setSelectedShift(shift);
+                    setSelectedDateIso(iso);
+                    setSelectedCapacityItem(found.original);
+                    setIsStepValid(true);
+                }
+            } else {
+                setSelectedShift("09:00 - 14:00");
+                setSelectedDateIso(null);
+                setSelectedCapacityItem(null);
+                setIsStepValid(false);
+            }
+        }
+    }, [datosContratacion, normalizarCapacity, setIsStepValid, currentStep])
 
     return {
         CapacityRef,

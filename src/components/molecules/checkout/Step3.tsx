@@ -194,7 +194,7 @@ const Step3 = () => {
                 {
                   timer <= 0 && (
                     <button
-                      className='text-black-0 underline font-bold text-base xl:text-lg'
+                      className='text-black-0 underline font-bold text-base xl:text-lg cursor-pointer'
                       onClick={() => {
                         setIsValid(null);
                         hanldeResendCode();
@@ -220,7 +220,7 @@ const Step3 = () => {
                   <div className='flex flex-col font-bold leading-[24px] text-base xl:text-lg'>
                     <span>{getValue('verificacion.error.sinCodigo')}</span>
                     <button
-                      className='text-black-0 underline font-bold'
+                      className='text-black-0 underline font-bold cursor-pointer'
                       onClick={() => {
                         setIsValid(null);
                         hanldeResendCode();

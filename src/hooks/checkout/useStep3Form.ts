@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -15,7 +14,7 @@ function generateTransactionId(): string {
 }
 
 export const useStep3Form = (radioState: string) => {
-    const { registerStepValidator, registerFormData, setIsStepValid, isStepCompleted, currentStep } = useCheckout();
+    const { registerStepValidator, registerFormData, setIsStepValid, currentStep } = useCheckout();
 
     const CodigoVerificacionRef = useRef<HTMLFormElement | null>(null);
     const LastVerifiedCodeRef = useRef<string | null>(null);
@@ -74,7 +73,7 @@ export const useStep3Form = (radioState: string) => {
         } finally {
             setIsLoading(false);
         }
-    }, [setIsStepValid, idTransaction, radioState, isLoading, isValid]);
+    }, [idTransaction, radioState, isLoading, isValid]);
 
     // validador de paso
     const validateStep3 = useCallback(async () => {
@@ -89,8 +88,10 @@ export const useStep3Form = (radioState: string) => {
     }, []);
 
     useEffect(() => {
-        registerStepValidator(3, validateStep3);
-    }, [registerStepValidator, validateStep3]);
+        if (currentStep === 3) {
+            registerStepValidator(3, validateStep3);
+        }
+    }, [registerStepValidator, validateStep3, currentStep]);
 
     // registar datos del formulario
     useEffect(() => {
@@ -110,7 +111,7 @@ export const useStep3Form = (radioState: string) => {
         if (otpValue.length === 4 && !isLoading) {
             verificarCodigo(otpValue);
         }
-    }, [verificarCodigo, otpValue]);
+    }, [verificarCodigo, otpValue, isValid]);
 
     //Handler para comunicar cambios del OTP
     const handleOtpChange = useCallback((value: string) => {
@@ -146,14 +147,14 @@ export const useStep3Form = (radioState: string) => {
         };
     }, []);
 
-    const resetStep3 = useCallback(() => {
+    const resetStep3 = () => {
         if (timerRef.current) clearInterval(timerRef.current);
         setOtpValue("");
         setIsValid(null);
         setIsLoading(false)
         setTimer(0);
         setIsStepValid(false);
-    }, [setIsStepValid])
+    }
 
     return {
         CodigoVerificacionRef,
