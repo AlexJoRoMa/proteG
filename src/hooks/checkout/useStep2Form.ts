@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -80,7 +79,7 @@ export const useStep2Form = () => {
                 }, 100);
             }
         }
-    }, [registerStepValidator, validateStep2, currentStep]);
+    }, [registerStepValidator, validateStep2, currentStep, setIsStepValid]);
 
     useEffect(() => {
         registerFormData(2, () => {
@@ -170,7 +169,7 @@ export const useStep2Form = () => {
                 });
             };
         }
-    }, [necesitaFacturar, facturarOtraDireccion, cfdi, regimen, setIsStepValid, checkboxChecked, mounted]);
+    }, [necesitaFacturar, facturarOtraDireccion, cfdi, regimen, setIsStepValid, checkboxChecked, mounted, currentStep]);
 
     return {
         DatosPersonalesRef,
