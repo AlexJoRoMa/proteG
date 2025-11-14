@@ -1,14 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react'
-import { CheckoutSteps as CheckoutStepsConstants } from '@/constants/CheckoutSteps'
+import { CheckoutStepsDomiciliado, CheckoutStepsNoDomiciliado } from '@/constants/CheckoutSteps'
 import { useCheckout } from '@/components/providers/CheckoutProvider'
 import CheckoutContent from './CheckoutContent'
 import { CheckStepIcon, EditIcon } from '@/constants/IconsConstants'
 import ResumenContainer from '@/components/molecules/checkout/resumenContainer'
+import { useIzziContent } from '@/components/providers/IzziProvider'
 
 const CheckoutSteps = () => {
-  const stepsArray = Object.values(CheckoutStepsConstants)
+  const { globalFlagDomicilio } = useIzziContent();
   const { currentStep, goToStep, canGoToStep, nextStep, prevStep, totalSteps } = useCheckout()
+
+  const CheckoutStepsConstants = globalFlagDomicilio ? CheckoutStepsDomiciliado : CheckoutStepsNoDomiciliado;
+  const stepsArray = Object.values(CheckoutStepsConstants)
 
   return (
     <>

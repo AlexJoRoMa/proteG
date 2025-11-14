@@ -1,20 +1,41 @@
 import { DatosContratacion } from "@/types/Contratacion";
 import { RefObject } from "react";
 
-export async function GetSubmitCapacity(processId: string, datosContratacion: RefObject<Partial<DatosContratacion> | null>) {
+export async function GetSubmitCapacity(processId: string, datosContratacion: RefObject<Partial<DatosContratacion> | null>, cardRecurrent: boolean, globalFlagDomicilio: boolean) {
+
+    function getPaymentReference() {
+        if (datosContratacion.current?.Pago?.metodoPago === "creditCard") {
+            if (cardRecurrent) {
+                return "ONLINE_SAVED";
+            } else {
+                return "ONLINE";
+            }
+        } else if (datosContratacion.current?.Pago?.metodoPago === "paypal") {
+            return "PAYPAL";
+        } else {
+            return "IZZI_CHANNELS";
+        }
+    }
 
     try {
         const headers = new Headers({
             "Content-Type": "application/json",
         });
 
+        const paymentReference = getPaymentReference();
+
         const body = JSON.stringify({
             "processId": processId,
-            "schedule": {
-                "cvTimeslot": datosContratacion.current?.Instalacion?.cvTimeslot,
-                "requestedShipDate": datosContratacion.current?.Instalacion?.requestedShipDate,
-            },
-            "paymentType": "ONLINE",
+            "schedule": globalFlagDomicilio ?
+                {
+                    "cvTimeslot": "",
+                    "requestedShipDate": "",
+                } :
+                {
+                    "cvTimeslot": datosContratacion.current?.Instalacion?.cvTimeslot,
+                    "requestedShipDate": datosContratacion.current?.Instalacion?.requestedShipDate,
+                },
+            "paymentType": paymentReference,
             "installationComments": "MARCAR 10 MINUTOS ANTES DE LLEGAR",
             "installationExpress": false,
             "termExemption": false

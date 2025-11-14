@@ -49,5 +49,7 @@ export type DataFields = {
     globalCheckedPromotions: boolean,
     setGlobalCheckedPromotions: React.Dispatch<React.SetStateAction<boolean>>
     ahorroTotal: number,
-    setAhorroTotal: React.Dispatch<React.SetStateAction<number>>
+    setAhorroTotal: React.Dispatch<React.SetStateAction<number>>,
+    globalFlagDomicilio: boolean,
+    setGlobalFlagDomicilio: React.Dispatch<React.SetStateAction<boolean>>,
 }

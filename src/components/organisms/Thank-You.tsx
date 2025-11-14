@@ -23,13 +23,19 @@ type Shift = {
 
 export default function ThankYou() {
 
-    const { globalUserAnswers, globalDatosContratacion, globalIzziSelection, globalProcessStatus, clearCheckoutFlow } = useIzziContent();
+    const { globalUserAnswers, globalDatosContratacion, globalIzziSelection, globalProcessStatus, clearCheckoutFlow, globalFlagDomicilio } = useIzziContent();
     const { icon, copys, copyResumen } = useThankYou();
 
     const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
 
     const copy = copys as ThankyouCopys;
     const resumenCopys = copyResumen as ResumenData;
+
+    useEffect(() => {
+        if (!globalProcessStatus.accountNumber || !globalDatosContratacion.Pago?.metodoPago) {
+            redirect('/cobertura');
+        }
+    }, [globalDatosContratacion.Pago?.metodoPago, globalProcessStatus.accountNumber]);
 
     useEffect(() => {
         const horario = globalDatosContratacion.Instalacion;
@@ -91,7 +97,11 @@ export default function ThankYou() {
                 <p className="flex flex-col gap-[8px] text-white-0 font-semibold text-lg xl:text-xl xl:py-[13px] leading-[24px] whitespace-normal">
                     <span className="font-semibold text-xl xl:text-2xl">{globalIzziSelection?.tituloTriplePlay ? globalIzziSelection.tituloTriplePlay : globalIzziSelection?.titulo}</span>
                     <span className="font-semibold text-xl xl:text-2xl">{`${FormatCurrency(Number(globalIzziSelection?.precioPaquete))} ${copy.banner.currency}`}</span>
-                    <span className="font-semibold text-base xl:text-lg">{`${copy.banner.instalacion} ${selectedShift?.day} de ${selectedShift?.longMonth} de ${selectedShift?.year} de ${selectedShift?.shift}`}</span>
+                    {
+                        globalFlagDomicilio ?
+                            <span className="font-semibold text-base xl:text-lg">{copy.banner.domiciliacion}</span> :
+                            <span className="font-semibold text-base xl:text-lg">{`${copy.banner.instalacion} ${selectedShift?.day} de ${selectedShift?.longMonth} de ${selectedShift?.year} de ${selectedShift?.shift}`}</span>
+                    }
                 </p>
             </div>
 
@@ -149,7 +159,7 @@ export default function ThankYou() {
                                     <span>{`${copy.info.numeroOrden} `}</span>
                                     <span className="font-bold">{`#${globalProcessStatus.orderNumber}`}</span>
                                 </p>
-                                {selectedShift !== null && (
+                                {!globalFlagDomicilio && (
                                     <p>
                                         <span>{`${copy.info.horaInstalacion} `}</span>
                                         <span className="font-bold">{`${globalDatosContratacion.Instalacion?.requestedShipDate} | ${selectedShift?.shift}`}</span>

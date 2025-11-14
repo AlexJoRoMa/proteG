@@ -27,8 +27,6 @@ interface CheckoutContextType {
   setDatosContratacion: React.Dispatch<React.SetStateAction<Partial<DatosContratacion>>>
   getCapacity: Record<string, string>[] | null
   setGetCapacity: (value: []) => void
-  getIntentosInstalacion: number
-  setGetIntentosInstalacion: (value: number) => void
   izziEnroll: string
   setIzziEnroll: (value: string) => void
   processStatus: Partial<ProcessStatus>,
@@ -36,7 +34,9 @@ interface CheckoutContextType {
   statusStep: Partial<StatusFlujo>
   setStatusStep: React.Dispatch<React.SetStateAction<Partial<StatusFlujo>>>
   paymentReference: Partial<PaymentReference> | undefined,
-  setPaymentReference: React.Dispatch<React.SetStateAction<Partial<PaymentReference> | undefined>>
+  setPaymentReference: React.Dispatch<React.SetStateAction<Partial<PaymentReference> | undefined>>,
+  cardRecurrent: boolean,
+  setCardRecurrent: React.Dispatch<React.SetStateAction<boolean>>,
 
   // Navigation functions
   goToStep: (step: number) => void
@@ -59,7 +59,6 @@ const CheckoutContext = createContext<CheckoutContextType | undefined>(undefined
 
 interface CheckoutProviderProps {
   children: React.ReactNode
-  totalSteps?: number
   initialStep?: number
   icon: EntrySkeletonType<ResumenIcon>
   paypalIcon: EntrySkeletonType<ResumenIcon>
@@ -68,12 +67,12 @@ interface CheckoutProviderProps {
 
 export const CheckoutProvider = ({
   children,
-  totalSteps = 6,
   initialStep = 2,
   icon,
   paypalIcon,
   copyResumen,
 }: CheckoutProviderProps) => {
+  const [totalSteps, setTotalSteps] = useState<number>(6);
   const [currentStep, setCurrentStep] = useState(initialStep)
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
   const validators = useRef<Record<number, StepValidator>>({})
@@ -83,7 +82,7 @@ export const CheckoutProvider = ({
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [getCapacity, setGetCapacity] = useState<Record<string, string>[] | null>(null);
   const [paymentReference, setPaymentReference] = useState<Partial<PaymentReference> | undefined>(undefined);
-  const [getIntentosInstalacion, setGetIntentosInstalacion] = useState<number>(1);
+  const [cardRecurrent, setCardRecurrent] = useState<boolean>(false);
   const [statusStep, setStatusStep] = useState<Partial<StatusFlujo>>({
     step1: { completado: true },
     step2: { completado: false },
@@ -93,7 +92,7 @@ export const CheckoutProvider = ({
     step6: { completado: false },
   });
 
-  const { setGlobalDatosContratacion, setGlobalProcessStatus } = useIzziContent();
+  const { setGlobalDatosContratacion, setGlobalProcessStatus, globalFlagDomicilio } = useIzziContent();
 
   // states con informacion del los steps
   const [datosContratacion, setDatosContratacion] = useState<Partial<DatosContratacion>>({});
@@ -104,6 +103,7 @@ export const CheckoutProvider = ({
 
   useEffect(() => setGlobalDatosContratacion(datosContratacion), [datosContratacion, setGlobalDatosContratacion]);
   useEffect(() => setGlobalProcessStatus(processStatus), [processStatus, setGlobalProcessStatus]);
+  useEffect(() => setTotalSteps(globalFlagDomicilio ? 5 : 6), [globalFlagDomicilio]);
 
   const goToStep = useCallback((step: number) => {
     if (step === 1) {
@@ -186,11 +186,12 @@ export const CheckoutProvider = ({
 
   useEffect(() => {
     const status = isStepCompleted(currentStep);
-    if (!status) {
+    if (currentStep === totalSteps) {
+      setIsStepValid(true);
+    } else if (!status) {
       setIsStepValid(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isStepCompleted, currentStep]);
+  }, [isStepCompleted, currentStep, totalSteps]);
 
 
   const value: CheckoutContextType = {
@@ -221,8 +222,6 @@ export const CheckoutProvider = ({
     setDatosContratacion,
     getCapacity,
     setGetCapacity,
-    getIntentosInstalacion,
-    setGetIntentosInstalacion,
     izziEnroll,
     setIzziEnroll,
     processStatus,
@@ -231,6 +230,8 @@ export const CheckoutProvider = ({
     setStatusStep,
     paymentReference,
     setPaymentReference,
+    cardRecurrent,
+    setCardRecurrent
   }
 
   return (
