@@ -92,7 +92,9 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
               ))}
             </NavbarContent>
         </Navbar>
-        <Navbar onMenuOpenChange={setIsMenuOpen}
+        <Navbar 
+        isMenuOpen={isMenuOpen}
+        onMenuOpenChange={setIsMenuOpen}
         classNames={{
         wrapper: "max-w-full h-[88px] pl-4 pr-6 bg-white-0",
         item: `
@@ -183,6 +185,7 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
         {navbar[0].fields?.navigation?.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link
+              onClick={() => setIsMenuOpen(false)}
               className="w-full text-black-0 text-[20px]"
               href={normalizeUrl(item.fields.navigationUrl)}
             >

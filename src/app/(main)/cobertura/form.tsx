@@ -196,6 +196,42 @@ function mapAddressFields(data: GeocodeType) {
     }
   }
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab'];
+    
+    if (allowedKeys.includes(e.key)) {
+        return;
+    }
+    
+
+    if (!/\d/.test(e.key)) {
+        e.preventDefault();
+    }
+  };
+
+  
+const handleCharPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const allowedKeys = [
+    'Backspace',
+    'Delete',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowUp',
+    'ArrowDown',
+    'Tab'
+  ];
+
+  if (allowedKeys.includes(e.key)) {
+    return;
+  }
+
+  // Solo letras (mayúsculas y minúsculas), opcionalmente espacios
+  if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]$/.test(e.key)) {
+    e.preventDefault();
+  }
+};
+
+
       return (
         <>
         {isLoading &&
@@ -291,6 +327,7 @@ function mapAddressFields(data: GeocodeType) {
                 name="locality"
                 type="text"
                 value={locality}
+                onKeyDown={handleCharPress}
                 onValueChange={setLocality}
                 classNames={inputStyles}
             />
@@ -305,6 +342,7 @@ function mapAddressFields(data: GeocodeType) {
                 name="state"
                 type="text"
                 value={state}
+                onKeyDown={handleCharPress}
                 onValueChange={setState}
                 classNames={inputStyles}
             />
@@ -318,6 +356,7 @@ function mapAddressFields(data: GeocodeType) {
                 name="name"
                 type="text"
                 value={name}
+                onKeyDown={handleCharPress}
                 onValueChange={setName}
                 classNames={inputStyles}
             />
@@ -331,6 +370,8 @@ function mapAddressFields(data: GeocodeType) {
                 type="tel"
                 value={phone}
                 onValueChange={setPhone}
+                onKeyDown={handleKeyPress}
+                maxLength={10}
                 classNames={inputStyles}
             /> 
             <div>
