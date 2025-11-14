@@ -86,7 +86,8 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
 
       return normalizePath === normalizeHref;
     };
-
+console.log('🦄 getNumTel', getNumTel )
+console.log('🦄 ', emptyURL )
 
     return (
     <>

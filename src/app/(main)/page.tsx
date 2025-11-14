@@ -58,7 +58,7 @@ export default async function Home() {
         title={cookieTitulo} 
         long={cookieLong}
         aceptar={cookieAceptar}
-        rechzar={cookieRechazar}
+        rechazar={cookieRechazar}
         cookieAcept={cookieTextAcept}
         cookieAutoriza={cookieAutoriza}
           />
