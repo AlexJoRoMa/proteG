@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
+import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { inputStyles } from "@/constants/StylesConstants";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
+import { DatosContratacion } from "@/types/Contratacion";
 import { Form, Input, Switch, Textarea } from "@heroui/react";
 import { FC, RefObject } from "react";
 
@@ -12,6 +14,11 @@ interface Props {
 
 export const DireccionEnvioForm: FC<Props> = ({ formRef }) => {
     const { getValue } = useMicrocopies('formulario-datosInstalacion');
+    const { datosContratacion } = useCheckout();
+
+    const envio: Partial<DatosContratacion> = datosContratacion ?? {};
+    const datosEnvio = envio.DatosPersonales?.instalacion;
+
 
     return (
         <Form
@@ -29,6 +36,7 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef }) => {
                 labelPlacement="outside"
                 className='w-full !mt-[34px]'
                 placeholder={getValue('instalacion.placeholder.calle')}
+                defaultValue={datosEnvio?.street}
             />
             <Textarea
                 label={getValue('instalacion.label.referencia')}
@@ -40,6 +48,7 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef }) => {
                 labelPlacement="outside"
                 className='w-full'
                 placeholder={getValue('instalacion.placeholder.referencia')}
+                defaultValue={datosEnvio?.reference}
             />
         </Form>
     )

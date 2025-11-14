@@ -184,6 +184,15 @@ export const CheckoutProvider = ({
     return await validator()
   }, [stepValidators, currentStep])
 
+  useEffect(() => {
+    const status = isStepCompleted(currentStep);
+    if (!status) {
+      setIsStepValid(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isStepCompleted, currentStep]);
+
+
   const value: CheckoutContextType = {
     currentStep,
     completedSteps,

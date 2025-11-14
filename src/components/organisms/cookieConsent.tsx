@@ -6,7 +6,7 @@ import {
 import { useEffect, useState } from 'react';
 import { CookiesProps} from "@/types/Cookies";
 
-const CookieConsent = ({title, long, aceptar, rechzar, cookieAcept, cookieAutoriza}: CookiesProps ) => {
+const CookieConsent = ({title, long, aceptar, rechazar, cookieAcept, cookieAutoriza}: CookiesProps ) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -47,14 +47,14 @@ const CookieConsent = ({title, long, aceptar, rechzar, cookieAcept, cookieAutori
                     variant="bordered"
                     onPress={rejectCookies}
                 >
-                    {aceptar || 'aceptar'}
+                    {rechazar || 'rechazar'}
                 </Button>
                 <Button
                     className="w-full bg-black text-white"
                     color="primary"
                     onPress={acceptCookies}
                 >
-                    {rechzar || 'rechazar'}
+                    {aceptar || 'aceptar'}
                 </Button>
             </div>
         </div>

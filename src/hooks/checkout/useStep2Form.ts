@@ -30,16 +30,16 @@ function getFormData(ref: React.RefObject<HTMLFormElement | null>) {
 }
 
 export const useStep2Form = () => {
-    const { registerStepValidator, registerFormData, setIsStepValid, checkboxChecked, datosContratacion } = useCheckout();
+    const { registerStepValidator, registerFormData, setIsStepValid, checkboxChecked, datosContratacion, currentStep } = useCheckout();
 
     const DatosPersonalesRef = useRef<HTMLFormElement | null>(null);
     const DireccionEnvioRef = useRef<HTMLFormElement | null>(null);
     const DatosFacturacionRef = useRef<HTMLFormElement | null>(null);
     const DireccionFacturacionRef = useRef<HTMLFormElement | null>(null);
 
-    const [facturarOtraDireccion, setFacturarOtraDireccion] = useState(false);
-    const [necesitaFacturar, setNecesitaFacturar] = useState(false);
-    const [esExtranjero, setEsExtranjero] = useState(false);
+    const [facturarOtraDireccion, setFacturarOtraDireccion] = useState(datosContratacion?.DatosPersonales?.meta?.facturarOtraDireccion ?? false);
+    const [necesitaFacturar, setNecesitaFacturar] = useState(datosContratacion?.DatosPersonales?.meta?.necesitaFacturar ?? false);
+    const [esExtranjero, setEsExtranjero] = useState(datosContratacion?.DatosPersonales?.meta?.esExtranjero ?? false);
     const [mounted, setMounted] = useState(false);
 
     // Estados para los Selects de HeroUI
@@ -56,7 +56,7 @@ export const useStep2Form = () => {
             necesitaFacturar && facturarOtraDireccion ? DireccionFacturacionRef : null,
         ].filter(ref => ref?.current) as React.RefObject<HTMLFormElement>[];
 
-        const allValid = activeForms.every(ref => ref.current?.checkValidity());
+        const allValid = activeForms.every(ref => validarFormulario(ref.current));
 
         const selectsValid = !necesitaFacturar || (cfdi.trim() !== '' && regimen.trim() !== '');
 
@@ -65,8 +65,22 @@ export const useStep2Form = () => {
     }, [necesitaFacturar, facturarOtraDireccion, cfdi, regimen]);
 
     useEffect(() => {
-        registerStepValidator(2, validateStep2);
-    }, [registerStepValidator, validateStep2]);
+        if (currentStep === 2) {
+            if (
+                DatosPersonalesRef.current ||
+                DireccionEnvioRef.current ||
+                DatosFacturacionRef.current ||
+                DireccionFacturacionRef.current
+            ) {
+                registerStepValidator(2, validateStep2);
+
+                setTimeout(async () => {
+                    const ok = await validateStep2();
+                    setIsStepValid(ok);
+                }, 100);
+            }
+        }
+    }, [registerStepValidator, validateStep2, currentStep]);
 
     useEffect(() => {
         registerFormData(2, () => {
@@ -77,76 +91,85 @@ export const useStep2Form = () => {
                 direccionFacturacion: necesitaFacturar && facturarOtraDireccion ? getFormData(DireccionFacturacionRef) : null,
                 meta: { esExtranjero, necesitaFacturar, facturarOtraDireccion, cfdi, regimen }
             };
-            return allData;
+
+            return {
+                personal: Object.keys(allData.personal).length ? allData.personal : datosContratacion.DatosPersonales?.personal ?? {},
+                instalacion: Object.keys(allData.instalacion).length ? allData.instalacion : datosContratacion.DatosPersonales?.instalacion ?? {},
+                facturacion: allData.facturacion ?? datosContratacion.DatosPersonales?.facturacion ?? null,
+                direccionFacturacion: allData.direccionFacturacion ?? datosContratacion.DatosPersonales?.direccionFacturacion ?? null,
+                meta: allData.meta,
+            };
         });
-    }, [esExtranjero, necesitaFacturar, facturarOtraDireccion, cfdi, regimen, registerFormData]);
+    }, [esExtranjero, necesitaFacturar, facturarOtraDireccion, cfdi, regimen, registerFormData, datosContratacion?.DatosPersonales?.personal, datosContratacion?.DatosPersonales?.instalacion, datosContratacion?.DatosPersonales?.facturacion, datosContratacion?.DatosPersonales?.direccionFacturacion]);
 
     useEffect(() => {
-        const checkValidity = () => {
-            if (!mounted) return;
+        if (currentStep === 2) {
+            const checkValidity = () => {
+                if (!mounted) return;
 
-            const activeForms = [
-                DatosPersonalesRef,
-                DireccionEnvioRef,
-                necesitaFacturar ? DatosFacturacionRef : null,
-                necesitaFacturar && facturarOtraDireccion ? DireccionFacturacionRef : null,
-            ].filter(ref => ref?.current) as React.RefObject<HTMLFormElement>[];
+                const activeForms = [
+                    DatosPersonalesRef,
+                    DireccionEnvioRef,
+                    necesitaFacturar ? DatosFacturacionRef : null,
+                    necesitaFacturar && facturarOtraDireccion ? DireccionFacturacionRef : null,
+                ].filter(ref => ref?.current) as React.RefObject<HTMLFormElement>[];
 
-            let allValid = true;
+                let allValid = true;
 
-            for (const ref of activeForms) {
-                if (!ref.current) continue;
+                for (const ref of activeForms) {
+                    if (!ref.current) continue;
 
-                const inputs = Array.from(ref.current.querySelectorAll<HTMLInputElement>('input'));
+                    const inputs = Array.from(ref.current.querySelectorAll<HTMLInputElement>('input'));
 
-                for (const input of inputs) {
-                    const isVisible = (input.offsetWidth > 0 && input.offsetHeight > 0) || input.getClientRects().length > 0;
-                    if (!isVisible) continue;
+                    for (const input of inputs) {
+                        const isVisible = (input.offsetWidth > 0 && input.offsetHeight > 0) || input.getClientRects().length > 0;
+                        if (!isVisible) continue;
 
-                    if (input.required && input.value.trim() === '') {
-                        allValid = false;
-                        break;
+                        if (input.required && input.value.trim() === '') {
+                            allValid = false;
+                            break;
+                        }
+
+                        if (input.pattern && input.value.trim() !== '' && !input.checkValidity()) {
+                            allValid = false;
+                            break;
+                        }
                     }
 
-                    if (input.pattern && input.value.trim() !== '' && !input.checkValidity()) {
-                        allValid = false;
-                        break;
-                    }
+                    if (!allValid) break;
                 }
 
-                if (!allValid) break;
-            }
+                // const allValid = activeForms.every(ref => validarFormulario(ref.current));
 
-            // const allValid = activeForms.every(ref => validarFormulario(ref.current));
+                // Validar selects
+                const selectsValid = !necesitaFacturar || (cfdi.trim() !== '' && regimen.trim() !== '');
 
-            // Validar selects
-            const selectsValid = !necesitaFacturar || (cfdi.trim() !== '' && regimen.trim() !== '');
+                const finalValid = allValid && selectsValid && checkboxChecked;
+                setIsStepValid(finalValid);
+            };
 
-            const finalValid = allValid && selectsValid && checkboxChecked;
-            setIsStepValid(finalValid);
-        };
+            const forms = [
+                DatosPersonalesRef.current,
+                DireccionEnvioRef.current,
+                necesitaFacturar ? DatosFacturacionRef.current : null,
+                necesitaFacturar && facturarOtraDireccion ? DireccionFacturacionRef.current : null,
+            ].filter(Boolean) as HTMLFormElement[];
 
-        const forms = [
-            DatosPersonalesRef.current,
-            DireccionEnvioRef.current,
-            necesitaFacturar ? DatosFacturacionRef.current : null,
-            necesitaFacturar && facturarOtraDireccion ? DireccionFacturacionRef.current : null,
-        ].filter(Boolean) as HTMLFormElement[];
-
-        forms.forEach(form => {
-            form.addEventListener("input", checkValidity);
-            form.addEventListener("change", checkValidity);
-        });
-
-        // Validación inicial
-        setTimeout(checkValidity, 100);
-
-        return () => {
             forms.forEach(form => {
-                form.removeEventListener("input", checkValidity);
-                form.removeEventListener("change", checkValidity);
+                form.addEventListener("input", checkValidity);
+                form.addEventListener("change", checkValidity);
             });
-        };
+
+            // Validación inicial
+            setTimeout(checkValidity, 100);
+
+            return () => {
+                forms.forEach(form => {
+                    form.removeEventListener("input", checkValidity);
+                    form.removeEventListener("change", checkValidity);
+                });
+            };
+        }
     }, [necesitaFacturar, facturarOtraDireccion, cfdi, regimen, setIsStepValid, checkboxChecked, mounted]);
 
     return {

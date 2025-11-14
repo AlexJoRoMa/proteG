@@ -16,7 +16,7 @@ const Step2 = () => {
   const { getValue } = useMicrocopies('contratacion-datosPersonales');
   const [checked, setChecked] = useState(false);
   const { formattedAddress } = useIzziContent();
- 
+
   const {
     DatosPersonalesRef,
     DireccionEnvioRef,
@@ -69,7 +69,7 @@ const Step2 = () => {
           <Switch
             aria-label="Extrangero"
             isSelected={esExtranjero}
-            onValueChange={setEsExtranjero}
+            onValueChange={(checked) => setEsExtranjero(checked)}
             classNames={{
               wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
               thumb: "bg-white-0"
@@ -124,7 +124,7 @@ const Step2 = () => {
         <Switch
           aria-label="Facturacion"
           isSelected={necesitaFacturar}
-          onValueChange={setNecesitaFacturar}
+          onValueChange={(checked) => setNecesitaFacturar(checked)}
           classNames={{
             wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
             thumb: "bg-white-0"
@@ -148,7 +148,7 @@ const Step2 = () => {
               <Switch
                 aria-label="Direccion Diferente"
                 isSelected={facturarOtraDireccion}
-                onValueChange={setFacturarOtraDireccion}
+                onValueChange={(checked) => setFacturarOtraDireccion(checked)}
                 classNames={{
                   wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
                   thumb: "bg-white-0"
@@ -181,14 +181,15 @@ const Step2 = () => {
         }}
       >
         {getValue('datosPersonales.terminos.textoPrevio')}
-        <ButtonGhost
-          classStyles='text-black underline font-bold text-[16px] leading-6 underline p-0 border-0 ml-[4px]'
-          text={getValue('datosPersonales.terminos.textoPrincipal')}
-          href={getValue('datosPersonales.terminos.url')}
-        >
-        </ButtonGhost>
-
       </Checkbox>
+      <ButtonGhost
+        classStyles='text-black underline font-bold text-[16px] leading-6 underline p-0 border-0 ml-[4px]'
+        text={getValue('datosPersonales.terminos.textoPrincipal')}
+        href={getValue('datosPersonales.terminos.url')}
+        external={true}
+      >
+      </ButtonGhost>
+
 
     </div>
   )

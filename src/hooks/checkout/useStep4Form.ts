@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -50,8 +49,10 @@ export const useStep4Form = () => {
 
     // registro de validador
     useEffect(() => {
-        registerStepValidator(4, validateStep4);
-    }, [registerStepValidator, validateStep4]);
+        if (currentStep === 4) {
+            registerStepValidator(4, validateStep4);
+        }
+    }, [registerStepValidator, validateStep4, currentStep]);
 
     // registro de datos (base64)
     useEffect(() => {
@@ -100,8 +101,10 @@ export const useStep4Form = () => {
     }, [registerFormData, ineFile, comprobanteFile, setIsStepValid]);
 
     useEffect(() => {
-        validateStep4();
-    }, [ineFile, comprobanteFile, validateStep4])
+        if (currentStep === 4) {
+            validateStep4();
+        }
+    }, [ineFile, comprobanteFile, validateStep4, currentStep])
 
     const invalidateStep = useCallback(() => {
         setIsStepValid(false);

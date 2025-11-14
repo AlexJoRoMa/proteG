@@ -4,7 +4,7 @@
 import { useCheckout } from "@/components/providers/CheckoutProvider"
 import { useControlledAction } from "@/hooks/checkout/useControlledAction";
 import { useGlobalProcessStatus } from "@/hooks/checkout/useGlobalProcessStatus";
-import { DatosContratacion, StatusFlujo } from "@/types/Contratacion";
+import { DatosContratacion } from "@/types/Contratacion";
 import { GetAttachFile } from "@/utils/GetAttachFile";
 import { GetIzziEnroll } from "@/utils/GetIzziEnroll";
 import { GetSubmitOffer } from "@/utils/GetSubmitOffer";
@@ -27,36 +27,33 @@ export default function ResumenContainer() {
     const [modalLoading, setModalLoading] = useState(false);
     const [modalName, setModalName] = useState<string>("modal-generico");
     const router = useRouter();
-
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
     const { globalUserAnswers, coberturaData, offnetIzzi, offnetSky, globalIzziSelection, precioTotal, infoPaquetes, precioCombinado } = useIzziContent();
     const {
         nextStep,
-        goToStep,
         currentStep,
         validateCurrentStep,
         getAllFormData,
         isStepValid,
         setDatosContratacion,
         datosContratacion,
-        setIsStepValid,
         setGetCapacity,
         setIzziEnroll,
         izziEnroll,
         processStatus,
         setProcessStatus,
-        statusStep,
-        setStatusStep,
         copyResumen,
-        paymentReference
+        paymentReference,
+        isStepCompleted
     } = useCheckout();
 
+    const resumenCopys = copyResumen as ResumenData;
+
+    // Referencias
     const datosContratacionRef = useRef<Partial<DatosContratacion>>(null);
     const izziEnrrollRef = useRef(izziEnroll);
     const processStatusRef = useRef(processStatus);
-
-    const resumenCopys = copyResumen as ResumenData;
+    const stepStatusRef = useRef<boolean | null>(null);
 
     useEffect(() => {
         datosContratacionRef.current = datosContratacion;
@@ -69,6 +66,18 @@ export default function ResumenContainer() {
     useEffect(() => {
         processStatusRef.current = processStatus;
     }, [processStatus]);
+
+    useEffect(() => {
+        stepStatusRef.current = isStepCompleted(currentStep)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentStep])
+
+    // Handlers
+
+    const { iniciarPolling } = useGlobalProcessStatus((finalData) => {
+        router.push('/thank-you');
+        // logica adicional
+    });
 
     function runAttachFiles() {
         runAttachIne();
@@ -105,11 +114,6 @@ export default function ResumenContainer() {
         }
     };
 
-    const { iniciarPolling } = useGlobalProcessStatus((finalData) => {
-        router.push('/thank-you');
-        // logica adicional
-    });
-
     const { trigger: runSubmitOffer, isLoading: loadingOrder } = useControlledAction({
         action: async () => {
             const res = await GetSubmitOffer(izziEnrrollRef.current, globalIzziSelection, precioTotal, globalUserAnswers, offnetIzzi, offnetSky);
@@ -123,11 +127,6 @@ export default function ResumenContainer() {
         },
         resetKey: `step-3-submitOffer`,
         autoExecute: false,
-        // onSuccess: (data) => console.log('submitOffer success.', data),
-        // onError: (err) => console.error('submitOffer error:', err),
-        // onLoadingChange: (loading) => { 
-        //     setModalLoading(loading)
-        // },
     });
 
     const { trigger: runAttachIne, isLoading: loadingAttachIne } = useControlledAction({
@@ -140,9 +139,7 @@ export default function ResumenContainer() {
         },
         resetKey: `step-4-attachFileIne`,
         autoExecute: false,
-        // onSuccess: (data) => console.log('submitOffer success.', data),
         onError: (err) => setModalLoading(false),
-        // onLoadingChange: (loading) => setModalLoading(loading),
     });
 
     const { trigger: runAttachComprobante, isLoading: loadingAttachComprobante } = useControlledAction({
@@ -155,9 +152,7 @@ export default function ResumenContainer() {
         },
         resetKey: `step-4-attachFileComprobante`,
         autoExecute: false,
-        // onSuccess: (data) => console.log('submitOffer success.', data),
         onError: (err) => setModalLoading(false),
-        // onLoadingChange: (loading) => setModalLoading(loading),
     });
 
     const { trigger: runGetCapacity, isLoading: loadingCapacity } = useControlledAction({
@@ -174,9 +169,6 @@ export default function ResumenContainer() {
         },
         resetKey: `step-4-getCapacity`,
         autoExecute: false,
-        // onSuccess: (data) => console.log('submitOffer success.', data),
-        // onError: (err) => console.error('submitOffer error:', err),
-        // onLoadingChange: (loading) => setModalLoading(loading),
     });
 
     const { trigger: runSubmitCapacity, isLoading: loadingSubmitCapacity } = useControlledAction({
@@ -194,28 +186,21 @@ export default function ResumenContainer() {
         },
         resetKey: `step-6-submitCapacity`,
         autoExecute: false,
-        // onSuccess: (data) => console.log('submitOffer success.', data),
-        // onError: (err) => console.error('submitOffer error:', err),
-        // onLoadingChange: (loading) => setModalLoading(loading),
     });
 
+    // Handler Principal
     const handleContinue = async () => {
         setLoading(true)
+        const step = currentStep;
         try {
             const ok = await validateCurrentStep()
             if (!ok) return
 
             const allData = getAllFormData ? getAllFormData() : {}
-            const stepData = allData[currentStep] || {}
+            const stepData = allData[step] || {}
 
-            switch (currentStep) {
+            switch (step) {
                 case 1: {
-                    setStatusStep((prev) => ({
-                        ...prev,
-                        [`step${currentStep}`]: {
-                            completado: true
-                        }
-                    }));
                     nextStep()
                     break
                 }
@@ -224,14 +209,6 @@ export default function ResumenContainer() {
                         ...prev,
                         DatosPersonales: stepData
                     }));
-                    setStatusStep((prev) => ({
-                        ...prev,
-                        [`step${currentStep}`]: {
-                            completado: true
-                        }
-                    }));
-
-                    setIsStepValid(false)
                     nextStep()
                     break
                 }
@@ -239,12 +216,6 @@ export default function ResumenContainer() {
                     setDatosContratacion((prev) => ({
                         ...prev,
                         VerificacionContacto: stepData
-                    }));
-                    setStatusStep((prev) => ({
-                        ...prev,
-                        [`step${currentStep}`]: {
-                            completado: true
-                        }
                     }));
 
                     try {
@@ -256,12 +227,11 @@ export default function ResumenContainer() {
                         setIzziEnroll(resultIzziEnroll);
 
                         // // ProcessStatus
-                        iniciarPolling();
+                        await iniciarPolling();
 
                         // SubmitOffer
                         await showModaluntilAction(async () => await runSubmitOffer(), "modal-generico");
 
-                        setIsStepValid(false)
                         nextStep()
 
                     } catch (err) {
@@ -276,12 +246,6 @@ export default function ResumenContainer() {
                         ...prev,
                         DocumentosTitular: stepData
                     }));
-                    setStatusStep((prev) => ({
-                        ...prev,
-                        [`step${currentStep}`]: {
-                            completado: true
-                        }
-                    }));
 
                     datosContratacionRef.current = {
                         ...(datosContratacionRef.current ?? {}),
@@ -293,16 +257,14 @@ export default function ResumenContainer() {
                         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                         await showModaluntilAction(async () => await runAttachFiles(), "modal-documentos"),
 
-                        // GetCapacity() 
-                        await showModaluntilAction(async () => await runGetCapacity(true), "modal-disponibilidad"),
+                            // GetCapacity() 
+                            await showModaluntilAction(async () => await runGetCapacity(true), "modal-disponibilidad"),
 
-                        setIsStepValid(false)
-                        nextStep()
+                            nextStep()
 
                     } catch (err) {
                         console.error('Error en step4', err)
                     }
-
                     break
                 }
                 case 5: {
@@ -310,14 +272,6 @@ export default function ResumenContainer() {
                         ...prev,
                         Instalacion: stepData
                     }));
-                    setStatusStep((prev) => ({
-                        ...prev,
-                        [`step${currentStep}`]: {
-                            completado: true
-                        }
-                    }));
-
-                    setIsStepValid(true)
                     nextStep()
                     break
                 }
@@ -326,12 +280,6 @@ export default function ResumenContainer() {
                     const response = await validatePayment(datosContratacion, setDatosContratacion, processStatusRef.current, paymentReference);
 
                     if (response === true) {
-                        setStatusStep((prev) => ({
-                            ...prev,
-                            [`step${currentStep}`]: {
-                                completado: true
-                            }
-                        }));
 
                         // SubmitCapacity
                         const submitResponse = await runSubmitCapacity();
@@ -340,8 +288,6 @@ export default function ResumenContainer() {
                             router.push("/thank-you");
                         }
                     }
-
-                    setIsStepValid(true)
                     break
                 }
             }
@@ -351,9 +297,22 @@ export default function ResumenContainer() {
         }
     }
 
+    // Botón Continuar
+    const ContinueButton = (
+        <button
+            onClick={handleContinue}
+            disabled={!isStepValid && !stepStatusRef.current}
+            className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
+        >
+            {loading ? "Procesando..." : "Continuar"}
+        </button>
+    );
+
     return (
         <>
+            {/* Desktop */}
             <div className="fixed xl:static bottom-0 left-0 z-40 xl:border xl:rounded-md xl:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 xl:bg-white-0 shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)] xl:shadow-none">
+                {/* Header Mobile */}
                 <div className="block xl:hidden">
                     <div className="flex justify-between mb-[16px]">
                         <div className="flex flex-col gap-[8px]">
@@ -378,6 +337,7 @@ export default function ResumenContainer() {
                     </div>
                 </div>
 
+                {/* Desktop Resumen */}
                 <div className="hidden xl:block">
                     <h1 className="font-bold leading-[24px] text-xl mb-[32px]">{resumenCopys.titulo}</h1>
 
@@ -386,18 +346,12 @@ export default function ResumenContainer() {
                 </div>
 
                 <div className="xl:pt-[32px] xl:border-t-1 xl:border-t-gray-150">
-                    <button
-                        onClick={handleContinue}
-                        disabled={!isStepValid && !statusStep[`step${currentStep}` as keyof StatusFlujo]?.completado}
-                        className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                    >
-                        {loading ? "Procesando..." : "Continuar"}
-                    </button>
-
+                    {ContinueButton}
                 </div>
                 <ModalContratacion isOpen={modalLoading} name={modalName} />
             </div>
 
+            {/* Drawer Mobile */}
             <Drawer
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
@@ -407,7 +361,7 @@ export default function ResumenContainer() {
                 classNames={{
                     header: "px-[16px] py-[24px]",
                     body: "px-[16px] py-0 gap-0",
-                    footer: "w-full px-[16px] pt-[32px]"
+                    footer: "w-full px-[16px] pt-[32px] bottom-0 z-50"
                 }}
             >
                 <DrawerContent>
@@ -430,16 +384,7 @@ export default function ResumenContainer() {
                             </DrawerBody>
 
                             <DrawerFooter>
-                                <div className="flex flex-col w-full">
-                                    <button
-                                        onClick={handleContinue}
-                                        disabled={!isStepValid && !statusStep[`step${currentStep}` as keyof StatusFlujo]?.completado}
-                                        className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                                    >
-                                        {loading ? "Procesando..." : "Continuar"}
-                                    </button>
-                                </div>
-
+                                {ContinueButton}
                             </DrawerFooter>
                         </>
                     )}

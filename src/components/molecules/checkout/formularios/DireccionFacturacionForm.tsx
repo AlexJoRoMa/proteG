@@ -1,7 +1,9 @@
 'use client'
 
+import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { inputStyles } from "@/constants/StylesConstants";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
+import { DatosContratacion } from "@/types/Contratacion";
 import { InputFilter } from "@/utils/inputFilters";
 import { Form, Input } from "@heroui/react";
 import { FC, RefObject } from "react";
@@ -12,6 +14,11 @@ interface Props {
 
 export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
     const { getValue } = useMicrocopies('formulario-otraDireccion');
+    const { datosContratacion } = useCheckout();
+
+    const direccionFacturacion: Partial<DatosContratacion> = datosContratacion ?? {};
+    const datosDireccion = direccionFacturacion.DatosPersonales?.direccionFacturacion;
+
 
     return (
 
@@ -36,6 +43,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     className='w-full'
                     placeholder={getValue('otraDireccion.placeholder.codigoPostal')}
                     errorMessage={getValue('otraDireccion.error.codigoPostal')}
+                    defaultValue={datosDireccion?.postalCode}
                 />
             </div>
             {/* Dirección*/}
@@ -53,6 +61,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     onInput={(e) => InputFilter(e, 'letras')}
                     placeholder={getValue('otraDireccion.placeholder.direccion')}
                     errorMessage={getValue('otraDireccion.error.direccion')}
+                    defaultValue={datosDireccion?.address}
                 />
             </div>
             <div className='grid grid-cols-2 gap-4 order-3 md:contents'>
@@ -70,6 +79,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     className='w-full col-span-1 md:col-start-1 md:!row-start-2'
                     placeholder={getValue('otraDireccion.placeholder.numeroExterior')}
                     errorMessage={getValue('otraDireccion.error.numeroExterior')}
+                    defaultValue={datosDireccion?.exteriorNumber}
                 />
                 {/* Número interior */}
                 <Input
@@ -78,11 +88,12 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     type="text"
                     variant='bordered'
                     radius='sm'
-                    onInput={(e) => InputFilter(e, 'numeros')}
+                    onInput={(e) => InputFilter(e, 'alfanumerico')}
                     classNames={inputStyles}
                     labelPlacement="outside"
                     className='w-full col-span-1 md:col-start-2 md:!row-start-2'
                     placeholder={getValue('otraDireccion.placeholder.numeroInterior')}
+                    defaultValue={datosDireccion?.interiorNumber}
                 />
             </div>
             {/* Colonia */}
@@ -100,6 +111,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     onInput={(e) => InputFilter(e, 'letras')}
                     placeholder={getValue('otraDireccion.placeholder.colonia')}
                     errorMessage={getValue('otraDireccion.error.colonia')}
+                    defaultValue={datosDireccion?.colony}
                 />
             </div>
             {/* Alcaldía o Municipo */}
@@ -117,6 +129,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     className='w-full'
                     placeholder={getValue('otraDireccion.placeholder.alcaldia')}
                     errorMessage={getValue('otraDireccion.error.alcaldia')}
+                    defaultValue={datosDireccion?.city}
                 />
             </div>
             {/* Estado */}
@@ -134,6 +147,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     onInput={(e) => InputFilter(e, 'letras')}
                     placeholder={getValue('otraDireccion.placeholder.estado')}
                     errorMessage={getValue('otraDireccion.error.estado')}
+                    defaultValue={datosDireccion?.state}
                 />
             </div>
         </Form>
