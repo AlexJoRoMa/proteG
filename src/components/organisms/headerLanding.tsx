@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Navbar,
     NavbarBrand,
@@ -21,6 +21,7 @@ import { usePathname } from 'next/navigation';
 
 export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTitulo, llamanosNum, getNumTel, urlTracking}: HeaderLandingComponentProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const [scrollDown, setScrollDown] = React.useState(false);
     const pathname = usePathname();
 
     // Función helper para renderizar el modal correcto basado en typeModal
@@ -35,6 +36,17 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
 
         return null;
     };
+//scroll track
+    useEffect(() => {
+      const handleScroll = () => {
+        setScrollDown(window.scrollY > 88);
+      };
+
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const marginMenu = scrollDown ? 'mt-[24px]' : 'mt-[110px]'
     
     //url track
     const buildTracking = (contentfulSlug: string) =>{
@@ -108,7 +120,7 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
             </NavbarContent>
         </Navbar>
     ) : (
-      <Navbar style={borderStyle}
+      <Navbar style={borderStyle} shouldHideOnScroll
         onMenuOpenChange={setIsMenuOpen}
         className='3xl:hidden'
         classNames={{
@@ -345,7 +357,7 @@ export default function IzziHeaderLanding({apibarData, clienteTitulo, llamanosTi
       </NavbarContent>
 
 {/* Movil hamburgues */}
-      <NavbarMenu className=" bg-white-0 mt-[110px] gap-[20px]">
+      <NavbarMenu className={` ${marginMenu} bg-white-0  gap-[20px] `}>
         {navbar[0].fields?.navigation?.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`} >
             <Link
