@@ -249,8 +249,8 @@ export default function ResumenContainer() {
 
                     try {
                         // IzziEnroll
-                        const resultIzziEnroll = await GetIzziEnroll(coberturaData, datosContratacion, offnetIzzi, offnetSky);
-                        if (!resultIzziEnroll) {
+                        const resultIzziEnroll = await GetIzziEnroll(coberturaData, datosContratacionRef, offnetIzzi, offnetSky);
+                        if (!resultIzziEnroll || resultIzziEnroll?.code) {
                             router.push("/error");
                         }
                         setIzziEnroll(resultIzziEnroll);
