@@ -23,6 +23,7 @@ export const IzziProvider = ({
     const [globalFlag, setGlobalFlag] = useState<boolean>(false);
     const [globalUserAnswers, setGlobalUserAnswers] = useState<UserAnswers>({});
     const [globalIzziSelection, setGlobalIzziSelection] = useState<IzziSelection | null>(null);
+    const [globalFlagDomicilio, setGlobalFlagDomicilio] = useState<boolean>(false);
     const [globalDatosContratacion, setGlobalDatosContratacion] = useState<Partial<DatosContratacion>>({});
     const [globalProcessStatus, setGlobalProcessStatus] = useState<Partial<ProcessStatus>>({});
     const [formattedAddress, setFormattedAddress] = useState<string>('');
@@ -43,7 +44,8 @@ export const IzziProvider = ({
         setGlobalIzziSelection(null);
         setGlobalProcessStatus({});
         setGlobalUserAnswers({});
-        setParams({ plan: null, movil: null })
+        setParams({ plan: null, movil: null });
+        setGlobalFlagDomicilio(false);
     }, [])
 
 
@@ -82,7 +84,9 @@ export const IzziProvider = ({
             globalCheckedPromotions,
             setGlobalCheckedPromotions,
             ahorroTotal, 
-            setAhorroTotal
+            setAhorroTotal,
+            globalFlagDomicilio,
+            setGlobalFlagDomicilio,
         }}>
             {children}
         </izziContext.Provider>

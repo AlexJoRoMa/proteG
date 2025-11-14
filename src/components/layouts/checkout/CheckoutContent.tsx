@@ -7,8 +7,10 @@ import Step6 from '@/components/molecules/checkout/Step6'
 import React from 'react'
 import { useCheckout } from '@/components/providers/CheckoutProvider'
 import ResumenContainer from '@/components/molecules/checkout/resumenContainer'
+import { useIzziContent } from '@/components/providers/IzziProvider'
 
 const CheckoutContent = () => {
+  const { globalFlagDomicilio } = useIzziContent();
   const { currentStep } = useCheckout()
 
   const stepContents = [
@@ -18,13 +20,23 @@ const CheckoutContent = () => {
     <Step4 key="step4" />,
     <Step5 key="step5" />,
     <Step6 key="step6" />
-  ]
+  ];
+
+    const stepContentsDelivery = [
+    <Step1 key="step1" />,
+    <Step2 key="step2" />,
+    <Step3 key="step3" />,
+    <Step4 key="step4" />,
+    <Step6 key="step5" />
+  ];
+
+  const contentSteps = globalFlagDomicilio ? stepContentsDelivery : stepContents;
 
   return (
     <div className='my-6 flex mx-[var(--spacing-sm)] 4xl:mx-[var(--spacing-xl)] 3xl:mx-[var(--spacing-lg)] 2xl:mx-[var(--spacing-md)] sm:mx-[var(--spacing-sm)]'>
       <div className='w-full xl:w-7/12 mr-auto block'>
         {
-          stepContents.map((content, index) => (
+          contentSteps.map((content, index) => (
             <div data-step={index + 1} key={index} className={`${index + 1 === currentStep ? 'block' : 'hidden'}`}>
               {content}
             </div>

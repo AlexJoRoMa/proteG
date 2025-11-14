@@ -3,7 +3,8 @@ export interface ThankyouCopys {
     subtitulo: string,
     banner: {
         currency: string,
-        instalacion: string
+        instalacion: string,
+        domiciliacion: string,
     },
     resumen: string,
     info: {
