@@ -32,6 +32,12 @@ export default function ThankYou() {
     const resumenCopys = copyResumen as ResumenData;
 
     useEffect(() => {
+        if (!globalProcessStatus.accountNumber || !globalDatosContratacion.Pago?.metodoPago) {
+            redirect('/cobertura');
+        }
+    }, [globalDatosContratacion.Pago?.metodoPago, globalProcessStatus.accountNumber]);
+
+    useEffect(() => {
         const horario = globalDatosContratacion.Instalacion;
 
         if (!horario?.requestedShipDate || !horario.cvTimeslot) {
