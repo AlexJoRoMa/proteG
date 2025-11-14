@@ -356,7 +356,7 @@ export default function ResumenContainer() {
 
                 </div>
 
-                <div className="xl:pt-[32px] xl:border-t-1 xl:border-t-gray-150">
+                <div className="xl:pt-[32px] xl:border-t-1 xl:border-t-gray-150 z-50">
                     {ContinueButton}
                 </div>
                 <ModalContratacion isOpen={modalLoading} name={modalName} />
