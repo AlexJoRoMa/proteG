@@ -32,7 +32,7 @@ const CheckoutPage = async () => {
 
   return (
     <main className="min-h-screen w-full">
-      <CheckoutProvider totalSteps={6} initialStep={2} icon={Icon} paypalIcon={PaypalIcon} copyResumen={copysResumen}>
+      <CheckoutProvider initialStep={2} icon={Icon} paypalIcon={PaypalIcon} copyResumen={copysResumen}>
         {/* Guard detector de salida del flujo */}
         <ExitGuard />
         <Checkout />

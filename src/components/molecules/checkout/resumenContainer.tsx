@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
@@ -14,7 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import { GetSubmitCapacity } from "@/utils/GetSubmitCapacity";
 import { useRouter } from "next/navigation";
 import ModalContratacion from "./modals/ModalContratacion";
-import { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, useDisclosure } from "@heroui/react";
+import { Button, Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, useDisclosure } from "@heroui/react";
 import { ArrowDownIcon, ArrowUpIcon } from "@/constants/IconsConstants";
 import { ResumenData } from "@/types/ResumenCompra";
 import ResumenContent from "../resumenCompra/resumenContent";
@@ -28,7 +29,7 @@ export default function ResumenContainer() {
     const [modalName, setModalName] = useState<string>("modal-generico");
     const router = useRouter();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const { globalUserAnswers, coberturaData, offnetIzzi, offnetSky, globalIzziSelection, precioTotal, infoPaquetes, precioCombinado } = useIzziContent();
+    const { globalUserAnswers, coberturaData, offnetIzzi, offnetSky, globalIzziSelection, precioTotal, infoPaquetes, precioCombinado, globalFlagDomicilio } = useIzziContent();
     const {
         nextStep,
         currentStep,
@@ -44,7 +45,9 @@ export default function ResumenContainer() {
         setProcessStatus,
         copyResumen,
         paymentReference,
-        isStepCompleted
+        isStepCompleted,
+        cardRecurrent,
+        setIsStepValid
     } = useCheckout();
 
     const resumenCopys = copyResumen as ResumenData;
@@ -69,8 +72,104 @@ export default function ResumenContainer() {
 
     useEffect(() => {
         stepStatusRef.current = isStepCompleted(currentStep)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentStep])
+
+    // Logica Steps
+    // Step 1
+    const step1 = async () => {
+        nextStep();
+    };
+
+    // Step 2
+    const step2 = async (stepData: any) => {
+        setDatosContratacion((prev) => ({
+            ...prev,
+            DatosPersonales: stepData
+        }));
+        nextStep()
+    }
+
+    //Step 3
+    const step3 = async (stepData: any) => {
+        setDatosContratacion((prev) => ({
+            ...prev,
+            VerificacionContacto: stepData
+        }));
+
+        try {
+            // IzziEnroll
+            const resultIzziEnroll = await GetIzziEnroll(coberturaData, datosContratacionRef, offnetIzzi, offnetSky);
+            if (!resultIzziEnroll || resultIzziEnroll?.code || resultIzziEnroll?.error) {
+                router.push("/error");
+            }
+            setIzziEnroll(resultIzziEnroll);
+
+            // // ProcessStatus
+            await iniciarPolling();
+
+            // SubmitOffer
+            await showModaluntilAction(async () => await runSubmitOffer(), "modal-generico");
+
+            nextStep()
+
+        } catch (err) {
+            console.error('Error en step3', err)
+            router.push("/error");
+        }
+    };
+
+    // Step 4
+    const step4 = async (stepData: any) => {
+        setDatosContratacion((prev) => ({
+            ...prev,
+            DocumentosTitular: stepData
+        }));
+
+        datosContratacionRef.current = {
+            ...(datosContratacionRef.current ?? {}),
+            DocumentosTitular: stepData,
+        };
+
+        try {
+            // AttachFiles
+            await showModaluntilAction(async () => await runAttachFiles(), "modal-documentos")
+
+            if (!globalFlagDomicilio) {
+                // GetCapacity() 
+                await showModaluntilAction(async () => await runGetCapacity(true), "modal-disponibilidad")
+            }
+            nextStep()
+
+        } catch (err) {
+            console.error('Error en step4', err)
+        }
+    }
+
+    // Step 5
+    const step5 = async (stepData: any) => {
+        setDatosContratacion((prev) => ({
+            ...prev,
+            Instalacion: stepData
+        }));
+        nextStep()
+    }
+
+    // Step 6
+    const step6 = async () => {
+        // ValidaPago
+        const response = await validatePayment(datosContratacion, setDatosContratacion, processStatusRef.current, paymentReference);
+
+        if (response === true) {
+
+            // SubmitCapacity
+            const submitResponse = await runSubmitCapacity();
+
+            if (submitResponse) {
+                router.push("/thank-you");
+            }
+        }
+    }
 
     // Handlers
 
@@ -85,7 +184,6 @@ export default function ResumenContainer() {
     }
 
     const showModaluntilAction = async (
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         action: () => Promise<any>,
         modalKey: string
     ) => {
@@ -173,7 +271,7 @@ export default function ResumenContainer() {
 
     const { trigger: runSubmitCapacity, isLoading: loadingSubmitCapacity } = useControlledAction({
         action: async () => {
-            const res = await GetSubmitCapacity(izziEnrrollRef.current, datosContratacionRef);
+            const res = await GetSubmitCapacity(izziEnrrollRef.current, datosContratacionRef, cardRecurrent, globalFlagDomicilio);
             const data = await res;
             if (data?.code) {
                 console.error("Error del servicio getCapacity");
@@ -188,109 +286,22 @@ export default function ResumenContainer() {
         autoExecute: false,
     });
 
-    // Handler Principal
+    const steps = globalFlagDomicilio ? [step1, step2, step3, step4, step6] : [step1, step2, step3, step4, step5, step6];
+
     const handleContinue = async () => {
         setLoading(true)
         const step = currentStep;
         try {
             const ok = await validateCurrentStep()
-            if (!ok) return
+            if (!ok) return;
 
             const allData = getAllFormData ? getAllFormData() : {}
-            const stepData = allData[step] || {}
+            const stepData = allData[step] || {};
 
-            switch (step) {
-                case 1: {
-                    nextStep()
-                    break
-                }
-                case 2: {
-                    setDatosContratacion((prev) => ({
-                        ...prev,
-                        DatosPersonales: stepData
-                    }));
-                    nextStep()
-                    break
-                }
-                case 3: {
-                    setDatosContratacion((prev) => ({
-                        ...prev,
-                        VerificacionContacto: stepData
-                    }));
+            const handler = steps[step - 1];
+            if (!handler) return;
 
-                    try {
-                        // IzziEnroll
-                        const resultIzziEnroll = await GetIzziEnroll(coberturaData, datosContratacionRef, offnetIzzi, offnetSky);
-                        if (!resultIzziEnroll) {
-                            router.push("/error");
-                        }
-                        setIzziEnroll(resultIzziEnroll);
-
-                        // // ProcessStatus
-                        await iniciarPolling();
-
-                        // SubmitOffer
-                        await showModaluntilAction(async () => await runSubmitOffer(), "modal-generico");
-
-                        nextStep()
-
-                    } catch (err) {
-                        console.error('Error en step3', err)
-                        router.push("/error");
-                    }
-
-                    break
-                }
-                case 4: {
-                    setDatosContratacion((prev) => ({
-                        ...prev,
-                        DocumentosTitular: stepData
-                    }));
-
-                    datosContratacionRef.current = {
-                        ...(datosContratacionRef.current ?? {}),
-                        DocumentosTitular: stepData,
-                    };
-
-                    try {
-                        // AttachFiles
-                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                        await showModaluntilAction(async () => await runAttachFiles(), "modal-documentos"),
-
-                            // GetCapacity() 
-                            await showModaluntilAction(async () => await runGetCapacity(true), "modal-disponibilidad"),
-
-                            nextStep()
-
-                    } catch (err) {
-                        console.error('Error en step4', err)
-                    }
-                    break
-                }
-                case 5: {
-                    setDatosContratacion((prev) => ({
-                        ...prev,
-                        Instalacion: stepData
-                    }));
-                    nextStep()
-                    break
-                }
-                case 6: {
-                    // ValidaPago
-                    const response = await validatePayment(datosContratacion, setDatosContratacion, processStatusRef.current, paymentReference);
-
-                    if (response === true) {
-
-                        // SubmitCapacity
-                        const submitResponse = await runSubmitCapacity();
-
-                        if (submitResponse) {
-                            router.push("/thank-you");
-                        }
-                    }
-                    break
-                }
-            }
+            await handler(stepData);
 
         } finally {
             setLoading(false)
@@ -299,13 +310,13 @@ export default function ResumenContainer() {
 
     // Botón Continuar
     const ContinueButton = (
-        <button
-            onClick={handleContinue}
+        <Button
             disabled={!isStepValid && !stepStatusRef.current}
-            className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
+            className='py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50'
+            onPress={handleContinue}
         >
             {loading ? "Procesando..." : "Continuar"}
-        </button>
+        </Button>
     );
 
     return (
@@ -345,7 +356,7 @@ export default function ResumenContainer() {
 
                 </div>
 
-                <div className="xl:pt-[32px] xl:border-t-1 xl:border-t-gray-150">
+                <div className="xl:pt-[32px] xl:border-t-1 xl:border-t-gray-150 z-50">
                     {ContinueButton}
                 </div>
                 <ModalContratacion isOpen={modalLoading} name={modalName} />
@@ -393,4 +404,3 @@ export default function ResumenContainer() {
         </>
     )
 }
-

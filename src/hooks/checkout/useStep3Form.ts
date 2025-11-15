@@ -73,7 +73,7 @@ export const useStep3Form = (radioState: string) => {
         } finally {
             setIsLoading(false);
         }
-    }, [idTransaction, radioState, isLoading, isValid]);
+    }, [isLoading, setIsStepValid, idTransaction, radioState]);
 
     // validador de paso
     const validateStep3 = useCallback(async () => {
@@ -111,7 +111,7 @@ export const useStep3Form = (radioState: string) => {
         if (otpValue.length === 4 && !isLoading) {
             verificarCodigo(otpValue);
         }
-    }, [verificarCodigo, otpValue, isValid]);
+    }, [verificarCodigo, otpValue, isValid, isLoading]);
 
     //Handler para comunicar cambios del OTP
     const handleOtpChange = useCallback((value: string) => {

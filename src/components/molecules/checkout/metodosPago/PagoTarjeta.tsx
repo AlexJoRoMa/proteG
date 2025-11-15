@@ -1,9 +1,7 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import { Switch } from "@heroui/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GetLigaPago } from "@/utils/GetLigaPago";
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
@@ -14,7 +12,7 @@ export default function PagoTarjeta() {
     const { rpt, precioTotal } = useIzziContent();
     const [isRecurrent, setIsRecurrent] = useState(false);
     const [urlFrame, setUrlFrame] = useState("");
-    const { currentStep, setPaymentReference, processStatus, datosContratacion } = useCheckout();
+    const { currentStep, setPaymentReference, processStatus, datosContratacion, setCardRecurrent } = useCheckout();
     const { offnetSky } = useIzziContent();
     const { getValue } = useMicrocopies('contratacion-pago');
 
@@ -43,7 +41,7 @@ export default function PagoTarjeta() {
             }
         })();
 
-    }, [currentStep])
+    }, [currentStep, datosContratacion, offnetSky, precioTotal, processStatus, rpt, setPaymentReference])
 
     return (
         <section className="w-full">
@@ -53,7 +51,10 @@ export default function PagoTarjeta() {
                 </h1>
                 <Switch
                     checked={isRecurrent}
-                    onChange={(e) => setIsRecurrent(e.target.checked)}
+                    onValueChange={(checked) => {
+                        setIsRecurrent(checked)
+                        setCardRecurrent(checked)
+                    }}
                     classNames={{
                         wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
                         thumb: "bg-white-0"
