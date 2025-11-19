@@ -87,7 +87,7 @@ export default function PlanesTv({ step }: StepProps) {
         setSelectedIndex(index);
         setUserAnswers(prev => ({ ...prev, tv: { ...prev.tv, paquete: card, total: Number(card.precioPaquete) || 0 } }));
 
-        if (card.titulo.includes('light')) {
+        if (card.titulo.includes('light') || card.titulo.includes('premium')) {
             setDisabled(true);
         } else {
             setDisabled(false);
