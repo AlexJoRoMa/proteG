@@ -22,7 +22,9 @@ export default function PagoPayPal() {
                 </h1>
                 <Switch
                     checked={isRecurrent}
-                    onChange={(e) => setIsRecurrent(e.target.checked)}
+                    onValueChange={(checked) => {
+                        setIsRecurrent(checked)
+                    }}
                     classNames={{
                         wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
                         thumb: "bg-white-0"

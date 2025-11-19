@@ -113,6 +113,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     labelPlacement="outside"
                     isRequired
                     className='w-full'
+                    maxLength={10}
                     placeholder={getValue('datosPersonales.placeholder.telefono')}
                     errorMessage={getValue('datosPersonales.error.telefono')}
                     onInput={(e) => InputFilter(e, 'numeros')}
@@ -131,6 +132,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     classNames={inputStyles}
                     labelPlacement="outside"
                     className='w-full'
+                    maxLength={10}
                     placeholder={getValue('datosPersonales.placeholder.telefono')}
                     onInput={(e) => InputFilter(e, 'numeros')}
                     defaultValue={datosPersonales?.aditionalTel}
