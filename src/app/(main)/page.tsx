@@ -6,7 +6,7 @@ import {SeoFieldSkeleton} from "@/types/SEOTypes";
 import SEOHead from '@/components/atoms/SEOHead';import CookieConsent from "@/components/organisms/cookieConsent";
 import { getMicroCopy } from '@/services/contentful/components';
 
-export const revalidate = 1;
+export const dynamic = 'force-dynamic';
 export default async function Home() {
 
   // Obtener la informacion de la pagina
