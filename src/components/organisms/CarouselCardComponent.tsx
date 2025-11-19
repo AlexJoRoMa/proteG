@@ -69,7 +69,7 @@ const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
         ) : null
       }
         
-        <div className="relative z-10 w-full h-full  2xl:ml-lg  ">
+        <div className="relative z-10 w-full h-full  2xl:ml-lg  3xl:ml-0 ">
           <CarouselProvider qtyCarousels={1} carouselConfigs={[{ options: { align: 'center'} }]} colorArrow={colorArrow}>
              <CarouselComponent buttons={true} dots={true}>
                 {
