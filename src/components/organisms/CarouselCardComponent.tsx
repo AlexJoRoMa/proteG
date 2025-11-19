@@ -31,7 +31,8 @@ const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
     const colorArrow = entryCarousel?.[0].fields?.colorArrow as string;
 
     const cardsData = entryCarousel?.[0].fields?.cardsCarousel || [];
-    const hasPromo = Array.isArray(cardsData) ? cardsData.some((item:any) => Boolean(item.fields?.tagPromo)) : false;
+    const cardsArray = cardsData as Entry<EntrySkeletonType>[];
+    const hasPromo = cardsArray.some(item => Boolean(item.fields?.tagPromo));
 
 
   return (
