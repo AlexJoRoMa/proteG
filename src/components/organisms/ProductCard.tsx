@@ -9,11 +9,15 @@ import Image from 'next/image';
 export default function ProductCard({color, borderColor, icon, altIcon, cardData}: GenericProductComponentProps) {
 
     const card = cardData.fields;
-
+// 3xl:max-w-[344px]
     return (
         <>
-        <div className="flex mt-8 mb-8">
-        <Card className='xl:w-full max-w-[402px] lg:max-w-[264px] xl:max-w-[284px] 3xl:max-w-[344px] 4xl:max-w-[384px] bg-white border-1 border-solid rounded-md' style={{borderColor: `${borderColor}`}}>
+        <div className="flex mt-8 mb-8 ">
+        <Card className='xl:w-auto max-w-[402px] lg:max-w-[264px] xl:max-w-[270px]
+         2xl:w-[calc(100%_-_1rem)] 2xl:max-w-[340px] 2xl:min-w-[250px] 
+         3xl:w-[calc(100%_-_2rem)] 3xl:max-w-[390px] 3xl:min-w-[300px] 
+         4xl:max-w-[384px] bg-white border-1 border-solid rounded-md' 
+         style={{borderColor: `${borderColor}`}}>
             <CardHeader className='flex w-full h-[144px] mt-0 rounded-t-md' style={{background: `${color}`}}>
                 <div className='flex items-center px-[24px]'>
                     <div className='pr-[16px]'>

@@ -19,7 +19,7 @@ const CardHomeComponent = async({card}:CardPropType) => {
     }) : null;
 
   return (
-    <div className='h-[740px] max-h-[785px] md:h-[785px] flex-col rounded-md relative'>
+    <div className='h-[740px] 4xl:max-h-[985px] max-h-[850px] 4xl:h-[830px] xl:h-[985px] md:h-[785px] flex-col rounded-md relative '>
         {
             card?.fields?.tagPromotional? (
                 <div className=' rounded-t-md px-6 py-1 absolute top-0 text-[18px] leading-6 w-full text-center text-white bg-[image:var(--gradient-card-tag-home)]'>
@@ -35,7 +35,7 @@ const CardHomeComponent = async({card}:CardPropType) => {
           priority
           className="w-full object-cover h-auto rounded-t-md border-b border-orange-500"
         />
-        <div className='px-4 md:px-6 py-8 bg-[color:var(--color-gray-450)] h-[calc(740px-208px)] md:h-[calc(785px-216px)] flex flex-col text-white'>
+        <div className='px-4 md:px-6 py-8 bg-[color:var(--color-gray-450)] h-[calc(740px-208px)] 4xl:h-[calc(830px-216px)] xl:h-[calc(860px-216px)] md:h-[calc(785px-216px)] flex flex-col text-white'>
             <p className='font-bold text-2xl leading-8 mb-4 '>
                    {card?.fields?.title as string || 'Título del Card'}
             </p>

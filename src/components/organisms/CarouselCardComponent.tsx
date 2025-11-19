@@ -30,6 +30,11 @@ const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
     const imgBackgroundMobile = entryCarousel?.[0].fields?.backgroundImageMobile as Asset;
     const colorArrow = entryCarousel?.[0].fields?.colorArrow as string;
 
+    const cardsData = entryCarousel?.[0].fields?.cardsCarousel || [];
+    const cardsArray = cardsData as Entry<EntrySkeletonType>[];
+    const hasPromo = cardsArray.some(item => Boolean(item.fields?.tagPromo));
+
+
   return (
     <div 
       className="CarouselCardComponent relative w-full h-full flex justify-center items-center flex-wrap "
@@ -69,19 +74,19 @@ const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
         ) : null
       }
         
-        <div className="relative z-10 w-full h-full  2xl:ml-lg  ">
+        <div className="relative z-10 w-full h-full  2xl:ml-lg  3xl:ml-0 ">
           <CarouselProvider qtyCarousels={1} carouselConfigs={[{ options: { align: 'center'} }]} colorArrow={colorArrow}>
              <CarouselComponent buttons={true} dots={true}>
                 {
                   entryCarousel && entryCarousel[0]?.fields.cardsCarousel && Array.isArray(entryCarousel[0].fields.cardsCarousel) && (entryCarousel[0].fields.cardsCarousel as Entry<EntrySkeletonType, undefined, string>[]).map((card:Entry<EntrySkeletonType, undefined, string>, index:number) => {
                     if( card.fields.type === CARDHOMECOMPONENT) {
-                      return <CardHomeComponent key={index} card={card} />
+                      return <CardHomeComponent key={index} card={card} promo={hasPromo}/>
                     }
                     else if (typeof card.fields.type && card.fields.type !== CARDHOMECOMPONENT && card.fields.type !== CARDTVPAQUETESCOMPONENT) {
-                      return <CardTVInternetMovilComponent key={index} card={card} />
+                      return <CardTVInternetMovilComponent key={index} card={card} promo={hasPromo}/>
                     }
                     else if (typeof card.fields.type === 'string' && CARDTVPAQUETESCOMPONENT.includes(card.fields.type)) {
-                      return <CardTvPaquetesComponent key={index} card={card} />
+                      return <CardTvPaquetesComponent key={index} card={card} promo={hasPromo}/>
                     }
                     return null;
                   })
