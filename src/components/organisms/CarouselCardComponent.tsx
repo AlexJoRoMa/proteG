@@ -25,10 +25,14 @@ const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
     }).then((entriesResponse) => {
       return entriesResponse.items
     })
-console.log('🦄  ', entryCarousel?.[0].fields?.cardsCarousel)
+
     const imgBackground = entryCarousel?.[0].fields?.backgroundImage as Asset;
     const imgBackgroundMobile = entryCarousel?.[0].fields?.backgroundImageMobile as Asset;
     const colorArrow = entryCarousel?.[0].fields?.colorArrow as string;
+
+    const cardsData = entryCarousel?.[0].fields?.cardsCarousel || [];
+    const hasPromo = Array.isArray(cardsData) ? cardsData.some((item:any) => Boolean(item.fields?.tagPromo)) : false;
+
 
   return (
     <div 
@@ -75,13 +79,13 @@ console.log('🦄  ', entryCarousel?.[0].fields?.cardsCarousel)
                 {
                   entryCarousel && entryCarousel[0]?.fields.cardsCarousel && Array.isArray(entryCarousel[0].fields.cardsCarousel) && (entryCarousel[0].fields.cardsCarousel as Entry<EntrySkeletonType, undefined, string>[]).map((card:Entry<EntrySkeletonType, undefined, string>, index:number) => {
                     if( card.fields.type === CARDHOMECOMPONENT) {
-                      return <CardHomeComponent key={index} card={card} />
+                      return <CardHomeComponent key={index} card={card} promo={hasPromo}/>
                     }
                     else if (typeof card.fields.type && card.fields.type !== CARDHOMECOMPONENT && card.fields.type !== CARDTVPAQUETESCOMPONENT) {
-                      return <CardTVInternetMovilComponent key={index} card={card} />
+                      return <CardTVInternetMovilComponent key={index} card={card} promo={hasPromo}/>
                     }
                     else if (typeof card.fields.type === 'string' && CARDTVPAQUETESCOMPONENT.includes(card.fields.type)) {
-                      return <CardTvPaquetesComponent key={index} card={card} />
+                      return <CardTvPaquetesComponent key={index} card={card} promo={hasPromo}/>
                     }
                     return null;
                   })

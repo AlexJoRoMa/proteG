@@ -10,28 +10,19 @@ import RichTextComponent from './RichTextComponent'
 import { Document } from '@contentful/rich-text-types'
 import ButtonLanding from '@/components/atoms/ButtonStickyLanding'
 
-const CardTVInternetMovilComponent = ({card}:CardPropType) => {
+const CardTVInternetMovilComponent = ({card, promo}:CardPropType) => {
 
     const type = card?.fields?.type as string;
     const color = type === 'internet' ? INTERNETCOLOR : type === 'tv' ? TVCOLOR : type === 'movil' ? MOVILCOLOR : '#000000';
 
     const assetsLength =  Array.isArray(card?.fields?.adds) ? card?.fields?.adds.length : 0;
-
-    const gridType =  assetsLength > 4 ? 'grid-cols-4 grid-rows-2' : 'grid-cols-2 grid-rows-2 '
-
+    const gridType =  assetsLength > 4 ? 'grid-cols-4 grid-rows-2' : 'grid-cols-2 grid-rows-2 ';
+    const promoHeight = promo ? 'py-1 mb-[32px] -mt-[32px] min-h-[32px]' : ''; 
     
 
   return (
-    <div className={`px-[16px] md:px-[24px] py-[32px] bg-white 
-      
-      h-[100%]
-      
-      2xl:h-auto xl:h-auto md:h-[660px] xsm:h-[670px] rounded-md relative flex-col flex
-    
-    
-    
-    
-    ring xl:ring-purple-500 2xl:ring-yellow-500 3xl:ring-green-500 4xl:ring-blue-500`}>
+    <div className={`px-[16px] md:px-[24px] py-[32px] bg-white h-[100%]
+      xl:h-[100%] md:h-[660px] xsm:h-[670px] rounded-md relative flex-col flex`}>
       {
         card?.fields?.alternativeDescription ? (
           <>
@@ -56,7 +47,7 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
               >
                 {card.fields.tagPromo as string}
               </div>
-            ) : <div className=' py-1 mb-[32px] -mt-[32px] min-h-[32px] ' />
+            ) : <div className={`${promoHeight}`} />
             }
 
             <div className='flex mb-[24px] items-center '>
