@@ -153,7 +153,7 @@ export default function CoberturaForm() {
         });
         setAddress(true);
         setMarkerPosition({lat: position.coords.latitude, lng: position.coords.longitude});
-        if(map) map.panTo({lat, lng})
+        if(map) map.panTo({lat: position.coords.latitude, lng: position.coords.longitude});
     }
       
     function naviError() {

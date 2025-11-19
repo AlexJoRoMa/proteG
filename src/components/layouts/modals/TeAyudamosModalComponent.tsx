@@ -23,7 +23,7 @@ const TeAyudamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlama
     column2: {
       title: 'Soporte a Cliente',
       row1: { text: 'Si eres cliente ¡llámanos!', tel: '800 120 5000' },
-      row2: { link: { text: 'Centro de ayuda', url: 'https://ayudaizzi.mx' } },
+      row2: { link: { text: 'Centro de ayuda', url: 'https://ayudaizzi.izzi.mx/hc/es' } },
       row3: { wpp: { text: 'Whatsapp', tel: '+520000000', promoText: 'Estoy Interesado' } }
     }
   };
