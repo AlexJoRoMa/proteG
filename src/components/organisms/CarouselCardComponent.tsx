@@ -25,7 +25,7 @@ const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
     }).then((entriesResponse) => {
       return entriesResponse.items
     })
-
+console.log('🦄  ', entryCarousel?.[0].fields?.cardsCarousel)
     const imgBackground = entryCarousel?.[0].fields?.backgroundImage as Asset;
     const imgBackgroundMobile = entryCarousel?.[0].fields?.backgroundImageMobile as Asset;
     const colorArrow = entryCarousel?.[0].fields?.colorArrow as string;

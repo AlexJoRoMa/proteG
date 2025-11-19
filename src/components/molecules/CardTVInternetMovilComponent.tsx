@@ -16,14 +16,22 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
     const color = type === 'internet' ? INTERNETCOLOR : type === 'tv' ? TVCOLOR : type === 'movil' ? MOVILCOLOR : '#000000';
 
     const assetsLength =  Array.isArray(card?.fields?.adds) ? card?.fields?.adds.length : 0;
-    const hCard = card?.fields?.textoContratacin ? '2xl:h-[790px]' : '2xl:h-[690px]'
 
-    const gridType =  assetsLength > 4 ? 'grid-cols-4 grid-rows-2 gap-x-2' : 'grid-cols-2 grid-rows-2'
+    const gridType =  assetsLength > 4 ? 'grid-cols-4 grid-rows-2' : 'grid-cols-2 grid-rows-2 '
 
-
+    
 
   return (
-    <div className={`px-[16px] md:px-[24px] py-[32px] bg-white 3xl:h-[660px] ${hCard} md:h-[660px] xsm:h-[670px] rounded-md relative flex-col flex`}>
+    <div className={`px-[16px] md:px-[24px] py-[32px] bg-white 
+      
+      h-[100%]
+      
+      2xl:h-auto xl:h-auto md:h-[660px] xsm:h-[670px] rounded-md relative flex-col flex
+    
+    
+    
+    
+    ring xl:ring-purple-500 2xl:ring-yellow-500 3xl:ring-green-500 4xl:ring-blue-500`}>
       {
         card?.fields?.alternativeDescription ? (
           <>
@@ -31,10 +39,10 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
               <RichTextComponent document={card?.fields?.tituloRich as Document} className='!h-min'/>
             )}
 
-            <hr className={`mt-6 mb-6 flex-shrink-0 ${
+            <hr className={`mt-6 mb-6 flex-shrink-0  ${
               card?.fields?.colorHr 
                 ? `border-none h-[1px] rich-text-hr-${(card.fields.colorHr as ColorOption).toLowerCase()}`
-                : "border-t-2 border-gray-400 h-0"
+                : "border-t-2 border-gray-400 h-0 "
             }`} />
 
             <RichTextComponent document={card?.fields?.alternativeDescription as Document}/>
@@ -48,9 +56,10 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
               >
                 {card.fields.tagPromo as string}
               </div>
-            ) : null}
+            ) : <div className=' py-1 mb-[32px] -mt-[32px] min-h-[32px] ' />
+            }
 
-            <div className='flex mb-[24px] items-center'>
+            <div className='flex mb-[24px] items-center '>
 
               {
                 card?.fields?.tituloRich && (
@@ -66,17 +75,17 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
             }`} />
             {
               card?.fields?.priceBefore ? (
-                <p className='line-through text-(--color-gray-200) text-[24px] leading-[32px]'>{card.fields.priceBefore as string}</p>
+                <p className='line-through text-(--color-gray-200) text-[24px] leading-[32px] '>{card.fields.priceBefore as string}</p>
               ) : null
             }
-            <p className='mb-4'>
+            <p className='mb-4 '>
               <span className='text-[16px] leading-[24px]'>{card.fields.textBeforePrice as string}</span>
               <span className='text-[56px] font-bold '>{card.fields.price as string}</span>
               <span className='text-[16px] leading-[24px]'>{card.fields.textAfterPrice as string}</span>
             </p>
             {
               card?.fields?.description && !card?.fields?.descriptionRich ? (
-                <p className='text-[16px] leading-[24px] mb-[24px]'>{card.fields.description as string}</p>
+                <p className='text-[16px] leading-[24px] mb-[24px] '>{card.fields.description as string}</p>
               ) : null
             }
 
@@ -85,7 +94,8 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
                 <RichTextComponent document={card?.fields?.descriptionRich as Document}/>
               )
             }
-            <div className={`grid ${gridType}  `}>
+            { card?.fields?.adds && (
+            <div className={`grid ${gridType} gap-y-2 gap-x-2 mb-5 `}>
                 {
                     Array.isArray(card?.fields?.adds) && card?.fields?.adds?.map((add, index: number) => {
                             const assetAdd = add as Asset;
@@ -105,13 +115,14 @@ const CardTVInternetMovilComponent = ({card}:CardPropType) => {
                     })
                 }
             </div>
+            )}
             { card?.fields?.textoContratacin && (
-              <p className='md:text-[18px] xsm:text-[16px] font-bold  text-black gap-4 mb-[32px]'>{card?.fields?.textoContratacin as string}</p>
+              <p className='md:text-[18px] xsm:text-[16px] font-bold  text-black gap-4 mb-[32px] mb-4 '>{card?.fields?.textoContratacin as string}</p>
             )}
           </>
         )
       }          
-        <div className='mt-auto'>
+        <div className='mt-auto '>
             {card?.fields.esModal == true ? (
                     <ButtonModal
                         classStyles='w-full mb-4 border-[2px] border-black bg-transparent  rounded-md text-black text-[16px] md:text-[18px] font-bold'
