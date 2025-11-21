@@ -102,14 +102,26 @@ const ConfiguradorCardsModalContent = ({ modalData, onClose, variables, type }: 
         case "internet":
             headerContent =
                 <>
-                    {finalData.header.titulo.preVelocidadMinima}{" "}
-                    <span>{variables.velocidadMinima}</span>{" "}
-                    {finalData.header.titulo.posVelocidasMinima}{" "}
-                    <span className="font-bold">{variables.velocidadMaxima}</span>{" "}
-                    <span className="font-bold">{finalData.header.titulo.unidadVelocidad}</span>{" "}
-                    {finalData.header.titulo.posVelocidadMaxima}{" "}
-                    <span>{durationPromo}</span>{" "}
-                    <span>{finalData.header.titulo.meses}</span>
+                    {
+                        variables.velocidadMinima === 1000 ?
+                            <>
+                                {finalData.header.titulo.preVelocidadMinima}{" "}
+                                {finalData.header.titulo.posVelocidasMinima}{" "}
+                                <span className="font-bold">{variables.velocidadMaxima}</span>{" "}
+                                <span className="font-bold">{finalData.header.titulo.unidadVelocidad}</span>{" "}
+                            </>
+                            :
+                            <>
+                                {finalData.header.titulo.preVelocidadMinima}{" "}
+                                <span>{variables.velocidadMinima}</span>{" "}
+                                {finalData.header.titulo.posVelocidasMinima}{" "}
+                                <span className="font-bold">{variables.velocidadMaxima}</span>{" "}
+                                <span className="font-bold">{finalData.header.titulo.unidadVelocidad}</span>{" "}
+                                {finalData.header.titulo.posVelocidadMaxima}{" "}
+                                <span>{durationPromo}</span>{" "}
+                                <span>{finalData.header.titulo.meses}</span>
+                            </>
+                    }
                 </>
             bodyContent =
                 <>
