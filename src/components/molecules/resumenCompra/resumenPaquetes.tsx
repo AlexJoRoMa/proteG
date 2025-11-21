@@ -2,7 +2,7 @@ import { internetComponentFields, movilComponentFields, OfferItem, tvComponentFi
 import { ResumenContentProps } from "@/types/ResumenCompra";
 import { FormatCurrency } from "@/utils/Currency";
 
-export default function ResumenPaquetes({userSelection, copys}: ResumenContentProps) {
+export default function ResumenPaquetes({ userSelection, copys }: ResumenContentProps) {
 
     const paquetes = userSelection as unknown as Record<string, OfferItem>;
     const resumenCopys = copys;
@@ -74,19 +74,25 @@ export default function ResumenPaquetes({userSelection, copys}: ResumenContentPr
                     <div className="flex justify-between w-full font-bold leading-[24px] text-lg">
                         <h5>{resumenCopys.paquetes.movil.titulo}</h5>
                         {
-                                internet &&
-                                <h5>{FormatCurrency(Number(movil.paquete.precioTachado))}</h5>
-                            }
-                            {
-                                !internet &&
-                                <h5>{FormatCurrency(Number(movil.paquete.precioPaquete))}</h5>
-                            }
+                            internet &&
+                            <h5>{FormatCurrency(Number(movil.paquete.precioTachado))}</h5>
+                        }
+                        {
+                            !internet &&
+                            <h5>{FormatCurrency(Number(movil.paquete.precioPaquete))}</h5>
+                        }
                     </div>
 
                     <div className="flex-flex-col gap-[8px] pb-[24px] w-full font-normal leading-[24px] text-base text-gray-250">
-                        <p>
-                            {`${movil.paquete.velocidadMaxima} ${resumenCopys.paquetes.movil.unidad}`}
-                        </p>
+                        {
+                            movil.paquete.velocidadMaxima !== 0 ?
+                                <p>
+                                    {`${movil.paquete.velocidadMaxima} ${resumenCopys.paquetes.movil.unidad}`}
+                                </p> :
+                                <p>
+                                    {resumenCopys.paquetes.movil.planComparte}
+                                </p>
+                        }
                         <p>
                             {movil.contrato}
                         </p>

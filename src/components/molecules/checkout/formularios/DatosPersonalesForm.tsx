@@ -153,6 +153,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                             labelPlacement="outside"
                             isRequired
                             className='w-full'
+                            maxLength={9}
                             onInput={(e) => InputFilter(e, 'alfanumerico')}
                             placeholder={getValue('datosPersonales.placeholder.pasaporte')}
                             errorMessage={getValue('datosPersonales.error.pasaporte')}
@@ -168,6 +169,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                             labelPlacement="outside"
                             isRequired
                             className='w-full'
+                            maxLength={18}
                             onInput={(e) => InputFilter(e, 'alfanumerico')}
                             placeholder={getValue('datosPersonales.placeholder.curp')}
                             errorMessage={getValue('datosPersonales.error.curp')}

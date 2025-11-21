@@ -75,8 +75,20 @@ const ConfiguradorCardsModalContent = ({ modalData, onClose, variables, type }: 
         tv: "border-b-cyan-400"
     }
 
+    function getPeriodoPromo() {
+        if (type === 'movil') {
+            if (variables.plazoForzoso) {
+                return finalData?.periodo?.plazo;
+            } else {
+                return finalData?.periodo?.sinPlazo;
+            }
+        } else {
+            return finalData?.periodo?.plazo;
+        }
+    }
+
     const finalData: ModalData | undefined = modalData || data;
-    const durationPromo = variables.periodo || finalData.periodo;
+    const durationPromo = getPeriodoPromo();
     const domicilioPromo = variables.domicilio || Number(finalData.domicilio);
 
     let headerContent;
@@ -90,14 +102,26 @@ const ConfiguradorCardsModalContent = ({ modalData, onClose, variables, type }: 
         case "internet":
             headerContent =
                 <>
-                    {finalData.header.titulo.preVelocidadMinima}{" "}
-                    <span>{variables.velocidadMinima}</span>{" "}
-                    {finalData.header.titulo.posVelocidasMinima}{" "}
-                    <span className="font-bold">{variables.velocidadMaxima}</span>{" "}
-                    <span className="font-bold">{finalData.header.titulo.unidadVelocidad}</span>{" "}
-                    {finalData.header.titulo.posVelocidadMaxima}{" "}
-                    <span>{durationPromo}</span>{" "}
-                    <span>{finalData.header.titulo.meses}</span>
+                    {
+                        variables.velocidadMinima === 1000 ?
+                            <>
+                                {finalData.header.titulo.preVelocidadMinima}{" "}
+                                {finalData.header.titulo.posVelocidasMinima}{" "}
+                                <span className="font-bold">{variables.velocidadMaxima}</span>{" "}
+                                <span className="font-bold">{finalData.header.titulo.unidadVelocidad}</span>{" "}
+                            </>
+                            :
+                            <>
+                                {finalData.header.titulo.preVelocidadMinima}{" "}
+                                <span>{variables.velocidadMinima}</span>{" "}
+                                {finalData.header.titulo.posVelocidasMinima}{" "}
+                                <span className="font-bold">{variables.velocidadMaxima}</span>{" "}
+                                <span className="font-bold">{finalData.header.titulo.unidadVelocidad}</span>{" "}
+                                {finalData.header.titulo.posVelocidadMaxima}{" "}
+                                <span>{durationPromo}</span>{" "}
+                                <span>{finalData.header.titulo.meses}</span>
+                            </>
+                    }
                 </>
             bodyContent =
                 <>
@@ -126,7 +150,6 @@ const ConfiguradorCardsModalContent = ({ modalData, onClose, variables, type }: 
                 <>
                     {finalData.body.texto1}&nbsp;
                     {durationPromo}&nbsp;
-                    {variables.periodo}&nbsp;
                     <span>{finalData.body.texto2}</span>&nbsp;
                 </>
             break;
@@ -134,17 +157,38 @@ const ConfiguradorCardsModalContent = ({ modalData, onClose, variables, type }: 
         case "movil":
             headerContent =
                 <>
-                    {finalData.header.titulo.preVelocidad}{" "}
-                    <span className="font-bold">{variables.velocidadMaxima}</span>{" "}
-                    <span className="font-bold">{finalData.header.titulo.posVelocidad}</span>
+                    {
+                        variables.velocidadMaxima === 0 ?
+                            <>
+                                {finalData.header.titulo.preVelocidad}{" "}
+                                <span className="font-bold">{finalData.header.titulo.posVelocidad}</span>{" "}
+                                <span className="font-bold">{finalData.header.titulo.tituloIlimitado}</span>
+                            </>
+                            :
+                            <>
+                                {finalData.header.titulo.preVelocidad}{" "}
+                                <span className="font-bold">{variables.velocidadMaxima}</span>{" "}
+                                <span className="font-bold">{`${finalData.header.titulo.posVelocidad}!`}</span>
+                            </>
+                    }
                 </>
 
             bodyContent =
                 <>
-                    {finalData.body.texto1}&nbsp;
-                    {durationPromo}&nbsp;
-                    {variables.periodo}&nbsp;
-                    <span>{finalData.body.texto2}</span>&nbsp;
+                    {
+                        variables.plazoForzoso ?
+                            <>
+                                {finalData.body.textoPlazo}&nbsp;
+                                {durationPromo}&nbsp;
+                                <span>{finalData.body.texto2}</span>&nbsp;
+                            </>
+                            :
+                            <>
+                                {finalData.body.textoSinPlazo}&nbsp;
+                                {durationPromo}&nbsp;
+                                <span>{finalData.body.texto2}</span>&nbsp;
+                            </>
+                    }
                 </>
             break;
 
@@ -209,27 +253,27 @@ const ConfiguradorCardsModalContent = ({ modalData, onClose, variables, type }: 
 
                     <div className="flex flex-col gap-[24px] mb-[32px] mt-[24px] text-base">
                         <div className="flex flex-row items-center gap-x-2">
-                        {ottsImages.map((icon, index) => {
-                            const match = variables?.extras?.find(
-                                (extra) => extra.idProducto === icon.fields.idModalExtra
-                            );
+                            {ottsImages.map((icon, index) => {
+                                const match = variables?.extras?.find(
+                                    (extra) => extra.idProducto === icon.fields.idModalExtra
+                                );
 
-                            return (
-                                icon.fields.type.includes('ExtraModal') && match && (
-                                <div key={index}>
-                                    <Image
-                                    src={`https:${icon.fields.ottImage.fields.image.fields.file.url}`}
-                                    alt={icon.fields.ottImage.fields.altText}
-                                    width={60}
-                                    height={40}
-                                    />
-                                    <p className="text-[10px] text-center">
-                                        {icon.fields.vigencia}
-                                    </p>
-                                </div>
-                                )
-                            );
-                        })}
+                                return (
+                                    icon.fields.type.includes('ExtraModal') && match && (
+                                        <div key={index}>
+                                            <Image
+                                                src={`https:${icon.fields.ottImage.fields.image.fields.file.url}`}
+                                                alt={icon.fields.ottImage.fields.altText}
+                                                width={60}
+                                                height={40}
+                                            />
+                                            <p className="text-[10px] text-center">
+                                                {icon.fields.vigencia}
+                                            </p>
+                                        </div>
+                                    )
+                                );
+                            })}
                         </div>
                         <p>
                             {bodyContent}

@@ -54,7 +54,8 @@ export type ResumenData = {
         },
         movil: {
             titulo: string,
-            unidad: string
+            unidad: string,
+            planComparte: string
         }
     },
     seleccionPaquetes: {

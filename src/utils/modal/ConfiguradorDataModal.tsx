@@ -3,7 +3,9 @@ import { ModalData } from "@/types/ModalComponentTypes";
 export const dataModel = (getValueByKey: (key: string) => string): Record<string, ModalData> => ({
     internet: {
         titulo: getValueByKey('modal.titulo'),
-        periodo: getValueByKey('modal.periodo'),
+        periodo: {
+            plazo: getValueByKey('modal.periodo.plazo'),
+        },
         domicilio: getValueByKey('modal.domicilio'),
         header: {
             titulo: {
@@ -45,7 +47,9 @@ export const dataModel = (getValueByKey: (key: string) => string): Record<string
     },
     tv: {
         titulo: getValueByKey('modal.titulo'),
-        periodo: getValueByKey('modal.periodo'),
+        periodo: {
+            plazo: getValueByKey('modal.periodo.plazo'),
+        },
         header: {
             titulo: {
                 preCanales: getValueByKey('modal.header.titulo.preCanales'),
@@ -77,11 +81,15 @@ export const dataModel = (getValueByKey: (key: string) => string): Record<string
     },
     movil: {
         titulo: getValueByKey('modal.titulo'),
-        periodo: getValueByKey('modal.periodo'),
+        periodo: {
+            plazo: getValueByKey('modal.periodo.plazo'),
+            sinPlazo: getValueByKey('modal.periodo.sinPlazo'),
+        },
         header: {
             titulo: {
                 preVelocidad: getValueByKey('modal.header.titulo.preVelocidad'),
                 posVelocidad: getValueByKey('modal.header.titulo.posVelocidad'),
+                tituloIlimitado: getValueByKey('modal.header.titulo.ilimitado')
             },
             precio: {
                 prePrecio: getValueByKey('modal.header.precio.prePrecio'),
@@ -89,7 +97,8 @@ export const dataModel = (getValueByKey: (key: string) => string): Record<string
             }
         },
         body: {
-            texto1: getValueByKey('modal.body.texto1'),
+            textoPlazo: getValueByKey('modal.body.textoPlazo'),
+            textoSinPlazo: getValueByKey('modal.body.textoSinPlazo'),
             texto2: getValueByKey('modal.body.texto2'),
             beneficios: {
                 titulo1: getValueByKey('modal.body.beneficios.titulo1'),

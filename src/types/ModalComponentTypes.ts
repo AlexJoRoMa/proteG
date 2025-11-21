@@ -168,6 +168,7 @@ export interface ConfiguradorCardsModalProps {
     velocidadMaxima?: number,
     precioPaquete: string,
     periodo?: string,
+    plazoForzoso?: boolean,
     domicilio?: string,
     canales?: string,
     extras?: ExtrasIncluidos[]
@@ -177,7 +178,10 @@ export interface ConfiguradorCardsModalProps {
 
 export interface ModalData {
   titulo: string,
-  periodo?: string,
+  periodo?: {
+    plazo?: string,
+    sinPlazo?: string,
+  },
   domicilio?: string,
   header: {
     titulo: {
@@ -189,7 +193,8 @@ export interface ModalData {
       preCanales?: string,
       posCanales?: string,
       preVelocidad?: string,
-      posVelocidad?: string
+      posVelocidad?: string,
+      tituloIlimitado?: string,
     },
     precio: {
       prePrecio: string,
@@ -198,6 +203,8 @@ export interface ModalData {
   },
   body: {
     texto1?: string,
+    textoPlazo?: string,
+    textoSinPlazo?: string,
     textoPromocion1?: string,
     textoPromocion2?: string,
     texto2?: string,
