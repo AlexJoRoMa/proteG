@@ -20,7 +20,8 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
             'fields.textBoton1',
             'fields.linkBoton1',
             'fields.landing',
-            'fields.terminos'
+            'fields.terminos',
+            'fields.imgUrl'
              ],
             include: 2,
         }).then((entriesResponse) => {
@@ -33,18 +34,19 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
     
     const getComponentContent= callComponents[0] as unknown as Entry<StepTabEntrySkeleton>;
    
-    const { imagen, imagenMovil, content, image, imageResponsive, textBoton1, linkBoton1, landing, terminos }= getComponentContent.fields as StepTabEntryFields;
+    const { imagen, imagenMovil, content, image, imageResponsive, textBoton1, linkBoton1, landing, terminos, imgUrl }= getComponentContent.fields as StepTabEntryFields;
 
     const assetImage = imagen?.fields?.image as Asset | undefined;
-    const imgURL = assetImage?.fields?.file?.url;
+    const imgDesk = assetImage?.fields?.file?.url;
 
     const movilImage = imagenMovil?.fields?.image as Asset | undefined;
-    const movilURL = movilImage?.fields?.file?.url;
+    const imgMobil = movilImage?.fields?.file?.url;
 
-    
+    const setImgURL = imgUrl ? imgUrl : '';
 
     return(
     <div className={` relative bg-black flex md:w-full xsm:w-full h-auto overflow-hidden 4xl:px-[200px] 2xl:px-[144px] xl:px-[80px] md:px-[80px] xsm:px-[16px] md:py-10  xsm:py-15 ${!content && 'min-h-[520px]'}`}>
+        
         <div key={getComponentContent.sys.id} className="w-full flex flex-col md:flex-row">
             
 
@@ -71,40 +73,45 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
                 </div>
             </div>
 
-            {/*Imagen del lado derecho del banner mb-10 md:mb-0*/}
+            {/*Imagen del banner mb-10 md:mb-0*/}
+            
 
-            <div className={`z-1  xsm:mt-5 md:m-auto 3xl:mt-0 ml-auto xsm:order-2 md-order-none ${movilURL && !image && 'md:hidden'}`}>
+            <div className={`z-1  xsm:mt-5 md:m-auto 3xl:mt-0 ml-auto xsm:order-2 md-order-none ${imgMobil && !image && 'md:hidden'}`}>
+                <a href={`${setImgURL}`}>
                 <picture>
-                    <source media="(max-width:576px)" srcSet={`https:${imageResponsive?.fields?.file?.url || movilURL}`}/>
-                    {( image?.fields?.file?.url && imageResponsive?.fields?.file?.url || movilURL ) && (
+                    <source media="(max-width:576px)" srcSet={`https:${imageResponsive?.fields?.file?.url || imgMobil}`}/>
+                    {( image?.fields?.file?.url && imageResponsive?.fields?.file?.url || imgMobil ) && (
                         <Image
                         alt={'Images'}
-                        src={`https:${ image?.fields?.file?.url || imageResponsive?.fields?.file?.url || movilURL}`}
+                        src={`https:${ image?.fields?.file?.url || imageResponsive?.fields?.file?.url || imgMobil}`}
                         width={(image?.fields?.file?.details as import("contentful").AssetDetails).image?.width || 600}
                         height={(image?.fields?.file?.details as import("contentful").AssetDetails).image?.height || 400}
                         />
                     )}
                 </picture>
+                </a>  
             </div>
 
 
-                
-            {/* imagen responsiva */}
+            {/* imagen fondo */}
+            <a href={`${setImgURL}`}>
+            <picture className={`xsm:hidden md:block ${imgMobil && image && 'xsm:!block '}`}>
+                <source media="(max-width:576px)" srcSet={`https:${imgMobil}`}/>
+                {( imgDesk && imgMobil ) && (
+                    <Image
+                    alt={'Images'}
+                    src={`https:${ imgDesk || imgMobil}`}
+                    fill
+                    priority
+                    sizes=" 100vw"
+                    quality={75}
+                    />
+                )}
+            </picture>
+            </a>
 
-                    <picture className={`xsm:hidden md:block ${movilURL && image && 'xsm:!block'}`}>
-                        <source media="(max-width:576px)" srcSet={`https:${movilURL}`}/>
-                        {( imgURL && movilURL ) && (
-                            <Image
-                            alt={'Images'}
-                            src={`https:${ imgURL || movilURL}`}
-                            fill
-                            priority
-                            sizes=" 100vw"
-                            quality={75}
-                            />
-                        )}
-                    </picture>
-            </div>
+        </div>
+        
     </div>
     );
  }

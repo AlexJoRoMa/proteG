@@ -97,11 +97,11 @@ const CardTVInternetMovilComponent = ({card, promo}:CardPropType) => {
                                 key={index}
                                 src={`https:${assetAdd.fields?.file?.url}` as string}
                                 alt={`Add ${index + 1}`}
-                                width={100}
-                                height={27}
+                                width={56}
+                                height={14}
                                 priority
-                                className='max-w-[100%] h-[97%] object-contain'/>
-                          </div>
+                                className='max-w-[100%] h-[100%] object-contain'/>
+                         </div>
                         ) : null;
                     })
                 }

@@ -41,6 +41,7 @@ export interface StepTabEntryFields extends EntrySkeletonType{
   linkBoton1?: string;
   landing?: boolean;
   terminos?: string;
+  imgUrl?: string;
 }
 
 export interface StepTabEntrySkeleton extends EntrySkeletonType{
