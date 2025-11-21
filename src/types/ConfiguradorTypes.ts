@@ -92,6 +92,7 @@ export interface OfferItem {
     nombreCode: string,
     paqName: string,
     tiempoPlan: string,
+    plazoForzoso?: boolean
 }
 
 export interface Ahorro {
