@@ -138,7 +138,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
 };
       
   return (
-    <section className="channelPromoBanner relative  xl:min-h-[740px]  md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
+    <section className="channelPromoBanner relative z-0 ring-4 ring-red-500 xl:min-h-[740px] xsm:h-[560px] sm:h-[600px] md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
       
       <CarouselProvider
         qtyCarousels={3} 
@@ -146,7 +146,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
       >
       {/* Carrusel Principal */}
 
-        <div className="w-full md:flex md:justify-center absolute inset-0 md:w-full md:h-full z-0">
+        <div className="w-full md:flex md:justify-center absolute inset-0 md:w-full md:h-full z-0 ">
           <CarouselComponent carouselIndex={0}>
 
             {heroImages.map((image, index) => (
@@ -175,7 +175,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
 
               {carouselText.map((item, index) => (
               <div key={index} style={{height: '-webkit-fill-available'}} className="relative z-20 w-full pt-[56px] md:pt-0 2xl:ml-[200px] md:ml-[80px] pb-10
-                 md:w-2/5 flex flex-col items-center justify-end md:justify-initial md:items-start">
+                 md:w-2/5 flex flex-col items-center justify-end md:justify-initial md:items-start xsm:h-[800px]">
                 
                 <p className="pl-4 md:pl-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
                 <h2 className="text-[32px] md:text-4xl pl-4 md:pl-0  font-bold text-white mb-6 w-screen md:w-auto">{item.title}</h2>
@@ -191,12 +191,12 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                   )
                 }
 
-                <ButtonGhost classStyles=" border-white text-white text-[16px] md:text-[18px] leading-6 font-bold sm:max-w-[320px] max-w-[224px] w-full h-[48px] rounded-md"
+                <ButtonGhost classStyles=" border-white text-white text-[16px] md:text-[18px] leading-6 font-bold xsm:h-auto xsm:max-w-[220px] sm:max-w-[320px] max-w-[224px] w-full h-[48px] rounded-md"
                             text={item.buttonText} href={item.buttonLink} />
                             
                 {
                   item.btnShowMore && (
-                    <ButtonGhost classStyles="mt-4 border-black bg-white text-black font-bold text-[16px] md:text-[18px] leading-6 sm:max-w-[320px] max-w-[224px] w-full h-[48px] rounded-md"
+                    <ButtonGhost classStyles="mt-4 border-black bg-white text-black font-bold text-[16px] md:text-[18px] leading-6 xsm:h-auto xsm:max-w-[220px] sm:max-w-[320px] max-w-[224px] w-full h-[48px] rounded-md"
                             text={item.btnShowMore} href={item.urlBtnPromo} />
                   )
                 }
