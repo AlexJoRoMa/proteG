@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FormatCurrency } from "@/utils/Currency";
 import { Button } from "@heroui/react";
+import { LoaderIcon } from "@/constants/IconsConstants";
 // import ModalFechaInvalida from "../checkout/modals/ModalFechaInvalida";
 
 export default function ResumenContainerConfigurador() {
@@ -16,7 +17,7 @@ export default function ResumenContainerConfigurador() {
     const { copysResumen, checkedPromotions, setCheckedPromotions, resumenIcon, userAnswers, configuradorEntry, izziSelection } = useContent();
     const { setPromoData } = useIzziContent();
     const resumenCopys = copysResumen as ResumenData;
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const [promoError, setPromoError] = useState(false);
     const { coberturaData, setRpt, setOffnetIzzi, setOffnetSky, setParams, ahorroTotal } = useIzziContent();
     const router = useRouter();
@@ -83,11 +84,20 @@ export default function ResumenContainerConfigurador() {
 
     function handleContratar() {
         setParams({ plan: null, movil: null });
+        setLoading(true);
         router.push(`${resumenCopys.boton.contratar.url}`)
     }
 
     return (
         <>
+        {loading &&
+            
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70">
+                <div className="w-[104px] h-[104px]">
+                    <LoaderIcon />
+                </div>
+            </div>
+        }   
             <h1 className="hidden xl:block font-bold leading-[24px] text-xl">{resumenCopys.titulo}</h1>
 
             {checkedPromotions &&
