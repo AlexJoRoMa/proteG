@@ -9,6 +9,8 @@ import ResumenContainerConfigurador from "./resumenContainerConfigurador";
 import { ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { FormatCurrency } from "@/utils/Currency";
+import { useRouter } from "next/navigation";
+import { LoaderIcon } from "@/constants/IconsConstants";
 
 export const ArrowUpIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
@@ -33,9 +35,10 @@ function hasData(obj: unknown): boolean {
 export default function ResumenPedido() {
 
     const { userAnswers, copysResumen, setCheckedPromotions, checkedPromotions, infoDrawerContent, configuradorEntry, izziSelection } = useContent();
-    const { precioTotal, coberturaData, setPromoData, infoPaquetes, setInfoPaquetes } = useIzziContent();;
-    const [loading, setLoading] = useState(false);
+    const { precioTotal, coberturaData, setPromoData, infoPaquetes, setInfoPaquetes, setParams } = useIzziContent();;
+    const [loading, setLoading] = useState<boolean>(false);
     const [promoError, setPromoError] = useState(false);
+    const router = useRouter();
 
     const resumenCopys = copysResumen as ResumenData;
     const internet = userAnswers.internet as unknown as internetComponentFields | undefined;
@@ -134,8 +137,14 @@ export default function ResumenPedido() {
         }
     };
 
+    function handleContratar() {
+        setParams({ plan: null, movil: null });
+        setLoading(true);
+        router.push(`${resumenCopys.boton.contratar.url}`)
+    }
 
     return (
+        <>
         <div className="xl:border xl:rounded-md xl:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 xl:bg-white-0">
 
             {!newSelection ?
@@ -184,7 +193,7 @@ export default function ResumenPedido() {
                                 <Button
                                     isDisabled={loading || promoError}
                                     className={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center"}
-                                    href={resumenCopys.boton.contratar.url}
+                                    onPress={handleContratar}
                                 >
                                     {resumenCopys.boton.contratar.titulo}
                                 </Button>
@@ -206,6 +215,13 @@ export default function ResumenPedido() {
                         <DrawerContent>
                             {(onClose) => (
                                 <>
+                                    {loading &&
+                                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70">
+                                            <div className="w-[104px] h-[104px]">
+                                                <LoaderIcon />
+                                            </div>
+                                        </div>
+                                    }
                                     <DrawerHeader
                                         className="flex flex-row justify-between items-center"
                                     >
@@ -239,7 +255,7 @@ export default function ResumenPedido() {
                                                 <Button
                                                     isDisabled={loading || promoError}
                                                     className={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg"}
-                                                    href={resumenCopys.boton.contratar.url}
+                                                    onPress={handleContratar}
                                                 >
                                                     {resumenCopys.boton.contratar.titulo}
                                                 </Button>
@@ -258,5 +274,6 @@ export default function ResumenPedido() {
                 </>
             }
         </div>
+        </>
     )
 }
