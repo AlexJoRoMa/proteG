@@ -245,7 +245,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
             <CarouselComponent carouselIndex={1}>
             {heroImages.map((_, heroIndex) => {
               const footerData = getFooterDataForSlide(heroIndex);
-              console.log('🦄 footerData', footerData)
+              
               return footerData !== null && footerData.images.length > 0 ? (
                 <div className="
                   w-full xl:pl-[225px] md:pl-[100px] pl-[50px]
