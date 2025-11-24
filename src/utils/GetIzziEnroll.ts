@@ -9,10 +9,10 @@ export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratac
         "purchaseId": "",
         "requestedAddress": {
             "stringAddress": `${coberturaData.zipCode}|${coberturaData.municipio}|${coberturaData.colonia}|${coberturaData.calle}|${coberturaData.numExt}`,
-            "addressReference": datosContratacion.current?.DatosPersonales?.instalacion.reference ? datosContratacion.current?.DatosPersonales?.instalacion.reference : "SINREF",
+            "addressReference": datosContratacion.current?.DatosPersonales?.instalacion?.reference ? datosContratacion.current?.DatosPersonales?.instalacion.reference : "SINREF",
             "postalCode": coberturaData.zipCode,
             "addressId": "",
-            "betweenStreets1": datosContratacion.current?.DatosPersonales?.instalacion.street ? datosContratacion.current?.DatosPersonales?.instalacion.street : "SINCALLE",
+            "betweenStreets1": datosContratacion.current?.DatosPersonales?.instalacion?.street ? datosContratacion.current?.DatosPersonales?.instalacion.street : "SINCALLE",
             "betweenStreets2": "",
             "housingUnit": "NA",
             "billing": datosContratacion.current?.DatosPersonales?.meta.necesitaFacturar,
