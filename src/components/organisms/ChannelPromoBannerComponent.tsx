@@ -245,14 +245,14 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
             <CarouselComponent carouselIndex={1}>
             {heroImages.map((_, heroIndex) => {
               const footerData = getFooterDataForSlide(heroIndex);
-              
-              return footerData ? (
+              console.log('🦄 footerData', footerData)
+              return footerData !== null && footerData.images.length > 0 ? (
                 <div className="
                   w-full xl:pl-[225px] md:pl-[100px] pl-[50px]
                   bg-(--color-gray-450) p-4 
                 " key={heroIndex}>
                   <p className="w-full text-(--color-gray-200) text-[16px] leading-6 mb-2 ">
-                    {footerData.legend ? footerData.legend : `Carrusel de Logos`}
+                    {footerData.legend ? footerData.legend : ``}
                   </p>
                   <div className=" grid grid-flow-col auto-cols-[88px] scroll-smooth snap-mandatory mb-4 gap-0.5 items-center overflow-x-auto scrollbar-hide">
                     {footerData.images.map((image, imgIndex) => (
