@@ -103,7 +103,7 @@ const ConfiguradorCardsModalContent = ({ modalData, onClose, variables, type }: 
             headerContent =
                 <>
                     {
-                        variables.velocidadMinima === 1000 ?
+                        variables.velocidadMinima === variables.velocidadMaxima ?
                             <>
                                 {finalData.header.titulo.preVelocidadMinima}{" "}
                                 {finalData.header.titulo.posVelocidasMinima}{" "}
