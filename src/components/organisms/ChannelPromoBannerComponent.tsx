@@ -139,7 +139,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
       
   return (
     <section className="channelPromoBanner relative z-0 ring-4 ring-red-500 xl:min-h-[740px] bg-black md:bg-transparent
-    xsm:h-[760px] sm:h-[600px] md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
+    xsm:max-h-[700px] sm:h-[600px] md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
       
       <CarouselProvider
         qtyCarousels={3} 
@@ -147,7 +147,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
       >
       {/* Carrusel Principal */}
 
-        <div className="Warhog w-full md:flex md:justify-center absolute inset-0 md:w-full md:h-full z-0 ">
+        <div className="w-full md:flex md:justify-center absolute inset-0 md:w-full md:h-full z-0">
           <CarouselComponent carouselIndex={0}>
 
             {heroImages.map((image, index) => (
@@ -175,15 +175,11 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
           <CarouselComponent carouselIndex={2}>
 
               {carouselText.map((item, index) => (
-              <div key={index} style={{height: '-webkit-fill-available'}} className="Kacike relative z-20 
-                w-full 2xl:ml-[200px] md:ml-[80px] xsm:mt-[200px]
-                md:pb-10 xsm:mt-[10px] lg:mt-[40px] xl:mt-[20px] 2xl:mt-[50px] 3xl:mt-[90px] 4xl:mt-[40px]
-                md:w-2/5 
-                 md:h-10/10 xl:h-10/10  
-                flex flex-col items-center justify-end justify-start md:items-start xsm:h-[800px] ring ring-red-500">
+              <div key={index} style={{height: '-webkit-fill-available'}} className="relative z-20 w-full pt-[56px] md:pt-0 2xl:ml-[200px] md:ml-[80px] pb-10
+                 md:w-2/5 flex flex-col items-center justify-end md:justify-initial md:items-start">
                 
                 <p className="pl-4 md:pl-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
-                <h2 className="text-[32px] md:text-4xl pl-4 md:pl-0  font-bold text-white mb-6 w-screen md:w-auto ">{item.title}</h2>
+                <h2 className="text-[32px] md:text-4xl pl-4 md:pl-0  font-bold text-white mb-6 w-screen md:w-auto">{item.title}</h2>
                 <p className="text-[16px] md:text-[18px] leading-6 text-(--color-gray-200) pl-4 md:pl-0 pr-4 md:pr-auto mb-6 md:mb-10 w-screen md:w-auto">
                   {item.description}
                 </p>
@@ -196,14 +192,12 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                   )
                 }
 
-                <ButtonGhost classStyles=" border-white text-white text-[16px] md:text-[18px]  font-bold xsm:h-auto 
-                 md:h-[28px] lg:h-[48px] xsm:max-w-[220px] sm:max-w-[320px] max-w-[224px] w-full  rounded-md"
+                <ButtonGhost classStyles=" border-white text-white text-[16px] md:text-[18px] leading-6 font-bold sm:max-w-[320px] max-w-[224px] w-full h-[48px] rounded-md"
                             text={item.buttonText} href={item.buttonLink} />
                             
                 {
                   item.btnShowMore && (
-                    <ButtonGhost classStyles="mt-4 border-black bg-white text-black font-bold text-[16px] md:text-[18px]  xsm:h-auto 
-                    md:h-[28px] lg:h-[48px] xsm:max-w-[220px] sm:max-w-[320px] max-w-[224px] w-full  rounded-md"
+                    <ButtonGhost classStyles="mt-4 border-black bg-white text-black font-bold text-[16px] md:text-[18px] leading-6 sm:max-w-[320px] max-w-[224px] w-full h-[48px] rounded-md"
                             text={item.btnShowMore} href={item.urlBtnPromo} />
                   )
                 }
@@ -213,12 +207,11 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
           </CarouselComponent>
       
       
-        <div className="w-full self-end z-5 bg-black md:bg-transparent xsm:mt-50 md:mt-0 ring ring-green-500">
+        <div className="w-full self-end z-5 bg-black md:bg-transparent">
 
           {/* Carousel de canales */}
 
-          <div className="flex items-center w-full  ring ring-blue-500
-           justify-center sm:justify-normal mx-auto xl:mx-0 2xl:pl-[225px] md:pl-[80px] md:pr-[80px] h-[80px] md:h-[60px] bg-black">
+          <div className="flex items-center w-full justify-center sm:justify-normal mx-auto xl:mx-0 2xl:pl-[225px] md:pl-[80px] md:pr-[80px] h-[80px] md:h-[60px] bg-black">
               <CarouselThumbnailComponent targetCarouselIndex={0} syncAllCarousels={true}>
                   {thumbnailImages.map((item, index) => (
                 <div key={index} className="relative">
