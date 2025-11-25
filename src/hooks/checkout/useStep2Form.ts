@@ -150,7 +150,7 @@ export const useStep2Form = () => {
             const persistFormData = () => {
                 const newData = {
                     personal: getFormData(DatosPersonalesRef),
-                    intalacion: getFormData(DireccionEnvioRef),
+                    instalacion: getFormData(DireccionEnvioRef),
                     facturacion: necesitaFacturar ? getFormData(DatosFacturacionRef) : null,
                     direccionFacturacion: necesitaFacturar && facturarOtraDireccion ? getFormData(DireccionFacturacionRef) : null,
                     meta: { esExtranjero, necesitaFacturar, facturarOtraDireccion, cfdi, regimen }
