@@ -34,8 +34,8 @@ export default function ProductCard({color, borderColor, icon, altIcon, cardData
             </div>
             <div className="flex items-baseline text-gray-900 mx-[12px] mb-[16px]">
                 <span className="text-[18px] lg:text-[12px] xl:text-[14px] 3xl:text-[18px] font-normal">{card.pricePrefixCopy}</span>
-                <span className="text-[56px] lg:text-[50px] xl:text-[52px] 3xl:text-[56px] font-extrabold tracking-tight"> ${card.priceValue}</span>
-                <span className="ms-1 text-[18px] lg:text-[12px] xl:text-[14px] 3xl:text-[18px] font-normal text-gray-500">{card.priceSuffixCopy}</span>
+                <span className="text-[56px] lg:text-[50px] xl:text-[52px] 3xl:text-[56px] ml-[5px] font-extrabold tracking-tight"> ${card.priceValue}</span>
+                <span className="ms-1 text-[18px] lg:text-[12px] xl:text-[14px] 3xl:text-[18px] ml-[5px] font-normal text-gray-500">{card.priceSuffixCopy}</span>
             </div>
             <div className="flex items-baseline text-gray-900 mx-[12px] mb-[24px]">
                 <span className="text-[18px] lg:text-[12px] xl:text-[14px] 3xl:text-[16px] font-normal">{card.advertisingCopy}</span>
