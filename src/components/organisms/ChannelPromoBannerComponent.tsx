@@ -136,9 +136,10 @@ if (Array.isArray(footerCarruselField) && footerCarruselField.length > 0) {
 const getFooterDataForSlide = (currentSlideIndex: number) => {
   return footerImages[currentSlideIndex] || null;
 };
-      
+              
   return (
-    <section className="channelPromoBanner relative  xl:min-h-[740px]  md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
+    <section className="channelPromoBanner relative z-0 xl:min-h-[740px] bg-black md:bg-transparent
+    xsm:max-h-[700px] xsm:h-auto sm:h-[600px] md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
       
       <CarouselProvider
         qtyCarousels={3} 
@@ -146,7 +147,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
       >
       {/* Carrusel Principal */}
 
-        <div className="w-full md:flex md:justify-center absolute inset-0 md:w-full md:h-full z-0">
+        <div className="w-full md:flex md:justify-center absolute inset-0 md:w-full md:h-full z-0 ">
           <CarouselComponent carouselIndex={0}>
 
             {heroImages.map((image, index) => (
@@ -175,7 +176,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
 
               {carouselText.map((item, index) => (
               <div key={index} style={{height: '-webkit-fill-available'}} className="relative z-20 w-full pt-[56px] md:pt-0 2xl:ml-[200px] md:ml-[80px] pb-10
-                 md:w-2/5 flex flex-col items-center justify-end md:justify-initial md:items-start">
+                 md:w-2/5 flex flex-col items-center justify-end md:justify-initial md:items-start ">
                 
                 <p className="pl-4 md:pl-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
                 <h2 className="text-[32px] md:text-4xl pl-4 md:pl-0  font-bold text-white mb-6 w-screen md:w-auto">{item.title}</h2>
@@ -206,7 +207,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
           </CarouselComponent>
       
       
-        <div className="w-full self-end z-5 bg-black md:bg-transparent">
+        <div className="w-full self-end z-5 bg-black md:bg-transparent ">
 
           {/* Carousel de canales */}
 
@@ -245,13 +246,13 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
             {heroImages.map((_, heroIndex) => {
               const footerData = getFooterDataForSlide(heroIndex);
               
-              return footerData ? (
+              return footerData !== null && footerData.images.length > 0 ? (
                 <div className="
                   w-full xl:pl-[225px] md:pl-[100px] pl-[50px]
-                  bg-(--color-gray-450) p-4
+                  bg-(--color-gray-450) p-4 
                 " key={heroIndex}>
-                  <p className="w-full text-(--color-gray-200) text-[16px] leading-6 mb-2">
-                    {footerData.legend ? footerData.legend : `Carrusel de Logos`}
+                  <p className="w-full text-(--color-gray-200) text-[16px] leading-6 mb-2 ">
+                    {footerData.legend ? footerData.legend : ``}
                   </p>
                   <div className=" grid grid-flow-col auto-cols-[88px] scroll-smooth snap-mandatory mb-4 gap-0.5 items-center overflow-x-auto scrollbar-hide">
                     {footerData.images.map((image, imgIndex) => (
@@ -268,10 +269,14 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                 </div>
               ) : (
                 // Slide vacío para mantener la sincronización
-                <div key={heroIndex} className="w-full bg-black " style={{height: '-webkit-fill-available'}}></div>
+                <div key={heroIndex} className="w-full h-0 bg-black " style={{height: '-webkit-fill-available'}}/>
               );
             })}
           </CarouselComponent>
+
+
+
+          
         </div>
       </CarouselProvider>
     </section>

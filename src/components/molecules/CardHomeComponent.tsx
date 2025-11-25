@@ -39,10 +39,10 @@ const CardHomeComponent = async({card}:CardPropType) => {
             <p className='font-bold text-2xl leading-8 mb-4 '>
                    {card?.fields?.title as string || 'Título del Card'}
             </p>
-            <p className='mb-4'>
-                <span className='align-bottom'>{card?.fields?.textBeforePrice as string}</span>
-                <span className='font-bold text-[48px] xl:text-[56px] sm:text-[48px]'>{card?.fields?.price as string}</span>
-                <span className='align-bottom'>{card?.fields?.textAfterPrice as string}</span>
+            <p className='mb-4 '>
+                <span className=' '>{card?.fields?.textBeforePrice as string}</span>
+                <span className='ml-[5px] font-bold text-[48px] xl:text-[56px] sm:text-[48px]'>{card?.fields?.price as string}</span>
+                <span className='ml-[4px] '>{card?.fields?.textAfterPrice as string}</span>
             </p>
             <p className='mb-6'>
                 {card?.fields?.description as string || 'Descripción del Card'}

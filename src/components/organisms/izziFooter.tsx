@@ -72,7 +72,7 @@ export default function IzziFooterContent({FooterData}: FooterComponentProps) {
                                     </AccordionItem>
                                 </Accordion>
                         }
-                        <Link className='text[20px] text-white-0' href={`${accordion.fields.navigationUrl}`}>{accordion.fields.navigationTitle}</Link>
+                        <Link className='text-[16px] text-white-0' href={`${accordion.fields.navigationUrl}`}>{accordion.fields.navigationTitle}</Link>
                     </li>
                 ))}
                 </ul>
