@@ -17,6 +17,11 @@ export interface ThankyouCopys {
             texto1: string,
             texto2: string,
         },
+        pago: {
+            tarjeta: string,
+            paypal: string,
+            tecnico: string,
+        },
     },
     app: {
         titulo: string,

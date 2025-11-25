@@ -1,47 +1,57 @@
 'use client'
 
 import { Switch } from "@heroui/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { GetLigaPago } from "@/utils/GetLigaPago";
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
 import { useIzziContent } from "@/components/providers/IzziProvider";
+import { PaymentLiga } from "@/types/Contratacion";
+import { LoaderIcon } from "@/constants/IconsConstants";
 
 export default function PagoTarjeta() {
 
-    const { rpt, precioTotal } = useIzziContent();
-    const [isRecurrent, setIsRecurrent] = useState(false);
-    const [urlFrame, setUrlFrame] = useState("");
-    const { currentStep, setPaymentReference, processStatus, datosContratacion, setCardRecurrent } = useCheckout();
-    const { offnetSky } = useIzziContent();
+    const { rpt, precioTotal, offnetSky } = useIzziContent();
+    const { currentStep, totalSteps, setPaymentReference, processStatus, datosContratacion, setCardRecurrent } = useCheckout();
     const { getValue } = useMicrocopies('contratacion-pago');
 
-    const hasFetched = useRef(false);
+    const [isRecurrent, setIsRecurrent] = useState<boolean>(false);
+    const [urlFrame, setUrlFrame] = useState("");
+    const [montoDomiciliado, setMontoDomiciliado] = useState<number>(precioTotal);
+    const [loadingLiga, setLoadingLiga] = useState(false);
 
     useEffect(() => {
-        if (currentStep !== 6 || hasFetched.current) return;
-        hasFetched.current = true;
+        setMontoDomiciliado(isRecurrent ? precioTotal - 50 : precioTotal);
+    }, [isRecurrent, precioTotal]);
+
+    useEffect(() => {
+        if (currentStep !== totalSteps) return;
+
+        let isMounted = true;
+        setLoadingLiga(true);
 
         (async () => {
             try {
-                const result = await GetLigaPago(rpt, precioTotal, processStatus, datosContratacion, offnetSky);
+                const response: PaymentLiga = await GetLigaPago(rpt, precioTotal, processStatus, datosContratacion, offnetSky, isRecurrent, montoDomiciliado);
 
-                if (result?.response) {
+                if (!isMounted) return;
 
-                    setUrlFrame(result.response.html);
+                if (response?.response) {
+                    setUrlFrame(response.response.html);
                     setPaymentReference((prev) => ({
                         ...prev,
-                        cardReference: result.response.reference,
+                        cardReference: response.response.reference,
                     }));
                 }
-
             } catch (err) {
-                console.error("Error al obtener url de pagos:", err);
-                throw new Error("Error al obtener url de pagos")
+                console.error("Error al obtener la liga de pagos:", err);
+            } finally {
+                if (isMounted) setLoadingLiga(false);
             }
         })();
 
-    }, [currentStep, datosContratacion, offnetSky, precioTotal, processStatus, rpt, setPaymentReference])
+        return () => { isMounted = false };
+    }, [currentStep, totalSteps, rpt, precioTotal, processStatus, datosContratacion, offnetSky, isRecurrent, montoDomiciliado, setPaymentReference]);
 
     return (
         <section className="w-full">
@@ -65,8 +75,15 @@ export default function PagoTarjeta() {
             <p className='mt-[8px] w-full text-sm xl:text-base leading-[24px]'>
                 {getValue('pago.pagoRecurrente.subTitulo')}
             </p>
+            {loadingLiga && (
+                <div className="mt-[24px] xl:mt-[27px] w-full h-[20vh] xl:h-[30vh] flex justify-center items-center">
+                    <div className="!w-[80px] !h-[80px]">
+                        <LoaderIcon />
+                    </div>
+                </div>
+            )}
 
-            {urlFrame && (
+            {urlFrame && !loadingLiga && (
                 <div className="mt-[24px] xl:mt-[27px] w-full h-full">
                     <iframe
                         id="pago con tarjeta"
