@@ -364,7 +364,8 @@ export type OffersCopys = {
             periodo: string,
             info: string,
             titulo: string,
-            tituloPlus: string
+            tituloPlus: string,
+            envio: string,
         }
     },
     movil: {
