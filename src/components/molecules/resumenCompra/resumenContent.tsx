@@ -86,12 +86,10 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                             {
                                 promotions?.map((promo, index) => {
                                     return(
-                                        <>
                                         <div key={index} className="flex justify-between w-full">
                                             <h5 className="text-left">{promo.promoName}</h5>
                                             <h5 className="text-right">-{FormatCurrency(Math.abs(Number(promo.promoPrice)))}</h5>
                                         </div>
-                                        </>
                                     )
                                 })
                             }
