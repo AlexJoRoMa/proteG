@@ -22,26 +22,26 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
         0
     );
 
-    const totalOttPromoPrice = ottPromos?.reduce(
+    const totalPromoPrice = promoData?.promos?.reduce(
         (acc, promo) => acc + Number(promo.promoPrice),
         0
     );
 
+    const promotions = promoData?.promos;
     const izziAhorro = promoData?.promoPackage?.find(promo => promo.name.toLowerCase().includes('izzi ahorro'));
     const pagoAnticipado = promoData?.promos?.find(promo => promo.promoName.toLowerCase().includes('pago anticipado'));
     const totalAfterPromos = (Math.abs(Number(izziAhorro?.amount)) || 0) + Math.abs(Number((pagoAnticipado?.promoPrice || 0)));
-    const descuentoInternet = Math.abs((Number(userSelection?.internet?.paquete?.precioTachado) - 50) - (Number(userSelection?.internet?.paquete?.precioPaquete)));
+    const descuentoInternet = Math.abs((Number(userSelection?.internet?.paquete?.descuentoPaquete)));
     const descuentoTv = Math.abs((Number(userSelection?.tv?.paquete?.precioPaquete)) - (Number(userSelection?.tv?.paquete?.precioTachado)));
-    const descuentoMovil = Math.abs((Number(userSelection?.movil?.paquete?.precioPaquete)) - (Number(userSelection?.movil?.paquete?.precioTachado)));
 
-    const ahorroCombinado = (descuentoTv || 0) + (descuentoMovil || 0) - (totalOttPromoPrice || 0);
+    const ahorroCombinado = (descuentoTv || 0);
 
     const totalSinDescuento = Number(userSelection?.internet?.paquete?.precioTachado || 0)
         + Number(userSelection?.movil?.paquete?.precioTachado || 0)
         + Number(userSelection?.tv?.paquete?.precioTachado || userSelection?.tv?.paquete?.precioPaquete || 0)
         + (totalOttPrice || 0);
-    const precioTotal = totalSinDescuento && ahorroCombinado ? totalSinDescuento - ahorroCombinado - (Number(izziAhorro?.amount) || 0) - (Math.abs(Number(pagoAnticipado?.promoPrice)) || 0) : Number(globalIzziSelection?.precioPaquete) + (totalOttPrice ? totalOttPrice : 0);
-    const ahorroTotal = (Number(descuentoInternet || 0) + Number(izziAhorro?.amount) || 0) + (Number(ahorroCombinado) || 0) + (Number(pagoAnticipado) || 0);
+    const precioTotal = totalSinDescuento && ahorroCombinado ? totalSinDescuento - ahorroCombinado - (Number(izziAhorro?.amount) || 0) - (Math.abs(Number(totalPromoPrice)) || 0) - (Number(descuentoInternet) || 0) : Number(globalIzziSelection?.precioPaquete) + (totalOttPrice ? totalOttPrice : 0);
+    const ahorroTotal = (Number(descuentoInternet || 0) + Number(izziAhorro?.amount) || 0) + (Number(ahorroCombinado) || 0) + (Number(pagoAnticipado) || 0) + (Number(Math.abs(totalPromoPrice as number)) || 0);
 
     useEffect(() => {
         setAhorroTotal(ahorroTotal);
@@ -73,12 +73,6 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                                     <h5 className="text-right">-{FormatCurrency(izziAhorro.amount)}</h5>
                                 </div>
                             )}
-                            {pagoAnticipado && (
-                                <div className="flex justify-between w-full">
-                                    <h5 className="text-left">{resumenCopys.ahorro.pagoAnticipado}</h5>
-                                    <h5 className="text-right">-{FormatCurrency(Math.abs(pagoAnticipado.promoPrice))}</h5>
-                                </div>
-                            )}
                             {userSelection.internet && (
                             <div className="flex justify-between w-full">
                                 <h5 className="text-left">{resumenCopys.ahorro.internet}</h5>
@@ -89,6 +83,18 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                                 <h5 className="text-left">{resumenCopys.ahorro.paquete}</h5>
                                 <h5 className="text-right">-{FormatCurrency(ahorroCombinado)}</h5>
                             </div>
+                            {
+                                promotions?.map((promo) => {
+                                    return(
+                                        <>
+                                        <div className="flex justify-between w-full">
+                                            <h5 className="text-left">{promo.promoName}</h5>
+                                            <h5 className="text-right">-{FormatCurrency(Math.abs(Number(promo.promoPrice)))}</h5>
+                                        </div>
+                                        </>
+                                    )
+                                })
+                            }
                         </div>
                     </div>
                 }
