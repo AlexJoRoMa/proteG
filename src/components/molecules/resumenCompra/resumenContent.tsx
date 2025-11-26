@@ -84,10 +84,10 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                                 <h5 className="text-right">-{FormatCurrency(ahorroCombinado)}</h5>
                             </div>
                             {
-                                promotions?.map((promo) => {
+                                promotions?.map((promo, index) => {
                                     return(
                                         <>
-                                        <div className="flex justify-between w-full">
+                                        <div key={index} className="flex justify-between w-full">
                                             <h5 className="text-left">{promo.promoName}</h5>
                                             <h5 className="text-right">-{FormatCurrency(Math.abs(Number(promo.promoPrice)))}</h5>
                                         </div>
