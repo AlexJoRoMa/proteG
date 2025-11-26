@@ -1,7 +1,7 @@
 'use client'
 
 import { Switch } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GetLigaPago } from "@/utils/GetLigaPago";
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
@@ -20,6 +20,8 @@ export default function PagoTarjeta() {
     const [montoDomiciliado, setMontoDomiciliado] = useState<number>(precioTotal);
     const [loadingLiga, setLoadingLiga] = useState(false);
 
+    const processStatusRef = useRef(processStatus);
+
     useEffect(() => {
         setMontoDomiciliado(isRecurrent ? precioTotal - 50 : precioTotal);
     }, [isRecurrent, precioTotal]);
@@ -32,7 +34,7 @@ export default function PagoTarjeta() {
 
         (async () => {
             try {
-                const response: PaymentLiga = await GetLigaPago(rpt, precioTotal, processStatus, datosContratacion, offnetSky, isRecurrent, montoDomiciliado);
+                const response: PaymentLiga = await GetLigaPago(rpt, precioTotal, processStatusRef.current, datosContratacion, offnetSky, isRecurrent, montoDomiciliado);
 
                 if (!isMounted) return;
 
@@ -51,7 +53,8 @@ export default function PagoTarjeta() {
         })();
 
         return () => { isMounted = false };
-    }, [currentStep, totalSteps, rpt, precioTotal, processStatus, datosContratacion, offnetSky, isRecurrent, montoDomiciliado, setPaymentReference]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isRecurrent, montoDomiciliado, precioTotal]);
 
     return (
         <section className="w-full">

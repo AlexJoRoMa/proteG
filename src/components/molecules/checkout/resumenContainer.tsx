@@ -258,7 +258,7 @@ export default function ResumenContainer() {
             const res = await GetCapacity(izziEnrrollRef.current);
             const data = await res;
 
-            if (data?.code) {
+            if (data?.code || data?.error) {
                 console.error("Error del servicio getCapacity");
                 router.push("/error");
             }
