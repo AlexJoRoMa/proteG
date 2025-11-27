@@ -61,7 +61,8 @@ export type IzziCopyright = {
         internalName: string,
         copyright: string, 
         footerIzziLogo: Icon,
-        footerProfecoLogo: Icon
+        footerProfecoLogo: Icon,
+        footerProfecoLink: string
     }
 }
 
