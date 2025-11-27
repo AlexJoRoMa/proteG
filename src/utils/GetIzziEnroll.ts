@@ -18,7 +18,7 @@ export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratac
             "billing": datosContratacion.current?.DatosPersonales?.meta.necesitaFacturar,
             "billingPostalCode": datosContratacion.current?.DatosPersonales?.direccionFacturacion?.postalCode ?? null,
             "billingCity": datosContratacion.current?.DatosPersonales?.direccionFacturacion?.city ?? null,
-            "billingSettlement": null,
+            "billingSettlement": datosContratacion.current?.DatosPersonales?.direccionFacturacion?.colony ?? null,
             "billingStreet": datosContratacion.current?.DatosPersonales?.direccionFacturacion?.address ?? null,
             "billingExteriorNumber": datosContratacion.current?.DatosPersonales?.direccionFacturacion?.exteriorNumber ?? null,
             "billingInteriorNumber": datosContratacion.current?.DatosPersonales?.direccionFacturacion?.interiorNumber ?? null,

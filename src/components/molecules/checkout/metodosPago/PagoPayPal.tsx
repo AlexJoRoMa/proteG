@@ -1,8 +1,8 @@
 
 import Image from 'next/image';
 import { useCheckout } from '@/components/providers/CheckoutProvider';
-import { useState } from 'react';
-import { Switch } from '@heroui/react';
+// import { useState } from 'react';
+// import { Switch } from '@heroui/react';
 import PayPalScript from './PayPalScript';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import { useIzziContent } from '@/components/providers/IzziProvider';
@@ -12,11 +12,14 @@ export default function PagoPayPal() {
     const { rpt, precioTotal } = useIzziContent();
     const { paypalIcon, processStatus } = useCheckout();
     const { getValue } = useMicrocopies('contratacion-pago');
-    const [isRecurrent, setIsRecurrent] = useState(false);
+
+    //TODO: al momento de retomar la domiciliacion de paypal, eliminar constnate quemada e implementar stado del switch.
+    const isRecurrent = false;
+    // const [isRecurrent, setIsRecurrent] = useState(false);
 
     return (
         <section className='w-full'>
-            <div className='flex flex-row w-full justify-between mt-[24px] xl:mt-[27px]'>
+            {/* <div className='flex flex-row w-full justify-between mt-[24px] xl:mt-[27px]'>
                 <h1 className='font-normal text-lg leading-[24px]'>
                     {getValue('pago.pagoRecurrente.titulo')}
                 </h1>
@@ -34,7 +37,7 @@ export default function PagoPayPal() {
             </div>
             <p className='mt-[8px] w-full text-sm xl:text-base leading-[24px]'>
                 {getValue('pago.pagoRecurrente.subTitulo')}
-            </p>
+            </p> */}
 
             {
                 paypalIcon && (
