@@ -210,7 +210,7 @@ export default function PlanesTv({ step }: StepProps) {
                                     <div className="flex flex-col gap-[8px]">
                                         <p className="leading-[18px] font-normal text-sm text-gray-300">{`${card.canales} canales`}</p>
                                         {
-                                            (isSelected && card.titulo === offersCopys.tv.cards.tituloPlus) && (
+                                            (isSelected && card.titulo !== offersCopys.tv.cards.titulo) && (
                                                 <p className="font-normal text-sm mb-[24px] text-gray-300">{offersCopys.tv.cards.envio}</p>
                                             )
                                         }
