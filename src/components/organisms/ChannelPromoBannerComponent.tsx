@@ -9,6 +9,7 @@ import { Asset, Entry, EntrySkeletonType } from "contentful";
 import { contentfulClient } from "@/services/contentful/client";
 import { footerImageType, heroImageType } from "@/types/ChannelPromoBannerTypes";
 import { ChannelPromoBannerProps } from "@/types/CarouselTypes";
+import ButtonLanding from "../atoms/ButtonStickyLanding";
 
 
 
@@ -17,34 +18,39 @@ let thumbnailImages: heroImageType[] = [];
 let heroImagesResponsive: heroImageType[] = [];
 let footerImages: footerImageType[] = [];
 let carouselText: {
-    title: string;
-    description: string;
-    buttonText: string;
-    buttonLink: string;
-    channelType: string;
-    btnShowMore?: string; // Nueva propiedad opcional para el botón "Ver más"
-    textPromo?: string; // Nueva propiedad opcional para el texto promocional
-    urlBtnPromo?: string; // Nueva propiedad opcional para el enlace del botón promocional
-  }[] = [];
+  title: string;
+  description: string;
+  buttonText: string;
+  buttonLink: string;
+  channelType: string;
+  btnShowMore?: string; // Nueva propiedad opcional para el botón "Ver más"
+  textPromo?: string; // Nueva propiedad opcional para el texto promocional
+  urlBtnPromo?: string; // Nueva propiedad opcional para el enlace del botón promocional
+  esModal?: string; // Nueva propiedad opcional para ejecutar modal de Te Llamamos
+}[] = [];
 
 
 
-const ChannelPromoBannerComponent = async({id}:ChannelPromoBannerProps) => {
+const ChannelPromoBannerComponent = async ({ id }: ChannelPromoBannerProps) => {
 
   // Opciones de configuración para los carruseles
   const carouselOptions = [
-          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['', 'autoplay']}, // Carrusel de imágenes (default)
-          {options: {dragFree:false, watchDrag: false, watchSlides: false, watchResize: true}, plugins: ['fade', 'autoplay', 'autoheight']}, // Carrusel de logos (default)  
-          { options: { dragFree:false, watchDrag: false, watchSlides: false, watchResize: true, breakpoints: {
-            '(max-width: 420px)': { containScroll: false, slidesToScroll: 1},
-          } }, plugins: [ 'fade' , 'autoheight', 'autoplay'] } // Carrusel de texto con fade
-   ] as { options?: EmblaOptionsType, plugins?: string[] }[]
+    { options: { dragFree: false, watchDrag: false, watchSlides: false, watchResize: true }, plugins: ['', 'autoplay'] }, // Carrusel de imágenes (default)
+    { options: { dragFree: false, watchDrag: false, watchSlides: false, watchResize: true }, plugins: ['fade', 'autoplay', 'autoheight'] }, // Carrusel de logos (default)  
+    {
+      options: {
+        dragFree: false, watchDrag: false, watchSlides: false, watchResize: true, breakpoints: {
+          '(max-width: 420px)': { containScroll: false, slidesToScroll: 1 },
+        }
+      }, plugins: ['fade', 'autoheight', 'autoplay']
+    } // Carrusel de texto con fade
+  ] as { options?: EmblaOptionsType, plugins?: string[] }[]
 
   // Consumo de la API de Contentful para obtener los datos de los canales
 
   // Obtener las entries por content type id
 
- const entriesChannels:Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
+  const entriesChannels: Entry<EntrySkeletonType, undefined, string>[] | null = await contentfulClient.getEntries({
     content_type: "carouselChannelsModel",
     'sys.id': id,
     select: ['fields.heroCarousel', 'fields.carouselText', 'fields.thumbnailsCarousel', 'fields.footerCarrusel']
@@ -55,15 +61,15 @@ const ChannelPromoBannerComponent = async({id}:ChannelPromoBannerProps) => {
   //Obtener las imagenes del hero carousel
 
   const heroCarousel = entriesChannels?.[0]?.fields.heroCarousel as Entry<EntrySkeletonType, undefined, string>;
-  if(heroCarousel?.fields?.images && Array.isArray(heroCarousel.fields.images) && heroCarousel.fields.images.length > 0 && heroCarousel?.fields?.responsiveImages && Array.isArray(heroCarousel.fields.responsiveImages) && heroCarousel.fields.responsiveImages.length > 0) {
-      heroImages = (heroCarousel.fields.images as Asset[])
-    ?.map((img:Asset) => ({
-      url: 'https:' + img?.fields?.file?.url,
-    })) || [];
-      heroImagesResponsive = (heroCarousel.fields.responsiveImages as Asset[])
-    ?.map((img:Asset) => ({
-      url: 'https:' + img?.fields?.file?.url,
-    })) || [];
+  if (heroCarousel?.fields?.images && Array.isArray(heroCarousel.fields.images) && heroCarousel.fields.images.length > 0 && heroCarousel?.fields?.responsiveImages && Array.isArray(heroCarousel.fields.responsiveImages) && heroCarousel.fields.responsiveImages.length > 0) {
+    heroImages = (heroCarousel.fields.images as Asset[])
+      ?.map((img: Asset) => ({
+        url: 'https:' + img?.fields?.file?.url,
+      })) || [];
+    heroImagesResponsive = (heroCarousel.fields.responsiveImages as Asset[])
+      ?.map((img: Asset) => ({
+        url: 'https:' + img?.fields?.file?.url,
+      })) || [];
   }
 
   //Obtener el carousel de textos
@@ -78,74 +84,75 @@ const ChannelPromoBannerComponent = async({id}:ChannelPromoBannerProps) => {
       channelType: typeof text.fields.channelType === "string" ? text.fields.channelType : "",
       btnShowMore: typeof text.fields.btnShowMore === "string" ? text.fields.btnShowMore : undefined,
       textPromo: typeof text.fields.textPromo === "string" ? text.fields.textPromo : undefined,
-      urlBtnPromo: typeof text.fields.urlBtnPromo === "string" ? text.fields.urlBtnPromo : undefined
+      urlBtnPromo: typeof text.fields.urlBtnPromo === "string" ? text.fields.urlBtnPromo : undefined,
+      esModal: typeof text.fields.esModal === "string" ? text.fields.esModal : ""
     }));
   }
 
   // Carrusel de los thumbnails
 
-    const thumbnailsCarousel = entriesChannels?.[0]?.fields.thumbnailsCarousel as Entry<EntrySkeletonType, undefined, string>;
-    if(Array.isArray(thumbnailsCarousel?.fields?.images) && thumbnailsCarousel.fields.images.length > 0) {
-      thumbnailImages = (thumbnailsCarousel.fields.images as Asset[])
-    ?.map((img:Asset) => ({
-      url: 'https:' + img?.fields?.file?.url,
-    })) || [];
+  const thumbnailsCarousel = entriesChannels?.[0]?.fields.thumbnailsCarousel as Entry<EntrySkeletonType, undefined, string>;
+  if (Array.isArray(thumbnailsCarousel?.fields?.images) && thumbnailsCarousel.fields.images.length > 0) {
+    thumbnailImages = (thumbnailsCarousel.fields.images as Asset[])
+      ?.map((img: Asset) => ({
+        url: 'https:' + img?.fields?.file?.url,
+      })) || [];
   }
 
-//Datos para carrusel del footer
-const footerCarruselField = entriesChannels?.[0]?.fields?.footerCarrusel;
-const footerIndexMapping: { [key: number]: number } = {};
+  //Datos para carrusel del footer
+  const footerCarruselField = entriesChannels?.[0]?.fields?.footerCarrusel;
+  const footerIndexMapping: { [key: number]: number } = {};
 
-if (Array.isArray(footerCarruselField) && footerCarruselField.length > 0) {
-  
-  // Crear un array combinando las imágenes con sus leyendas
-  footerImages = footerCarruselField.map((footerItem, index) => {
-    const footerEntry = footerItem as Entry<EntrySkeletonType, undefined, string>;
-    const carouselFooterRaw = footerEntry?.fields?.imageGrid;
-    
-    if (Array.isArray(carouselFooterRaw)) {
-      // Crear el array de imágenes para este item
-      const imageUrls = (carouselFooterRaw as Asset[]).map((img) => ({
-        url: 'https:' + img?.fields?.file?.url,
-        width: (img?.fields?.file?.details && 'image' in img.fields.file.details && (img.fields.file.details as { image: { width?: number } }).image?.width) || 88,
-        height: (img?.fields?.file?.details && 'image' in img.fields.file.details && (img.fields.file.details as { image: { height?: number } }).image?.height) || 40,
-      }));
-      
-      // Retornar un objeto con las imágenes y la leyenda
+  if (Array.isArray(footerCarruselField) && footerCarruselField.length > 0) {
+
+    // Crear un array combinando las imágenes con sus leyendas
+    footerImages = footerCarruselField.map((footerItem, index) => {
+      const footerEntry = footerItem as Entry<EntrySkeletonType, undefined, string>;
+      const carouselFooterRaw = footerEntry?.fields?.imageGrid;
+
+      if (Array.isArray(carouselFooterRaw)) {
+        // Crear el array de imágenes para este item
+        const imageUrls = (carouselFooterRaw as Asset[]).map((img) => ({
+          url: 'https:' + img?.fields?.file?.url,
+          width: (img?.fields?.file?.details && 'image' in img.fields.file.details && (img.fields.file.details as { image: { width?: number } }).image?.width) || 88,
+          height: (img?.fields?.file?.details && 'image' in img.fields.file.details && (img.fields.file.details as { image: { height?: number } }).image?.height) || 40,
+        }));
+
+        // Retornar un objeto con las imágenes y la leyenda
+        return {
+          images: imageUrls,
+          legend: (footerEntry?.fields?.legendFooter as string) || null,
+          originalIndex: index
+          // Asumiendo que tienes un campo slideIndex en tu CMS
+        };
+      }
+
       return {
-        images: imageUrls,
+        images: [],
         legend: (footerEntry?.fields?.legendFooter as string) || null,
-        originalIndex: index
-        // Asumiendo que tienes un campo slideIndex en tu CMS
+        originalIndex: (footerEntry?.fields?.slideIndex as number) || 0
       };
-    }
-    
-    return {
-      images: [],
-      legend: (footerEntry?.fields?.legendFooter as string) || null,
-      originalIndex: (footerEntry?.fields?.slideIndex as number) || 0
-    };
-  });
+    });
 
-  // Crear el mapeo de índices
-  footerImages.forEach((footerItem, footerIndex) => {
-    footerIndexMapping[footerItem.originalIndex] = footerIndex;
-  });
-}
+    // Crear el mapeo de índices
+    footerImages.forEach((footerItem, footerIndex) => {
+      footerIndexMapping[footerItem.originalIndex] = footerIndex;
+    });
+  }
 
-const getFooterDataForSlide = (currentSlideIndex: number) => {
-  return footerImages[currentSlideIndex] || null;
-};
-              
+  const getFooterDataForSlide = (currentSlideIndex: number) => {
+    return footerImages[currentSlideIndex] || null;
+  };
+
   return (
     <section className="channelPromoBanner relative z-0 xl:min-h-[740px] bg-black md:bg-transparent
     xsm:max-h-[700px] xsm:h-auto sm:h-[600px] md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
-      
+
       <CarouselProvider
-        qtyCarousels={3} 
+        qtyCarousels={3}
         carouselConfigs={carouselOptions}
       >
-      {/* Carrusel Principal */}
+        {/* Carrusel Principal */}
 
         <div className="w-full md:flex md:justify-center absolute inset-0 md:w-full md:h-full z-0 ">
           <CarouselComponent carouselIndex={0}>
@@ -165,61 +172,67 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                   height={image.height || 216}
                   sizes="(max-width: 768px) 100vw, 80vw"
                 />
-              </picture> 
+              </picture>
             ))}
           </CarouselComponent>
         </div>
 
         {/* Contenido textual */}
-        
-          <CarouselComponent carouselIndex={2}>
 
-              {carouselText.map((item, index) => (
-              <div key={index} style={{height: '-webkit-fill-available'}} className="relative z-20 w-full pt-[56px] md:pt-0 2xl:ml-[200px] md:ml-[80px] pb-10
+        <CarouselComponent carouselIndex={2}>
+
+          {carouselText.map((item, index) => (
+            <div key={index} style={{ height: '-webkit-fill-available' }} className="relative z-20 w-full pt-[56px] md:pt-0 2xl:ml-[200px] md:ml-[80px] pb-10
                  md:w-2/5 flex flex-col items-center justify-end md:justify-initial md:items-start ">
-                
-                <p className="pl-4 md:pl-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
-                <h2 className="text-[32px] md:text-4xl pl-4 md:pl-0  font-bold text-white mb-6 w-screen md:w-auto">{item.title}</h2>
-                <p className="text-[16px] md:text-[18px] leading-6 text-(--color-gray-200) pl-4 md:pl-0 pr-4 md:pr-auto mb-6 md:mb-10 w-screen md:w-auto">
-                  {item.description}
-                </p>
 
-                {
-                  item.textPromo && (
-                    <p className="text-[16px] font-bold md:text-[18px] leading-6 text-(--color--turquoise-450) pl-4 md:pl-0 pr-4 md:pr-auto mb-8 md:mb-6 w-screen md:w-auto">
-                      {item.textPromo}
-                    </p>
-                  )
-                }
+              <p className="pl-4 md:pl-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
+              <h2 className="text-[32px] md:text-4xl pl-4 md:pl-0  font-bold text-white mb-6 w-screen md:w-auto">{item.title}</h2>
+              <p className="text-[16px] md:text-[18px] leading-6 text-(--color-gray-200) pl-4 md:pl-0 pr-4 md:pr-auto mb-6 md:mb-10 w-screen md:w-auto">
+                {item.description}
+              </p>
 
-                <ButtonGhost classStyles=" border-white text-white text-[16px] md:text-[18px] leading-6 font-bold sm:max-w-[320px] max-w-[224px] w-full h-[48px] rounded-md"
-                            text={item.buttonText} href={item.buttonLink} />
-                            
-                {
-                  item.btnShowMore && (
-                    <ButtonGhost classStyles="mt-4 border-black bg-white text-black font-bold text-[16px] md:text-[18px] leading-6 sm:max-w-[320px] max-w-[224px] w-full h-[48px] rounded-md"
-                            text={item.btnShowMore} href={item.urlBtnPromo} />
-                  )
-                }
+              {
+                item.textPromo && (
+                  <p className="text-[16px] font-bold md:text-[18px] leading-6 text-(--color--turquoise-450) pl-4 md:pl-0 pr-4 md:pr-auto mb-8 md:mb-6 w-screen md:w-auto">
+                    {item.textPromo}
+                  </p>
+                )
+              }
 
-              </div>
-              ))}
-          </CarouselComponent>
-      
-      
+              {item.esModal === "no" && (
+                <ButtonGhost classStyles="border-white text-white text-[16px] md:text-[18px] leading-6 font-bold sm:max-w-[320px] max-w-[224px] w-full h-[48px] rounded-md"
+                  text={item.buttonText} href={item.buttonLink} />
+              )}
+              {item.esModal === "si" && (
+                <ButtonLanding classStyles="border-2 border-white bg-transparent text-white text-[16px] md:text-[18px] leading-6 font-bold sm:max-w-[320px] max-w-[224px] w-full h-[48px] rounded-md" 
+                textBoton={item.buttonText as string} />
+              )}
+
+              {
+                item.btnShowMore && (
+                  <ButtonGhost classStyles="mt-4 border-black bg-white text-black font-bold text-[16px] md:text-[18px] leading-6 sm:max-w-[320px] max-w-[224px] w-full h-[48px] rounded-md"
+                    text={item.btnShowMore} href={item.urlBtnPromo} />
+                )
+              }
+
+            </div>
+          ))}
+        </CarouselComponent>
+
+
         <div className="w-full self-end z-5 bg-black md:bg-transparent ">
 
           {/* Carousel de canales */}
 
           <div className="flex items-center w-full justify-center sm:justify-normal mx-auto xl:mx-0 2xl:pl-[225px] md:pl-[80px] md:pr-[80px] h-[80px] md:h-[60px] bg-black">
-              <CarouselThumbnailComponent targetCarouselIndex={0} syncAllCarousels={true}>
-                  {thumbnailImages.map((item, index) => (
+            <CarouselThumbnailComponent targetCarouselIndex={0} syncAllCarousels={true}>
+              {thumbnailImages.map((item, index) => (
                 <div key={index} className="relative">
-                  <Image 
-                    width={item.width || 88} 
-                    height={item.height || 40} 
-                    src={item.url} 
-                    alt={`Imagen del carrusel ${index + 1}`} 
+                  <Image
+                    width={item.width || 88}
+                    height={item.height || 40}
+                    src={item.url}
+                    alt={`Imagen del carrusel ${index + 1}`}
                     className="min-w-max"
                     loading="eager"
                   />
@@ -236,16 +249,16 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                   )}
                 </div>
 
-                ))}              
-                </CarouselThumbnailComponent>
+              ))}
+            </CarouselThumbnailComponent>
           </div>
-          
+
 
           {/* Footer de logos */}
-            <CarouselComponent carouselIndex={1}>
+          <CarouselComponent carouselIndex={1}>
             {heroImages.map((_, heroIndex) => {
               const footerData = getFooterDataForSlide(heroIndex);
-              
+
               return footerData !== null && footerData.images.length > 0 ? (
                 <div className="
                   w-full xl:pl-[225px] md:pl-[100px] pl-[50px]
@@ -256,12 +269,12 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                   </p>
                   <div className=" grid grid-flow-col auto-cols-[88px] scroll-smooth snap-mandatory mb-4 gap-0.5 items-center overflow-x-auto scrollbar-hide">
                     {footerData.images.map((image, imgIndex) => (
-                      <Image 
+                      <Image
                         key={imgIndex}
-                        width={image.width || 88} 
-                        height={image.height || 40} 
-                        src={image.url} 
-                        alt={`Logo del footer ${heroIndex + 1}-${imgIndex + 1}`}  
+                        width={image.width || 88}
+                        height={image.height || 40}
+                        src={image.url}
+                        alt={`Logo del footer ${heroIndex + 1}-${imgIndex + 1}`}
                         loading="eager"
                       />
                     ))}
@@ -269,14 +282,14 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                 </div>
               ) : (
                 // Slide vacío para mantener la sincronización
-                <div key={heroIndex} className="w-full h-0 bg-black " style={{height: '-webkit-fill-available'}}/>
+                <div key={heroIndex} className="w-full h-0 bg-black " style={{ height: '-webkit-fill-available' }} />
               );
             })}
           </CarouselComponent>
 
 
 
-          
+
         </div>
       </CarouselProvider>
     </section>

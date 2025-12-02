@@ -4,11 +4,12 @@ import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent
 
 interface ButtonLandingProps {
   textBoton: string;
-  landing: boolean | string;
+  landing?: boolean | string;
+  classStyles?: string;
 }
 
 const ButtonLanding: React.FC<ButtonLandingProps> = async(
-  {textBoton, landing}) => {
+  {textBoton, landing, classStyles}) => {
   try {
 
     const marginTop = landing ===  true ? 'mt-5' : ''
@@ -29,7 +30,7 @@ const ButtonLanding: React.FC<ButtonLandingProps> = async(
                 { textBoton || 'contratar ahora'}
               </>
             }
-            classStyles={`${wBtn} rounded-md ${btnColor} ${textColor} ${marginTop}  font-bold text-[16px] md:text-[18px]`}
+            classStyles={classStyles ? classStyles : `${wBtn} rounded-md ${btnColor} ${textColor} ${marginTop}  font-bold text-[16px] md:text-[18px]`}
           >
               <TeLlamamosModalComponent  />
           </ButtonModal>
