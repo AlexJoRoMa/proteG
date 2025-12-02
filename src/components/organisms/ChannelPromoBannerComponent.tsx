@@ -161,7 +161,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                 <Image
                   src={heroImagesResponsive[index]?.url || image.url}
                   alt={`Banner ${index + 1}`}
-                  className="select-none pointer-events-none transition-all w-full h-full"
+                  className="select-none pointer-events-none transition-all w-full h-full object-cover"
                   loading="eager"
                   width={image.width || 384}
                   height={image.height || 216}
@@ -271,7 +271,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                 </div>
               ) : (
                 // Slide vacío para mantener la sincronización
-                <div key={heroIndex} className="w-full bg-black " style={{height: '10px'}}/>
+                <div key={heroIndex} className="w-full bg-black " style={{height: '100%'}}/>
               );
             })}
           </CarouselComponent>
