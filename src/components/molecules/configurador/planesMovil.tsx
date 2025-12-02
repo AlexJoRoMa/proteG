@@ -221,6 +221,7 @@ export default function PlanesMovil({ step }: StepProps) {
                                                             variables={{
                                                                 velocidadMaxima: card.velocidadMaxima,
                                                                 precioPaquete: card.precioPaquete,
+                                                                plazoForzoso: card.plazoForzoso || false
                                                             }}
                                                             type="movil"
                                                         />

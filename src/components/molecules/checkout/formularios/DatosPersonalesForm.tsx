@@ -1,9 +1,9 @@
 'use client'
 
 import { Form, Input } from "@heroui/react";
-import { FC, RefObject } from "react";
+import { FC, RefObject, useEffect, useState } from "react";
 import { inputStyles } from "@/constants/StylesConstants";
-import { InputFilter } from "@/utils/inputFilters";
+import { InputFilter, validateCurp, validatePassport } from "@/utils/inputFilters";
 import ButtonGhost from "@/components/atoms/ButtonGhost";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
 import { useCheckout } from "@/components/providers/CheckoutProvider";
@@ -19,7 +19,23 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
     const { getValue } = useMicrocopies('formulario-datosPersonales');
 
     const personal: Partial<DatosContratacion> = datosContratacion ?? {};
-    const datosPersonales = personal.DatosPersonales?.personal
+    const datosPersonales = personal.DatosPersonales?.personal;
+
+    const [curp, setCurp] = useState(datosPersonales?.curp ?? "");
+    const [passport, setPassport] = useState(datosPersonales?.passport ?? "");
+    const [passportValid, setPassportValid] = useState<boolean>(true);
+    const [curpValid, setCurpValid] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (esExtrangero) {
+            setPassport(datosPersonales?.passport ?? "");
+            setCurp("");
+        } else {
+            setCurp(datosPersonales?.curp ?? "");
+            setPassport("");
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [esExtrangero]);
 
     return (
         <Form
@@ -153,10 +169,19 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                             labelPlacement="outside"
                             isRequired
                             className='w-full'
+                            minLength={7}
+                            maxLength={13}
+                            value={passport}
                             onInput={(e) => InputFilter(e, 'alfanumerico')}
+                            onChange={(e) => setPassport(e.target.value)}
                             placeholder={getValue('datosPersonales.placeholder.pasaporte')}
                             errorMessage={getValue('datosPersonales.error.pasaporte')}
-                            defaultValue={datosPersonales?.passport}
+                            isInvalid={!passportValid}
+                            onBlur={(e) => {
+                                const { clean, isValid } = validatePassport(e.target.value);
+                                e.target.value = clean;
+                                setPassportValid(isValid);
+                            }}
                         /> :
                         <Input
                             label={getValue('datosPersonales.label.curp')}
@@ -168,10 +193,18 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                             labelPlacement="outside"
                             isRequired
                             className='w-full'
+                            maxLength={18}
+                            value={curp}
                             onInput={(e) => InputFilter(e, 'alfanumerico')}
+                            onChange={(e) => setCurp(e.target.value)}
                             placeholder={getValue('datosPersonales.placeholder.curp')}
                             errorMessage={getValue('datosPersonales.error.curp')}
-                            defaultValue={datosPersonales?.curp}
+                            isInvalid={!curpValid}
+                            onBlur={(e) => {
+                                const { clean, isValid } = validateCurp(e.target.value);
+                                e.target.value = clean;
+                                setCurpValid(isValid);
+                            }}
                         />
                 }
                 <div className='w-full text-end'>

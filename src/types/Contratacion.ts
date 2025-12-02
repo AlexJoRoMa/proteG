@@ -105,6 +105,13 @@ export interface PaymentReference {
     paypalReference: string
 }
 
+export interface PaymentLiga {
+    response: {
+        html: string,
+        reference: string,
+    },
+}
+
 export type AttachFilesProps = {
     processStatus: {
         accountNumber?: string,

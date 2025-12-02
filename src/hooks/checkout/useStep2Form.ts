@@ -147,6 +147,17 @@ export const useStep2Form = () => {
                 setIsStepValid(finalValid);
             };
 
+            const persistFormData = () => {
+                const newData = {
+                    personal: getFormData(DatosPersonalesRef),
+                    instalacion: getFormData(DireccionEnvioRef),
+                    facturacion: necesitaFacturar ? getFormData(DatosFacturacionRef) : null,
+                    direccionFacturacion: necesitaFacturar && facturarOtraDireccion ? getFormData(DireccionFacturacionRef) : null,
+                    meta: { esExtranjero, necesitaFacturar, facturarOtraDireccion, cfdi, regimen }
+                };
+                registerFormData(2, () => newData);
+            };
+
             const forms = [
                 DatosPersonalesRef.current,
                 DireccionEnvioRef.current,
@@ -157,6 +168,8 @@ export const useStep2Form = () => {
             forms.forEach(form => {
                 form.addEventListener("input", checkValidity);
                 form.addEventListener("change", checkValidity);
+                form.addEventListener("input", persistFormData);
+                form.addEventListener("change", persistFormData);
             });
 
             // Validación inicial
@@ -166,10 +179,12 @@ export const useStep2Form = () => {
                 forms.forEach(form => {
                     form.removeEventListener("input", checkValidity);
                     form.removeEventListener("change", checkValidity);
+                    form.addEventListener("input", persistFormData);
+                    form.addEventListener("change", persistFormData);
                 });
             };
         }
-    }, [necesitaFacturar, facturarOtraDireccion, cfdi, regimen, setIsStepValid, checkboxChecked, mounted, currentStep]);
+    }, [necesitaFacturar, facturarOtraDireccion, cfdi, regimen, setIsStepValid, checkboxChecked, mounted, currentStep, esExtranjero, registerFormData]);
 
     return {
         DatosPersonalesRef,

@@ -167,7 +167,13 @@ export default function ThankYou() {
                                 )}
                                 <p>
                                     <span>{`${copy.info.metodoPago} `}</span>
-                                    <span className="font-bold">{globalDatosContratacion.Pago?.metodoPago}</span>
+                                    <span className="font-bold">
+                                        {
+                                            globalDatosContratacion.Pago?.metodoPago === 'creditCard' ? copy.info.pago.tarjeta :
+                                                globalDatosContratacion.Pago?.metodoPago === 'paypal' ? copy.info.pago.paypal :
+                                                    copy.info.pago.tecnico
+                                        }
+                                    </span>
                                 </p>
                             </div>
 

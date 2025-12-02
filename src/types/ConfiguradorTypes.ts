@@ -92,6 +92,7 @@ export interface OfferItem {
     nombreCode: string,
     paqName: string,
     tiempoPlan: string,
+    plazoForzoso?: boolean
 }
 
 export interface Ahorro {
@@ -363,7 +364,8 @@ export type OffersCopys = {
             periodo: string,
             info: string,
             titulo: string,
-            tituloPlus: string
+            tituloPlus: string,
+            envio: string,
         }
     },
     movil: {
