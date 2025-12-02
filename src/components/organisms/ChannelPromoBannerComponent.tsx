@@ -138,7 +138,10 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
 };
               
   return (
-    <section className="channelPromoBanner relative  xl:min-h-[740px]  md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
+    
+    <section className="channelPromoBanner relative z-0 xl:min-h-[740px] bg-black md:bg-transparent
+    xsm:h-auto md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
+
       
       <CarouselProvider
         qtyCarousels={3} 
@@ -268,7 +271,7 @@ const getFooterDataForSlide = (currentSlideIndex: number) => {
                 </div>
               ) : (
                 // Slide vacío para mantener la sincronización
-                <div key={heroIndex} className="w-full bg-black " style={{height: '-webkit-fill-available'}}/>
+                <div key={heroIndex} className="w-full bg-black " style={{height: '10px'}}/>
               );
             })}
           </CarouselComponent>
