@@ -172,14 +172,22 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                             minLength={7}
                             maxLength={13}
                             value={passport}
-                            onInput={(e) => InputFilter(e, 'alfanumerico')}
-                            onChange={(e) => setPassport(e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                const clean = value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g, '');
+                                setPassport(clean);
+
+                                const { isValid } = validatePassport(clean);
+                                setPassportValid(isValid);
+                            }}
                             placeholder={getValue('datosPersonales.placeholder.pasaporte')}
                             errorMessage={getValue('datosPersonales.error.pasaporte')}
                             isInvalid={!passportValid}
                             onBlur={(e) => {
                                 const { clean, isValid } = validatePassport(e.target.value);
                                 e.target.value = clean;
+
+                                setPassport(clean);
                                 setPassportValid(isValid);
                             }}
                         /> :
@@ -195,14 +203,22 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                             className='w-full'
                             maxLength={18}
                             value={curp}
-                            onInput={(e) => InputFilter(e, 'alfanumerico')}
-                            onChange={(e) => setCurp(e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                const clean = value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g, '');
+                                setCurp(clean);
+
+                                const { isValid } = validateCurp(clean);
+                                setCurpValid(isValid);
+                            }}
                             placeholder={getValue('datosPersonales.placeholder.curp')}
                             errorMessage={getValue('datosPersonales.error.curp')}
                             isInvalid={!curpValid}
                             onBlur={(e) => {
                                 const { clean, isValid } = validateCurp(e.target.value);
                                 e.target.value = clean;
+
+                                setCurp(clean);
                                 setCurpValid(isValid);
                             }}
                         />
