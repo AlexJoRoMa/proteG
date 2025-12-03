@@ -15,8 +15,8 @@ const CardTVInternetMovilComponent = ({card, promo}:CardPropType) => {
     const type = card?.fields?.type as string;
     const color = type === 'internet' ? INTERNETCOLOR : type === 'tv' ? TVCOLOR : type === 'movil' ? MOVILCOLOR : '#000000';
 
-    const assetsLength =  Array.isArray(card?.fields?.adds) ? card?.fields?.adds.length : 0;
-    const gridType =  assetsLength > 4 ? 'grid-cols-4 grid-rows-2' : 'grid-cols-2 grid-rows-2 ';
+    /* const assetsLength =  Array.isArray(card?.fields?.adds) ? card?.fields?.adds.length : 0;
+    const gridType =  assetsLength > 4 ? 'grid-cols-4 grid-rows-2' : 'grid-cols-2 grid-rows-2 '; */
     const promoHeight = promo ? 'py-1 mb-[32px] -mt-[32px] min-h-[32px]' : ''; 
     
 
@@ -86,7 +86,7 @@ const CardTVInternetMovilComponent = ({card, promo}:CardPropType) => {
               )
             }
             { card?.fields?.adds && (
-            <div className={`grid ${gridType} gap-y-2 gap-x-2 mb-5 `}>
+            <div className={`grid grid-cols-4 grid-rows-2 gap-y-2 gap-x-2 mb-5 `}>
                 {
                     Array.isArray(card?.fields?.adds) && card?.fields?.adds?.map((add, index: number) => {
                             const assetAdd = add as Asset;
