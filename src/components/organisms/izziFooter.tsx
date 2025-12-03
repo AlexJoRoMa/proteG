@@ -19,8 +19,8 @@ export default function IzziFooterContent({FooterData}: FooterComponentProps) {
     }
     
     const subListClasses = {
-        title: "mr-4 font-normal text-[20px] text-white-0",
-        content: "text-[20px]",
+        title: "mr-4 font-normal text-[16px] text-white-0",
+        content: "text-[16px]",
         indicator: "data-[open=true]:-rotate-180",
     }  
 
