@@ -145,9 +145,11 @@ const ChannelPromoBannerComponent = async ({ id }: ChannelPromoBannerProps) => {
   };
 
   return (
+    
     <section className="channelPromoBanner relative z-0 xl:min-h-[740px] bg-black md:bg-transparent
-    xsm:max-h-[700px] xsm:h-auto sm:h-[600px] md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
+    xsm:h-auto md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
 
+      
       <CarouselProvider
         qtyCarousels={3}
         carouselConfigs={carouselOptions}
@@ -166,7 +168,7 @@ const ChannelPromoBannerComponent = async ({ id }: ChannelPromoBannerProps) => {
                 <Image
                   src={heroImagesResponsive[index]?.url || image.url}
                   alt={`Banner ${index + 1}`}
-                  className="select-none pointer-events-none transition-all w-full h-full"
+                  className="select-none pointer-events-none transition-all w-full h-full object-cover"
                   loading="eager"
                   width={image.width || 384}
                   height={image.height || 216}
@@ -282,7 +284,7 @@ const ChannelPromoBannerComponent = async ({ id }: ChannelPromoBannerProps) => {
                 </div>
               ) : (
                 // Slide vacío para mantener la sincronización
-                <div key={heroIndex} className="w-full h-0 bg-black " style={{ height: '-webkit-fill-available' }} />
+                <div key={heroIndex} className="w-full bg-black " style={{height: '100%'}}/>
               );
             })}
           </CarouselComponent>

@@ -69,7 +69,7 @@ const ButtonModal = ({
                         : <>{children}</>
                 ) : (
                     data && !isLoading && !error && (
-                        <div className='flex h-full flex-col xl:flex-row'>                   
+                        <div className='flex h-full flex-col xl:flex-row lg:pt-0 xl:pt-70 2xl:pt-0'>                   
                             <div className='xl:contents'>
                                 {Array.isArray(data.items[0].fields.modalContent) && data.items[0].fields.modalContent.length > 1 ? (
                                     <CarouselProvider 
@@ -138,7 +138,7 @@ const ButtonModal = ({
                                     </CarouselProvider>
                                 ) : (
                                     <div className='flex flex-col xl:flex-row w-full'>
-                                        <div className='px-4 xl:mx-14 py-5 w-full order-2 xl:order-0 h-auto'>
+                                        <div className='px-4 xl:mx-2 py-5 w-full order-2 xl:order-0 h-auto'>
                                             <RichTextComponent 
                                             document={
                                                 Array.isArray(data.items[0].fields.modalContent) 
