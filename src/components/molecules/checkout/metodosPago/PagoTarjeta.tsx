@@ -54,7 +54,7 @@ export default function PagoTarjeta() {
 
         return () => { isMounted = false };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isRecurrent, montoDomiciliado, precioTotal]);
+    }, [isRecurrent, montoDomiciliado, precioTotal, currentStep, totalSteps]);
 
     return (
         <section className="w-full">

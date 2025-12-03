@@ -124,6 +124,11 @@ export const useStep2Form = () => {
                         const isVisible = (input.offsetWidth > 0 && input.offsetHeight > 0) || input.getClientRects().length > 0;
                         if (!isVisible) continue;
 
+                        if (input.getAttribute("aria-invalid") === "true") {
+                            allValid = false;
+                            break;
+                        }
+
                         if (input.required && input.value.trim() === '') {
                             allValid = false;
                             break;
