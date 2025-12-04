@@ -1,8 +1,8 @@
-import { CoberturaType } from "@/types/ConfiguradorTypes";
+import { CoberturaType, IzziSelection } from "@/types/ConfiguradorTypes";
 import { DatosContratacion } from "@/types/Contratacion";
 import { RefObject } from "react";
 
-export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratacion: RefObject<Partial<DatosContratacion> | null>, offNetIzzi: boolean, offNetSky: boolean) {
+export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratacion: RefObject<Partial<DatosContratacion> | null>, offNetIzzi: boolean, offNetSky: boolean, globalIzziSelection: IzziSelection | null) {
 
     const BODY = {
         "stepSavedProspect": "",
@@ -61,6 +61,11 @@ export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratac
         "dateProspectEditFlag": null,
         "offNetSky": offNetSky,
         "offNetIzzi": offNetIzzi,
+        "autoInstalacion": globalIzziSelection?.autoinstalacion,
+        "autoInstallOrder": globalIzziSelection?.autoinstalacion ? {
+            "autoInstalacion": true,
+            "tipoEntrega": "DOMICILIO",
+        } : null,
         "banderaSp": false,
         "dateInstallationRequired": true,
         "isOnlineSale": false,

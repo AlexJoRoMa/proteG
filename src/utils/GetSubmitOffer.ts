@@ -48,7 +48,12 @@ export async function GetSubmitOffer(processId: string, globalIzziSelection: Izz
         },
         "salesChannel": "WEB",
         "offNetSky": offNetSky,
-        "offNetIzzi": offNetIzzi
+        "offNetIzzi": offNetIzzi,
+        "autoInstalacion": globalIzziSelection?.autoinstalacion,
+        "autoInstallOrder": globalIzziSelection?.autoinstalacion ? {
+            "autoInstalacion": true,
+            "tipoEntrega": "DOMICILIO",
+        } : null,
     }
 
     try {

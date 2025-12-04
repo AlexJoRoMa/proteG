@@ -258,6 +258,7 @@ export interface IzziSelection {
     canalesHd?: string,
     spTV?: boolean,
     spMovil?: boolean,
+    autoinstalacion?: boolean,
     extrasMap?: {
         ott?: OttProps[]
     },
@@ -275,6 +276,7 @@ export interface IzziSelection {
         canalesHd?: string,
         spTV?: boolean,
         spMovil?: boolean,
+        autoinstalacion?: boolean,
     }
 }
 
@@ -399,4 +401,4 @@ export type ClientProps = {
     ottImages: Entry<EntrySkeletonType<OttsImages>>[]
     copysResumen: string
     copysConfigurador: ConfiguradorCopys
-  }
+}

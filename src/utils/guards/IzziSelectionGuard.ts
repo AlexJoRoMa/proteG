@@ -24,6 +24,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
             canalesHd: userAnswers.internet?.paquete?.canalesHd,
             spMovil: userAnswers.internet?.paquete?.spMovil,
             spTV: userAnswers.internet?.paquete?.spTV,
+            autoinstalacion: userAnswers.internet?.paquete?.autoinstalacion,
         });
         return;
     }
@@ -46,6 +47,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
             canalesHd: userAnswers.tv?.paquete?.canalesHd,
             spMovil: userAnswers.tv?.paquete?.spMovil,
             spTV: userAnswers.tv?.paquete?.spTV,
+            autoinstalacion: userAnswers.tv?.paquete?.autoinstalacion,
             ...(userAnswers.tv?.ott?.planes.length && userAnswers.tv?.ott?.planes.length > 0 &&
             {
                 extrasMap: {
@@ -73,6 +75,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
             canalesHd: userAnswers.internet?.paquete?.canalesHd,
             spMovil: userAnswers.internet?.paquete?.spMovil,
             spTV: userAnswers.internet?.paquete?.spTV,
+            autoinstalacion: userAnswers.internet?.paquete?.autoinstalacion,
             extras: {
                 idPaquete: userAnswers.movil?.paquete?.idPaquete,
                 idExtra: userAnswers.movil?.paquete?.idExtra,
@@ -86,7 +89,8 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
                 canales: userAnswers.movil?.paquete?.canales,
                 canalesHd: userAnswers.movil?.paquete?.canalesHd,
                 spMovil: userAnswers.movil?.paquete?.spMovil,
-                spTV: userAnswers.movil?.paquete?.spTV
+                spTV: userAnswers.movil?.paquete?.spTV,
+                autoinstalacion: userAnswers.movil?.paquete?.autoinstalacion,
             }
         });
         return;
@@ -109,6 +113,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
             canalesHd: userAnswers.tv?.paquete?.canalesHd,
             spMovil: userAnswers.tv?.paquete?.spMovil,
             spTV: userAnswers.tv?.paquete?.spTV,
+            autoinstalacion: userAnswers.tv?.paquete?.autoinstalacion,
             ...(userAnswers.tv?.ott?.planes.length && userAnswers.tv?.ott?.planes.length > 0 &&
             {
                 extrasMap: {
@@ -136,6 +141,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
             canalesHd: userAnswers.tv?.paquete?.canalesHd,
             spMovil: userAnswers.tv?.paquete?.spMovil,
             spTV: userAnswers.tv?.paquete?.spTV,
+            autoinstalacion: userAnswers.tv?.paquete?.autoinstalacion,
             ...(userAnswers.tv?.ott?.planes.length && userAnswers.tv?.ott?.planes.length > 0 &&
             {
                 extrasMap: {
@@ -156,6 +162,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
                 canalesHd: userAnswers.movil?.paquete?.canalesHd,
                 spMovil: userAnswers.movil?.paquete?.spMovil,
                 spTV: userAnswers.movil?.paquete?.spTV,
+                autoinstalacion: userAnswers.movil?.paquete?.autoinstalacion,
             }
         });
         return;
@@ -177,6 +184,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
             canalesHd: userAnswers.movil?.paquete?.canalesHd,
             spMovil: userAnswers.movil?.paquete?.spMovil,
             spTV: userAnswers.movil?.paquete?.spTV,
+            autoinstalacion: userAnswers.movil?.paquete?.autoinstalacion,
         });
         return;
     }
@@ -199,6 +207,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
             canalesHd: userAnswers.tv?.paquete?.canalesHd,
             spMovil: userAnswers.tv?.paquete?.spMovil,
             spTV: userAnswers.tv?.paquete?.spTV,
+            autoinstalacion: userAnswers.tv?.paquete?.autoinstalacion,
             ...(userAnswers.tv?.ott?.planes.length && userAnswers.tv?.ott?.planes.length > 0 &&
             {
                 extrasMap: {
@@ -218,7 +227,8 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
                 canales: userAnswers.movil?.paquete?.canales,
                 canalesHd: userAnswers.movil?.paquete?.canalesHd,
                 spMovil: userAnswers.movil?.paquete?.spMovil,
-                spTV: userAnswers.movil?.paquete?.spTV
+                spTV: userAnswers.movil?.paquete?.spTV,
+                autoinstalacion: userAnswers.movil?.paquete?.autoinstalacion,
             }
         });
         return;
