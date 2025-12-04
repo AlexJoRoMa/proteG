@@ -23,6 +23,11 @@ export default function PagoTarjeta() {
     const processStatusRef = useRef(processStatus);
 
     useEffect(() => {
+        processStatusRef.current = processStatus;
+    }, [processStatus]);
+
+
+    useEffect(() => {
         setMontoDomiciliado(isRecurrent ? precioTotal - 50 : precioTotal);
     }, [isRecurrent, precioTotal]);
 
@@ -53,7 +58,7 @@ export default function PagoTarjeta() {
         })();
 
         return () => { isMounted = false };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isRecurrent, montoDomiciliado, precioTotal, currentStep, totalSteps]);
 
     return (
