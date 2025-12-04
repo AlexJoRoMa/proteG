@@ -11,7 +11,7 @@ const ModalComponent = ({isOpen, onOpenChange, children, onClose, closeButtonStr
          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
         <path d="M23.9999 8.00006L8 24M7.99993 8L23.9999 23.9999" stroke={closeButtonStroke} strokeWidth="1.5" strokeLinecap="round"></path>
         </svg> </button>}>
-            <ModalContent className={`2xl:w-[78vw] 2xl:h-[auto] s${modalContentClassName} w-full  max-w-none max-h-full lg:rounded-md rounded-xl sm:my-0 sm:mx-0`}>
+            <ModalContent className={`2xl:w-[78vw] 2xl:h-[auto] s${modalContentClassName} w-full  max-w-none max-h-full lg:rounded-md rounded-xl sm:my-0 sm:mx-0 `}>
                 {
                     () => (
                         <>
