@@ -69,7 +69,7 @@ const ButtonModal = ({
                         : <>{children}</>
                 ) : (
                     data && !isLoading && !error && (
-                        <div className='flex h-full flex-col xl:flex-row lg:pt-0 xl:pt-70 2xl:pt-0'>                   
+                        <div className='flex h-full flex-col xl:flex-row '>                   
                             <div className='xl:contents'>
                                 {Array.isArray(data.items[0].fields.modalContent) && data.items[0].fields.modalContent.length > 1 ? (
                                     <CarouselProvider 
