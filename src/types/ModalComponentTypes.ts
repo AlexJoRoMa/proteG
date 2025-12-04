@@ -49,6 +49,9 @@ export type ButtonModalComponentProps = {
   url?: string;
   text?: string;
   external?: boolean; // Indica si el enlace es externo
+  preSeleccion?: boolean; // Indica si el enlace hace relacion a un paquete preseleccionado
+  nombreCodePlan?: string | null;
+  nombreCodeMovil?: string | null;
 };
 
 export type ModalType = {

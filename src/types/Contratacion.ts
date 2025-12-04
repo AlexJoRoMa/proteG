@@ -112,6 +112,15 @@ export interface PaymentLiga {
     },
 }
 
+export type MetodoPago = "creditCard" | "paypal" | "tecnico"
+
+export interface TabConfigItem {
+    key: MetodoPago;
+    title: string;
+    Component: React.FC;
+}
+
+
 export type AttachFilesProps = {
     processStatus: {
         accountNumber?: string,

@@ -7,17 +7,44 @@ import PaymentInfoBanner from './metodosPago/PaymentInfoBanner';
 import PagoPayPal from './metodosPago/PagoPayPal';
 import PagoTarjeta from './metodosPago/PagoTarjeta';
 import { useCheckout } from '@/components/providers/CheckoutProvider';
+import { useIzziContent } from '@/components/providers/IzziProvider';
+import { MetodoPago, TabConfigItem } from '@/types/Contratacion';
 
+const TABS_CONFIG = (getValue: (key: string) => string, globalFlagDomicilio: boolean): TabConfigItem[] => {
+  const baseTabs: TabConfigItem[] = [
+    {
+      key: "creditCard",
+      title: getValue("pago.tarjet.titulo"),
+      Component: PagoTarjeta
+    },
+    {
+      key: "paypal",
+      title: getValue("pago.paypal.titulo"),
+      Component: PagoPayPal
+    }
+  ];
+
+  if (!globalFlagDomicilio) {
+    baseTabs.push({
+      key: "tecnico",
+      title: getValue("pago.tecnico.titulo"),
+      Component: PagoTecnico
+    });
+  }
+  return baseTabs;
+};
 
 const Step6 = () => {
 
   const { getValue } = useMicrocopies('contratacion-pago');
-  const { setDatosContratacion, currentStep, setIsStepValid } = useCheckout();
+  const { globalFlagDomicilio } = useIzziContent();
+  const { setDatosContratacion, currentStep, setIsStepValid, totalSteps } = useCheckout();
 
-  const [selectedTab, setSelectedTab] = useState<string>("creditCard");
+  const [selectedTab, setSelectedTab] = useState<MetodoPago>("creditCard");
+  const tabsConfig = TABS_CONFIG(getValue, globalFlagDomicilio);
 
   useEffect(() => {
-    if (currentStep === 6) {
+    if (currentStep === totalSteps) {
       setIsStepValid(true);
       setDatosContratacion((prev) => ({
         ...prev,
@@ -27,11 +54,11 @@ const Step6 = () => {
         }
       }));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep]);
 
   function handleTabChange(key: React.Key) {
-    const metodo = String(key);
+    const metodo = key as MetodoPago;
     setSelectedTab(metodo);
 
     setDatosContratacion((prev) => ({
@@ -60,20 +87,14 @@ const Step6 = () => {
           tabContent: "flex-warp !text-warp whitespace-normal"
         }}
       >
-        <Tab key="creditCard" title={getValue('pago.tarjet.titulo')}>
-          <PaymentInfoBanner />
-          <PagoTarjeta />
-        </Tab>
-
-        <Tab key="paypal" title={getValue('pago.paypal.titulo')}>
-          <PaymentInfoBanner />
-          <PagoPayPal />
-        </Tab>
-
-        <Tab key="tecnico" title={getValue('pago.tecnico.titulo')}>
-          <PaymentInfoBanner />
-          <PagoTecnico />
-        </Tab>
+        {
+          tabsConfig.map(({ key, title, Component }) => (
+            <Tab key={key} title={title}>
+              <PaymentInfoBanner />
+              <Component />
+            </Tab>
+          ))
+        }
       </Tabs>
 
     </>
