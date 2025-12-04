@@ -9,7 +9,7 @@ export async function GetAttachFile(processStatus: Partial<ProcessStatus>, attac
             "accountId": processStatus.accountId,
             "file": {
                 "fileName": attachInfo?.fileName,
-                "fileExtencion": attachInfo?.fileExtension,
+                "fileExtension": attachInfo?.fileExtension,
                 "data": attachInfo?.data,
             },
         };
