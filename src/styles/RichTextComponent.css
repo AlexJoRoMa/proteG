@@ -35,7 +35,7 @@
 
 .embedded-inline-vertical{
     display: inline-flex;
-    gap: 20px;
+    gap: 5px;
     align-items: flex-end;
     justify-content: space-between;
     flex-wrap: wrap;
