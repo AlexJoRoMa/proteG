@@ -26,8 +26,7 @@ export default function IzziFooterContent({FooterData}: FooterComponentProps) {
         content: "text-[16px]",
         indicator: "data-[open=true]:-rotate-180",
     }  
-
-    // Función helper para renderizar el modal correcto basado en typeModal
+// Función helper para renderizar el modal correcto basado en typeModal
     const renderModalComponent = (typeModal?: 'TeLlamamos' | 'TeAyudamos') => {
       if (typeModal === 'TeLlamamos') {
         return <TeLlamamosModalComponent />;
@@ -39,6 +38,7 @@ export default function IzziFooterContent({FooterData}: FooterComponentProps) {
       return null;
     };
 
+    
     return (
     <>
         <footer className="bg-black-0 w-full">
@@ -59,12 +59,12 @@ export default function IzziFooterContent({FooterData}: FooterComponentProps) {
                 <ButtonModal
                 key={`${contact.fields.navigationTitle}-${index}`}
                 textBtn={contact.fields.navigationTitle}
-                classStyles={`bg-color-trasparent underline text-[${contact.fields.backgroundColor?.value}]  text-[18px]`}
+                classStyles={`bg-color-trasparent underline   text-[18px]`}
                 closeButtonStroke='black'
                 modalContentClassName='w-full h-[52dvh] sm:h-[52vh] sm:w-[80vw] xl:h-auto xl:w-[80vw] 2xl:w-[52vw] 2xl:h-auto'
                 backdropColor='black-0/80'
                 startContent={<Image className='max-w-[24px] h-auto' src={`https:${contact.fields.linkIcon?.fields.file.url}`} alt={`${contact.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />}
-                
+                style={{color:contact.fields.backgroundColor?.value as string}}
                 >
                   {renderModalComponent(contact.fields.typeModal)}
                 </ButtonModal>

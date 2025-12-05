@@ -1,6 +1,7 @@
 import { Asset } from "contentful";
 import { ColorOption } from "@/constants/ColorModalConstants";
 import { ExtrasIncluidos } from "./ConfiguradorTypes";
+import { CSSProperties } from "react";
 
 export type FeatureListItemComponentProps = {
   title?: string;
@@ -32,6 +33,7 @@ export type ButtonModalProps = {
     startContent?: React.ReactNode; // Contenido que se muestra al inicio del botón
     backdropColor?: string; // Color del backdrop del modal, por defecto "black"
     hrColor?: ColorOption; // Opción de color para el HR del RichTextComponent
+    style?: CSSProperties; //
 }
 
 export type LinkModalProps = {
