@@ -36,7 +36,8 @@ export type Navigation = {
         footerLink?: Array<Navigation>,
         internalName?: string,
         linkIcon?: Icon,
-        backgroundColor?: colorPickerType
+        backgroundColor?: colorPickerType,
+        typeModal?: string,
     }
 }
 
