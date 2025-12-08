@@ -47,7 +47,7 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
     return(
     <div className={` relative bg-black flex md:w-full xsm:w-full h-auto overflow-hidden 4xl:px-[200px] 2xl:px-[144px] xl:px-[80px] md:px-[80px] xsm:px-[16px] md:py-10  xsm:py-15 ${!content && 'min-h-[520px]'}`}>
         
-        <div key={getComponentContent.sys.id} className="w-full flex flex-col md:flex-row">
+        <div key={getComponentContent.sys.id} className=" w-full flex flex-col md:flex-row ">
             
 
             {/*Nueva version con RichText */}
@@ -95,16 +95,18 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
 
             {/* imagen fondo */}
             <a href={`${setImgURL}`}>
-            <picture className={`xsm:hidden md:block ${imgMobil && image && 'xsm:!block '}`}>
+            <picture className={`absolute top-0 left-0 w-full h-full xsm:hidden md:block ${imgMobil && image && 'xsm:!block '} `}>
                 <source media="(max-width:576px)" srcSet={`https:${imgMobil}`}/>
                 {( imgDesk && imgMobil ) && (
                     <Image
                     alt={'Images'}
                     src={`https:${ imgDesk || imgMobil}`}
-                    fill
+                    width={1600}
+                    height={518}
+                    className="w-full h-full object-cover 2xl:object-fill"
                     priority
                     sizes=" 100vw"
-                    quality={75}
+                    quality={90}
                     />
                 )}
             </picture>

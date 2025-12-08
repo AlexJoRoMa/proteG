@@ -5,6 +5,9 @@ import { Accordion, AccordionItem } from '@heroui/react';
 import { FooterComponentProps, IzziFooterLinks, Contact, IzziCopyright } from "@/types/FooterTypes";
 import { DropIcon } from '@/components/atoms/FooterIcons';
 import Image from 'next/image';
+import ButtonModal from '../atoms/ButtonModal';
+import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
+import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
 
 export default function IzziFooterContent({FooterData}: FooterComponentProps) { 
     const contactSection = FooterData?.fields.footerContactSection as Array<Contact>;
@@ -23,7 +26,19 @@ export default function IzziFooterContent({FooterData}: FooterComponentProps) {
         content: "text-[16px]",
         indicator: "data-[open=true]:-rotate-180",
     }  
+// Función helper para renderizar el modal correcto basado en typeModal
+    const renderModalComponent = (typeModal?: 'TeLlamamos' | 'TeAyudamos') => {
+      if (typeModal === 'TeLlamamos') {
+        return <TeLlamamosModalComponent />;
+      }
+      if (typeModal === 'TeAyudamos') {
+        return <TeAyudamosModalComponent />;
+      }
+      
+      return null;
+    };
 
+    
     return (
     <>
         <footer className="bg-black-0 w-full">
@@ -40,9 +55,25 @@ export default function IzziFooterContent({FooterData}: FooterComponentProps) {
           </div>
           <div className='flex items-center gap-6'>
             {link.fields.contactLinks.map((contact, index) => ( 
-            <Link key={`${contact}-${index}`} href={`${contact.fields.navigationUrl}`} className='underline text-[18px] flex items-center gap-2'
+              (contact.fields.typeModal === 'TeLlamamos' || contact.fields.typeModal === 'TeAyudamos') ? (
+                <ButtonModal
+                key={`${contact.fields.navigationTitle}-${index}`}
+                textBtn={contact.fields.navigationTitle}
+                classStyles={`bg-color-trasparent underline   text-[18px]`}
+                closeButtonStroke='black'
+                modalContentClassName='w-full h-[52dvh] sm:h-[52vh] sm:w-[80vw] xl:h-auto xl:w-[80vw] 2xl:w-[52vw] 2xl:h-auto'
+                backdropColor='black-0/80'
+                startContent={<Image className='max-w-[24px] h-auto' src={`https:${contact.fields.linkIcon?.fields.file.url}`} alt={`${contact.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />}
+                style={{color:contact.fields.backgroundColor?.value as string}}
+                >
+                  {renderModalComponent(contact.fields.typeModal)}
+                </ButtonModal>
+              ) : (
+                <Link key={`${contact}-${index}`} href={`${contact.fields.navigationUrl}`} className='underline text-[18px] flex items-center gap-2'
               style={{color: contact.fields.backgroundColor?.value }}
               ><Image height={24} width={24} alt={`${contact.fields.linkIcon?.fields.file.fileName}`} src={`https:${contact.fields.linkIcon?.fields.file.url}`} />{contact.fields.navigationTitle}</Link>
+              )
+            
             ))}
           </div>
         </div>

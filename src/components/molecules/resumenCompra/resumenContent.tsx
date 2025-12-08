@@ -106,10 +106,10 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     const ahorroCombinado = (descuentoTv || 0);
 
     const totalSinDescuento = Number(userSelection?.internet?.paquete?.precioTachado || 0)
-        + Number(userSelection?.movil?.paquete?.precioTachado || 0)
+        + Number(userSelection?.movil?.paquete?.precioPaquete || 0)
         + Number(userSelection?.tv?.paquete?.precioTachado || userSelection?.tv?.paquete?.precioPaquete || 0)
         + (totalOttPrice || 0);
-    const precioTotal = totalSinDescuento && ahorroCombinado ? totalSinDescuento - ahorroCombinado - (Number(izziAhorro?.amount) || 0) - (Math.abs(Number(totalPromoPrice)) || 0) - (Number(descuentoInternet) || 0) : Number(globalIzziSelection?.precioPaquete) + (totalOttPrice ? totalOttPrice : 0);
+    const precioTotal = totalSinDescuento && ahorroCombinado ? totalSinDescuento - ahorroCombinado - (Number(izziAhorro?.amount) || 0) - (Math.abs(Number(totalPromoPrice)) || 0) - (Number(descuentoInternet) || 0) : Number(globalIzziSelection?.precioPaquete) + Number(globalIzziSelection?.extras?.precioPaquete || 0) + (totalOttPrice ? totalOttPrice : 0);
     const ahorroTotal = (Number(descuentoInternet || 0) + Number(izziAhorro?.amount) || 0) + (Number(ahorroCombinado) || 0) + (Number(pagoAnticipado) || 0) + (Number(Math.abs(totalPromoPrice as number)) || 0);
     const totalSinDescInternet = precioTotal + descuentoInternet;
 

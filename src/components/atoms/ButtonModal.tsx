@@ -30,7 +30,8 @@ const ButtonModal = ({
     modalContentClassName,
     startContent,
     backdropColor,
-    hrColor
+    hrColor,
+    style,
 }: ButtonModalProps) => {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -51,7 +52,7 @@ const ButtonModal = ({
     
     return (
         <>
-            <Button className={classStyles} onPress={onOpen} isLoading={isLoading && !data && !error} startContent={startContent}>
+            <Button className={classStyles} style={style} onPress={onOpen} isLoading={isLoading && !data && !error} startContent={startContent}>
                 {textBtn}
             </Button>
             <ModalComponent isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} closeButtonStroke={closeButtonStroke} modalContentClassName={modalContentClassName} backdropColor={backdropColor}>
@@ -69,7 +70,7 @@ const ButtonModal = ({
                         : <>{children}</>
                 ) : (
                     data && !isLoading && !error && (
-                        <div className='flex h-full flex-col xl:flex-row lg:pt-0 xl:pt-70 2xl:pt-0'>                   
+                        <div className='flex h-full flex-col xl:flex-row '>                   
                             <div className='xl:contents'>
                                 {Array.isArray(data.items[0].fields.modalContent) && data.items[0].fields.modalContent.length > 1 ? (
                                     <CarouselProvider 
