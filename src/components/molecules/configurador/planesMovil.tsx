@@ -35,8 +35,7 @@ export default function PlanesMovil({ step }: StepProps) {
                 const precioTachado = Number(card.precioPaquete) * 0.5;
                 return {
                     ...card,
-                    precioPaquete: precioTachado.toString(),
-                    precioTachado: card.precioPaquete
+                    precioPaquete: card.precioPaquete,
                 };
             }) ?? [];
             return { ...offer, cards: cardsActualizadas };
@@ -197,10 +196,10 @@ export default function PlanesMovil({ step }: StepProps) {
                                             <div className="flex flex-col w-full gap-[8px]">
                                                 <div className="flex flex-row items-baseline text-start gap-[4px]">
                                                     <div className="flex flex-row items-baseline">
-                                                        {card.precioTachado ?
+                                                        {userAnswers.internet?.paquete || userAnswers.tv?.paquete ?
                                                             <>
-                                                                <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioTachado)}</p>
-                                                                <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete as string)}</p>
+                                                                <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioPaquete as string)}</p>
+                                                                <p className="text-lg font-bold">{FormatCurrency(Number(card.precioPaquete) * 0.5)}</p>
                                                             </>
                                                             :
                                                             <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
