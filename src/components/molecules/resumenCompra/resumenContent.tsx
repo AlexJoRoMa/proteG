@@ -111,7 +111,6 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
         + (totalOttPrice || 0);
     const precioTotal = totalSinDescuento && ahorroCombinado ? totalSinDescuento - ahorroCombinado - (Number(izziAhorro?.amount) || 0) - (Math.abs(Number(totalPromoPrice)) || 0) - (Number(descuentoInternet) || 0) : Number(globalIzziSelection?.precioPaquete) + Number(globalIzziSelection?.extras?.precioPaquete || 0) + (totalOttPrice ? totalOttPrice : 0);
     const ahorroTotal = (Number(descuentoInternet || 0) + Number(izziAhorro?.amount) || 0) + (Number(ahorroCombinado) || 0) + (Number(pagoAnticipado) || 0) + (Number(Math.abs(totalPromoPrice as number)) || 0);
-    const totalSinDescInternet = precioTotal + descuentoInternet;
 
     const promoMeses = calcularPromos(promotions);
     const descuentoMeses = obtenerArray(promoMeses);
@@ -195,7 +194,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                             <>
                                 {
                                     descuentoMeses.map((item) => {
-                                        const precioDespues = totalSinDescInternet + Math.abs(pagoAnticipado?.promoPrice || 0) + item.totalPromo;
+                                        const precioDespues = totalSinDescuento - Math.abs(Number(izziAhorro?.amount)) - Number(ahorroCombinado) + item.totalPromo;
                                         const copyMes = resumenCopys.ahorro.meses[item.mesId];
 
                                         if (precioDespues === precioTotal) {
