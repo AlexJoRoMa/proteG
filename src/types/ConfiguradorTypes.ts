@@ -219,6 +219,7 @@ export interface Promos {
     promoPrice: number,
     promoType: string,
     serviceType: string,
+    visible: boolean,
 }
 
 export interface UserAnswers {
