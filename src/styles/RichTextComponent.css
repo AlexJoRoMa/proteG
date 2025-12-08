@@ -13,7 +13,10 @@
 
   h2{
     max-width: 70%;
-
+      @media screen and (min-width: 1200px) and (max-width:1439px) {
+       
+        max-width: 65%;
+      }
       @media screen and (max-width: 575px) {
         max-width: 100%;
       }
@@ -24,7 +27,7 @@
 .rich-text-empty {
   color: #6b7280;
   font-style: italic;
-  border: 2px solid rgb(0, 255, 55);
+  
 }
 
 
@@ -42,9 +45,6 @@
     width: 100%;
     grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
     
-
-    
-
    @media screen and (max-width: 1290px) {
     gap: 5px;
     grid-template-columns: repeat(auto-fit, minmax(50px, max-content));

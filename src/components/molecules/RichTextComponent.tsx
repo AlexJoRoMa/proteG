@@ -149,7 +149,7 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
         <h1 className="text-4xl ">{children}</h1>
       ),
       [BLOCKS.HEADING_2]: (_node: Block | Inline, children: React.ReactNode) => (
-        <h2 className="xl:text-[32px] text-[24px] leading-10">{children}</h2>
+        <h2 className="xl:text-[32px] 2xl:text-[24px] text-[24px] leading-10">{children}</h2>
       ),
       [BLOCKS.HEADING_3]: (_node: Block | Inline, children: React.ReactNode) => (
         <h3 className="text-2xl ">{children}</h3>
