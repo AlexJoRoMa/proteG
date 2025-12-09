@@ -148,7 +148,43 @@ export default function AccordionPlanesExtras() {
         }
     }, [content.userAnswers.tv?.ott?.planes]);
 
+    useEffect(() => {
+        if (!planesExtras) return;
 
+        setSelectedCard((prev) => {
+            const validIds = new Set(planesExtras.map(plan => plan.idExtra));
+            const filtrados = prev.filter(item => validIds.has(item.idExtra));
+
+            if (filtrados.length === prev.length) return prev;
+
+            return filtrados;
+        });
+    }, [planesExtras]);
+
+    useEffect(() => {
+        if (!selectedCard) return;
+
+        content.setUserAnswers((prev) => {
+            const prevOTT = prev.tv?.ott?.planes ?? [];
+            const prevIds = prevOTT.map((plan)=> plan.idExtra).join(",");
+            const newIds = selectedCard.map((plan) => plan.idExtra).join(",");
+
+            if (prevIds === newIds) return prev;
+
+            const total = selectedCard.reduce((acc, item) => acc + Number(item.costo), 0);
+
+            return {
+                ...prev,
+                tv: {
+                    ...prev.tv,
+                    ott: {
+                        planes: selectedCard,
+                        total
+                    }
+                }
+            };
+        });
+    }, [content, selectedCard]);
 
     return (
         <Accordion

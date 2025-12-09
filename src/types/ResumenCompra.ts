@@ -1,6 +1,7 @@
 // Resumen de Compra
 
 import { UserAnswers } from "./ConfiguradorTypes"
+import { MesId } from "@/constants/ResumenConstants";
 
 export type ResumenContentProps = {
     copys: ResumenData,
@@ -18,7 +19,7 @@ export type ResumenData = {
         titulo: string,
         izziAhorro: string,
         internet: string,
-        mes: string
+        meses: Record<MesId, string>,
     },
     boton: {
         comprobarPromociones: string,
