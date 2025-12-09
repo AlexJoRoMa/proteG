@@ -13,7 +13,7 @@ export default function Checkout() {
 
     useEffect(() => {
         if (!address) {
-            redirect('/cobertura');
+            redirect('/consulta-cobertura');
         }
     }, [address]);
 

@@ -23,7 +23,7 @@ const parsePaypalUrl = (url: string): Record<string, string> => {
 export default function PayPalScript({ amount, rptGetOffer, account, isRecurrent }: TabPayPalProps) {
     const [paypalOptions, setPaypalOptions] = useState<ReactPayPalScriptOptions | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const { setPaymentReference, currentStep } = useCheckout();
+    const { setPaymentReference, currentStep, totalSteps } = useCheckout();
 
     let payPalPaymentRef: string | undefined;
     let PaypalStatus: string | undefined;
@@ -170,7 +170,7 @@ export default function PayPalScript({ amount, rptGetOffer, account, isRecurrent
             }
         };
 
-        if (currentStep === 6) {
+        if (currentStep === totalSteps) {
             fetchPaypalConfig();
         }
     }, []);
