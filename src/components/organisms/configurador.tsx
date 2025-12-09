@@ -35,7 +35,7 @@ async function getCobertura() {
         }
     }
     else {
-        redirect('/cobertura');
+        redirect('/consulta-cobertura');
     }
 }
 
