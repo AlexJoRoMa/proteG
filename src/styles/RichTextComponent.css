@@ -14,7 +14,6 @@
   h2{
     max-width: 70%;
       @media screen and (min-width: 1200px) and (max-width:1439px) {
-       
         max-width: 65%;
       }
       @media screen and (max-width: 575px) {
@@ -35,7 +34,6 @@
     display: inline-block;
     vertical-align: middle;
     margin-right: 10px;
-     border: 2px solid rgb(0, 183, 255);
 }
 
 .embedded-inline-vertical{
@@ -46,15 +44,29 @@
     width: 100%;
     grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
     
-   @media screen and (max-width: 1290px) {
+   @media screen and (min-width: 1200px) and (max-width:1439px) {
     gap: 5px;
-    grid-template-columns: repeat(auto-fit, minmax(50px, max-content));
+    grid-template-columns: repeat(8, minmax(0, 1fr));
   }
 
   @media screen and (max-width: 1601px) {
     gap: 20px;
     grid-template-columns: repeat(auto-fit, minmax(50px, max-content));
   }
+
+  @media screen and (max-width: 1800px) {
+   
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(50px, max-content));
+  }
+
+  @media screen and (min-width: 1800px) and (max-width: 2000px) {
+  
+    gap: 50px;
+    grid-template-columns: repeat(auto-fit, minmax(50px, max-content));
+  }
+
+  
 
     @media screen and (max-width: 575px) {
     justify-content: start;
