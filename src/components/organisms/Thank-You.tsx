@@ -33,7 +33,7 @@ export default function ThankYou() {
 
     useEffect(() => {
         if (!globalProcessStatus.accountNumber || !globalDatosContratacion.Pago?.metodoPago) {
-            redirect('/cobertura');
+            redirect('/consulta-cobertura');
         }
     }, [globalDatosContratacion.Pago?.metodoPago, globalProcessStatus.accountNumber]);
 
