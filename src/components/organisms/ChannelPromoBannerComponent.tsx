@@ -1,7 +1,7 @@
 
 import Image from "next/image"
 import ButtonGhost from '../atoms/ButtonGhost';
-import CarouselComponent from "../molecules/CarouselComponent";
+import CarouselComponentChanel from "../molecules/CarouselComponent";
 import CarouselThumbnailComponent from "../molecules/CarouselThumbnailComponent";
 import { CarouselProvider } from "@/utils/CarouselProvider";
 import { EmblaOptionsType } from 'embla-carousel';
@@ -146,18 +146,17 @@ const ChannelPromoBannerComponent = async ({ id }: ChannelPromoBannerProps) => {
 
   return (
     
-    <section className="channelPromoBanner relative z-0 xl:min-h-[740px] bg-black md:bg-transparent
-    xsm:h-auto md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
+    <section className="channelPromoBanner relative z-0 xl:min-h-[740px] bg-black md:bg-transparent 
+     xsm:h-auto xsm:max-h-[950px]  md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
 
       
       <CarouselProvider
         qtyCarousels={3}
         carouselConfigs={carouselOptions}
       >
-        {/* Carrusel Principal */}
-
+        {/* Carrusel Principal Imagen */}
         <div className="w-full md:flex md:justify-center absolute inset-0 md:w-full md:h-full z-0 ">
-          <CarouselComponent carouselIndex={0}>
+          <CarouselComponentChanel carouselIndex={0}>
 
             {heroImages.map((image, index) => (
               <picture key={index}>
@@ -176,20 +175,22 @@ const ChannelPromoBannerComponent = async ({ id }: ChannelPromoBannerProps) => {
                 />
               </picture>
             ))}
-          </CarouselComponent>
+          </CarouselComponentChanel>
         </div>
 
         {/* Contenido textual */}
 
-        <CarouselComponent carouselIndex={2}>
+        <CarouselComponentChanel carouselIndex={2}>
 
           {carouselText.map((item, index) => (
-            <div key={index} style={{ height: '-webkit-fill-available' }} className="relative z-20 w-full pt-[56px] md:pt-0 2xl:ml-[200px] md:ml-[80px] pb-10
-                 md:w-2/5 flex flex-col items-center justify-end md:justify-initial md:items-start ">
+            <div key={index} style={{ height: '-webkit-fill-available' }} className=" relative z-20 w-full  2xl:ml-[200px] md:ml-[80px] md:w-2/5
+            sm:mt-0  xsm:mt-40 
+            xsm:pb-3 sm:pb-5 pb-10 
+            flex flex-col items-center xsm:justify-start justify-end md:justify-initial md:items-start ">
 
-              <p className="pl-4 md:pl-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
-              <h2 className="text-[32px] md:text-4xl pl-4 md:pl-0  font-bold text-white mb-6 w-screen md:w-auto">{item.title}</h2>
-              <p className="text-[16px] md:text-[18px] leading-6 text-(--color-gray-200) pl-4 md:pl-0 pr-4 md:pr-auto mb-6 md:mb-10 w-screen md:w-auto">
+              <p className=" pl-4 md:pl-0 text-sm text-(--color-gray-200) leading-6 text-[16px] md:text-[18px] mb-6  w-screen md:w-auto">{item.channelType}</p>
+              <h2 className=" text-[32px] md:text-4xl pl-4 md:pl-0  font-bold text-white mb-6 w-screen md:w-auto">{item.title}</h2>
+              <p className=" text-[16px] md:text-[18px] leading-6 text-(--color-gray-200) pl-4 md:pl-0 pr-4 md:pr-auto mb-6 md:mb-10 w-screen md:w-auto">
                 {item.description}
               </p>
 
@@ -219,10 +220,10 @@ const ChannelPromoBannerComponent = async ({ id }: ChannelPromoBannerProps) => {
 
             </div>
           ))}
-        </CarouselComponent>
+        </CarouselComponentChanel>
 
 
-        <div className="w-full self-end z-5 bg-black md:bg-transparent ">
+        <div className="w-full self-end z-5 bg-black md:bg-transparent  ">
 
           {/* Carousel de canales */}
 
@@ -257,7 +258,7 @@ const ChannelPromoBannerComponent = async ({ id }: ChannelPromoBannerProps) => {
 
 
           {/* Footer de logos */}
-          <CarouselComponent carouselIndex={1}>
+          <CarouselComponentChanel carouselIndex={1}>
             {heroImages.map((_, heroIndex) => {
               const footerData = getFooterDataForSlide(heroIndex);
 
@@ -287,7 +288,7 @@ const ChannelPromoBannerComponent = async ({ id }: ChannelPromoBannerProps) => {
                 <div key={heroIndex} className="w-full bg-black " style={{height: '100%'}}/>
               );
             })}
-          </CarouselComponent>
+          </CarouselComponentChanel>
 
 
 

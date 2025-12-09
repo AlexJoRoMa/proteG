@@ -13,7 +13,9 @@
 
   h2{
     max-width: 70%;
-
+      @media screen and (min-width: 1200px) and (max-width:1439px) {
+        max-width: 65%;
+      }
       @media screen and (max-width: 575px) {
         max-width: 100%;
       }
@@ -24,6 +26,7 @@
 .rich-text-empty {
   color: #6b7280;
   font-style: italic;
+  
 }
 
 
@@ -34,14 +37,40 @@
 }
 
 .embedded-inline-vertical{
-    display: inline-flex;
-    gap: 5px;
-    align-items: flex-end;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    width: 100%;
-    @media screen and (max-width: 573px) {
+    display: grid;
+    gap: 20px;
+    align-items: end;
     justify-content: start;
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
+    
+   @media screen and (min-width: 1200px) and (max-width:1439px) {
+    gap: 5px;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+
+  @media screen and (max-width: 1601px) {
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(50px, max-content));
+  }
+
+  @media screen and (max-width: 1800px) {
+   
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(50px, max-content));
+  }
+
+  @media screen and (min-width: 1800px) and (max-width: 2000px) {
+  
+    gap: 50px;
+    grid-template-columns: repeat(auto-fit, minmax(50px, max-content));
+  }
+
+  
+
+    @media screen and (max-width: 575px) {
+    justify-content: start;
+    
   }
 }
 
