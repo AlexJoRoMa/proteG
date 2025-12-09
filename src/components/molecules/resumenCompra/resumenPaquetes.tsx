@@ -73,14 +73,7 @@ export default function ResumenPaquetes({ userSelection, copys }: ResumenContent
                 <div className="flex flex-col gap-[8px] border-b-1 border-b-gray-150 pt-[24px]">
                     <div className="flex justify-between w-full font-bold leading-[24px] text-lg">
                         <h5>{resumenCopys.paquetes.movil.titulo}</h5>
-                        {
-                            internet &&
-                            <h5>{FormatCurrency(Number(movil.paquete.precioTachado))}</h5>
-                        }
-                        {
-                            !internet &&
-                            <h5>{FormatCurrency(Number(movil.paquete.precioPaquete))}</h5>
-                        }
+                        <h5>{FormatCurrency(Number(movil.paquete.precioPaquete))}</h5>
                     </div>
 
                     <div className="flex-flex-col gap-[8px] pb-[24px] w-full font-normal leading-[24px] text-base text-gray-250">
