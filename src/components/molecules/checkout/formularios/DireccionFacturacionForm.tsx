@@ -58,7 +58,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     labelPlacement="outside"
                     className='w-full'
                     isRequired
-                    onInput={(e) => InputFilter(e, 'letras')}
+                    onInput={(e) => InputFilter(e, 'alfanumerico')}
                     placeholder={getValue('otraDireccion.placeholder.direccion')}
                     errorMessage={getValue('otraDireccion.error.direccion')}
                     defaultValue={datosDireccion?.address}
@@ -75,7 +75,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     classNames={inputStyles}
                     labelPlacement="outside"
                     isRequired
-                    onInput={(e) => InputFilter(e, 'numeros')}
+                    onInput={(e) => InputFilter(e, 'alfanumerico')}
                     className='w-full col-span-1 md:col-start-1 md:!row-start-2'
                     placeholder={getValue('otraDireccion.placeholder.numeroExterior')}
                     errorMessage={getValue('otraDireccion.error.numeroExterior')}
