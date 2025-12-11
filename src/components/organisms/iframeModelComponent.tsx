@@ -23,8 +23,9 @@ const IframeModel = async ({id}: IframeModelID) => {
     const entry = callComponents[0];
     const getIframeURL = entry.fields.iframeUrl as string;
 
+    
     return(
-        <div className='iframeDiv w-full 
+        <div className=' w-full 
         4xl:h-[820px] 
         2xl:h-[850px] xl:h-[870px]
         md:h-[1030px]
@@ -33,8 +34,8 @@ const IframeModel = async ({id}: IframeModelID) => {
         <iframe
         src={getIframeURL}
         title='iframe'
-        className='w-full h-full'
-        allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+        className='w-full h-full max-h-[1100px]'
+        allow='geolocation'
         allowFullScreen
         />
         </div>
