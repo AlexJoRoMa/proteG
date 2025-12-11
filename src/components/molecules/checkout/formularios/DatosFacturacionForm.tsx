@@ -60,6 +60,8 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 labelPlacement="outside"
                 placeholder={getValue('facturacion.placeholder.cfdi')}
                 variant='bordered'
+                maxListboxHeight={200}
+                isVirtualized
                 radius='sm'
                 classNames={SelectStyles}
                 isRequired
@@ -86,6 +88,8 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 labelPlacement="outside"
                 placeholder={getValue('facturacion.placeholder.regimenFiscal')}
                 variant='bordered'
+                maxListboxHeight={200}
+                isVirtualized
                 radius='sm'
                 classNames={SelectStyles}
                 isRequired

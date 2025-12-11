@@ -18,6 +18,7 @@ import MediaBlockModelID from '@/components/organisms/mediablockComponent';
 import RichTextComponentServer from '../../components/organisms/RichTextComponentServer';
 import CarouselImagesComponent from "@/components/organisms/CarouselImagesComponent";
 import FAQcomponent from '@/components/organisms/FAQcomponent';
+import IframeModel from '@/components/organisms/iframeModelComponent';
 
 export const componentMap = {
   carouselChannel: ChannelPromoBannerComponent,
@@ -41,4 +42,5 @@ export const componentMap = {
   carouselImages: CarouselImagesComponent,
   recomendador: Recomendador,
   faqModel: FAQcomponent,
+  iFrame: IframeModel,
 };

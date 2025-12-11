@@ -41,6 +41,7 @@ export const RegimenFiscal = [
     { key: "620", label: "620 - Sociedades Cooperativas de Producción que Optan por Diferir sus Ingresos" },
     { key: "621", label: "621 - Incorporación Fiscal" },
     { key: "622", label: "622 - Actividades Agrícolas, Ganaderas, Silvícolas y Perqueras PM" },
+    { key: "623", label: "623 - Opcional para Grupos de Sociedades" },
     { key: "624", label: "624 - Coordinados" },
     { key: "625", label: "625 - Régimen de las Actividades Empresariales con Ingresos a Través de Plataformas Tecnológicas" },
     { key: "626", label: "626 - Régimen Simplificado de Confianza" },
