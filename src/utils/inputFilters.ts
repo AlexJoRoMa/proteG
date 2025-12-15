@@ -19,7 +19,7 @@ export function InputFilter(e: React.FormEvent<HTMLInputElement>, type: 'letras'
 
         case 'alfanumerico':
             // Letras, acentos y números, sin espacios
-            filtered = value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g, '');
+            filtered = value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g, '');
             break;
     }
 
