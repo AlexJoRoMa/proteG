@@ -141,7 +141,11 @@ export default function PlanesInternet({ step }: StepProps) {
                                     <CardBody>
                                         <div className="flex items-stretch">
                                             {card.extrasIncluidos &&
-                                                <p className="leading-[18px] font-normal text-sm text-gray-300">{card?.extrasIncluidos[0].titulo}</p>
+                                                <p className="leading-[18px] font-normal text-sm text-gray-300">
+                                                    {`${offersCopys.internet.cards.extrasIncluidos} `}
+                                                    {card?.extrasIncluidos.map((item) => item.titulo).join(', ')}
+                                                    {'.'}
+                                                </p>
                                             }
                                         </div>
                                     </CardBody>
