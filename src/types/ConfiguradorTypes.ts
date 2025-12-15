@@ -358,7 +358,8 @@ export type OffersCopys = {
             posVelocidad: string,
             unidadVelocidad: string,
             periodo: string,
-            info: string
+            info: string,
+            extrasIncluidos: string,
         }
     },
     tv: {

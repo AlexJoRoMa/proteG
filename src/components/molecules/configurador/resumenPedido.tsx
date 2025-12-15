@@ -121,7 +121,7 @@ export default function ResumenPedido() {
                         "extras": extrasBody,
                         "product": izziSelection?.idPaquete
                     },
-                    "offnet": configuradorEntry?.offnetIzzi && configuradorEntry?.offnetSky
+                    "offnet": configuradorEntry?.offnetIzzi || configuradorEntry?.offnetSky
                 }
             ),
         });
