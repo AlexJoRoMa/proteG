@@ -99,7 +99,6 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     const promoVisible = promotions?.filter((promo) => promo.visible === true && promo.promoPrice !== "0");
     const pagoAnticipado = promoData?.promos?.find(promo => promo.promoName.toLowerCase().includes('pago anticipado'));
     const totalAfterPromos = Math.abs(Number((pagoAnticipado?.promoPrice || 0)));
-    const descuentoInternet = pagoAnticipado ? 0 : Math.abs((Number(userSelection?.internet?.paquete?.descuentoPaquete)));
     const descuentoTv = Math.abs((Number(userSelection?.tv?.paquete?.precioPaquete)) - (Number(userSelection?.tv?.paquete?.precioTachado)));
 
     const ahorroCombinado = (descuentoTv || 0);
@@ -108,8 +107,8 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
         + Number(userSelection?.movil?.paquete?.precioPaquete || 0)
         + Number(userSelection?.tv?.paquete?.precioTachado || userSelection?.tv?.paquete?.precioPaquete || 0)
         + (totalOttPrice || 0);
-    const precioTotal = totalSinDescuento && promoData.promos ? totalSinDescuento - ahorroCombinado - (Math.abs(Number(totalPromoPrice)) || 0) - (Number(descuentoInternet) || 0) : totalSinDescuento;
-    const ahorroTotal = (Number(descuentoInternet || 0) + (Number(ahorroCombinado) || 0) + (Number(pagoAnticipado) || 0)) + (Number(Math.abs(totalPromoPrice as number)) || 0);
+    const precioTotal = totalSinDescuento && promoData.promos ? totalSinDescuento - ahorroCombinado - (Math.abs(Number(totalPromoPrice)) || 0) : totalSinDescuento;
+    const ahorroTotal = ((Number(ahorroCombinado) || 0) + (Number(pagoAnticipado) || 0)) + (Number(Math.abs(totalPromoPrice as number)) || 0);
 
     const promoMeses = calcularPromos(promotions);
     const descuentoMeses = obtenerArray(promoMeses);
@@ -133,17 +132,11 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                     </div>
                 </div>
                 {
-                    (globalCheckedPromotions && (pagoAnticipado !== undefined || ahorroCombinado !== 0 || descuentoInternet || (promoVisible && promoVisible?.length > 0))) && (
+                    (globalCheckedPromotions && (pagoAnticipado !== undefined || ahorroCombinado !== 0 || (promoVisible && promoVisible?.length > 0))) && (
                         <div className="flex flex-col gap-[8px] py-[24px] border-b-1 border-b-gray-150">
                             <h1 className="font-bold text-base leading-[24px] mb-[24px]">{resumenCopys.ahorro.titulo}</h1>
 
                             <div className="w-full font-normal leading-[24px] text-lg space-y-2">
-                                {userSelection.internet && !pagoAnticipado && (
-                                    <div className="flex justify-between w-full">
-                                        <h5 className="text-left">{resumenCopys.ahorro.internet}</h5>
-                                        <h5 className="text-right">-{FormatCurrency(descuentoInternet)}</h5>
-                                    </div>
-                                )}
                                 <div className="flex justify-between w-full">
                                     <h5 className="text-left">{resumenCopys.ahorro.paquete}</h5>
                                     <h5 className="text-right">-{FormatCurrency(ahorroCombinado)}</h5>
