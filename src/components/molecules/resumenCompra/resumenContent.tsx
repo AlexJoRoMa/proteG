@@ -24,7 +24,7 @@ function calcularPromos(promos: Promos[] | undefined) {
         if (hasta > 12) hasta = 12;
 
         for (let i = desde; i < hasta; i++) {
-            meses[i].totalPromo += promo.promoPrice;
+            meses[i].totalPromo += Number(promo.promoPrice);
             meses[i].promos.push(promo);
         }
     });
@@ -96,7 +96,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     );
 
     const promotions = promoData?.promos;
-    const promoVisible = promotions?.filter((promo) => promo.visible === true);
+    const promoVisible = promotions?.filter((promo) => promo.visible === true && promo.promoPrice !== "0");
     const pagoAnticipado = promoData?.promos?.find(promo => promo.promoName.toLowerCase().includes('pago anticipado'));
     const totalAfterPromos = Math.abs(Number((pagoAnticipado?.promoPrice || 0)));
     const descuentoInternet = pagoAnticipado ? 0 : Math.abs((Number(userSelection?.internet?.paquete?.descuentoPaquete)));
@@ -133,34 +133,34 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                     </div>
                 </div>
                 {
-                    globalCheckedPromotions &&
-                    <div className="flex flex-col gap-[8px] py-[24px] border-b-1 border-b-gray-150">
-                        <h1 className="font-bold text-base leading-[24px] mb-[24px]">{resumenCopys.ahorro.titulo}</h1>
+                    (globalCheckedPromotions && (pagoAnticipado !== undefined || ahorroCombinado !== 0 || descuentoInternet || (promoVisible && promoVisible?.length > 0))) && (
+                        <div className="flex flex-col gap-[8px] py-[24px] border-b-1 border-b-gray-150">
+                            <h1 className="font-bold text-base leading-[24px] mb-[24px]">{resumenCopys.ahorro.titulo}</h1>
 
-                        <div className="w-full font-normal leading-[24px] text-lg space-y-2">
-                            {userSelection.internet && !pagoAnticipado && (
+                            <div className="w-full font-normal leading-[24px] text-lg space-y-2">
+                                {userSelection.internet && !pagoAnticipado && (
+                                    <div className="flex justify-between w-full">
+                                        <h5 className="text-left">{resumenCopys.ahorro.internet}</h5>
+                                        <h5 className="text-right">-{FormatCurrency(descuentoInternet)}</h5>
+                                    </div>
+                                )}
                                 <div className="flex justify-between w-full">
-                                    <h5 className="text-left">{resumenCopys.ahorro.internet}</h5>
-                                    <h5 className="text-right">-{FormatCurrency(descuentoInternet)}</h5>
+                                    <h5 className="text-left">{resumenCopys.ahorro.paquete}</h5>
+                                    <h5 className="text-right">-{FormatCurrency(ahorroCombinado)}</h5>
                                 </div>
-                            )}
-                            <div className="flex justify-between w-full">
-                                <h5 className="text-left">{resumenCopys.ahorro.paquete}</h5>
-                                <h5 className="text-right">-{FormatCurrency(ahorroCombinado)}</h5>
+                                {
+                                    promoVisible?.map((promo, index) => {
+                                        return (
+                                            <div key={index} className="flex justify-between w-full">
+                                                <h5 className="text-left">{promo.promoName}</h5>
+                                                <h5 className="text-right">-{FormatCurrency(Math.abs(Number(promo.promoPrice)))}</h5>
+                                            </div>
+                                        )
+                                    })
+                                }
                             </div>
-                            {
-                                promoVisible?.map((promo, index) => {
-                                    return (
-                                        <div key={index} className="flex justify-between w-full">
-                                            <h5 className="text-left">{promo.promoName}</h5>
-                                            <h5 className="text-right">-{FormatCurrency(Math.abs(Number(promo.promoPrice)))}</h5>
-                                        </div>
-                                    )
-                                })
-                            }
                         </div>
-                    </div>
-                }
+                    )}
 
             </>
 
