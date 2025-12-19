@@ -102,7 +102,7 @@ export default function PlanesMovil({ step }: StepProps) {
             setSelectedCardId(matched.idPaquete);
             applyUserAnswersMovil(matched, parentTab?.tituloTab);
         });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params?.movil, plansInfo]);
 
     useEffect(() => {
@@ -122,7 +122,7 @@ export default function PlanesMovil({ step }: StepProps) {
         if (parentTab && parentTab.tituloTab !== selectedTabKey) {
             setSelectedTabKey(parentTab.tituloTab);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [String(userAnswers.movil?.paquete?.idPaquete), plansInfo]);
 
     const onTabChange = (key: string) => {
@@ -195,17 +195,22 @@ export default function PlanesMovil({ step }: StepProps) {
                                         <CardFooter>
                                             <div className="flex flex-col w-full gap-[8px]">
                                                 <div className="flex flex-row items-baseline text-start gap-[4px]">
-                                                    <div className="flex flex-row items-baseline">
-                                                        {userAnswers.internet?.paquete || userAnswers.tv?.paquete ?
+                                                    {
+                                                        userAnswers.internet?.paquete || userAnswers.tv?.paquete ? (
                                                             <>
                                                                 <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioPaquete as string)}</p>
-                                                                <p className="text-lg font-bold">{FormatCurrency(Number(card.precioPaquete) * 0.5)}</p>
+                                                                <div className="flex flex-row items-baseline">
+                                                                    <p className="text-lg font-bold">{FormatCurrency(Number(card.precioPaquete) * 0.5)}</p>
+                                                                    <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
+                                                                </div>
                                                             </>
-                                                            :
-                                                            <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
-                                                        }
-                                                        <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
-                                                    </div>
+                                                        ) : (
+                                                            <div className="flex flex-row items-baseline">
+                                                                <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
+                                                                <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
+                                                            </div>
+                                                        )
+                                                    }
                                                 </div>
 
                                                 <div className="flex flex-row gap-[16px] items-center justify-between">
