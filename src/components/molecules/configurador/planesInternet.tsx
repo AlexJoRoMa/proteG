@@ -4,7 +4,7 @@ import LinkModal from "@/components/atoms/LinkModal";
 import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { CheckPlanesIcon } from "@/constants/IconsConstants";
-import { OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
+import { movilComponentFields, OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
@@ -41,6 +41,7 @@ export default function PlanesInternet({ step }: StepProps) {
     }, [plansInfo, coverageType, mapOffersByType.hfc, mapOffersByType.ftth]);
 
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+    const [hasMovil, setHasMovil] = useState<boolean>(false);
     const userInteracted = useRef(false);
 
     function handleSelect(index: number, card: OfferItem) {
@@ -104,6 +105,15 @@ export default function PlanesInternet({ step }: StepProps) {
         if (index !== -1 && selectedIndex !== index) setSelectedIndex(index);
     }, [offersByType, selectedIndex, userAnswers.internet?.paquete]);
 
+    useEffect(() => {
+        const movil = userAnswers.movil as unknown as movilComponentFields;
+        if (movil && movil !== null && Object.keys(movil).length > 0) {
+            setHasMovil(true);
+        } else {
+            setHasMovil(false);
+        }
+    }, [userAnswers.movil]);
+
     return (
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
@@ -133,7 +143,7 @@ export default function PlanesInternet({ step }: StepProps) {
                                     }}>
                                     <CardHeader>
                                         <div className="flex flex-col text-start">
-                                            
+
                                             <p className={`text-base font-normal leading-[27px] ${card.velocidadMinima === card.velocidadMaxima ? 'invisible' : ''}`}>{`${offersCopys.internet.cards.preVelocidad} ${card.velocidadMinima} ${offersCopys.internet.cards.posVelocidad}`}</p>
                                             <p className="leading-[27px] font-extrabold text-2xl">{`${card.velocidadMaxima} ${offersCopys.internet.cards.unidadVelocidad}`}</p>
                                         </div>
@@ -152,11 +162,22 @@ export default function PlanesInternet({ step }: StepProps) {
                                     <CardFooter>
                                         <div className="flex flex-col w-full gap-[8px]">
                                             <div className="flex flex-row items-baseline gap-[4px]">
-                                                <span className="text-sm font-normal text-gray-200 line-through">{FormatCurrency(card.precioTachado as string)}</span>
-                                                <div className="flex flex-row items-baseline">
-                                                    <span className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</span>
-                                                    <span className="text-sm font-normal">{`/${card.periodicidad}`}</span>
-                                                </div>
+                                                {
+                                                    hasMovil ? (
+                                                        <div className="flex flex-row items-baseline">
+                                                            <span className="text-lg font-bold">{FormatCurrency(card.precioTachado as string)}</span>
+                                                            <span className="text-sm font-normal">{`/${card.periodicidad}`}</span>
+                                                        </div>
+                                                    ) : (
+                                                        <>
+                                                            <span className="text-sm font-normal text-gray-200 line-through">{FormatCurrency(card.precioTachado as string)}</span>
+                                                            <div className="flex flex-row items-baseline">
+                                                                <span className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</span>
+                                                                <span className="text-sm font-normal">{`/${card.periodicidad}`}</span>
+                                                            </div>
+                                                        </>
+                                                    )
+                                                }
                                             </div>
                                             <div className="flex flex-row gap-[16px] items-center justify-between">
                                                 <LinkModal
