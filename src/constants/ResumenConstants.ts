@@ -9,8 +9,20 @@ export const mesIds = [
     "octavo",
     "noveno",
     "decimo",
-    "onceavo",
-    "doceavo",
+    "decimoprimero",
+    "decimosegundo",
+    "decimotercero",
+    "decimocuarto",
+    "decimoquinto",
+    "decimosexto",
+    "decimoseptimo",
+    "decimoctavo",
+    "decimonoveno",
+    "vigecimo",
+    "vigecimoprimero",
+    "vigecimosegundo",
+    "vigecimotercero",
+    "vigecimocuarto",
 ];
 
 export type MesId = typeof mesIds[number];

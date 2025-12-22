@@ -216,7 +216,7 @@ export interface Promos {
     promoMode: string,
     promoMovil: boolean,
     promoName: string,
-    promoPrice: string,
+    promoPrice: number,
     promoType: string,
     serviceType: string,
     visible: boolean,
