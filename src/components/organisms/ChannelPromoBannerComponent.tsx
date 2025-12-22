@@ -223,11 +223,16 @@ const ChannelPromoBannerComponent = async ({ id }: ChannelPromoBannerProps) => {
         </CarouselComponentChanel>
 
 
-        <div className="w-full self-end z-5 bg-black md:bg-transparent  ">
+        <div className="w-full self-end z-5 bg-black md:bg-transparent ">
 
           {/* Carousel de canales */}
 
-          <div className="flex items-center w-full justify-center sm:justify-normal mx-auto xl:mx-0 2xl:pl-[225px] md:pl-[80px] md:pr-[80px] h-[80px] md:h-[60px] bg-black">
+          <div className="MiniBanners flex items-center w-full 
+          justify-center sm:justify-normal 4xl:justify-center 
+          mx-auto xl:mx-0 
+          md:pl-[80px] 2xl:pl-[225px]  4xl:pl-0
+          md:pr-[80px]  
+          h-[80px] md:h-[60px] bg-black">
             <CarouselThumbnailComponent targetCarouselIndex={0} syncAllCarousels={true}>
               {thumbnailImages.map((item, index) => (
                 <div key={index} className="relative">
@@ -264,7 +269,7 @@ const ChannelPromoBannerComponent = async ({ id }: ChannelPromoBannerProps) => {
 
               return footerData !== null && footerData.images.length > 0 ? (
                 <div className="
-                  w-full xl:pl-[225px] md:pl-[100px] pl-[50px]
+                  w-full xl:pl-[225px] md:pl-[100px] pl-[50px] 
                   bg-(--color-gray-450) p-4 
                 " key={heroIndex}>
                   <p className="w-full text-(--color-gray-200) text-[16px] leading-6 mb-2 ">
