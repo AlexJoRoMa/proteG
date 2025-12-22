@@ -146,7 +146,10 @@ const ChannelPromoBannerComponent = async ({ id }: ChannelPromoBannerProps) => {
 
   return (
     
-    <section className="channelPromoBanner relative z-0 xl:min-h-[740px] bg-black md:bg-transparent 
+    <section className="channelPromoBanner relative z-0
+     xl:min-h-[740px] [@media(min-width:2000px)]:min-h-[830px] 
+     [@media(min-width:3840px)]:min-h-[1000px] [@media(min-width:3840px)]:max-h-[1100px]
+     bg-black md:bg-transparent 
      xsm:h-auto xsm:max-h-[950px]  md:h-full flex flex-col md:flex-wrap md:flex-row items-center overflow-hidden">
 
       

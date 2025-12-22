@@ -212,7 +212,7 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
               alt={alt}
               width={file.details?.image?.width || 800}
               height={file.details?.image?.height || 600}
-              className="max-w-full h-auto inline"
+              className="max-w-full h-auto inline border border-red-500"
               priority={false}
             />
           );
