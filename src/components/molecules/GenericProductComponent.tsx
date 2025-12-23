@@ -15,10 +15,7 @@ export default async function GenericProductCard({ id }: GenericProductProps) {
 const cards = cardsData?.fields.productCard as Array<GenericProductCardType>
   return (
     <>
-      <div className="flex flex-col lg:flex-row mx-sm sm:mx-md 2xl:mx-xl md:justify-between ml-0 w-auto
-      [@media(min-width:2000px)]:ml-1/2
-      [@media(min-width:2000px)]:mx-[25%] [@media(min-width:3840px)]:mx-[33%]
-       ">
+      <div className="flex flex-col lg:flex-row mx-sm sm:mx-md 2xl:mx-xl md:justify-between ">
         {cards?.map((card, index) => (
           <ProductCard key={`${card}-${index}`} color={card.fields.backgroundColor.value} borderColor={card.fields.backgroundColor.value} icon={card.fields.productIcon.fields.file.url} altIcon={card.fields.productIcon.fields.file.fileName} cardData={card}/>
         ))}
