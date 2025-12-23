@@ -22,7 +22,7 @@ export default function PlanesInternet({ step }: StepProps) {
     const plansInfo = useMemo(() => {
         return (plans || []).map(offer => {
             const totalAhorros = offer.izziAhorros?.reduce((acc, ahorro) => acc + Number(ahorro.monto), 0) || 0;
-            const nuevoPrecio = (Number(offer.precioPaquete) - totalAhorros - Number(offer.descuentoPaquete || 0) - Number(offer.precioDomiciliacion || 0)).toString();
+            const nuevoPrecio = (Number(offer.precioPaquete) - totalAhorros - Number(offer.descuentoPaquete || 0)).toString();
             const precioTachado = (Number(offer.precioPaquete) - totalAhorros).toString();
             return { ...offer, precioPaquete: nuevoPrecio, precioTachado };
         });
