@@ -162,7 +162,15 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                 <>
                     <div className="flex justify-between w-full font-bold leading-[32px] xl:leading-[40px] text-2xl xl:text-[32px] pt-[24px]">
                         <h2>{resumenCopys.total.titulo}</h2>
-                        <h2>{FormatPromotions(Number(precioTotal))}</h2>
+                        <h2>
+                            {
+                                globalCheckedPromotions ? (
+                                    FormatPromotions(Number(precioTotal))
+                                ) : (
+                                    FormatCurrency(Number(precioTotal))
+                                )
+                            }
+                        </h2>
                     </div>
                     <div className="flex flex-col gap-[8px]">
                         {
@@ -197,7 +205,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                     <div className="flex flex-col gap-[8px] mb-[32px]">
                         <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
                             <h5>{resumenCopys.ahorro.domicilio}</h5>
-                            <h5>-{FormatCurrency(Number(precioTotal - 50))}</h5>
+                            <h5>-{FormatCurrency(Number(50))}</h5>
                         </div>
                         <h5 className="w-full font-normal leading-[24px] text-base text-gray-250">
                             {resumenCopys.ahorro.infoAdicional}
