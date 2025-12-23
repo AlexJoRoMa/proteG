@@ -219,13 +219,22 @@ export default function PlanesTv({ step }: StepProps) {
                                 <CardFooter>
                                     <div className="flex flex-col gap-[8px] w-full">
                                         <div className="flex flex-row items-baseline text-start gap-[4px]">
-                                            {userAnswers.internet && card.precioTachado ? (
-                                                <>
-                                                    <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioTachado)}</p>
-                                                    <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete as string)}</p>
-                                                </>
-                                            ) : <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>}
-                                            <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
+                                            {
+                                                userAnswers.internet && card.precioTachado ? (
+                                                    <>
+                                                        <p className="font-normal text-sm line-through text-gray-200">{FormatCurrency(card.precioTachado)}</p>
+                                                        <div className="flex flex-row items-baseline">
+                                                            <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete as string)}</p>
+                                                            <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <div className="flex flex-row items-baseline">
+                                                        <p className="text-lg font-bold">{FormatCurrency(card.precioPaquete)}</p>
+                                                        <p className="text-sm font-normal">{`/${card.periodicidad}`}</p>
+                                                    </div>
+                                                )
+                                            }
                                         </div>
                                         <div className="flex flex-row gap-[16px] items-center justify-between">
                                             <LinkModal classNames='underline text-black-0 text-[16px] cursor-pointer' text={offersCopys.internet.cards.info} closeButtonStroke='black' modalContentClassName="w-full h-auto sm:w-[80vw] xl:h-auto xl:w-[90vw] 2xl:w-[62vw] 2xl:h-auto" backdropColor='black-0/80' idModal={""}>

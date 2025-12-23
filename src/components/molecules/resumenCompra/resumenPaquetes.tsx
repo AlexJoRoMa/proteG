@@ -31,9 +31,12 @@ export default function ResumenPaquetes({ userSelection, copys }: ResumenContent
                             {`
                             ${resumenCopys.paquetes.internet.prevCapacidad} ${internet.paquete.velocidadMinima}${resumenCopys.paquetes.internet.postCapacidad}`}
                         </p>
-                        <p>
-                            {`${resumenCopys.paquetes.internet.textoContratacion} ${internet.paquete.velocidadMaxima}${resumenCopys.paquetes.internet.postCapacidad}`}
-                        </p>
+                        {
+                            movil &&
+                            <p>
+                                {`${resumenCopys.paquetes.internet.textoContratacion} ${internet.paquete.velocidadMaxima}${resumenCopys.paquetes.internet.postCapacidad}`}
+                            </p>
+                        }
                         <p>
                             {`${resumenCopys.paquetes.internet.extrasIncluidos} ${internet.paquete.extrasIncluidos && internet.paquete.extrasIncluidos.map((item) => item.titulo).join(', ')}`}
                         </p>

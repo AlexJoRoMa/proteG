@@ -7,7 +7,7 @@ import { ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FormatCurrency } from "@/utils/Currency";
+import { FormatPromotions } from "@/utils/Currency";
 import { Button } from "@heroui/react";
 import { LoaderIcon } from "@/constants/IconsConstants";
 // import ModalFechaInvalida from "../checkout/modals/ModalFechaInvalida";
@@ -116,7 +116,7 @@ export default function ResumenContainerConfigurador() {
                             <h3 className="font-bold text-xl text-white-0">{resumenCopys.promociones.titulo}</h3>
                             <div className="flex gap-[4px] font-normal text-lg leading-[24px] text-white-0">
                                 <h4>{resumenCopys.promociones.textoAhorro}</h4>
-                                <h4>{FormatCurrency(Number(ahorroTotal))}</h4>
+                                <h4>{FormatPromotions(Number(ahorroTotal))}</h4>
                             </div>
                         </div>
                     </div>
