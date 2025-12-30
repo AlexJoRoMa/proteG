@@ -294,7 +294,7 @@ const handleCharPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         classNames={{ wrapper: 'z-[100]'}}
         >
           <ModalContent>
-            {(onClose)=> (
+            {()=> (
             <TeLlamamosModalComponent />
           )} 
           </ModalContent>
