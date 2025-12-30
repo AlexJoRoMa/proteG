@@ -1,8 +1,9 @@
+'use server'
 import { CoberturaType, PackageInfo, QuoteInfo } from "@/types/ConfiguradorTypes";
 import { redirect } from "next/navigation";
 
 export async function getToken() {
-
+console.log(' 🐧 getToken');
     const url = process.env.GET_TOKEN;
     try {
         const response = await fetch(`${url}`, {
@@ -41,6 +42,7 @@ export async function getOfertas(dataCobertura: CoberturaType) {
 
     const url = process.env.GET_OFERTAS;
 
+    console.log(' 🐧 getOfertas', url);
     try {
 
         if ( !dataCobertura.zipCode || !dataCobertura.lat || !dataCobertura.lng ) {
@@ -72,8 +74,9 @@ export async function getOfertas(dataCobertura: CoberturaType) {
             }
         );
 
-        if (!response.ok) {
-            throw new Error(`Error en la petición: ${response.status} ${response.statusText}`);
+                
+        if (!response.ok && response.status !== 409) {
+            throw new Error(`Error enX la petición: ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();
@@ -81,8 +84,8 @@ export async function getOfertas(dataCobertura: CoberturaType) {
         return data;
 
     } catch (error) {
-        console.error("Error al obtener las ofertas", error)
-        throw new Error("Error al obtener las ofertas");
+        console.error("Error al obtenerY las ofertas", error)
+        throw new Error("Error al obtenerZ las ofertas");
     }
 }
 
