@@ -43,9 +43,11 @@ const ConIzziTv = async ({id} : ConIzziTvID) =>{
     const imgMobil = movilImage?.fields?.file?.url;
 
     const setImgURL = imgUrl ? imgUrl : '';
-
+//[@media(min-width:3840px)]:max-h-[1100px]
     return(
-    <div className={` relative bg-black flex md:w-full xsm:w-full h-auto overflow-hidden 4xl:px-[200px] 2xl:px-[144px] xl:px-[80px] md:px-[80px] xsm:px-[16px] md:py-10  xsm:py-15 ${!content && 'min-h-[520px]'}`}>
+    <div className={` relative bg-black flex md:w-full xsm:w-full h-auto
+         [@media(min-width:2560px)]:h-[800px] [@media(min-width:3500px)]:h-[900px]
+     overflow-hidden 4xl:px-[200px] 2xl:px-[144px] xl:px-[80px] md:px-[80px] xsm:px-[16px] md:py-10  xsm:py-15 ${!content && 'min-h-[520px]'}`}>
         
         <div key={getComponentContent.sys.id} className=" w-full flex flex-col md:flex-row ">
             
