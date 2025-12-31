@@ -56,7 +56,7 @@ const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
               alt={String(imgBackground.fields.title) || 'Background image'}
               fill
               priority
-              className="object-cover"
+              className="object-cover [@media(min-width:2000px)]:object-fill"
               sizes="100vw"
               quality={75}
               loading="eager"
@@ -73,8 +73,12 @@ const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
           </div>
         ) : null
       }
-        
-        <div className="relative z-10 w-full h-full  2xl:ml-lg  3xl:ml-0 ">
+        {/*         [@media(min-width:2000px)]:ml-[11vw]                                   */}
+        <div className="relative z-10 w-full h-full  2xl:ml-lg   3xl:ml-0 4xl:ml-[3%] 
+        [@media(min-width:2000px)]:w-[90%] [@media(min-width:3840px)]:w-[87%]
+        [@media(min-width:2000px)]:ml-[7.5%] [@media(min-width:3840px)]:ml-[11.5%]
+
+        ">
           <CarouselProvider qtyCarousels={1} carouselConfigs={[{ options: { align: 'center'} }]} colorArrow={colorArrow}>
              <CarouselComponent buttons={true} dots={true}>
                 {
