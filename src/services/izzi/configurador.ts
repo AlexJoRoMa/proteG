@@ -3,7 +3,7 @@ import { CoberturaType, PackageInfo, QuoteInfo } from "@/types/ConfiguradorTypes
 import { redirect } from "next/navigation";
 
 export async function getToken() {
-console.log(' 🐧 getToken');
+
     const url = process.env.GET_TOKEN;
     try {
         const response = await fetch(`${url}`, {
@@ -42,7 +42,7 @@ export async function getOfertas(dataCobertura: CoberturaType) {
 
     const url = process.env.GET_OFERTAS;
 
-    console.log(' 🐧 getOfertas', url);
+    
     try {
 
         if ( !dataCobertura.zipCode || !dataCobertura.lat || !dataCobertura.lng ) {
