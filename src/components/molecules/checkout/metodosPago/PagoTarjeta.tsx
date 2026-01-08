@@ -59,7 +59,10 @@ export default function PagoTarjeta() {
 
         return () => { isMounted = false };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isRecurrent, montoDomiciliado, precioTotal, currentStep, totalSteps]);
+    }, [isRecurrent, /* montoDomiciliado, */ precioTotal, currentStep, totalSteps]);
+
+    /* console.log('🐋🐋  isRecurrent', isRecurrent) */
+    /* console.log('🐦  cardRecurrent', montoDomiciliado) */
 
     return (
         <section className="w-full">
@@ -72,6 +75,7 @@ export default function PagoTarjeta() {
                     onValueChange={(checked) => {
                         setIsRecurrent(checked)
                         setCardRecurrent(checked)
+                        window.dispatchEvent(new CustomEvent('switch-change', {detail: checked}))
                     }}
                     classNames={{
                         wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
