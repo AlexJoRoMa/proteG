@@ -128,8 +128,8 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     useEffect(() => {
         setAhorroTotal(ahorroTotal);
         setPrecioCombinado(ahorroCombinado as number);
-        setPrecioTotal(precioTotal as number);
-    }, [ahorroCombinado, ahorroTotal, precioTotal, setAhorroTotal, setPrecioCombinado, setPrecioTotal]);
+        setPrecioTotal(priceTotal as number);
+    }, [ahorroCombinado, ahorroTotal, priceTotal, setAhorroTotal, setPrecioCombinado, setPrecioTotal]);
 
     useEffect(() =>{
         if(validateSwitch){
@@ -139,9 +139,6 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
         }
     }, [validateSwitch, precioTotal])
 
-
-    console.log('👽  precioTotal', precioTotal)
-    console.log('👽👽  priceTotal', priceTotal)
 
     return (
         <>
@@ -201,7 +198,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                                 globalCheckedPromotions ? (
                                     FormatPromotions(Number(priceTotal))
                                 ) : (
-                                    FormatCurrency(Number(precioTotal))
+                                    FormatCurrency(Number(priceTotal))
                                 )
                             }
                         </h2>
