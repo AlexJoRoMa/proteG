@@ -31,7 +31,11 @@ const Step2 = () => {
     cfdi,
     setCfdi,
     regimen,
-    setRegimen
+    setRegimen,
+    setIsPersonalValid,
+    setIsEnvioValid,
+    setIsFacturacionValid,
+    setIsDireccionFacturacionValid
   } = useStep2Form();
 
   const hanldeCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +82,7 @@ const Step2 = () => {
         </div>
       </div>
 
-      <DatosPersonalesForm formRef={DatosPersonalesRef} esExtrangero={esExtranjero} />
+      <DatosPersonalesForm formRef={DatosPersonalesRef} esExtrangero={esExtranjero} setIsValid={setIsPersonalValid} />
 
       <Divider orientation="horizontal" className='!border-[var(--color-gray-300)] mt-12 mb-7' />
 
@@ -115,7 +119,7 @@ const Step2 = () => {
           </Link>
         </div>
 
-        <DireccionEnvioForm formRef={DireccionEnvioRef} />
+        <DireccionEnvioForm formRef={DireccionEnvioRef} setIsValid={setIsEnvioValid} />
 
       </>
 
@@ -141,6 +145,7 @@ const Step2 = () => {
               setCfdi={setCfdi}
               regimen={regimen}
               setRegimen={setRegimen}
+              setIsValid={setIsFacturacionValid}
             />
 
             <div className='flex justify-between mt-[24px] w-full md:w-[50%]'>
@@ -158,7 +163,7 @@ const Step2 = () => {
 
             {
               facturarOtraDireccion && (
-                <DireccionFacturacionForm formRef={DireccionFacturacionRef} />
+                <DireccionFacturacionForm formRef={DireccionFacturacionRef} setIsValid={setIsDireccionFacturacionValid} />
               )
             }
           </>

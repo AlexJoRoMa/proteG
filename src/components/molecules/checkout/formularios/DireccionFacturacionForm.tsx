@@ -6,19 +6,41 @@ import { useMicrocopies } from "@/hooks/useMicrocopies";
 import { DatosContratacion } from "@/types/Contratacion";
 import { InputFilter } from "@/utils/inputFilters";
 import { Form, Input } from "@heroui/react";
-import { FC, RefObject } from "react";
+import { FC, RefObject, useEffect, useState } from "react";
 
 interface Props {
     formRef: RefObject<HTMLFormElement | null>;
+    setIsValid: (valid: boolean) => void;
 }
 
-export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
+export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => {
     const { getValue } = useMicrocopies('formulario-otraDireccion');
     const { datosContratacion } = useCheckout();
 
     const direccionFacturacion: Partial<DatosContratacion> = datosContratacion ?? {};
     const datosDireccion = direccionFacturacion.DatosPersonales?.direccionFacturacion;
 
+    // Estados para controlar los valores de los campos
+    const [postalCode, setPostalCode] = useState(datosDireccion?.postalCode ?? "");
+    const [address, setAddress] = useState(datosDireccion?.address ?? "");
+    const [exteriorNumber, setExteriorNumber] = useState(datosDireccion?.exteriorNumber ?? "");
+    const [interiorNumber, setInteriorNumber] = useState(datosDireccion?.interiorNumber ?? "");
+    const [colony, setColony] = useState(datosDireccion?.colony ?? "");
+    const [city, setCity] = useState(datosDireccion?.city ?? "");
+    const [state, setState] = useState(datosDireccion?.state ?? "");
+
+    // Validar el formulario cuando cambien los valores
+    useEffect(() => {
+        const isFormValid = 
+            postalCode.trim() !== '' && postalCode.length === 5 &&
+            address.trim() !== '' &&
+            exteriorNumber.trim() !== '' &&
+            colony.trim() !== '' &&
+            city.trim() !== '' &&
+            state.trim() !== '';
+
+        setIsValid(isFormValid);
+    }, [postalCode, address, exteriorNumber, colony, city, state, setIsValid]);
 
     return (
 
@@ -43,7 +65,9 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     className='w-full'
                     placeholder={getValue('otraDireccion.placeholder.codigoPostal')}
                     errorMessage={getValue('otraDireccion.error.codigoPostal')}
-                    defaultValue={datosDireccion?.postalCode}
+                    value={postalCode}
+                    onChange={(e) => setPostalCode(e.target.value)}
+                    isInvalid={postalCode.trim() === '' || postalCode.length < 5}
                 />
             </div>
             {/* Dirección*/}
@@ -61,7 +85,9 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     onInput={(e) => InputFilter(e, 'alfanumerico')}
                     placeholder={getValue('otraDireccion.placeholder.direccion')}
                     errorMessage={getValue('otraDireccion.error.direccion')}
-                    defaultValue={datosDireccion?.address}
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    isInvalid={address.trim() === ''}
                 />
             </div>
             <div className='grid grid-cols-2 gap-4 order-3 md:contents'>
@@ -79,7 +105,9 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     className='w-full col-span-1 md:col-start-1 md:!row-start-2'
                     placeholder={getValue('otraDireccion.placeholder.numeroExterior')}
                     errorMessage={getValue('otraDireccion.error.numeroExterior')}
-                    defaultValue={datosDireccion?.exteriorNumber}
+                    value={exteriorNumber}
+                    onChange={(e) => setExteriorNumber(e.target.value)}
+                    isInvalid={exteriorNumber.trim() === ''}
                 />
                 {/* Número interior */}
                 <Input
@@ -93,7 +121,8 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     labelPlacement="outside"
                     className='w-full col-span-1 md:col-start-2 md:!row-start-2'
                     placeholder={getValue('otraDireccion.placeholder.numeroInterior')}
-                    defaultValue={datosDireccion?.interiorNumber}
+                    value={interiorNumber}
+                    onChange={(e) => setInteriorNumber(e.target.value)}
                 />
             </div>
             {/* Colonia */}
@@ -111,7 +140,9 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     onInput={(e) => InputFilter(e, 'letras')}
                     placeholder={getValue('otraDireccion.placeholder.colonia')}
                     errorMessage={getValue('otraDireccion.error.colonia')}
-                    defaultValue={datosDireccion?.colony}
+                    value={colony}
+                    onChange={(e) => setColony(e.target.value)}
+                    isInvalid={colony.trim() === ''}
                 />
             </div>
             {/* Alcaldía o Municipo */}
@@ -129,7 +160,9 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     className='w-full'
                     placeholder={getValue('otraDireccion.placeholder.alcaldia')}
                     errorMessage={getValue('otraDireccion.error.alcaldia')}
-                    defaultValue={datosDireccion?.city}
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    isInvalid={city.trim() === ''}
                 />
             </div>
             {/* Estado */}
@@ -147,9 +180,12 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef }) => {
                     onInput={(e) => InputFilter(e, 'letras')}
                     placeholder={getValue('otraDireccion.placeholder.estado')}
                     errorMessage={getValue('otraDireccion.error.estado')}
-                    defaultValue={datosDireccion?.state}
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    isInvalid={state.trim() === ''}
                 />
             </div>
         </Form>
     )
 }
+
