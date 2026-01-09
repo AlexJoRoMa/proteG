@@ -38,6 +38,7 @@ export const IzziProvider = ({
     const [params, setParams] = useState<ConfigParams>({ plan: null, movil: null });
     const [globalCheckedPromotions, setGlobalCheckedPromotions] = useState<boolean>(false);
     const [ahorroTotal, setAhorroTotal] = useState<number>(0);
+    const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
 
     const clearCheckoutFlow = useCallback(() => {
         setGlobalDatosContratacion({});
@@ -46,6 +47,7 @@ export const IzziProvider = ({
         setGlobalUserAnswers({});
         setParams({ plan: null, movil: null });
         setGlobalFlagDomicilio(false);
+        setCheckSwitch(false);
     }, [])
 
 
@@ -87,6 +89,8 @@ export const IzziProvider = ({
             setAhorroTotal,
             globalFlagDomicilio,
             setGlobalFlagDomicilio,
+            checkSwitch,
+            setCheckSwitch
         }}>
             {children}
         </izziContext.Provider>

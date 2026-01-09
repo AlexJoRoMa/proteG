@@ -77,11 +77,15 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     const resumenCopys = copys;
     const userAnswers = userSelection;
 
-    const { promoData, globalIzziSelection, setPrecioTotal, setPrecioCombinado } = useIzziContent();
+    const { promoData, globalIzziSelection, setPrecioTotal, setPrecioCombinado, checkSwitch } = useIzziContent();
     const { globalCheckedPromotions, setAhorroTotal } = useIzziContent();
-    const [validateSwitch, setValidateSwitch] = useState(false);
+    const [validateSwitch, setValidateSwitch] = useState(checkSwitch);
     const [ priceTotal, setPriceTotal] = useState(0);
-    
+
+    useEffect(() =>{
+        setValidateSwitch(checkSwitch)
+    }, [checkSwitch])
+
     useEffect(() =>{
         const handleSwitch = (e: Event)=> {
             const customEvent = e as CustomEvent<boolean>;
@@ -138,7 +142,6 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
             setPriceTotal(precioTotal)
         }
     }, [validateSwitch, precioTotal])
-
 
     return (
         <>
@@ -237,7 +240,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                         }
                     </div>
 
-                    { validateSwitch && (
+                    { !validateSwitch && (
                     <div className="flex flex-col gap-[8px] mb-[32px]">
                         <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
                             <h5>{resumenCopys.ahorro.domicilio}</h5>
