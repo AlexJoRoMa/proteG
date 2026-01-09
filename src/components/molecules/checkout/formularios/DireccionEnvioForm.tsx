@@ -37,6 +37,7 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef }) => {
                 className='w-full !mt-[34px]'
                 isRequired
                 placeholder={getValue('instalacion.placeholder.calle')}
+                errorMessage={getValue('instalacion.error.calle')}
                 defaultValue={datosEnvio?.street}
             />
 
@@ -51,6 +52,7 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef }) => {
                 className='w-full !mt-[34px]'
                 isRequired
                 placeholder={getValue('instalacion.placeholder.calle2')}
+                errorMessage={getValue('instalacion.error.calle2')}
                 defaultValue={datosEnvio?.street2}
             />
             <Textarea
@@ -62,6 +64,8 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef }) => {
                 classNames={inputStyles}
                 labelPlacement="outside"
                 className='w-full'
+                isRequired
+                errorMessage={getValue('instalacion.error.referencia')}
                 placeholder={getValue('instalacion.placeholder.referencia')}
                 defaultValue={datosEnvio?.reference}
             />
