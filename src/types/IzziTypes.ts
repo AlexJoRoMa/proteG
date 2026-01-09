@@ -54,4 +54,6 @@ export type DataFields = {
     setGlobalFlagDomicilio: React.Dispatch<React.SetStateAction<boolean>>,
     checkSwitch: boolean,
     setCheckSwitch: React.Dispatch<React.SetStateAction<boolean>>,
+    totalSinDescuento: number,
+    setTotalSinDescuento: React.Dispatch<React.SetStateAction<number>>,
 }
