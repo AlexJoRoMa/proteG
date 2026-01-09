@@ -2,7 +2,7 @@ import ResumenPaquetes from "./resumenPaquetes";
 import { FormatCurrency, FormatPromotions } from "@/utils/Currency";
 import { ResumenContentProps } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Promos } from "@/types/ConfiguradorTypes";
 import { mesIds } from "@/constants/ResumenConstants";
 
@@ -77,8 +77,24 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     const resumenCopys = copys;
     const userAnswers = userSelection;
 
-    const { promoData, globalIzziSelection, setPrecioTotal, setPrecioCombinado } = useIzziContent();
+    const { promoData, globalIzziSelection, setPrecioTotal, setPrecioCombinado, checkSwitch, setTotalSinDescuento } = useIzziContent();
     const { globalCheckedPromotions, setAhorroTotal } = useIzziContent();
+    const [validateSwitch, setValidateSwitch] = useState(checkSwitch);
+    const [ priceTotal, setPriceTotal] = useState(0);
+
+    useEffect(() =>{
+        setValidateSwitch(checkSwitch)
+    }, [checkSwitch])
+
+    useEffect(() =>{
+        const handleSwitch = (e: Event)=> {
+            const customEvent = e as CustomEvent<boolean>;
+            setValidateSwitch(customEvent.detail)
+        };
+        
+        window.addEventListener('switch-change', handleSwitch);
+        return ()=> window.removeEventListener('switch-change', handleSwitch);
+    },[])
 
 
     const ottPromos = promoData?.promos?.filter(promo =>
@@ -107,6 +123,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
         + Number(userSelection?.movil?.paquete?.precioPaquete || 0)
         + Number(userSelection?.tv?.paquete?.precioTachado || userSelection?.tv?.paquete?.precioPaquete || 0)
         + (totalOttPrice || 0);
+    setTotalSinDescuento(totalSinDescuento);
     const precioTotal = totalSinDescuento && promoData.promos ? totalSinDescuento - ahorroCombinado - (Math.abs(Number(totalPromoPrice)) || 0) : totalSinDescuento;
     const ahorroTotal = ((Number(ahorroCombinado) || 0) + (Number(pagoAnticipado) || 0)) + (Number(Math.abs(totalPromoPrice as number)) || 0);
 
@@ -116,8 +133,16 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     useEffect(() => {
         setAhorroTotal(ahorroTotal);
         setPrecioCombinado(ahorroCombinado as number);
-        setPrecioTotal(precioTotal as number);
-    }, [ahorroCombinado, ahorroTotal, precioTotal, setAhorroTotal, setPrecioCombinado, setPrecioTotal]);
+        setPrecioTotal(priceTotal as number);
+    }, [ahorroCombinado, ahorroTotal, priceTotal, setAhorroTotal, setPrecioCombinado, setPrecioTotal]);
+
+    useEffect(() =>{
+        if(validateSwitch){
+            setPriceTotal(precioTotal-50)
+        } else{
+            setPriceTotal(precioTotal)
+        }
+    }, [validateSwitch, precioTotal])
 
     return (
         <>
@@ -128,7 +153,13 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                 <div className="py-[24px] border-b-1 border-b-gray-150">
                     <div className="flex justify-between items-center w-full font-normal leading-[24px] text-lg">
                         <h5>{resumenCopys.total.sinDescuentos}</h5>
+
+
+
                         <h5 className="font-bold">{FormatCurrency(Number(totalSinDescuento))}</h5>
+
+
+
                     </div>
                 </div>
                 {
@@ -151,6 +182,14 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                                         )
                                     })
                                 }
+
+                                { validateSwitch && (
+                                    <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
+                                    <h5>{resumenCopys.ahorro.domicilio}</h5>
+                                    <h5>-{FormatCurrency(Number(50))}</h5>
+                                    </div>
+                                )}
+                                
                             </div>
                         </div>
                     )}
@@ -162,15 +201,20 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                 <>
                     <div className="flex justify-between w-full font-bold leading-[32px] xl:leading-[40px] text-2xl xl:text-[32px] pt-[24px]">
                         <h2>{resumenCopys.total.titulo}</h2>
+                        
+                        
                         <h2>
                             {
                                 globalCheckedPromotions ? (
-                                    FormatPromotions(Number(precioTotal))
+                                    FormatPromotions(Number(priceTotal))
                                 ) : (
-                                    FormatCurrency(Number(precioTotal))
+                                    FormatCurrency(Number(priceTotal))
                                 )
                             }
                         </h2>
+
+
+                        
                     </div>
                     <div className="flex flex-col gap-[8px]">
                         {
@@ -202,6 +246,8 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                             </>
                         }
                     </div>
+
+                    { !validateSwitch && (
                     <div className="flex flex-col gap-[8px] mb-[32px]">
                         <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
                             <h5>{resumenCopys.ahorro.domicilio}</h5>
@@ -211,6 +257,8 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                             {resumenCopys.ahorro.infoAdicional}
                         </h5>
                     </div>
+                    )}
+                    
                 </>
             </div >
         </>
