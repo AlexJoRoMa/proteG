@@ -35,8 +35,23 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef }) => {
                 classNames={inputStyles}
                 labelPlacement="outside"
                 className='w-full !mt-[34px]'
+                isRequired
                 placeholder={getValue('instalacion.placeholder.calle')}
                 defaultValue={datosEnvio?.street}
+            />
+
+            <Input
+                label={getValue('instalacion.label.calle2')}
+                name="street2"
+                type="text"
+                variant='bordered'
+                radius='sm'
+                classNames={inputStyles}
+                labelPlacement="outside"
+                className='w-full !mt-[34px]'
+                isRequired
+                placeholder={getValue('instalacion.placeholder.calle2')}
+                defaultValue={datosEnvio?.street2}
             />
             <Textarea
                 label={getValue('instalacion.label.referencia')}
