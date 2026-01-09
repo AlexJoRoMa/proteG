@@ -23,7 +23,7 @@ type Shift = {
 
 export default function ThankYou() {
 
-    const { globalUserAnswers, globalDatosContratacion, globalIzziSelection, globalProcessStatus, clearCheckoutFlow, globalFlagDomicilio } = useIzziContent();
+    const { globalUserAnswers, globalDatosContratacion, globalIzziSelection, globalProcessStatus, clearCheckoutFlow, globalFlagDomicilio/* , totalSinDescuento */ } = useIzziContent();
     const { icon, copys, copyResumen } = useThankYou();
 
     const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
@@ -96,7 +96,9 @@ export default function ThankYou() {
                 )}
                 <p className="flex flex-col gap-[8px] text-white-0 font-semibold text-lg xl:text-xl xl:py-[13px] leading-[24px] whitespace-normal">
                     <span className="font-semibold text-xl xl:text-2xl">{globalIzziSelection?.tituloTriplePlay ? globalIzziSelection.tituloTriplePlay : globalIzziSelection?.titulo}</span>
+                    {/* <span className="font-semibold text-xl xl:text-2xl">{`${FormatCurrency(Number(totalSinDescuento))} ${copy.banner.currency}`}</span> */}
                     <span className="font-semibold text-xl xl:text-2xl">{`${FormatCurrency(Number(globalIzziSelection?.precioPaquete))} ${copy.banner.currency}`}</span>
+                    
                     {
                         globalFlagDomicilio ?
                             <span className="font-semibold text-base xl:text-lg">{copy.banner.domiciliacion}</span> :
