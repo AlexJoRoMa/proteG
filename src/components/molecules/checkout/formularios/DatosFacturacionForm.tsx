@@ -25,6 +25,22 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
     const facturacion: Partial<DatosContratacion> = datosContratacion ?? {};
     const datosFacturacion = facturacion.DatosPersonales?.facturacion;
 
+    const validateRfc = (value: string) => {
+        if(!value) return null;
+
+        //PM -> Persona Moral  PF-> Persona Fisica
+        const rfc_pattern_pm = /^([A-ZÑ&]{3})([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])[A-Z0-9]{3}$/i;
+        const rfc_pattern_pf = /^([A-ZÑ&]{4})([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])[A-Z0-9]{3}$/i;
+
+        const validPM = rfc_pattern_pm.test(value) && value.length === 12;
+        const validPF = rfc_pattern_pf.test(value) && value.length === 13;
+
+        return (validPF || validPM) ? null : getValue('facturacion.error.rfc') || 'RFC incorrecto';
+        
+    };
+
+
+
     // Estado para el RFC
     const [rfc, setRfc] = useState(datosFacturacion?.rfc ?? "");
 
@@ -56,12 +72,12 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 labelPlacement='outside'
                 className='w-full'
                 isRequired
-                errorMessage={getValue('facturacion.error.rfc')}
+                validate={validateRfc}
+                maxLength={13}
                 onInput={(e) => InputFilter(e, 'alfanumerico')}
                 value={rfc}
                 onChange={(e) => setRfc(e.target.value)}
                 isInvalid={rfc.trim() === '' || rfc.length < 12}
-                maxLength={13}
             />
             <Select
                 label={getValue('facturacion.label.cfdi')}
