@@ -153,25 +153,23 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                 <div className="py-[24px] border-b-1 border-b-gray-150">
                     <div className="flex justify-between items-center w-full font-normal leading-[24px] text-lg">
                         <h5>{resumenCopys.total.sinDescuentos}</h5>
-
-
-
                         <h5 className="font-bold">{FormatCurrency(Number(totalSinDescuento))}</h5>
-
-
-
                     </div>
                 </div>
                 {
-                    (globalCheckedPromotions && (ahorroCombinado !== 0 || (promoVisible && promoVisible?.length > 0))) && (
+                    (globalCheckedPromotions && (ahorroCombinado !== 0 || (promoVisible && promoVisible?.length > 0)) || validateSwitch) && (
                         <div className="flex flex-col gap-[8px] py-[24px] border-b-1 border-b-gray-150">
                             <h1 className="font-bold text-base leading-[24px] mb-[24px]">{resumenCopys.ahorro.titulo}</h1>
 
                             <div className="w-full font-normal leading-[24px] text-lg space-y-2">
-                                <div className="flex justify-between w-full">
+                                {(globalCheckedPromotions && (ahorroCombinado !== 0 || (promoVisible && promoVisible?.length > 0)) ) && (
+                                    <div className="flex justify-between w-full">
                                     <h5 className="text-left mr-[8px]">{resumenCopys.ahorro.paquete}</h5>
                                     <h5 className="text-right">-{FormatPromotions(ahorroCombinado)}</h5>
                                 </div>
+                                )}
+                                
+
                                 {
                                     promoVisible?.map((promo, index) => {
                                         return (
@@ -201,8 +199,6 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                 <>
                     <div className="flex justify-between w-full font-bold leading-[32px] xl:leading-[40px] text-2xl xl:text-[32px] pt-[24px]">
                         <h2>{resumenCopys.total.titulo}</h2>
-                        
-                        
                         <h2>
                             {
                                 globalCheckedPromotions ? (
@@ -212,9 +208,6 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                                 )
                             }
                         </h2>
-
-
-                        
                     </div>
                     <div className="flex flex-col gap-[8px]">
                         {

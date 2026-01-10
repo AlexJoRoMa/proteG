@@ -1,9 +1,13 @@
 import { PagoEfectivoIcon } from "@/constants/IconsConstants";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
+import { useIzziContent } from '@/components/providers/IzziProvider';
 
 export default function PagoTecnico() {
 
     const { getValue } = useMicrocopies('contratacion-pago');
+    const { setCheckSwitch } = useIzziContent();
+
+    setCheckSwitch(false);
 
     return (
         <section className="w-full">
