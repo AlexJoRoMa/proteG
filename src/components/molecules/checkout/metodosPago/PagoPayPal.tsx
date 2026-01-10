@@ -9,10 +9,11 @@ import { useIzziContent } from '@/components/providers/IzziProvider';
 
 export default function PagoPayPal() {
 
-    const { rpt, precioTotal } = useIzziContent();
+    const { rpt, precioTotal, setCheckSwitch } = useIzziContent();
     const { paypalIcon, processStatus } = useCheckout();
     const { getValue } = useMicrocopies('contratacion-pago');
-
+    
+    setCheckSwitch(false);
     //TODO: al momento de retomar la domiciliacion de paypal, eliminar constnate quemada e implementar stado del switch.
     const isRecurrent = false;
     // const [isRecurrent, setIsRecurrent] = useState(false);
