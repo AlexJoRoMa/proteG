@@ -15,6 +15,7 @@ export type DatosContratacion = {
         instalacion: {
             street?: string,
             reference?: string,
+            street2?: string,
         },
         facturacion: {
             comprobanteFiscal?: string,
