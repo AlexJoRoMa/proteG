@@ -44,6 +44,11 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
     // Estado para el RFC
     const [rfc, setRfc] = useState(datosFacturacion?.rfc ?? "");
 
+    // Estados para controlar si los campos han sido tocados
+    const [rfcTouched, setRfcTouched] = useState(false);
+    const [cfdiTouched, setCfdiTouched] = useState(false);
+    const [regimenTouched, setRegimenTouched] = useState(false);
+
     // Validar formulario cuando cambien los valores
     useEffect(() => {
         const isFormValid = 
@@ -76,8 +81,12 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 maxLength={13}
                 onInput={(e) => InputFilter(e, 'alfanumerico')}
                 value={rfc}
-                onChange={(e) => setRfc(e.target.value)}
-                isInvalid={rfc.trim() === '' || rfc.length < 12}
+                onChange={(e) => {
+                    setRfc(e.target.value);
+                    setRfcTouched(true);
+                }}
+                onBlur={() => setRfcTouched(true)}
+                isInvalid={rfcTouched && (rfc.trim() === '' || rfc.length < 12)}
             />
             <Select
                 label={getValue('facturacion.label.cfdi')}
@@ -95,9 +104,11 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 onSelectionChange={(keys) => {
                     const selected = Array.from(keys)[0] as string;
                     setCfdi(selected || '');
+                    setCfdiTouched(true);
                 }}
+                onClose={() => setCfdiTouched(true)}
                 errorMessage="Ingresa un CFDI valido"
-                isInvalid={cfdi.trim() === ''}
+                isInvalid={cfdiTouched && cfdi.trim() === ''}
                 defaultSelectedKeys={datosFacturacion?.comprobanteFiscal ? [datosFacturacion.comprobanteFiscal] : []}
             >
                 {
@@ -124,9 +135,11 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 onSelectionChange={(keys) => {
                     const selected = Array.from(keys)[0] as string;
                     setRegimen(selected || '');
+                    setRegimenTouched(true);
                 }}
+                onClose={() => setRegimenTouched(true)}
                 errorMessage="Ingresa un regimen fiscal valido"
-                isInvalid={regimen.trim() === ''}
+                isInvalid={regimenTouched && regimen.trim() === ''}
                 defaultSelectedKeys={datosFacturacion?.regimenFiscal ? [datosFacturacion.regimenFiscal] : []}
             >
                 {

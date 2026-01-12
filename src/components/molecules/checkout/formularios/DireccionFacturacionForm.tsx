@@ -29,6 +29,14 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
     const [city, setCity] = useState(datosDireccion?.city ?? "");
     const [state, setState] = useState(datosDireccion?.state ?? "");
 
+    // Estados para controlar si los campos han sido tocados
+    const [postalCodeTouched, setPostalCodeTouched] = useState(false);
+    const [addressTouched, setAddressTouched] = useState(false);
+    const [exteriorNumberTouched, setExteriorNumberTouched] = useState(false);
+    const [colonyTouched, setColonyTouched] = useState(false);
+    const [cityTouched, setCityTouched] = useState(false);
+    const [stateTouched, setStateTouched] = useState(false);
+
     // Validar el formulario cuando cambien los valores
     useEffect(() => {
         const isFormValid = 
@@ -66,8 +74,12 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                     placeholder={getValue('otraDireccion.placeholder.codigoPostal')}
                     errorMessage={getValue('otraDireccion.error.codigoPostal')}
                     value={postalCode}
-                    onChange={(e) => setPostalCode(e.target.value)}
-                    isInvalid={postalCode.trim() === '' || postalCode.length < 5}
+                    onChange={(e) => {
+                        setPostalCode(e.target.value);
+                        setPostalCodeTouched(true);
+                    }}
+                    onBlur={() => setPostalCodeTouched(true)}
+                    isInvalid={postalCodeTouched && (postalCode.trim() === '' || postalCode.length < 5)}
                 />
             </div>
             {/* Dirección*/}
@@ -86,8 +98,12 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                     placeholder={getValue('otraDireccion.placeholder.direccion')}
                     errorMessage={getValue('otraDireccion.error.direccion')}
                     value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    isInvalid={address.trim() === ''}
+                    onChange={(e) => {
+                        setAddress(e.target.value);
+                        setAddressTouched(true);
+                    }}
+                    onBlur={() => setAddressTouched(true)}
+                    isInvalid={addressTouched && address.trim() === ''}
                 />
             </div>
             <div className='grid grid-cols-2 gap-4 order-3 md:contents'>
@@ -106,8 +122,12 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                     placeholder={getValue('otraDireccion.placeholder.numeroExterior')}
                     errorMessage={getValue('otraDireccion.error.numeroExterior')}
                     value={exteriorNumber}
-                    onChange={(e) => setExteriorNumber(e.target.value)}
-                    isInvalid={exteriorNumber.trim() === ''}
+                    onChange={(e) => {
+                        setExteriorNumber(e.target.value);
+                        setExteriorNumberTouched(true);
+                    }}
+                    onBlur={() => setExteriorNumberTouched(true)}
+                    isInvalid={exteriorNumberTouched && exteriorNumber.trim() === ''}
                 />
                 {/* Número interior */}
                 <Input
@@ -141,8 +161,12 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                     placeholder={getValue('otraDireccion.placeholder.colonia')}
                     errorMessage={getValue('otraDireccion.error.colonia')}
                     value={colony}
-                    onChange={(e) => setColony(e.target.value)}
-                    isInvalid={colony.trim() === ''}
+                    onChange={(e) => {
+                        setColony(e.target.value);
+                        setColonyTouched(true);
+                    }}
+                    onBlur={() => setColonyTouched(true)}
+                    isInvalid={colonyTouched && colony.trim() === ''}
                 />
             </div>
             {/* Alcaldía o Municipo */}
@@ -161,8 +185,12 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                     placeholder={getValue('otraDireccion.placeholder.alcaldia')}
                     errorMessage={getValue('otraDireccion.error.alcaldia')}
                     value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    isInvalid={city.trim() === ''}
+                    onChange={(e) => {
+                        setCity(e.target.value);
+                        setCityTouched(true);
+                    }}
+                    onBlur={() => setCityTouched(true)}
+                    isInvalid={cityTouched && city.trim() === ''}
                 />
             </div>
             {/* Estado */}
@@ -181,8 +209,12 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                     placeholder={getValue('otraDireccion.placeholder.estado')}
                     errorMessage={getValue('otraDireccion.error.estado')}
                     value={state}
-                    onChange={(e) => setState(e.target.value)}
-                    isInvalid={state.trim() === ''}
+                    onChange={(e) => {
+                        setState(e.target.value);
+                        setStateTouched(true);
+                    }}
+                    onBlur={() => setStateTouched(true)}
+                    isInvalid={stateTouched && state.trim() === ''}
                 />
             </div>
         </Form>

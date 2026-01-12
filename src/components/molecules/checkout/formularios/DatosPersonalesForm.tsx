@@ -36,6 +36,14 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
     const [aditionalTel, setAditionalTel] = useState(datosPersonales?.aditionalTel ?? "");
     const [email, setEmail] = useState(datosPersonales?.email ?? "");
 
+    // Estados para controlar si los campos han sido tocados
+    const [firstNameTouched, setFirstNameTouched] = useState(false);
+    const [firstLastNameTouched, setFirstLastNameTouched] = useState(false);
+    const [secondLastNameTouched, setSecondLastNameTouched] = useState(false);
+    const [phoneTouched, setPhoneTouched] = useState(false);
+    const [emailTouched, setEmailTouched] = useState(false);
+    const [curpPassportTouched, setCurpPassportTouched] = useState(false);
+
     useEffect(() => {
         if (esExtrangero) {
             setPassport(datosPersonales?.passport ?? "");
@@ -82,8 +90,12 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                     errorMessage={getValue('datosPersonales.error.nombre')}
                     onInput={(e) => InputFilter(e, 'letras')}
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    isInvalid={firstName.trim() === ''}
+                    onChange={(e) => {
+                        setFirstName(e.target.value);
+                        setFirstNameTouched(true);
+                    }}
+                    onBlur={() => setFirstNameTouched(true)}
+                    isInvalid={firstNameTouched && firstName.trim() === ''}
                 />
             </div>
 
@@ -121,8 +133,12 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                     errorMessage={getValue('datosPersonales.error.apellido')}
                     onInput={(e) => InputFilter(e, 'letras')}
                     value={firstLastName}
-                    onChange={(e) => setFirstLastName(e.target.value)}
-                    isInvalid={firstLastName.trim() === ''}
+                    onChange={(e) => {
+                        setFirstLastName(e.target.value);
+                        setFirstLastNameTouched(true);
+                    }}
+                    onBlur={() => setFirstLastNameTouched(true)}
+                    isInvalid={firstLastNameTouched && firstLastName.trim() === ''}
                 />
             </div>
 
@@ -142,8 +158,12 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                     errorMessage={getValue('datosPersonales.error.apellido')}
                     onInput={(e) => InputFilter(e, 'letras')}
                     value={secondLastName}
-                    onChange={(e) => setSecondLastName(e.target.value)}
-                    isInvalid={secondLastName.trim() === ''}
+                    onChange={(e) => {
+                        setSecondLastName(e.target.value);
+                        setSecondLastNameTouched(true);
+                    }}
+                    onBlur={() => setSecondLastNameTouched(true)}
+                    isInvalid={secondLastNameTouched && secondLastName.trim() === ''}
                 />
             </div>
 
@@ -164,8 +184,12 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                     errorMessage={getValue('datosPersonales.error.telefono')}
                     onInput={(e) => InputFilter(e, 'numeros')}
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    isInvalid={phone.trim() === '' || phone.length < 10}
+                    onChange={(e) => {
+                        setPhone(e.target.value);
+                        setPhoneTouched(true);
+                    }}
+                    onBlur={() => setPhoneTouched(true)}
+                    isInvalid={phoneTouched && (phone.trim() === '' || phone.length < 10)}
                 />
             </div>
 
@@ -209,16 +233,18 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                                 const value = e.target.value;
                                 const clean = value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g, '');
                                 setPassport(clean);
+                                setCurpPassportTouched(true);
 
                                 const { isValid } = validatePassport(clean);
                                 setPassportValid(isValid);
                             }}
                             placeholder={getValue('datosPersonales.placeholder.pasaporte')}
                             errorMessage={getValue('datosPersonales.error.pasaporte')}
-                            isInvalid={!passportValid || passport.trim() === ''}
+                            isInvalid={curpPassportTouched && (!passportValid || passport.trim() === '')}
                             onBlur={(e) => {
                                 const { clean, isValid } = validatePassport(e.target.value);
                                 e.target.value = clean;
+                                setCurpPassportTouched(true);
 
                                 setPassport(clean);
                                 setPassportValid(isValid);
@@ -240,16 +266,18 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                                 const value = e.target.value;
                                 const clean = value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g, '');
                                 setCurp(clean);
+                                setCurpPassportTouched(true);
 
                                 const { isValid } = validateCurp(clean);
                                 setCurpValid(isValid);
                             }}
                             placeholder={getValue('datosPersonales.placeholder.curp')}
                             errorMessage={getValue('datosPersonales.error.curp')}
-                            isInvalid={!curpValid || curp.trim() === ''}
+                            isInvalid={curpPassportTouched && (!curpValid || curp.trim() === '')}
                             onBlur={(e) => {
                                 const { clean, isValid } = validateCurp(e.target.value);
                                 e.target.value = clean;
+                                setCurpPassportTouched(true);
 
                                 setCurp(clean);
                                 setCurpValid(isValid);
@@ -282,8 +310,12 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                     placeholder={getValue('datosPersonales.placeholder.correo')}
                     errorMessage={getValue('datosPersonales.error.correo')}
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    isInvalid={email.trim() === '' || !email.includes('@')}
+                    onChange={(e) => {
+                        setEmail(e.target.value);
+                        setEmailTouched(true);
+                    }}
+                    onBlur={() => setEmailTouched(true)}
+                    isInvalid={emailTouched && (email.trim() === '' || !email.includes('@'))}
                 />
             </div>
         </Form>
