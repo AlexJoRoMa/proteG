@@ -73,7 +73,13 @@ export default function AccordionPlanesExtras() {
 
     if (ottsData && ottsData.extrasMap?.ott) {
         const planes: OttProps[] = ottsData.extrasMap.ott;
-        planesExtras = planes?.filter(extra => extra.categoriaExtra?.includes('Netflix') || extra.categoriaExtra?.includes('Disney+'))
+        
+        planesExtras = planes?.filter(
+            extra => extra.categoriaExtra?.includes('Netflix') || 
+            extra.categoriaExtra?.includes('Disney+') ||
+            extra.categoriaExtra?.includes('VIX')
+        )
+        console.log('🪅🪅 planesExtras ', planesExtras)
     }
 
     // Helper para encontrar valores por key
@@ -99,7 +105,9 @@ export default function AccordionPlanesExtras() {
                 return prev.filter(item => item.idExtra !== card.idExtra);
             }
 
-            const newSelection = prev.filter(item => item.grupo !== card.grupo);
+            const newSelection = prev.filter(item => 
+                item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra
+            );
             return [...newSelection, card];
         });
 
@@ -125,7 +133,9 @@ export default function AccordionPlanesExtras() {
 
             }
 
-            const updateOTT = [...prevOTT.filter(item => item.grupo !== card.grupo), card];
+            const updateOTT = [...prevOTT.filter(item =>
+                 item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra
+                ), card];
             const complementTotal = updateOTT.reduce((acc, item) => acc + Number(item.costo), 0);
 
             return {

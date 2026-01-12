@@ -144,6 +144,15 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
         }
     }, [validateSwitch, precioTotal])
 
+
+    
+    /* console.log('⛑️ ottPromos ', ottPromos) */
+
+
+
+
+
+
     return (
         <>
 
@@ -220,6 +229,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                                     </div>
                                 ))
                         }
+                       
                         {
                             (descuentoMeses.length > 0) &&
                             <>
@@ -227,7 +237,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                                     descuentoMeses.map((item) => {
                                         const precioDespues = totalSinDescuento - Number(ahorroCombinado) + item.totalPromo;
                                         const copyMes = resumenCopys.ahorro.meses[item.mesId];
-
+                                        /* console.log('⛑️ precioDespues ', precioDespues) */
                                         return (
                                             <div key={item.mesNumero} className="flex justify-between w-full font-normal leading-[24px] text-lg space-y-2">
                                                 <h5>{copyMes}</h5>
