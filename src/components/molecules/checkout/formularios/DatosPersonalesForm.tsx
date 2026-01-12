@@ -12,9 +12,10 @@ import { DatosContratacion } from "@/types/Contratacion";
 interface Props {
     formRef: RefObject<HTMLFormElement | null>
     esExtrangero: boolean
+    setIsValid: (valid: boolean) => void
 }
 
-export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
+export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsValid }) => {
     const { datosContratacion } = useCheckout();
     const { getValue } = useMicrocopies('formulario-datosPersonales');
 
@@ -25,6 +26,15 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
     const [passport, setPassport] = useState(datosPersonales?.passport ?? "");
     const [passportValid, setPassportValid] = useState<boolean>(true);
     const [curpValid, setCurpValid] = useState<boolean>(true);
+    
+    // Estados para validación individual de campos
+    const [firstName, setFirstName] = useState(datosPersonales?.firstName ?? "");
+    const [secondName, setSecondName] = useState(datosPersonales?.secondName ?? "");
+    const [firstLastName, setFirstLastName] = useState(datosPersonales?.firstLastName ?? "");
+    const [secondLastName, setSecondLastName] = useState(datosPersonales?.secondLastName ?? "");
+    const [phone, setPhone] = useState(datosPersonales?.phone ?? "");
+    const [aditionalTel, setAditionalTel] = useState(datosPersonales?.aditionalTel ?? "");
+    const [email, setEmail] = useState(datosPersonales?.email ?? "");
 
     useEffect(() => {
         if (esExtrangero) {
@@ -36,6 +46,19 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [esExtrangero]);
+
+    // Validar el formulario completo cuando cambien los valores
+    useEffect(() => {
+        const isFormValid = 
+            firstName.trim() !== '' &&
+            firstLastName.trim() !== '' &&
+            secondLastName.trim() !== '' &&
+            phone.trim() !== '' && phone.length === 10 &&
+            email.trim() !== '' && email.includes('@') &&
+            (esExtrangero ? (passport.trim() !== '' && passportValid) : (curp.trim() !== '' && curpValid));
+
+        setIsValid(isFormValid);
+    }, [firstName, firstLastName, secondLastName, phone, email, curp, passport, curpValid, passportValid, esExtrangero, setIsValid]);
 
     return (
         <Form
@@ -58,7 +81,9 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     placeholder={getValue('datosPersonales.placeholder.nombre')}
                     errorMessage={getValue('datosPersonales.error.nombre')}
                     onInput={(e) => InputFilter(e, 'letras')}
-                    defaultValue={datosPersonales?.firstName}
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    isInvalid={firstName.trim() === ''}
                 />
             </div>
 
@@ -75,7 +100,8 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     className='w-full'
                     placeholder={getValue('datosPersonales.placeholder.segundoNombre')}
                     onInput={(e) => InputFilter(e, 'letras')}
-                    defaultValue={datosPersonales?.secondName}
+                    value={secondName}
+                    onChange={(e) => setSecondName(e.target.value)}
                 />
             </div>
 
@@ -94,7 +120,9 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     placeholder={getValue('datosPersonales.placeholder.apellidoPaterno')}
                     errorMessage={getValue('datosPersonales.error.apellido')}
                     onInput={(e) => InputFilter(e, 'letras')}
-                    defaultValue={datosPersonales?.firstLastName}
+                    value={firstLastName}
+                    onChange={(e) => setFirstLastName(e.target.value)}
+                    isInvalid={firstLastName.trim() === ''}
                 />
             </div>
 
@@ -113,7 +141,9 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     placeholder={getValue('datosPersonales.placeholder.apellidoMaterno')}
                     errorMessage={getValue('datosPersonales.error.apellido')}
                     onInput={(e) => InputFilter(e, 'letras')}
-                    defaultValue={datosPersonales?.secondLastName}
+                    value={secondLastName}
+                    onChange={(e) => setSecondLastName(e.target.value)}
+                    isInvalid={secondLastName.trim() === ''}
                 />
             </div>
 
@@ -133,7 +163,9 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     placeholder={getValue('datosPersonales.placeholder.telefono')}
                     errorMessage={getValue('datosPersonales.error.telefono')}
                     onInput={(e) => InputFilter(e, 'numeros')}
-                    defaultValue={datosPersonales?.phone}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    isInvalid={phone.trim() === '' || phone.length < 10}
                 />
             </div>
 
@@ -151,7 +183,8 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     maxLength={10}
                     placeholder={getValue('datosPersonales.placeholder.telefono')}
                     onInput={(e) => InputFilter(e, 'numeros')}
-                    defaultValue={datosPersonales?.aditionalTel}
+                    value={aditionalTel}
+                    onChange={(e) => setAditionalTel(e.target.value)}
                 />
             </div>
 
@@ -182,7 +215,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                             }}
                             placeholder={getValue('datosPersonales.placeholder.pasaporte')}
                             errorMessage={getValue('datosPersonales.error.pasaporte')}
-                            isInvalid={!passportValid}
+                            isInvalid={!passportValid || passport.trim() === ''}
                             onBlur={(e) => {
                                 const { clean, isValid } = validatePassport(e.target.value);
                                 e.target.value = clean;
@@ -213,7 +246,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                             }}
                             placeholder={getValue('datosPersonales.placeholder.curp')}
                             errorMessage={getValue('datosPersonales.error.curp')}
-                            isInvalid={!curpValid}
+                            isInvalid={!curpValid || curp.trim() === ''}
                             onBlur={(e) => {
                                 const { clean, isValid } = validateCurp(e.target.value);
                                 e.target.value = clean;
@@ -248,7 +281,9 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero }) => {
                     className='w-full'
                     placeholder={getValue('datosPersonales.placeholder.correo')}
                     errorMessage={getValue('datosPersonales.error.correo')}
-                    defaultValue={datosPersonales?.email}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    isInvalid={email.trim() === '' || !email.includes('@')}
                 />
             </div>
         </Form>
