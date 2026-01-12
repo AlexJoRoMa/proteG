@@ -77,7 +77,6 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 onInput={(e) => InputFilter(e, 'alfanumerico')}
                 value={rfc}
                 onChange={(e) => setRfc(e.target.value)}
-                isInvalid={rfc.trim() === '' || rfc.length < 12}
             />
             <Select
                 label={getValue('facturacion.label.cfdi')}
