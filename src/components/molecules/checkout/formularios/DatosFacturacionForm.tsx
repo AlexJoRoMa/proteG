@@ -45,7 +45,6 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
     const [rfc, setRfc] = useState(datosFacturacion?.rfc ?? "");
 
     // Estados para controlar si los campos han sido tocados
-    const [rfcTouched, setRfcTouched] = useState(false);
     const [cfdiTouched, setCfdiTouched] = useState(false);
     const [regimenTouched, setRegimenTouched] = useState(false);
 
