@@ -59,6 +59,7 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
                 placeholder={getValue('instalacion.placeholder.calle')}
                 errorMessage={getValue('instalacion.error.calle')}
                 value={street}
+                maxLength={40}
                 onChange={(e) => {
                     setStreet(e.target.value);
                     setStreetTouched(true);
@@ -80,6 +81,7 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
                 placeholder={getValue('instalacion.placeholder.calle2')}
                 errorMessage={getValue('instalacion.error.calle2')}
                 value={street2}
+                maxLength={40}
                 onChange={(e) => {
                     setStreet2(e.target.value);
                     setStreet2Touched(true);
@@ -100,6 +102,7 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
                 errorMessage={getValue('instalacion.error.referencia')}
                 placeholder={getValue('instalacion.placeholder.referencia')}
                 value={reference}
+                maxLength={40}
                 onChange={(e) => {
                     setReference(e.target.value);
                     setReferenceTouched(true);
