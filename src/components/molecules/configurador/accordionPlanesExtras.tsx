@@ -77,9 +77,10 @@ export default function AccordionPlanesExtras() {
         planesExtras = planes?.filter(
             extra => extra.categoriaExtra?.includes('Netflix') || 
             extra.categoriaExtra?.includes('Disney+') ||
-            extra.categoriaExtra?.includes('VIX')
+            extra.titulo?.includes('Vix Premium') ||
+            extra.titulo?.includes('Vix Premium Mundial')
         )
-        /* console.log('🪅🪅 planesExtras ', planesExtras) */
+        console.log('🪅🪅 planesExtras ', planesExtras)
     }
 
     // Helper para encontrar valores por key
@@ -195,7 +196,7 @@ export default function AccordionPlanesExtras() {
             };
         });
     }, [content, selectedCard]);
-
+console.log('🚩 ottsImages ', ottsImages)
     return (
         <Accordion
             showDivider={false}
