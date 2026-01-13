@@ -18,7 +18,7 @@ import { redirect } from "next/navigation";
 
 async function getCobertura() {
     const cookieStore = await cookies()
-
+    
     const existZipCode = cookieStore.has('zipCode');
     const existLat = cookieStore.has('lat');
     const existLng = cookieStore.has('lng');
@@ -73,12 +73,15 @@ export default async function Configurador() {
     const entryHelp = copysConfigurador.page.ayuda.textoInfo;
     const entryCTA = copysConfigurador.page.ayuda.botonAyuda;
 
+    
     let cobertura: boolean = false;
+    
     if (dataOffersEntry?.offers.DOBLE_PLAY ) {
         cobertura = true;
     } else {
         cobertura = false;
     }
+    
     return (
         <ConfiguradorProvider
             configuradorEntry={dataOffersEntry}
