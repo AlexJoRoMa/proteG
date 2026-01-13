@@ -79,7 +79,7 @@ export default function AccordionPlanesExtras() {
             extra.categoriaExtra?.includes('Disney+') ||
             extra.categoriaExtra?.includes('VIX')
         )
-        console.log('🪅🪅 planesExtras ', planesExtras)
+        /* console.log('🪅🪅 planesExtras ', planesExtras) */
     }
 
     // Helper para encontrar valores por key

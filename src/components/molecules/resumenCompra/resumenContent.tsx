@@ -97,9 +97,9 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     },[])
 
 
-    const ottPromos = promoData?.promos?.filter(promo =>
+    /* const ottPromos = promoData?.promos?.filter(promo =>
         globalIzziSelection?.extrasMap?.ott?.some(extra => extra.nombreSiebel === promo.product)
-    );
+    ); */
 
     const totalOttPrice = globalIzziSelection?.extrasMap?.ott?.reduce(
         (acc, promo) => acc + Number(promo.costo),
@@ -114,7 +114,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     const promotions = promoData?.promos;
     const promoVisible = promotions?.filter((promo) => promo.visible === true && promo.promoPrice !== 0);
     const pagoAnticipado = promoData?.promos?.find(promo => promo.promoName.toLowerCase().includes('pago anticipado'));
-    const totalAfterPromos = Math.abs(Number((pagoAnticipado?.promoPrice || 0)));
+    /* const totalAfterPromos = Math.abs(Number((pagoAnticipado?.promoPrice || 0))); */
     const descuentoTv = Math.abs((Number(userSelection?.tv?.paquete?.precioPaquete)) - (Number(userSelection?.tv?.paquete?.precioTachado)));
 
     const ahorroCombinado = (descuentoTv || 0);
@@ -145,11 +145,12 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     }, [validateSwitch, precioTotal])
 
 
-    
-    /* console.log('⛑️ ottPromos ', ottPromos) */
+    /* console.log('👽 promotions ', promotions)
+    console.log('👽 👽 descuentoMeses ', descuentoMeses) */
 
 
-
+    /* console.log('⛑️ ottPromos ', ottPromos)
+    console.log('⛑️⛑️ descuentoMeses ', descuentoMeses) */
 
 
 
@@ -184,7 +185,8 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                                         return (
                                             <div key={index} className="flex justify-between w-full">
                                                 <h5 className="text-left mr-[8px]">{promo.promoName}</h5>
-                                                <h5 className="text-right">-{FormatPromotions(Math.abs(Number(promo.promoPrice)))}</h5>
+                                                {/* <h5 className="text-right">-{FormatPromotions(Math.abs(Number(promo.promoPrice)))}</h5> */}
+                                                <h5 className="text-right">{FormatPromotions(promo.promoPrice)}</h5>
                                             </div>
                                         )
                                     })
@@ -219,7 +221,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                         </h2>
                     </div>
                     <div className="flex flex-col gap-[8px]">
-                        {
+                        {/* {     
                             ottPromos &&
                             ottPromos?.filter(promo => promo.permanente.toLowerCase() === 'no')
                                 .map((promo, index) => (
@@ -229,7 +231,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                                     </div>
                                 ))
                         }
-                       
+                        */}
                         {
                             (descuentoMeses.length > 0) &&
                             <>
