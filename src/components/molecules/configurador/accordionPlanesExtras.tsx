@@ -251,7 +251,27 @@ console.log('🚩 ottsImages ', ottsImages)
                                     }}
                                 >
                                     <CardHeader>
-                                        {ottsImages.map((icon, index) => (
+                                        {(() =>{
+                                            const getIcon = ottsImages.find(icon => 
+                                                ott.titulo.toLowerCase() === icon.fields.type.toLowerCase()
+                                            );
+
+                                            const setIcon = getIcon || ottsImages.find(icon =>
+                                                ott.titulo.toLowerCase().includes(icon.fields.type.toLowerCase())
+                                            )
+
+                                            if(!setIcon) return null;
+
+                                            return(
+                                                <Image
+                                                src={`https:${setIcon.fields.ottImage.fields.image.fields.file.url}`}
+                                                alt={setIcon.fields.ottImage.fields.altText}
+                                                width={96}
+                                                height={46}
+                                                />
+                                            )
+                                        })()}
+                                        {/* {ottsImages.map((icon, index) => (
                                             <div key={index}>
                                                 {
                                                     ott.titulo.includes(icon.fields.type) &&
@@ -264,7 +284,7 @@ console.log('🚩 ottsImages ', ottsImages)
                                                 }
                                             </div>
                                         ))
-                                        }
+                                        } */}
                                     </CardHeader>
                                     <CardBody>
                                         <div className="flex flex-col gap-[4px] text-xs md:text-sm leading-[16px] text-start justify-start">
