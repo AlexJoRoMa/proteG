@@ -1,6 +1,6 @@
 'use client'
 import { useContent } from '@/components/providers/CoberturaProvider';
-import {Button, Form, Input, Checkbox} from '@heroui/react';
+import {Button, Form, Input, Checkbox, useDisclosure, Modal, ModalContent} from '@heroui/react';
 import { createCookie } from './actions';
 import { LoaderIcon, LocationIcon } from '@/constants/IconsConstants';
 import { useEffect, useRef, useState } from 'react';
@@ -9,6 +9,10 @@ import { useMicrocopies } from '@/hooks/useMicrocopies';
 import geocodeApi from '@/services/google-maps/api';
 import { GeocodeType } from '@/types/CoberturaTypes';
 import { useIzziContent } from '@/components/providers/IzziProvider';
+import { getOfertas } from '@/services/izzi/configurador';
+import TeLlamamosModalComponent from '../../../components/layouts/modals/TeLlamamosModalComponent';
+
+
 
 const inputStyles = {
     label: "text-black/50",
@@ -58,8 +62,11 @@ export default function CoberturaForm() {
         lng,
         setLng,
       } = useContent();
+    
+    const {isOpen, onOpen, onOpenChange } = useDisclosure();
+    
+    const { setGlobalFlag, setFormattedAddress, setCoberturaData } = useIzziContent();
 
-      const { setGlobalFlag, setFormattedAddress, setCoberturaData } = useIzziContent();
     
     interface PlaceAutocompleteProps {
         onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
@@ -118,7 +125,8 @@ export default function CoberturaForm() {
         );
       };
 
-    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    /* const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        console.log('🐸 aqui configurador ')
         e.preventDefault();
         setFormattedAddress(`${street}, ${streetNumber}, ${locality}`);
         setGlobalFlag(true);
@@ -135,7 +143,51 @@ export default function CoberturaForm() {
         });
         setIsLoading(true);
         await createCookie({lat: lat.toString(), lng: lng.toString(), zipCode: postalCode, address: `${street}, ${streetNumber}, ${locality}`});
+    }; */
+
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      console.log('🐸 aqui Wizz ')
+
+      e.preventDefault();
+      setIsLoading(true);
+
+      const coveraData = {
+        lat: lat.toString(),
+        lng: lng.toString(),
+        zipCode: postalCode,
+        address: `${street}, ${streetNumber}, ${locality}`, 
+      }
+
+      try{
+        
+        const response = await getOfertas(coveraData)
+        console.log(' 🐋 check response', response);
+        if(response.message === 'Address is in a WIZZ coverage area'){
+            console.log(' 🐋 check WIZZ modal');
+            setIsLoading(false);
+            onOpen();
+            return;
+        }
+
+        setFormattedAddress(coveraData.address);
+        setGlobalFlag(true);
+        setCoberturaData({
+            ...coveraData,
+            municipio: locality, 
+            colonia: neighborhood,
+            calle: street,
+            numExt: streetNumber,
+            estado: state
+        });
+
+        await createCookie(coveraData);
+      
+      } catch(error){
+        console.error("Error validacion Wizz ", error)
+        setIsLoading(false);
+      }
     };
+
 
     const handleLocationChange = () => {
 
@@ -234,6 +286,21 @@ const handleCharPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 
       return (
         <>
+        <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        backdrop='blur'
+        size='2xl'
+        classNames={{ wrapper: 'z-[100]'}}
+        >
+          <ModalContent>
+            {()=> (
+            <TeLlamamosModalComponent />
+          )} 
+          </ModalContent>
+        </Modal>
+
+
         {isLoading &&
             
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70">
@@ -241,7 +308,6 @@ const handleCharPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
                 <LoaderIcon />
             </div>
         </div>
-
         }
         <Form className="w-full max-w-[95%]" onSubmit={onSubmit}>
             {addressSelected && (
