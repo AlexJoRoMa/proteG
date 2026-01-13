@@ -25,6 +25,11 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
     const [street2, setStreet2] = useState(datosEnvio?.street2 ?? "");
     const [reference, setReference] = useState(datosEnvio?.reference ?? "");
 
+    // Estados para controlar si los campos han sido tocados
+    const [streetTouched, setStreetTouched] = useState(false);
+    const [street2Touched, setStreet2Touched] = useState(false);
+    const [referenceTouched, setReferenceTouched] = useState(false);
+
     // Validar el formulario cuando cambien los valores
     useEffect(() => {
         const isFormValid = 
@@ -54,8 +59,12 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
                 placeholder={getValue('instalacion.placeholder.calle')}
                 errorMessage={getValue('instalacion.error.calle')}
                 value={street}
-                onChange={(e) => setStreet(e.target.value)}
-                isInvalid={street.trim() === ''}
+                onChange={(e) => {
+                    setStreet(e.target.value);
+                    setStreetTouched(true);
+                }}
+                onBlur={() => setStreetTouched(true)}
+                isInvalid={streetTouched && street.trim() === ''}
             />
 
             <Input
@@ -71,8 +80,12 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
                 placeholder={getValue('instalacion.placeholder.calle2')}
                 errorMessage={getValue('instalacion.error.calle2')}
                 value={street2}
-                onChange={(e) => setStreet2(e.target.value)}
-                isInvalid={street2.trim() === ''}
+                onChange={(e) => {
+                    setStreet2(e.target.value);
+                    setStreet2Touched(true);
+                }}
+                onBlur={() => setStreet2Touched(true)}
+                isInvalid={street2Touched && street2.trim() === ''}
             />
             <Textarea
                 label={getValue('instalacion.label.referencia')}
@@ -87,8 +100,12 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
                 errorMessage={getValue('instalacion.error.referencia')}
                 placeholder={getValue('instalacion.placeholder.referencia')}
                 value={reference}
-                onChange={(e) => setReference(e.target.value)}
-                isInvalid={reference.trim() === ''}
+                onChange={(e) => {
+                    setReference(e.target.value);
+                    setReferenceTouched(true);
+                }}
+                onBlur={() => setReferenceTouched(true)}
+                isInvalid={referenceTouched && reference.trim() === ''}
             />
         </Form>
     )
