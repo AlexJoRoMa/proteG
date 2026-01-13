@@ -81,6 +81,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     const { globalCheckedPromotions, setAhorroTotal } = useIzziContent();
     const [validateSwitch, setValidateSwitch] = useState(checkSwitch);
     const [ priceTotal, setPriceTotal] = useState(0);
+    
 
     useEffect(() =>{
         setValidateSwitch(checkSwitch)
@@ -237,13 +238,19 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                             <>
                                 {
                                     descuentoMeses.map((item) => {
+                                        let descuentoSwitch = 0;
                                         const precioDespues = totalSinDescuento - Number(ahorroCombinado) + item.totalPromo;
                                         const copyMes = resumenCopys.ahorro.meses[item.mesId];
-                                        /* console.log('⛑️ precioDespues ', precioDespues) */
+                                         if(validateSwitch){
+                                            descuentoSwitch = precioDespues-50;
+                                        } else{
+                                            descuentoSwitch = precioDespues;
+                                        }
+                                        
                                         return (
                                             <div key={item.mesNumero} className="flex justify-between w-full font-normal leading-[24px] text-lg space-y-2">
                                                 <h5>{copyMes}</h5>
-                                                <h5>{FormatPromotions(precioDespues)}</h5>
+                                                <h5>{FormatPromotions(descuentoSwitch)}</h5>
                                             </div>
                                         )
                                     })
