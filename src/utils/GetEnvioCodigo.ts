@@ -3,6 +3,45 @@ import { DatosContratacion } from "@/types/Contratacion";
 
 export async function GetEnvioCodigo(datosContratacion: Partial<DatosContratacion>, globalIzziSelection: IzziSelection | null, promoData: Promotion, precioTotal: number, idTransaction: string, radioState: string) {
 
+    function getFullPackage() {
+        const baseDescription = globalIzziSelection?.tituloTriplePlay ? globalIzziSelection.tituloTriplePlay : globalIzziSelection?.titulo || "";
+        const extrasOtts = globalIzziSelection?.extrasMap?.ott;
+
+        // Si no hay OTTs seleccionados, retornar solo la descripción base
+        if (!Array.isArray(extrasOtts) || extrasOtts.length === 0) {
+            return baseDescription;
+        }
+
+        // Para cada OTT, usar descripcionCombo si existe, si no usar descripcion
+        const descripcionesCombos = extrasOtts
+            .map(ott => {
+                if (ott.descripcionCombo && ott.descripcionCombo.trim() !== "") {
+                    return ott.descripcionCombo;
+                }
+                return ott.descripcion;
+            })
+            .filter(desc => desc && desc.trim() !== "");
+
+        // Si no hay descripciones válidas, retornar solo la descripción base
+        if (descripcionesCombos.length === 0) {
+            return baseDescription;
+        }
+
+        // Construir la concatenación según las reglas
+        let combosText = "";
+        if (descripcionesCombos.length === 1) {
+            combosText = descripcionesCombos[0];
+        } else if (descripcionesCombos.length === 2) {
+            combosText = `${descripcionesCombos[0]} y ${descripcionesCombos[1]}`;
+        } else {
+            const ultimoCombo = descripcionesCombos[descripcionesCombos.length - 1];
+            const restoCombo = descripcionesCombos.slice(0, -1).join(", ");
+            combosText = `${restoCombo} y ${ultimoCombo}`;
+        }
+
+        return `${baseDescription}. ${combosText}`;
+    }
+
     function getAddoms() {
         const extrasMovil = globalIzziSelection?.extras;
         const extrasOtts = globalIzziSelection?.extrasMap?.ott;
@@ -67,7 +106,7 @@ export async function GetEnvioCodigo(datosContratacion: Partial<DatosContratacio
         "mail": `${datosContratacion.DatosPersonales?.personal.email}`,
         "name": `${datosContratacion.DatosPersonales?.personal.firstName}`,
         "lastname": `${datosContratacion.DatosPersonales?.personal.firstLastName}`,
-        "package": globalIzziSelection?.tituloTriplePlay ? globalIzziSelection.tituloTriplePlay : globalIzziSelection?.titulo,
+        "package": getFullPackage(),
         "descriptionPackage": `${globalIzziSelection?.descripcion}`,
         "price": Number(Number(globalIzziSelection?.precioPaquete) - Number(izziAhorros)),
         "addons": addoms.addoms ? addoms.addoms : [],
