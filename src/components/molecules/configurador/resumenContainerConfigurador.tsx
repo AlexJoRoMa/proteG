@@ -5,11 +5,12 @@ import Image from "next/image";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FormatPromotions } from "@/utils/Currency";
 import { Button } from "@heroui/react";
 import { LoaderIcon } from "@/constants/IconsConstants";
+import { getOttCategoriesFromContentful, isComboCategory } from "@/utils/OttCategoriesHelper";
 // import ModalFechaInvalida from "../checkout/modals/ModalFechaInvalida";
 
 export default function ResumenContainerConfigurador() {
@@ -19,8 +20,18 @@ export default function ResumenContainerConfigurador() {
     const resumenCopys = copysResumen as ResumenData;
     const [loading, setLoading] = useState<boolean>(false);
     const [promoError, setPromoError] = useState(false);
+    const [validComboCategories, setValidComboCategories] = useState<Set<string>>(new Set());
     const { coberturaData, setRpt, setOffnetIzzi, setOffnetSky, setParams, ahorroTotal } = useIzziContent();
     const router = useRouter();
+
+    useEffect(() => {
+        // Cargar las categorías válidas de combo desde Contentful
+        const loadCategories = async () => {
+            const categories = await getOttCategoriesFromContentful();
+            setValidComboCategories(categories);
+        };
+        loadCategories();
+    }, []);
 
     const handleClick = async () => {
         setLoading(true);
@@ -29,10 +40,11 @@ export default function ResumenContainerConfigurador() {
 
         if (izziSelection?.extrasMap) {
             izziSelection?.extrasMap?.ott?.map((extra) => {
+                const isCombo = isComboCategory(extra.categoriaExtra, validComboCategories);
                 extrasBody.push({
                     "extId": extra.idExtra,
                     "nuevaCantidad": 1,
-                    "combo": true
+                    "combo": isCombo
                 })
             })
         }

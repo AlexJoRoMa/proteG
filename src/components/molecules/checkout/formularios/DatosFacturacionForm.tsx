@@ -6,7 +6,7 @@ import { useMicrocopies } from "@/hooks/useMicrocopies";
 import { DatosContratacion } from "@/types/Contratacion";
 import { InputFilter } from "@/utils/inputFilters";
 import { Form, Input, Select, SelectItem } from "@heroui/react";
-import { FC, RefObject } from "react";
+import { FC, RefObject, useEffect, useState } from "react";
 
 interface Props {
     formRef: RefObject<HTMLFormElement | null>;
@@ -14,9 +14,10 @@ interface Props {
     setCfdi: (val: string) => void;
     regimen: string;
     setRegimen: (val: string) => void;
+    setIsValid: (valid: boolean) => void;
 }
 
-export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regimen, setRegimen }) => {
+export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regimen, setRegimen, setIsValid }) => {
 
     const { getValue } = useMicrocopies('formulario-facturacion');
     const { datosContratacion } = useCheckout();
@@ -24,13 +25,39 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
     const facturacion: Partial<DatosContratacion> = datosContratacion ?? {};
     const datosFacturacion = facturacion.DatosPersonales?.facturacion;
 
+    const validateRfc = (value: string) => {
+        if(!value) return null;
 
-    const triggerFormChange = () => {
-        if (formRef.current) {
-            const event = new Event("input", { bubbles: true });
-            formRef.current.dispatchEvent(event);
-        }
+        //PM -> Persona Moral  PF-> Persona Fisica
+        const rfc_pattern_pm = /^([A-ZÑ&]{3})([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])[A-Z0-9]{3}$/i;
+        const rfc_pattern_pf = /^([A-ZÑ&]{4})([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])[A-Z0-9]{3}$/i;
+
+        const validPM = rfc_pattern_pm.test(value) && value.length === 12;
+        const validPF = rfc_pattern_pf.test(value) && value.length === 13;
+
+        return (validPF || validPM) ? null : getValue('facturacion.error.rfc') || 'RFC incorrecto';
+        
     };
+
+
+
+    // Estado para el RFC
+    const [rfc, setRfc] = useState(datosFacturacion?.rfc ?? "");
+
+    // Estados para controlar si los campos han sido tocados
+    const [cfdiTouched, setCfdiTouched] = useState(false);
+    const [regimenTouched, setRegimenTouched] = useState(false);
+
+    // Validar formulario cuando cambien los valores
+    useEffect(() => {
+        const isFormValid = 
+            rfc.trim() !== '' && 
+            rfc.length >= 12 && 
+            cfdi.trim() !== '' && 
+            regimen.trim() !== '';
+
+        setIsValid(isFormValid);
+    }, [rfc, cfdi, regimen, setIsValid]);
 
     return (
         <Form
@@ -49,10 +76,11 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 labelPlacement='outside'
                 className='w-full'
                 isRequired
-                errorMessage={getValue('facturacion.error.rfc')}
+                validate={validateRfc}
+                maxLength={13}
                 onInput={(e) => InputFilter(e, 'alfanumerico')}
-                onChange={triggerFormChange}
-                defaultValue={datosFacturacion?.rfc}
+                value={rfc}
+                onChange={(e) => setRfc(e.target.value)}
             />
             <Select
                 label={getValue('facturacion.label.cfdi')}
@@ -66,12 +94,15 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 classNames={SelectStyles}
                 isRequired
                 className='w-full'
-                value={cfdi}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                    setCfdi(e.target.value);
-                    triggerFormChange();
+                selectedKeys={cfdi ? [cfdi] : []}
+                onSelectionChange={(keys) => {
+                    const selected = Array.from(keys)[0] as string;
+                    setCfdi(selected || '');
+                    setCfdiTouched(true);
                 }}
+                onClose={() => setCfdiTouched(true)}
                 errorMessage="Ingresa un CFDI valido"
+                isInvalid={cfdiTouched && cfdi.trim() === ''}
                 defaultSelectedKeys={datosFacturacion?.comprobanteFiscal ? [datosFacturacion.comprobanteFiscal] : []}
             >
                 {
@@ -94,19 +125,24 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 classNames={SelectStyles}
                 isRequired
                 className='w-full'
-                value={regimen}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                    setRegimen(e.target.value);
-                    triggerFormChange();
+                selectedKeys={regimen ? [regimen] : []}
+                onSelectionChange={(keys) => {
+                    const selected = Array.from(keys)[0] as string;
+                    setRegimen(selected || '');
+                    setRegimenTouched(true);
                 }}
+                onClose={() => setRegimenTouched(true)}
                 errorMessage="Ingresa un regimen fiscal valido"
+                isInvalid={regimenTouched && regimen.trim() === ''}
                 defaultSelectedKeys={datosFacturacion?.regimenFiscal ? [datosFacturacion.regimenFiscal] : []}
             >
-                {RegimenFiscal.map((regimenItem, index, arr) => (
-                    <SelectItem key={regimenItem.key} className={`h-[38px] ${index !== arr.length - 1 ? "border-b-1 border-black-0 rounded-none" : ""}`}>
-                        {regimenItem.label}
-                    </SelectItem>
-                ))}
+                {
+                    RegimenFiscal.map((reg, index, arr) => (
+                        <SelectItem key={reg.key} className={`h-[38px] ${index !== arr.length - 1 ? "border-b-1 border-black-0 rounded-none" : ""}`}>
+                            {reg.label}
+                        </SelectItem>
+                    ))
+                }
             </Select>
         </Form >
     )

@@ -289,6 +289,7 @@ export type OttProps = {
     nombreSiebel: string;
     costo: string,
     descripcion: string,
+    descripcionCombo: string,
     grupo?: number,
     categoriaExtra?: string
 }

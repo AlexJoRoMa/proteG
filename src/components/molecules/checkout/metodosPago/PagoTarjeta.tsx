@@ -11,7 +11,7 @@ import { LoaderIcon } from "@/constants/IconsConstants";
 
 export default function PagoTarjeta() {
 
-    const { rpt, precioTotal, offnetSky } = useIzziContent();
+    const { rpt, precioTotal, offnetSky, setCheckSwitch } = useIzziContent();
     const { currentStep, totalSteps, setPaymentReference, processStatus, datosContratacion, setCardRecurrent } = useCheckout();
     const { getValue } = useMicrocopies('contratacion-pago');
 
@@ -59,8 +59,9 @@ export default function PagoTarjeta() {
 
         return () => { isMounted = false };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isRecurrent, montoDomiciliado, precioTotal, currentStep, totalSteps]);
+    }, [isRecurrent, /* montoDomiciliado, */ precioTotal, currentStep, totalSteps]);
 
+    
     return (
         <section className="w-full">
             <div className='flex flex-row w-full justify-between mt-[24px] xl:mt-[27px]'>
@@ -72,6 +73,8 @@ export default function PagoTarjeta() {
                     onValueChange={(checked) => {
                         setIsRecurrent(checked)
                         setCardRecurrent(checked)
+                        setCheckSwitch(checked)
+                        window.dispatchEvent(new CustomEvent('switch-change', {detail: checked}))
                     }}
                     classNames={{
                         wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
