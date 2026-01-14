@@ -73,7 +73,14 @@ export default function AccordionPlanesExtras() {
 
     if (ottsData && ottsData.extrasMap?.ott) {
         const planes: OttProps[] = ottsData.extrasMap.ott;
-        planesExtras = planes?.filter(extra => extra.categoriaExtra?.includes('Netflix') || extra.categoriaExtra?.includes('Disney+'))
+        
+        planesExtras = planes?.filter(
+            extra => extra.categoriaExtra?.includes('Netflix') || 
+            extra.categoriaExtra?.includes('Disney+') ||
+            extra.titulo?.includes('Vix Premium') ||
+            extra.titulo?.includes('Vix Premium Mundial')
+        )
+        console.log('🪅🪅 planesExtras ', planesExtras)
     }
 
     // Helper para encontrar valores por key
@@ -99,7 +106,9 @@ export default function AccordionPlanesExtras() {
                 return prev.filter(item => item.idExtra !== card.idExtra);
             }
 
-            const newSelection = prev.filter(item => item.grupo !== card.grupo);
+            const newSelection = prev.filter(item => 
+                item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra
+            );
             return [...newSelection, card];
         });
 
@@ -125,7 +134,9 @@ export default function AccordionPlanesExtras() {
 
             }
 
-            const updateOTT = [...prevOTT.filter(item => item.grupo !== card.grupo), card];
+            const updateOTT = [...prevOTT.filter(item =>
+                 item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra
+                ), card];
             const complementTotal = updateOTT.reduce((acc, item) => acc + Number(item.costo), 0);
 
             return {
@@ -185,7 +196,7 @@ export default function AccordionPlanesExtras() {
             };
         });
     }, [content, selectedCard]);
-
+console.log('🚩 ottsImages ', ottsImages)
     return (
         <Accordion
             showDivider={false}
@@ -240,7 +251,27 @@ export default function AccordionPlanesExtras() {
                                     }}
                                 >
                                     <CardHeader>
-                                        {ottsImages.map((icon, index) => (
+                                        {(() =>{
+                                            const getIcon = ottsImages.find(icon => 
+                                                ott.titulo.toLowerCase() === icon.fields.type.toLowerCase()
+                                            );
+
+                                            const setIcon = getIcon || ottsImages.find(icon =>
+                                                ott.titulo.toLowerCase().includes(icon.fields.type.toLowerCase())
+                                            )
+
+                                            if(!setIcon) return null;
+
+                                            return(
+                                                <Image
+                                                src={`https:${setIcon.fields.ottImage.fields.image.fields.file.url}`}
+                                                alt={setIcon.fields.ottImage.fields.altText}
+                                                width={96}
+                                                height={46}
+                                                />
+                                            )
+                                        })()}
+                                        {/* {ottsImages.map((icon, index) => (
                                             <div key={index}>
                                                 {
                                                     ott.titulo.includes(icon.fields.type) &&
@@ -253,7 +284,7 @@ export default function AccordionPlanesExtras() {
                                                 }
                                             </div>
                                         ))
-                                        }
+                                        } */}
                                     </CardHeader>
                                     <CardBody>
                                         <div className="flex flex-col gap-[4px] text-xs md:text-sm leading-[16px] text-start justify-start">
