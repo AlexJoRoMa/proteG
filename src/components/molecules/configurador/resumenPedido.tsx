@@ -11,6 +11,7 @@ import { useIzziContent } from "@/components/providers/IzziProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { useRouter } from "next/navigation";
 import { LoaderIcon } from "@/constants/IconsConstants";
+import { getOttCategoriesFromContentful, isComboCategory } from "@/utils/OttCategoriesHelper";
 
 export const ArrowUpIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
@@ -38,6 +39,7 @@ export default function ResumenPedido() {
     const { precioTotal, coberturaData, setPromoData, infoPaquetes, setInfoPaquetes, setParams } = useIzziContent();;
     const [loading, setLoading] = useState<boolean>(false);
     const [promoError, setPromoError] = useState(false);
+    const [validComboCategories, setValidComboCategories] = useState<Set<string>>(new Set());
     const router = useRouter();
 
     const resumenCopys = copysResumen as ResumenData;
@@ -50,6 +52,13 @@ export default function ResumenPedido() {
     useEffect(() => {
         setCheckedPromotions(false);
         setPromoData({});
+
+        // Cargar las categorías válidas de combo desde Contentful
+        const loadCategories = async () => {
+            const categories = await getOttCategoriesFromContentful();
+            setValidComboCategories(categories);
+        };
+        loadCategories();
 
         if (hasData(internet) && !hasData(tv) && !hasData(movil)) {
             setInfoPaquetes(resumenCopys.infoDrawer.paquetes.internet);
@@ -88,10 +97,11 @@ export default function ResumenPedido() {
         
             if(izziSelection?.extrasMap){
                 izziSelection?.extrasMap?.ott?.map((extra) => {
+                    const isCombo = isComboCategory(extra.categoriaExtra, validComboCategories);
                     extrasBody.push({
                         "extId": extra.idExtra, 
                         "nuevaCantidad": 1, 
-                        "combo": true
+                        "combo": isCombo
                     })
                 })
             }

@@ -1,10 +1,14 @@
 import { IzziSelection, UserAnswers } from "@/types/ConfiguradorTypes";
+import { getOttCategoriesFromContentful, isComboCategory } from "./OttCategoriesHelper";
 
 export async function GetSubmitOffer(processId: string, globalIzziSelection: IzziSelection | null, precioTotal: number, globalUserAnswers: UserAnswers, offNetIzzi: boolean, offNetSky: boolean) {
 
-    function getAddoms() {
+    async function getAddoms() {
         const extrasMovil = globalIzziSelection?.extras;
         const extrasOtts = globalIzziSelection?.extrasMap?.ott;
+
+        // Obtener las categorías válidas de combo desde Contentful
+        const validComboCategories = await getOttCategoriesFromContentful();
 
         const addomsMovil = extrasMovil ?
             [{
@@ -25,7 +29,7 @@ export async function GetSubmitOffer(processId: string, globalIzziSelection: Izz
             ? extrasOtts.map((item) => ({
                 "extId": item.idExtra,
                 "nuevaCantidad": 1,
-                "combo": false
+                "combo": isComboCategory(item.categoriaExtra, validComboCategories)
             }))
             : [];
 
@@ -34,8 +38,7 @@ export async function GetSubmitOffer(processId: string, globalIzziSelection: Izz
         return addoms;
     }
 
-    const extrasAdoms = getAddoms();
-
+    const extrasAdoms = await getAddoms();
     const DUMMY_BODY = {
         "requestedServices": {
             "product": Number(globalIzziSelection?.idPaquete),
