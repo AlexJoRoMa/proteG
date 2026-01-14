@@ -80,7 +80,6 @@ export default function AccordionPlanesExtras() {
             extra.titulo?.includes('Vix Premium') ||
             extra.titulo?.includes('Vix Premium Mundial')
         )
-        console.log('🪅🪅 planesExtras ', planesExtras)
     }
 
     // Helper para encontrar valores por key
@@ -196,7 +195,7 @@ export default function AccordionPlanesExtras() {
             };
         });
     }, [content, selectedCard]);
-console.log('🚩 ottsImages ', ottsImages)
+
     return (
         <Accordion
             showDivider={false}
@@ -271,20 +270,7 @@ console.log('🚩 ottsImages ', ottsImages)
                                                 />
                                             )
                                         })()}
-                                        {/* {ottsImages.map((icon, index) => (
-                                            <div key={index}>
-                                                {
-                                                    ott.titulo.includes(icon.fields.type) &&
-                                                    <Image
-                                                        src={`https:${icon.fields.ottImage.fields.image.fields.file.url}`}
-                                                        alt={icon.fields.ottImage.fields.altText}
-                                                        width={96}
-                                                        height={46}
-                                                    />
-                                                }
-                                            </div>
-                                        ))
-                                        } */}
+                                        
                                     </CardHeader>
                                     <CardBody>
                                         <div className="flex flex-col gap-[4px] text-xs md:text-sm leading-[16px] text-start justify-start">

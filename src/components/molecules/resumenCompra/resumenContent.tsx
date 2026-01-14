@@ -146,15 +146,6 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     }, [validateSwitch, precioTotal])
 
 
-    /* console.log('👽 promotions ', promotions)
-    console.log('👽 👽 descuentoMeses ', descuentoMeses) */
-
-
-    /* console.log('⛑️ ottPromos ', ottPromos)
-    console.log('⛑️⛑️ descuentoMeses ', descuentoMeses) */
-
-
-
     return (
         <>
 
