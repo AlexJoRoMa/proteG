@@ -80,7 +80,6 @@ export default function AccordionPlanesExtras() {
             extra.titulo?.includes('Vix Premium') ||
             extra.titulo?.includes('Vix Premium Mundial')
         )
-        console.log('🪅🪅 planesExtras ', planesExtras)
     }
 
     // Helper para encontrar valores por key
