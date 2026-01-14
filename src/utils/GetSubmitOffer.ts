@@ -38,8 +38,7 @@ export async function GetSubmitOffer(processId: string, globalIzziSelection: Izz
         return addoms;
     }
 
-    const extrasAdoms = getAddoms();
-
+    const extrasAdoms = await getAddoms();
     const DUMMY_BODY = {
         "requestedServices": {
             "product": Number(globalIzziSelection?.idPaquete),
