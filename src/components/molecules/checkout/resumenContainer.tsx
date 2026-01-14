@@ -160,7 +160,7 @@ export default function ResumenContainer() {
         // ValidaPago
         const response = await validatePayment(datosContratacion, setDatosContratacion, processStatusRef.current, paymentReference);
         const test = true;
-        console.log('::::::::::')
+        console.log(':::::::')
 
         if (/* response */ test === true) {
 
