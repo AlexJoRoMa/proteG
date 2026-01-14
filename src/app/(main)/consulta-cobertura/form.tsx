@@ -10,7 +10,7 @@ import geocodeApi from '@/services/google-maps/api';
 import { GeocodeType } from '@/types/CoberturaTypes';
 import { useIzziContent } from '@/components/providers/IzziProvider';
 import { getOfertas } from '@/services/izzi/configurador';
-import TeLlamamosModalComponent from '../../../components/layouts/modals/TeLlamamosModalComponent';
+import TeAyudamosModalComponent from '../../../components/layouts/modals/TeAyudamosModalComponentConfigurador';
 
 
 
@@ -291,11 +291,11 @@ const handleCharPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         onOpenChange={onOpenChange}
         backdrop='blur'
         size='2xl'
-        classNames={{ wrapper: 'z-[100]'}}
+        classNames={{ wrapper: 'z-[50]'}}
         >
           <ModalContent>
-            {()=> (
-            <TeLlamamosModalComponent />
+            {(onClose)=> (
+            <TeAyudamosModalComponent onClose={onClose} />
           )} 
           </ModalContent>
         </Modal>
