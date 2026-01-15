@@ -162,7 +162,7 @@ export default function ResumenContainer() {
         const test = true;
         console.log(':::::::')
 
-        if (/* response */ test === true) {
+        if (response /* test */ === true) {
 
             // SubmitCapacity
             const submitResponse = await runSubmitCapacity();
