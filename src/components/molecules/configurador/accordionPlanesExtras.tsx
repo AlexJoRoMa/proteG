@@ -80,6 +80,7 @@ export default function AccordionPlanesExtras() {
             extra.titulo?.includes('Vix Premium') ||
             extra.titulo?.includes('Vix Premium Mundial')
         )
+        console.log('🪅 planesExtras ', planesExtras)
     }
 
     // Helper para encontrar valores por key
@@ -101,17 +102,38 @@ export default function AccordionPlanesExtras() {
         setSelectedCard((prev) => {
             const cardSelected = prev.some(item => item.idExtra === card.idExtra);
 
-            if (cardSelected) {
-                return prev.filter(item => item.idExtra !== card.idExtra);
+            if(cardSelected ){
+                let newSelect = prev.filter(item => item.idExtra !== card.idExtra);
+
+                //CASO VIX MUNDIAL
+                if(card.titulo === 'Vix Premium') {
+                    newSelect = newSelect.filter(item => item.titulo !== 'Vix Premium Mundial')
+                }
+
+                return newSelect;
             }
 
-            const newSelection = prev.filter(item => 
+
+
+            let newSelection = prev.filter(item => 
                 item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra
             );
-            return [...newSelection, card];
+
+            //CASO VIX SLECCION
+            if(card.titulo === 'Vix Premium Mundial') {
+                const hasVixPremium = planesExtras?.find(plan => plan.titulo === 'Vix Premium');
+                if(hasVixPremium) {
+                    newSelection = [...newSelection.filter(item => item.titulo !== 'Vix Premium'), hasVixPremium, card];
+                } else {
+                    newSelection = [...newSelection, card];
+                }
+            } else {
+                newSelection = [...newSelection, card];
+            }
+            return newSelection;
         });
 
-        content.setUserAnswers((prev) => {
+        /* content.setUserAnswers((prev) => {
 
             const prevOTT = prev.tv?.ott?.planes ?? [];
             const isAlreadySelected = prevOTT.some(item => item.idExtra === card.idExtra);
@@ -148,7 +170,7 @@ export default function AccordionPlanesExtras() {
                     }
                 },
             }
-        })
+        }) */
     }
 
     useEffect(() => {
@@ -195,7 +217,7 @@ export default function AccordionPlanesExtras() {
             };
         });
     }, [content, selectedCard]);
-console.log('🚩 ottsImages ', ottsImages)
+
     return (
         <Accordion
             showDivider={false}
