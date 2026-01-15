@@ -119,6 +119,7 @@ export interface TabConfigItem {
     key: MetodoPago;
     title: string;
     Component: React.FC;
+    isHidden?: boolean;
 }
 
 
