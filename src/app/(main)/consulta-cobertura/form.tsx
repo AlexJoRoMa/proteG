@@ -146,7 +146,7 @@ export default function CoberturaForm() {
     }; */
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      console.log('🐸 aqui Wizz ')
+      
 
       e.preventDefault();
       setIsLoading(true);
@@ -161,9 +161,9 @@ export default function CoberturaForm() {
       try{
         
         const response = await getOfertas(coveraData)
-        console.log(' 🐋 check response', response);
+       
         if(response.message === 'Address is in a WIZZ coverage area'){
-            console.log(' 🐋 check WIZZ modal');
+           
             setIsLoading(false);
             onOpen();
             return;
@@ -424,6 +424,8 @@ const handleCharPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
                 value={name}
                 onKeyDown={handleCharPress}
                 onValueChange={setName}
+                maxLength={100}
+                minLength={3}
                 classNames={inputStyles}
             />
             <Input
@@ -438,6 +440,7 @@ const handleCharPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
                 onValueChange={setPhone}
                 onKeyDown={handleKeyPress}
                 maxLength={10}
+                minLength={10}
                 classNames={inputStyles}
             /> 
             <div>
