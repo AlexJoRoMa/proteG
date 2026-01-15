@@ -15,12 +15,14 @@ const TABS_CONFIG = (getValue: (key: string) => string, globalFlagDomicilio: boo
     {
       key: "creditCard",
       title: getValue("pago.tarjet.titulo"),
-      Component: PagoTarjeta
+      Component: PagoTarjeta,
+      isHidden: false
     },
     {
       key: "paypal",
       title: getValue("pago.paypal.titulo"),
-      Component: PagoPayPal
+      Component: PagoPayPal,
+      isHidden: true
     }
   ];
 
@@ -28,7 +30,8 @@ const TABS_CONFIG = (getValue: (key: string) => string, globalFlagDomicilio: boo
     baseTabs.push({
       key: "tecnico",
       title: getValue("pago.tecnico.titulo"),
-      Component: PagoTecnico
+      Component: PagoTecnico,
+      isHidden: false
     });
   }
   return baseTabs;
@@ -88,7 +91,8 @@ const Step6 = () => {
         }}
       >
         {
-          tabsConfig.map(({ key, title, Component }) => (
+          tabsConfig.map(({ key, title, Component, isHidden }) => (
+            !isHidden &&
             <Tab key={key} title={title}>
               <PaymentInfoBanner />
               <Component />
