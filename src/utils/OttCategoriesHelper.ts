@@ -29,8 +29,13 @@ export async function getOttCategoriesFromContentful(): Promise<Set<string>> {
         // Extraer y normalizar las categorías
         const categories = new Set<string>();
         categoryKeys.forEach((item: { fields: { key: string, value: string } }) => {
-            const normalizedCategory = normalizeCategory(item.fields.value);
-            categories.add(normalizedCategory);
+            const categoriesList = item.fields.value.split(',');
+            categoriesList.forEach((cat) => {
+                const normalizedCategory = normalizeCategory(cat.trim());
+                if (normalizedCategory) {
+                    categories.add(normalizedCategory);
+                }
+            });
         });
         
         return categories;
@@ -44,7 +49,9 @@ export async function getOttCategoriesFromContentful(): Promise<Set<string>> {
  * Verifica si una categoría de extra está en la lista de categorías válidas de combo
  */
 export function isComboCategory(categoriaExtra: string | undefined, validCategories: Set<string>): boolean {
+
     if (!categoriaExtra) return false;
+    
     const normalized = normalizeCategory(categoriaExtra);
     return validCategories.has(normalized);
 }
