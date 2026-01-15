@@ -80,7 +80,7 @@ export default function AccordionPlanesExtras() {
             extra.titulo?.includes('Vix Premium') ||
             extra.titulo?.includes('Vix Premium Mundial')
         )
-        console.log('🪅 planesExtras ', planesExtras)
+        
     }
 
     // Helper para encontrar valores por key
@@ -102,6 +102,7 @@ export default function AccordionPlanesExtras() {
         setSelectedCard((prev) => {
             const cardSelected = prev.some(item => item.idExtra === card.idExtra);
 
+            //---Deseleccionar
             if(cardSelected ){
                 let newSelect = prev.filter(item => item.idExtra !== card.idExtra);
 
@@ -114,63 +115,33 @@ export default function AccordionPlanesExtras() {
             }
 
 
-
-            let newSelection = prev.filter(item => 
-                item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra
+            let newSelection = prev.filter(item => {
+                const isVixCombo = (card.titulo.includes('Vix') && item.titulo.includes('Vix'));
+                if(isVixCombo) return true;
+                return item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra; 
+                }
             );
 
             //CASO VIX SLECCION
             if(card.titulo === 'Vix Premium Mundial') {
+
                 const hasVixPremium = planesExtras?.find(plan => plan.titulo === 'Vix Premium');
+
+                const noSelectedVix = newSelection.filter(item => !item.titulo.includes('Vix'));
+                
                 if(hasVixPremium) {
-                    newSelection = [...newSelection.filter(item => item.titulo !== 'Vix Premium'), hasVixPremium, card];
+                    return newSelection = [...noSelectedVix, hasVixPremium, card];
                 } else {
-                    newSelection = [...newSelection, card];
+                    newSelection = [...noSelectedVix, card];
                 }
-            } else {
-                newSelection = [...newSelection, card];
+            } 
+
+            if(card.titulo === 'Vix Premium') {
+                newSelection = newSelection.filter(item => item.titulo !== 'Vix Premium Mundial');
             }
-            return newSelection;
+            return [...newSelection, card];
         });
 
-        /* content.setUserAnswers((prev) => {
-
-            const prevOTT = prev.tv?.ott?.planes ?? [];
-            const isAlreadySelected = prevOTT.some(item => item.idExtra === card.idExtra);
-
-            if (isAlreadySelected) {
-                const updateOTT = prevOTT.filter(item => item.idExtra !== card.idExtra);
-                const complementTotal = updateOTT.reduce((acc, item) => acc + Number(item.costo), 0);
-
-                return {
-                    ...prev,
-                    tv: {
-                        ...prev.tv,
-                        ott: {
-                            planes: updateOTT,
-                            total: complementTotal,
-                        }
-                    },
-                }
-
-            }
-
-            const updateOTT = [...prevOTT.filter(item =>
-                 item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra
-                ), card];
-            const complementTotal = updateOTT.reduce((acc, item) => acc + Number(item.costo), 0);
-
-            return {
-                ...prev,
-                tv: {
-                    ...prev.tv,
-                    ott: {
-                        planes: updateOTT,
-                        total: complementTotal,
-                    }
-                },
-            }
-        }) */
     }
 
     useEffect(() => {
@@ -181,15 +152,31 @@ export default function AccordionPlanesExtras() {
     }, [content.userAnswers.tv?.ott?.planes]);
 
     useEffect(() => {
-        if (!planesExtras) return;
+        if (!planesExtras || planesExtras.length === 0) return;
 
         setSelectedCard((prev) => {
+            const selectedTitles = new Set(prev.map(item => item.titulo));
+
+            if( selectedTitles.has('Vix Premium Mundial')){
+                selectedTitles.add('Vix Premium')
+            }
+
+            const newSelect = planesExtras.filter(plan =>
+                selectedTitles.has(plan.titulo)
+            )
+
+            const prevIds = prev.map(p => p.idExtra).sort().join(', ');
+            const newIds = newSelect.map(p => p.idExtra).sort().join(', ');
+
+            if(prevIds === newIds) return prev;
+            return newSelect;
+            /* 
             const validIds = new Set(planesExtras.map(plan => plan.idExtra));
             const filtrados = prev.filter(item => validIds.has(item.idExtra));
 
             if (filtrados.length === prev.length) return prev;
 
-            return filtrados;
+            return filtrados; */
         });
     }, [planesExtras]);
 
@@ -257,7 +244,7 @@ export default function AccordionPlanesExtras() {
                     <div className="grid grid-cols-1 2xl:grid-cols-2 gap-[16px] 2xl:gap-[24px] auto-rows-fr">
 
                         {planesExtras && planesExtras.map((ott: OttProps, index: Key) => {
-                            const isSelected = selectedCard.some(item => item.idExtra === ott.idExtra && item.titulo === ott.titulo);
+                            const isSelected = selectedCard.some(item => item.idExtra === ott.idExtra || item.titulo === ott.titulo);
 
                             return (
                                 <Card
