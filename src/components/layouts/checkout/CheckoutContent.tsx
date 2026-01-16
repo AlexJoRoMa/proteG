@@ -16,7 +16,7 @@ const CheckoutContent = () => {
   const stepContents = [
     <Step1 key="step1" />,
     <Step2 key="step2" />,
-    <Step3 key="step3" />,
+    <Step3 key="step3" showWhatsApp={false} />,
     <Step4 key="step4" />,
     <Step5 key="step5" />,
     <Step6 key="step6" />
@@ -25,7 +25,7 @@ const CheckoutContent = () => {
     const stepContentsDelivery = [
     <Step1 key="step1" />,
     <Step2 key="step2" />,
-    <Step3 key="step3" />,
+    <Step3 key="step3" showWhatsApp={false} />,
     <Step4 key="step4" />,
     <Step6 key="step5" />
   ];
