@@ -14,9 +14,17 @@ const RadioStyles = {
   label: "text-base xl:text-lg"
 }
 
+interface Step3Props {
+  showWhatsApp?: boolean;
+  showSMS?: boolean;
+  showCorreo?: boolean;
+}
 
-
-const Step3 = () => {
+const Step3 = ({ 
+  showWhatsApp = true, 
+  showSMS = true, 
+  showCorreo = true 
+}: Step3Props = {}) => {
 
   const { globalIzziSelection, promoData, precioTotal } = useIzziContent();
   const { datosContratacion } = useCheckout();
@@ -107,23 +115,29 @@ const Step3 = () => {
             resetStep3();
           }}
         >
-          <Radio
-            value={getValue('verificacion.radio.value.whatsapp')}
-            classNames={RadioStyles}
-          >
-            <b>{getValue('verificacion.radio.titulo.whatsapp')}</b> {datosContratacion.DatosPersonales?.personal.phone}
-          </Radio>
-          <Radio
-            value={getValue('verificacion.radio.value.sms')}
-            classNames={RadioStyles}
-          > <b>{getValue('verificacion.radio.titulo.sms')}</b> {datosContratacion.DatosPersonales?.personal.phone}
-          </Radio>
-          <Radio
-            value={getValue('verificacion.radio.value.correo')}
-            classNames={RadioStyles}
-          >
-            <b>{getValue('verificacion.radio.titulo.correo')}</b> {datosContratacion.DatosPersonales?.personal.email}
-          </Radio>
+          {showWhatsApp && (
+            <Radio
+              value={getValue('verificacion.radio.value.whatsapp')}
+              classNames={RadioStyles}
+            >
+              <b>{getValue('verificacion.radio.titulo.whatsapp')}</b> {datosContratacion.DatosPersonales?.personal.phone}
+            </Radio>
+          )}
+          {showSMS && (
+            <Radio
+              value={getValue('verificacion.radio.value.sms')}
+              classNames={RadioStyles}
+            > <b>{getValue('verificacion.radio.titulo.sms')}</b> {datosContratacion.DatosPersonales?.personal.phone}
+            </Radio>
+          )}
+          {showCorreo && (
+            <Radio
+              value={getValue('verificacion.radio.value.correo')}
+              classNames={RadioStyles}
+            >
+              <b>{getValue('verificacion.radio.titulo.correo')}</b> {datosContratacion.DatosPersonales?.personal.email}
+            </Radio>
+          )}
         </RadioGroup>
 
         <div className='flex w-full justify-center mt-[24px] xl:mt-[48px]'>
