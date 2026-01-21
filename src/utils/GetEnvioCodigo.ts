@@ -108,7 +108,7 @@ export async function GetEnvioCodigo(datosContratacion: Partial<DatosContratacio
         "lastname": `${datosContratacion.DatosPersonales?.personal.firstLastName}`,
         "package": getFullPackage(),
         "descriptionPackage": `${globalIzziSelection?.descripcion}`,
-        "price": Number(Number(globalIzziSelection?.precioPaquete) - Number(izziAhorros)),
+        "price": Number(Number(globalIzziSelection?.precioPaquete) - Number(izziAhorros === undefined ? 0 : izziAhorros)),
         "addons": addoms.addoms ? addoms.addoms : [],
         "promos": promos,
         "priceAddons": addoms.totalAddoms ? addoms.totalAddoms : 0,

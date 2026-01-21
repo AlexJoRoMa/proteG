@@ -34,7 +34,7 @@ const Step3 = ({
 
   const {
     CodigoVerificacionRef,
-    LastVerifiedCodeRef,
+    setLastVerifiedCode,
     handleOtpChange,
     startTimer,
     timer,
@@ -63,7 +63,7 @@ const Step3 = ({
     setIsValid(null);
     setIsStepValid(false);
     setIsLoading(false);
-    LastVerifiedCodeRef.current = null;
+    setLastVerifiedCode(null);
 
     //limpia el input OTP
     setOtpValue("");
