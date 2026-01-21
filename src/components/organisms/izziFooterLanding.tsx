@@ -54,11 +54,7 @@ export default function LandingFooterContent({FooterData}: FooterComponentProps)
               {`${link?.fields?.bottomCopy} ${link?.fields?.contactNumber}`}
             </p>
           </div>
-
-
           <div className='flex items-center gap-6'>
-
-
             {link.fields.contactLinks.map((contact, index) => ( 
               (contact.fields.typeModal === 'TeLlamamos' || contact.fields.typeModal === 'TeAyudamos') ? (
                 <ButtonModal
@@ -78,13 +74,8 @@ export default function LandingFooterContent({FooterData}: FooterComponentProps)
               style={{color: contact.fields.backgroundColor?.value }}
               ><Image height={24} width={24} alt={`${contact.fields.linkIcon?.fields.file.fileName}`} src={`https:${contact.fields.linkIcon?.fields.file.url}`} />{contact.fields.navigationTitle}</Link>
               )
-            
             ))}
-
-
           </div>
-
-
         </div>
         ))}
     </div>
