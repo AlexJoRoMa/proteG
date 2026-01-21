@@ -44,6 +44,8 @@ export function useControlledAction<T>({
 
     const waitingPromiseRef = useRef<Promise<void> | null>(null);
     const resolveWaitingRef = useRef<(() => void) | null>(null);
+    const hasSeenWaitingFalseRef = useRef<boolean>(false);
+    const hasExecutedRef = useRef<boolean>(false);
 
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState<T | null>(null);
@@ -70,13 +72,28 @@ export function useControlledAction<T>({
     useEffect(() => {
         setResult(null);
         setError(null);
+        setIsLoading(false);
+
         waitingPromiseRef.current = null;
         resolveWaitingRef.current = null;
+        hasSeenWaitingFalseRef.current = false;
+        hasExecutedRef.current = false;
     }, [resetKey]);
+
+    /** Detectar explicitamente waitingForAction = false */
+    useEffect(() => {
+        if (!data?.waitingForAction) {
+            hasSeenWaitingFalseRef.current = true;
+        }
+    }, [data?.waitingForAction]);
 
     /** Resolver promesa pendiente si waitingForAction pasa a true */
     useEffect(() => {
-        if (data?.waitingForAction && resolveWaitingRef.current) {
+        if (
+            data?.waitingForAction &&
+            resolveWaitingRef.current &&
+            hasSeenWaitingFalseRef.current
+        ) {
             resolveWaitingRef.current();
             resolveWaitingRef.current = null;
             waitingPromiseRef.current = null;
@@ -87,6 +104,10 @@ export function useControlledAction<T>({
     useEffect(() => {
         if (!autoExecute) return;
         if (!data?.waitingForAction) return;
+        if (!hasSeenWaitingFalseRef.current) return;
+        if (hasExecutedRef.current) return;
+
+        hasExecutedRef.current = true;
 
         (async () => {
             try {
@@ -106,33 +127,36 @@ export function useControlledAction<T>({
     }, [autoExecute, data?.waitingForAction, action, onSuccess, onError, onLoadingChange]);
 
     /** trigger manual opcional */
-    const trigger = useCallback(async (force = false) => {
+    const trigger = useCallback(
+        async (force = false) => {
 
-        if (!force && !data?.waitingForAction) {
-            if (!waitingPromiseRef.current) {
-                waitingPromiseRef.current = new Promise<void>((resolve) => {
-                    resolveWaitingRef.current = resolve;
-                });
+            if (!force) {
+                if (!hasSeenWaitingFalseRef.current || !data?.waitingForAction) {
+                    if (!waitingPromiseRef.current) {
+                        waitingPromiseRef.current = new Promise<void>((resolve) => {
+                            resolveWaitingRef.current = resolve;
+                        });
+                    }
+                    await waitingPromiseRef.current;
+                }
             }
-            await waitingPromiseRef.current;
-        }
 
-        setIsLoading(true);
-        onLoadingChange?.(true);
-        try {
-            const res = await action();
-            setResult(res);
-            onSuccess?.(res);
-            return res;
-        } catch (err) {
-            setError(err);
-            onError?.(err);
-            throw err;
-        } finally {
-            setIsLoading(false);
-            onLoadingChange?.(false);
-        }
-    }, [data?.waitingForAction, action, onSuccess, onError, onLoadingChange]);
+            setIsLoading(true);
+            onLoadingChange?.(true);
+            try {
+                const res = await action();
+                setResult(res);
+                onSuccess?.(res);
+                return res;
+            } catch (err) {
+                setError(err);
+                onError?.(err);
+                throw err;
+            } finally {
+                setIsLoading(false);
+                onLoadingChange?.(false);
+            }
+        }, [data?.waitingForAction, action, onSuccess, onError, onLoadingChange]);
 
     return {
         waitingForAction: data?.waitingForAction ?? false,
