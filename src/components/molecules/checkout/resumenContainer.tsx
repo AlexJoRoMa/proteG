@@ -99,11 +99,12 @@ export default function ResumenContainer() {
 
         try {
             // IzziEnroll
-            const resultIzziEnroll = await GetIzziEnroll(coberturaData, datosContratacionRef, offnetIzzi, offnetSky,  globalIzziSelection);
+            const resultIzziEnroll = await GetIzziEnroll(coberturaData, {...datosContratacionRef.current, VerificacionContacto: stepData}, offnetIzzi, offnetSky,  globalIzziSelection);
             if (!resultIzziEnroll || resultIzziEnroll?.code || resultIzziEnroll?.error) {
                 router.push("/error");
             }
             setIzziEnroll(resultIzziEnroll);
+            izziEnrrollRef.current = resultIzziEnroll;
 
             // // ProcessStatus
             await iniciarPolling();

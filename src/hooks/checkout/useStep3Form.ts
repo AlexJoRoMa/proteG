@@ -17,17 +17,17 @@ export const useStep3Form = (radioState: string) => {
     const { registerStepValidator, registerFormData, setIsStepValid, currentStep } = useCheckout();
 
     const CodigoVerificacionRef = useRef<HTMLFormElement | null>(null);
-    const LastVerifiedCodeRef = useRef<string | null>(null);
     const [otpValue, setOtpValue] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
     const [isValid, setIsValid] = useState<boolean | null>(null);
     const [timer, setTimer] = useState<number>(0); //cuenta regresiva
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     const [idTransaction] = useState<string>(generateTransactionId);
+    const [lastVerifiedCode, setLastVerifiedCode] = useState<string | null>(null);
 
     // verifica codigo
     const verificarCodigo = useCallback(async (codigo: string) => {
-        if (isLoading || LastVerifiedCodeRef.current === codigo) return;
+        if (isLoading || lastVerifiedCode === codigo) return;
         setIsLoading(true);
         setIsStepValid(false);
 
@@ -58,7 +58,7 @@ export const useStep3Form = (radioState: string) => {
             if (data?.izziErrorCode === "000") {
                 setIsValid(true);
                 setIsStepValid(true);
-                LastVerifiedCodeRef.current = codigo
+                setLastVerifiedCode(codigo);
             } else {
                 setIsValid(false);
                 setIsStepValid(false);
@@ -73,7 +73,7 @@ export const useStep3Form = (radioState: string) => {
         } finally {
             setIsLoading(false);
         }
-    }, [isLoading, setIsStepValid, idTransaction, radioState]);
+    }, [isLoading, lastVerifiedCode, setIsStepValid, idTransaction, radioState]);
 
     // validador de paso
     const validateStep3 = useCallback(async () => {
@@ -95,17 +95,16 @@ export const useStep3Form = (radioState: string) => {
 
     // registar datos del formulario
     useEffect(() => {
-        if (LastVerifiedCodeRef.current !== null) {
-            registerFormData(3, () => {
-                const allData = {
-                    idTransaction: idTransaction,
-                    codigoVerificacion: LastVerifiedCodeRef.current || "",
-                };
+        if (!lastVerifiedCode) return;
 
-                return allData;
-            });
-        }
-    }, [registerFormData, otpValue, idTransaction]);
+        registerFormData(3, () => {
+            const allData = {
+                idTransaction: idTransaction,
+                codigoVerificacion: lastVerifiedCode,
+            };
+            return allData;
+        });
+    }, [registerFormData, lastVerifiedCode, idTransaction]);
 
     useEffect(() => {
         if (otpValue.length === 4 && !isLoading) {
@@ -158,7 +157,7 @@ export const useStep3Form = (radioState: string) => {
 
     return {
         CodigoVerificacionRef,
-        LastVerifiedCodeRef,
+        setLastVerifiedCode,
         handleOtpChange,
         startTimer,
         resetStep3,
