@@ -251,7 +251,9 @@ const phone_List = {
     'paquetes7/goo/pr2/pm': '800 120 9733',
     'paquetes7/goo/pr2/3pm': '800 120 9733',
     'paquetes7/goo/pr2/izzitv': '800 120 9733',
-    'paquetes7/goo/pr2/4p': '800 120 9733'    
+    'paquetes7/goo/pr2/4p': '800 120 9733',
+    'paquetes/goo/br/2pmundial': '800 120 96 99',
+    'paquetes/goo/br/3pmundial': '800 120 97 05',
 } as const;
 
 type SlugPath = keyof typeof phone_List;

@@ -274,14 +274,16 @@ export default async function LandingPage({ params}: DynamicPageProps) {
     'paquetes7/goo/pr2/pm',
     'paquetes7/goo/pr2/3pm',
     'paquetes7/goo/pr2/izzitv',
-    'paquetes7/goo/pr2/4p'
+    'paquetes7/goo/pr2/4p',
+    'paquetes/goo/br/2pmundial',
+    'paquetes/goo/br/3pmundial'
     ];
     
     const fullPath = [paqueteKey, ...slugs].join('/');
 
     const contentfulSlug = slugs.length > 0 ? slugs[slugs.length - 1] : undefined;
 
-    
+  
 
     if(!urlList.includes(fullPath)){
         return notFound();
