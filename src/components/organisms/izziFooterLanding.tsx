@@ -87,7 +87,9 @@ export default function LandingFooterContent({FooterData}: FooterComponentProps)
         </div>
         <ul className="mt-8 flex flex-wrap justify-center gap-4 text-xs sm:mt-0 xl:justify-end">
           <li>
-          <Image width={144} height={24} src={`https:${copyright.fields.footerProfecoLogo.fields.file.url}`} alt={`${copyright.fields.footerProfecoLogo.fields.file.fileName}`}/>
+            <Link href={`${copyright.fields.footerProfecoLink}`} target='_blank'>
+            <Image width={144} height={24} src={`https:${copyright.fields.footerProfecoLogo.fields.file.url}`} alt={`${copyright.fields.footerProfecoLogo.fields.file.fileName}`}/>
+            </Link>
           </li>
 
           <li>
