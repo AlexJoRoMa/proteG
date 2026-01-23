@@ -23,6 +23,7 @@ const TeAyudamosLandingModalComponent = ({ isOpen = true, onClose, modalData, te
     }
   };
 
+
   const data = modalData || defaultData;
     
   return (

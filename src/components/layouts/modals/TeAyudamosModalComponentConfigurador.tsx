@@ -16,9 +16,9 @@ const TeAyudamosModalComponentConfig = ({ isOpen = true, onClose, modalData }: T
     title: '¡Contáctanos! Estamos para ayudarte',
     column1: {
       title: 'Contrata Ahora',
-      row1: { text: '¡Llámanos!', tel: '800 607 7070x' },
+      row1: { text: '¡Llámanos!', tel: '800 607 7070' },
       row2: { link: 'Te llamamos' },
-      row3: { wpp: { text: 'Whatsapp', tel: '+520000000config', promoText: 'Estoy Interesado' } }
+      row3: { wpp: { text: 'Whatsapp', tel: '+520000000', promoText: 'Estoy Interesado' } }
     },
     column2: {
       title: 'Soporte a Cliente',
