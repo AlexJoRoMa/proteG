@@ -8,7 +8,7 @@ import TeLlamamosModalComponent from './TeLlamamosModalComponent';
 
 
 
-const TeAyudamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlamamosModalComponentProps) => {
+const TeAyudamosModalComponentConfig = ({ isOpen = true, onClose, modalData }: TeLlamamosModalComponentProps) => {
   if (!isOpen) return null;
 
   // Valores por defecto en caso de que no se pasen datos
@@ -62,4 +62,4 @@ const TeAyudamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlama
   )
 }
 
-export default TeAyudamosModalComponent
+export default TeAyudamosModalComponentConfig

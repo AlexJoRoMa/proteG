@@ -41,8 +41,18 @@ export function useMicrocopies(key: string) {
         return item?.fields.value || "";
     };
 
+    const getValue2 = (key: string): string => {
+
+        const resources = data?.[0]?.fields?.resources;
+
+        if (!resources) return '';
+        const item = resources.find((r) => r.fields.key === key);
+        return item?.fields.value || "";
+    };
+
     return {
         getValue,
+        getValue2,
         isLoading,
         error,
         rawData: data,
