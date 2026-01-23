@@ -1,10 +1,10 @@
 import { DatosContratacion, ProcessStatus } from "@/types/Contratacion";
 
-export async function GetLigaPago(rpt: string, precioTotal: number, processStatus: Partial<ProcessStatus>, datosContratacion: Partial<DatosContratacion>, offNetSky: boolean, isRecurrent: boolean, montoDomiciliado: number) {
+export async function GetLigaPago(rpt: string, precioTotal: number, processStatus: Partial<ProcessStatus>, datosContratacion: Partial<DatosContratacion>, offNetSky: boolean) {
     try {
         const DUMMY_BODY = {
             "cuenta": String(processStatus.accountNumber),
-            "monto": String(montoDomiciliado),
+            "monto": String(precioTotal),
             "canal": "CHANNEL_IZZI_VL",
             "correo": String(datosContratacion.DatosPersonales?.personal.email),
             "exencion": false,
