@@ -11,57 +11,57 @@ import { LoaderIcon } from "@/constants/IconsConstants";
 
 export default function PagoTarjeta() {
 
-    const { rpt, precioTotal, offnetSky, setCheckSwitch } = useIzziContent();
-    const { currentStep, totalSteps, setPaymentReference, processStatus, datosContratacion, setCardRecurrent } = useCheckout();
+    const { rpt, precioTotal, offnetSky, setCheckSwitch, checkSwitch } = useIzziContent();
+    const { currentStep, totalSteps, setPaymentReference, processStatus, datosContratacion } = useCheckout();
     const { getValue } = useMicrocopies('contratacion-pago');
 
-    const [isRecurrent, setIsRecurrent] = useState<boolean>(false);
     const [urlFrame, setUrlFrame] = useState("");
-    const [montoDomiciliado, setMontoDomiciliado] = useState<number>(precioTotal);
     const [loadingLiga, setLoadingLiga] = useState(false);
 
     const processStatusRef = useRef(processStatus);
+    const shouldRequestLiga = currentStep === totalSteps && Boolean(rpt) && Boolean(datosContratacion);
 
     useEffect(() => {
         processStatusRef.current = processStatus;
     }, [processStatus]);
 
-
     useEffect(() => {
-        setMontoDomiciliado(isRecurrent ? precioTotal - 50 : precioTotal);
-    }, [isRecurrent, precioTotal]);
+        if (!shouldRequestLiga) return;
 
-    useEffect(() => {
-        if (currentStep !== totalSteps) return;
-
-        let isMounted = true;
         setLoadingLiga(true);
 
         (async () => {
             try {
-                const response: PaymentLiga = await GetLigaPago(rpt, precioTotal, processStatusRef.current, datosContratacion, offnetSky, isRecurrent, montoDomiciliado);
+                const response: PaymentLiga = await GetLigaPago(rpt, precioTotal, processStatusRef.current, datosContratacion, offnetSky);
 
-                if (!isMounted) return;
+                const isValidResponse = response &&
+                    response.response.error === "" &&
+                    typeof response.response.html === "string" &&
+                    typeof response.response.reference === "string";
 
-                if (response?.response) {
-                    setUrlFrame(response.response.html);
-                    setPaymentReference((prev) => ({
-                        ...prev,
-                        cardReference: response.response.reference,
-                    }));
+                if (!isValidResponse) {
+                    console.warn("Liga de pago inválida:", response);
+                    return;
                 }
+
+                setUrlFrame(String(response.response.html));
+                setPaymentReference((prev) => ({
+                    ...prev,
+                    cardReference: String(response.response.reference),
+                }));
+
             } catch (err) {
                 console.error("Error al obtener la liga de pagos:", err);
             } finally {
-                if (isMounted) setLoadingLiga(false);
+                setLoadingLiga(false);
             }
+
         })();
 
-        return () => { isMounted = false };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isRecurrent, /* montoDomiciliado, */ precioTotal, currentStep, totalSteps]);
+    }, [precioTotal, shouldRequestLiga]);
 
-    
+
     return (
         <section className="w-full">
             <div className='flex flex-row w-full justify-between mt-[24px] xl:mt-[27px]'>
@@ -69,12 +69,10 @@ export default function PagoTarjeta() {
                     {getValue('pago.pagoRecurrente.titulo')}
                 </h1>
                 <Switch
-                    checked={isRecurrent}
+                    checked={checkSwitch}
                     onValueChange={(checked) => {
-                        setIsRecurrent(checked)
-                        setCardRecurrent(checked)
                         setCheckSwitch(checked)
-                        window.dispatchEvent(new CustomEvent('switch-change', {detail: checked}))
+                        window.dispatchEvent(new CustomEvent('switch-change', { detail: checked }))
                     }}
                     classNames={{
                         wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
