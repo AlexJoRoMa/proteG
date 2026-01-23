@@ -1,11 +1,11 @@
 import { DatosContratacion } from "@/types/Contratacion";
 import { RefObject } from "react";
 
-export async function GetSubmitCapacity(processId: string, datosContratacion: RefObject<Partial<DatosContratacion> | null>, cardRecurrent: boolean, globalFlagDomicilio: boolean) {
+export async function GetSubmitCapacity(processId: string, datosContratacion: RefObject<Partial<DatosContratacion> | null>, isRecurrent: boolean, globalFlagDomicilio: boolean) {
 
     function getPaymentReference() {
         if (datosContratacion.current?.Pago?.metodoPago === "creditCard") {
-            if (cardRecurrent) {
+            if (isRecurrent) {
                 return "ONLINE_SAVED";
             } else {
                 return "ONLINE";

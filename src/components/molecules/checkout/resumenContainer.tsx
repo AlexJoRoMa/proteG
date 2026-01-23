@@ -29,7 +29,7 @@ export default function ResumenContainer() {
     const [modalName, setModalName] = useState<string>("modal-generico");
     const router = useRouter();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const { globalUserAnswers, coberturaData, offnetIzzi, offnetSky, globalIzziSelection, precioTotal, infoPaquetes, precioCombinado, globalFlagDomicilio } = useIzziContent();
+    const { globalUserAnswers, coberturaData, offnetIzzi, offnetSky, globalIzziSelection, precioTotal, infoPaquetes, precioCombinado, globalFlagDomicilio, checkSwitch } = useIzziContent();
     const {
         nextStep,
         currentStep,
@@ -274,7 +274,7 @@ export default function ResumenContainer() {
 
     const { trigger: runSubmitCapacity, isLoading: loadingSubmitCapacity } = useControlledAction({
         action: async () => {
-            const res = await GetSubmitCapacity(izziEnrrollRef.current, datosContratacionRef, cardRecurrent, globalFlagDomicilio);
+            const res = await GetSubmitCapacity(izziEnrrollRef.current, datosContratacionRef, checkSwitch, globalFlagDomicilio);
             const data = await res;
             if (data?.code) {
                 console.error("Error del servicio getCapacity");
