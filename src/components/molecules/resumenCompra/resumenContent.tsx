@@ -216,7 +216,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                             }
                         </h2>
                     </div>
-                    <div className="flex flex-col gap-[8px]">
+                    <div className={`flex flex-col gap-[8px] ${validateSwitch ? "mb-[24px]" : "mb-0"}`}>
                         {/* {     
                             ottPromos &&
                             ottPromos?.filter(promo => promo.permanente.toLowerCase() === 'no')

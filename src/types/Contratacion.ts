@@ -108,8 +108,9 @@ export interface PaymentReference {
 
 export interface PaymentLiga {
     response: {
-        html: string,
-        reference: string,
+        error: string,
+        html: string | null,
+        reference: string | null,
     },
 }
 
