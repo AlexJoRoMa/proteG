@@ -16,10 +16,10 @@ const TeAyudamosLandingModalComponent = ({ isOpen = true, onClose, modalData, te
   const defaultData = {
     title: '¡Contáctanos! Estamos para ayudarte',
     column1: {
-      title: 'Contrata Ahora',
+      title: 'Contrata Ahora z',
       row1: { text: '¡Llámanos!', tel: '800 607 7070' },
       row2: { link: 'Te llamamos' },
-      row3: { wpp: { text: 'Whatsapp', tel: '+520000000', promoText: 'Estoy Interesado' } }
+      row3: { wpp: { text: 'Whatsapp', tel: '+520000000landing', promoText: 'Estoy Interesado' } }
     }
   };
 

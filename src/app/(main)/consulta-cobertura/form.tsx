@@ -10,8 +10,7 @@ import geocodeApi from '@/services/google-maps/api';
 import { GeocodeType } from '@/types/CoberturaTypes';
 import { useIzziContent } from '@/components/providers/IzziProvider';
 import { getOfertas } from '@/services/izzi/configurador';
-import TeAyudamosModalComponent from '../../../components/layouts/modals/TeAyudamosModalComponentConfigurador';
-
+import TeAyudamosModalComponentConfig from '../../../components/layouts/modals/TeAyudamosModalComponentConfigurador';
 
 
 const inputStyles = {
@@ -38,6 +37,7 @@ export default function CoberturaForm() {
     const [error] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const { getValue } = useMicrocopies('cobertura');
+    const { getValue2 } = useMicrocopies('contrataahoramodal');
     const { addressSelected, setAddress, setSelectedPlace, setMarkerPosition,
         postalCode, 
         setPostalCode,
@@ -125,6 +125,49 @@ export default function CoberturaForm() {
         );
       };
 
+    const modalData = {
+      title: getValue2('stickyModal.title'),
+      column1: {
+        title: getValue2('stickyModal.column1.title'),
+        row1: {
+          text: getValue2('stickyModal.column1.row1.text'),
+          tel: getValue2('stickyModal.column1.row1.tel'),
+        },
+        row2: {
+          link: getValue2('stickyModal.column1.row2.link'),
+        },
+        row3: {
+          wpp: {
+            text: getValue2('stickyModal.column1.row3.wpp.text'),
+            tel: getValue2('stickyModal.column1.row3.wpp.tel'),
+            promoText: getValue2('stickyModal.column1.row3.wpp.promoText'),
+          },
+        },
+      },
+      column2: {
+        title: getValue2('stickyModal.column2.title'),
+        row1: {
+          text: getValue2('stickyModal.column2.row1.text'),
+          tel: getValue2('stickyModal.column2.row1.tel'),
+        },
+        row2: {
+          link: {
+            text: getValue2('stickyModal.column2.row2.link.text'),
+            url: getValue2('stickyModal.column2.row2.link.url'),
+          },
+        },
+        row3: {
+          wpp: {
+            text: getValue2('stickyModal.column2.row3.wpp.text'),
+            tel: getValue2('stickyModal.column2.row3.wpp.tel'),
+            promoText: getValue2('stickyModal.column2.row3.wpp.promoText'),
+          },
+        },
+      },
+    };
+
+
+      
     /* const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         console.log('🐸 aqui configurador ')
         e.preventDefault();
@@ -295,7 +338,7 @@ const handleCharPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         >
           <ModalContent>
             {(onClose)=> (
-            <TeAyudamosModalComponent onClose={onClose} />
+            <TeAyudamosModalComponentConfig modalData={modalData} onClose={onClose} />
           )} 
           </ModalContent>
         </Modal>
