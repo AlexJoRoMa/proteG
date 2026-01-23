@@ -15,7 +15,7 @@ const TeAyudamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlama
   const defaultData = {
     title: '¡Contáctanos! Estamos para ayudarte',
     column1: {
-      title: 'Contrata Ahora x',
+      title: 'Contrata Ahora',
       row1: { text: '¡Llámanos!', tel: '800 607 7070' },
       row2: { link: 'Te llamamos' },
       row3: { wpp: { text: 'Whatsapp', tel: '+520000000', promoText: 'Estoy Interesado' } }

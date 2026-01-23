@@ -15,7 +15,7 @@ const TeAyudamosModalComponentConfig = ({ isOpen = true, onClose, modalData }: T
   const defaultData = {
     title: '¡Contáctanos! Estamos para ayudarte',
     column1: {
-      title: 'Contrata Ahora y',
+      title: 'Contrata Ahora',
       row1: { text: '¡Llámanos!', tel: '800 607 7070x' },
       row2: { link: 'Te llamamos' },
       row3: { wpp: { text: 'Whatsapp', tel: '+520000000config', promoText: 'Estoy Interesado' } }
@@ -24,7 +24,7 @@ const TeAyudamosModalComponentConfig = ({ isOpen = true, onClose, modalData }: T
       title: 'Soporte a Cliente',
       row1: { text: 'Si eres cliente ¡llámanos!', tel: '800 120 5000' },
       row2: { link: { text: 'Centro de ayuda', url: 'https://ayudaizzi.izzi.mx/hc/es' } },
-      row3: { wpp: { text: 'Whatsapp', tel: '+520000000config', promoText: 'Estoy Interesado' } }
+      row3: { wpp: { text: 'Whatsapp', tel: '+520000000', promoText: 'Estoy Interesado' } }
     }
   };
 
