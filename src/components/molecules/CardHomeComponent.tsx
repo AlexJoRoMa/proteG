@@ -9,7 +9,7 @@ import { ColorOption } from '@/constants/ColorModalConstants';
 
 
 
-const CardHomeComponent = async({card}:CardPropType) => {
+const CardHomeComponent = async({card, index = 0}:CardPropType) => {
 
     //Obteniendo la imagen del card
     const imageAsset = card?.fields?.image as Asset;
@@ -17,6 +17,8 @@ const CardHomeComponent = async({card}:CardPropType) => {
     ).then(asset => {
         return asset.fields;
     }) : null;
+
+    const shouldPrioritize = index < 3
 
   return (
     <div className='h-[740px] 4xl:max-h-[985px] max-h-[850px] 4xl:h-[830px] xl:h-[985px] md:h-[785px] flex-col rounded-md relative '>
@@ -32,8 +34,9 @@ const CardHomeComponent = async({card}:CardPropType) => {
           alt={imageUrl?.altText as string || 'Imagen del Card'}
           width={384}
           height={216}
-          priority
-          fetchPriority='high'
+          priority={shouldPrioritize}
+          fetchPriority={shouldPrioritize ? 'high' : 'auto'}
+          loading={shouldPrioritize ? 'eager' : 'lazy'}
           className="w-full object-cover h-auto rounded-t-md border-b border-orange-500"
         />
         <div className='px-4 md:px-6 py-8 bg-[color:var(--color-gray-450)] h-[calc(740px-208px)] 4xl:h-[calc(830px-216px)] xl:h-[calc(860px-216px)] md:h-[calc(785px-216px)] flex flex-col text-white'>
@@ -59,8 +62,7 @@ const CardHomeComponent = async({card}:CardPropType) => {
                                 alt={`Add ${index + 1}`}
                                 width={assetAdd.fields?.file?.details && 'image' in assetAdd.fields.file.details ? (assetAdd.fields.file.details as AssetDetails).image?.width || 100 : 100}
                                 height={assetAdd.fields?.file?.details && 'image' in assetAdd.fields.file.details ? (assetAdd.fields.file.details as AssetDetails).image?.height || 25 : 25}
-                                priority
-                                fetchPriority='high'
+                                loading='lazy'
                                 className='w-auto h-full'/>
                         ) : null;
                     })

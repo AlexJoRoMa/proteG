@@ -84,13 +84,13 @@ const CarouselCardComponent = async ({id, recomendador}:CarouselCardProps) => {
                 {
                   entryCarousel && entryCarousel[0]?.fields.cardsCarousel && Array.isArray(entryCarousel[0].fields.cardsCarousel) && (entryCarousel[0].fields.cardsCarousel as Entry<EntrySkeletonType, undefined, string>[]).map((card:Entry<EntrySkeletonType, undefined, string>, index:number) => {
                     if( card.fields.type === CARDHOMECOMPONENT) {
-                      return <CardHomeComponent key={index} card={card} promo={hasPromo}/>
+                      return <CardHomeComponent key={index} card={card} promo={hasPromo} index={index}/>
                     }
                     else if (typeof card.fields.type && card.fields.type !== CARDHOMECOMPONENT && card.fields.type !== CARDTVPAQUETESCOMPONENT) {
-                      return <CardTVInternetMovilComponent key={index} card={card} promo={hasPromo}/>
+                      return <CardTVInternetMovilComponent key={index} card={card} promo={hasPromo} index={index}/>
                     }
                     else if (typeof card.fields.type === 'string' && CARDTVPAQUETESCOMPONENT.includes(card.fields.type)) {
-                      return <CardTvPaquetesComponent key={index} card={card} promo={hasPromo}/>
+                      return <CardTvPaquetesComponent key={index} card={card} promo={hasPromo} index={index}/>
                     }
                     return null;
                   })
