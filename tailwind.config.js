@@ -3,12 +3,18 @@ import {heroui} from "@heroui/react";
 /** @type {import('tailwindcss').Config} */
 const config = {
   content: [
-    // ...
-    // make sure it's pointing to the ROOT node_module
-    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}"
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/@heroui/theme/dist/components/**/*.{js,mjs}"
+  ],
+  safelist: [
+    'bg-black-0/80'
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['var(--font-lato)'],
+      },
+    },
   },
   darkMode: "class",
   plugins: [heroui()]

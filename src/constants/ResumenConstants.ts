@@ -1,0 +1,28 @@
+export const mesIds = [
+    "primer",
+    "segundo",
+    "tercer",
+    "cuarto",
+    "quinto",
+    "sexto",
+    "septimo",
+    "octavo",
+    "noveno",
+    "decimo",
+    "decimoprimero",
+    "decimosegundo",
+    "decimotercero",
+    "decimocuarto",
+    "decimoquinto",
+    "decimosexto",
+    "decimoseptimo",
+    "decimoctavo",
+    "decimonoveno",
+    "vigecimo",
+    "vigecimoprimero",
+    "vigecimosegundo",
+    "vigecimotercero",
+    "vigecimocuarto",
+];
+
+export type MesId = typeof mesIds[number];

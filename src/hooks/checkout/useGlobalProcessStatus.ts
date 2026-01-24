@@ -1,0 +1,68 @@
+'use client'
+
+import { useCheckout } from "@/components/providers/CheckoutProvider";
+import { GetProcessStatus } from "@/utils/GetProcessStatus";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import useSWR from "swr"
+
+type ProcessStatusResponse = {
+    status: 'error' | 'finalizada' | string;
+    waitingForAction: boolean;
+}
+
+export function useGlobalProcessStatus(onFinalizado?: (data: ProcessStatusResponse) => void) {
+
+    const router = useRouter();
+    const { setProcessStatus, izziEnroll } = useCheckout();
+    const [pollingActivo, setPollingActivo] = useState(false);
+    const [puedeEjecutar, setPuedeEjecutar] = useState(false);
+
+    useEffect(() => {
+        if (pollingActivo && izziEnroll) {
+            setPuedeEjecutar(true);
+        }
+    }, [pollingActivo, izziEnroll]);
+
+    const fetchProcessStatus = useCallback(async () => {
+        const response = await GetProcessStatus(izziEnroll);
+        setProcessStatus(response);
+        if (!response) throw new Error('Error al obtener processStatus');
+
+        return response;
+    }, [izziEnroll, setProcessStatus]);
+
+    const { data, mutate } = useSWR<ProcessStatusResponse>(
+        puedeEjecutar ? ['processStatus', izziEnroll] : null,
+        fetchProcessStatus,
+        {
+            refreshInterval: (data) =>
+                data?.status.includes('Finalizada') || data?.status.includes('error') || data?.status.includes('Error') ? 0 : 10000,
+            revalidateOnFocus: false,
+            keepPreviousData: false,
+            revalidateIfStale: false,
+        }
+    );
+
+    useEffect(() => {
+        if (!data) return;
+
+        if (data?.status.includes('Finalizada')) {
+            onFinalizado?.(data);
+            mutate(data, { revalidate: false });
+        }
+        if (data?.status.includes('error') || data?.status.includes('Error')) {
+            console.error('ProcessStatus encontro un error');
+            mutate(data, { revalidate: false });
+            router.push('/error')
+        }
+    }, [data, mutate, onFinalizado, setProcessStatus, router]);
+
+    const iniciarPolling = () => {
+        if (!pollingActivo) {
+            setPollingActivo(true);
+        }
+    };
+
+    return { iniciarPolling, data };
+}
