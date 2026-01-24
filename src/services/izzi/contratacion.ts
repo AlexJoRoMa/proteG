@@ -152,10 +152,6 @@ export async function getSubmitOffer({
             body: JSON.stringify(body)
         });
 
-        // if (!response.ok) {
-        //     throw new Error(`Error HTTP ${response.status}`);
-        // }
-
         const text = await response.text();
         const data = text ? JSON.parse(text) : null;
         return data;
@@ -248,10 +244,6 @@ export async function getLigaPago({
             },
             body: JSON.stringify(body)
         });
-
-        // if (!response.ok) {
-        //     throw new Error(`Error HTTP ${response.status}`);
-        // }
 
         const data = await response.json();
         return data;

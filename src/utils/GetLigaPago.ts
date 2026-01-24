@@ -34,8 +34,6 @@ export async function GetLigaPago(rpt: string, precioTotal: number, processStatu
         );
         const data = await res.json();
 
-        // if (!data.ok) throw new Error(`Error HTTP ${data.status}`);
-
         return data;
 
     } catch (err) {

@@ -1,8 +1,6 @@
 
 import Image from 'next/image';
 import { useCheckout } from '@/components/providers/CheckoutProvider';
-// import { useState } from 'react';
-// import { Switch } from '@heroui/react';
 import PayPalScript from './PayPalScript';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import { useIzziContent } from '@/components/providers/IzziProvider';
@@ -14,9 +12,7 @@ export default function PagoPayPal() {
     const { getValue } = useMicrocopies('contratacion-pago');
     
     setCheckSwitch(false);
-    //TODO: al momento de retomar la domiciliacion de paypal, eliminar constnate quemada e implementar stado del switch.
     const isRecurrent = false;
-    // const [isRecurrent, setIsRecurrent] = useState(false);
 
     return (
         <section className='w-full'>

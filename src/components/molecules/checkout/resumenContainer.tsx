@@ -160,10 +160,8 @@ export default function ResumenContainer() {
     const step6 = async () => {
         // ValidaPago
         const response = await validatePayment(datosContratacion, setDatosContratacion, processStatusRef.current, paymentReference);
-        const test = true;
-        console.log(':::::::')
 
-        if (response /* test */ === true) {
+        if (response === true) {
 
             // SubmitCapacity
             const submitResponse = await runSubmitCapacity();
