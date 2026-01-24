@@ -124,7 +124,6 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
         + Number(userSelection?.movil?.paquete?.precioPaquete || 0)
         + Number(userSelection?.tv?.paquete?.precioTachado || userSelection?.tv?.paquete?.precioPaquete || 0)
         + (totalOttPrice || 0);
-    setTotalSinDescuento(totalSinDescuento);
     const precioTotal = totalSinDescuento && promoData.promos ? totalSinDescuento - ahorroCombinado - (Math.abs(Number(totalPromoPrice)) || 0) : totalSinDescuento;
     const ahorroTotal = ((Number(ahorroCombinado) || 0) + (Number(pagoAnticipado) || 0)) + (Number(Math.abs(totalPromoPrice as number)) || 0);
 
@@ -132,10 +131,11 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     const descuentoMeses = obtenerArray(promoMeses);
 
     useEffect(() => {
+        setTotalSinDescuento(totalSinDescuento);
         setAhorroTotal(ahorroTotal);
         setPrecioCombinado(ahorroCombinado as number);
         setPrecioTotal(priceTotal as number);
-    }, [ahorroCombinado, ahorroTotal, priceTotal, setAhorroTotal, setPrecioCombinado, setPrecioTotal]);
+    }, [ahorroCombinado, ahorroTotal, priceTotal, totalSinDescuento, setAhorroTotal, setPrecioCombinado, setPrecioTotal, setTotalSinDescuento]);
 
     useEffect(() =>{
         if(validateSwitch){
