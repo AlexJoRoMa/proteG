@@ -29,7 +29,7 @@ const CardHomeComponent = async({card}:CardPropType) => {
         }
         <Image 
           src={`https:${(imageUrl?.image as Asset)?.fields?.file?.url}` as string}
-          alt={imageUrl?.altText as string}
+          alt={imageUrl?.altText as string || 'Imagen del Card'}
           width={384}
           height={216}
           priority
