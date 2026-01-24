@@ -33,18 +33,12 @@ async function sendToExternalApi(data: TeLlamamosFormData): Promise<boolean> {
       }
     });
 
-    console.log('Enviando request a:', url.toString());
-    console.log('Payload:', payload);
-
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     });
-
-    console.log('Response status:', response.status);
-    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
      if (!response.ok) {
       const responseText = await response.text();
@@ -61,17 +55,11 @@ async function sendToExternalApi(data: TeLlamamosFormData): Promise<boolean> {
 
 export async function POST(request: NextRequest) {
   try {
-
-    console.log('=== Inicio POST /api/te-llamamos ===');
-
     const formData: TeLlamamosFormData = await request.json();
-    console.log('Form data recibida:', formData);
 
     const { telefono, recaptchaToken, utm, url } = formData;
 
     if (!telefono || !recaptchaToken) {
-      console.log('Validación fallida:', { telefono: !!telefono, recaptchaToken: !!recaptchaToken });
-
       return NextResponse.json(
         { 
           success: false, 
@@ -81,23 +69,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('Validaciones pasadas, enviando a API externa...');
-
-    // Enviar datos a la API externa
     const externalApiSuccess = await sendToExternalApi(formData);
 
-    console.log('Resultado API externa:', externalApiSuccess);
-
     if (!externalApiSuccess) {
-      console.log('Error en API externa, retornando error 500');
       return NextResponse.json({
         success: false,
         error: 'Error al procesar la solicitud. Intenta nuevamente.'
       }, { status: 500 });
     }
 
-    console.log('Formulario Te Llamamos procesado exitosamente');
-    
     return NextResponse.json({
       success: true,
       message: 'Solicitud recibida exitosamente. Te contactaremos pronto.',

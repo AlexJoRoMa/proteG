@@ -166,28 +166,6 @@ export default function CoberturaForm() {
       },
     };
 
-
-      
-    /* const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        console.log('🐸 aqui configurador ')
-        e.preventDefault();
-        setFormattedAddress(`${street}, ${streetNumber}, ${locality}`);
-        setGlobalFlag(true);
-        setCoberturaData({
-            lat: lat.toString(), 
-            lng: lng.toString(), 
-            zipCode: postalCode, 
-            address: `${street}, ${streetNumber}, ${locality}`, 
-            municipio: locality, 
-            colonia: neighborhood,
-            calle: street,
-            numExt: streetNumber,
-            estado: state
-        });
-        setIsLoading(true);
-        await createCookie({lat: lat.toString(), lng: lng.toString(), zipCode: postalCode, address: `${street}, ${streetNumber}, ${locality}`});
-    }; */
-
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       
 
@@ -252,7 +230,7 @@ export default function CoberturaForm() {
     }
       
     function naviError() {
-        console.log(error)
+        console.error("Geolocation error:", error)
         alert("Sorry, no position available.");
     }
 

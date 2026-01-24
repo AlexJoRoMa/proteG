@@ -4,7 +4,7 @@ import {heroui} from "@heroui/react";
 const config = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
-    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}"
+    "./node_modules/@heroui/theme/dist/components/**/*.{js,mjs}"
   ],
   safelist: [
     'bg-black-0/80'

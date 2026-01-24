@@ -273,7 +273,7 @@ export default function AccordionPlanesExtras() {
                                             return(
                                                 <Image
                                                 src={`https:${setIcon.fields.ottImage.fields.image.fields.file.url}`}
-                                                alt={setIcon.fields.ottImage.fields.altText}
+                                                alt={setIcon.fields.ottImage.fields.altText || ott.titulo || "Ícono del servicio extra"}
                                                 width={96}
                                                 height={46}
                                                 />

@@ -215,7 +215,6 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
             });
 
             if (response.ok) {
-                console.log('Formulario enviado exitosamente');
                 setSubmitError('');
                 setIsSuccess(true);
             } else {

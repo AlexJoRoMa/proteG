@@ -28,7 +28,6 @@ export async function getToken() {
         }
 
         const data = await response.json();
-        // console.log('response', data);
         return data.access_token;
 
     } catch (error) {
@@ -80,7 +79,6 @@ export async function getOfertas(dataCobertura: CoberturaType) {
         }
 
         const data = await response.json();
-        console.log('response', data);
         return data;
 
     } catch (error) {
@@ -125,7 +123,6 @@ export async function getQuote(body: QuoteInfo) {
         }
 
         const data = await response.json();
-        console.log('response', data);
         return data;
 
     } catch (error) {
