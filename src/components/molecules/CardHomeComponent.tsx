@@ -33,6 +33,7 @@ const CardHomeComponent = async({card}:CardPropType) => {
           width={384}
           height={216}
           priority
+          fetchPriority='high'
           className="w-full object-cover h-auto rounded-t-md border-b border-orange-500"
         />
         <div className='px-4 md:px-6 py-8 bg-[color:var(--color-gray-450)] h-[calc(740px-208px)] 4xl:h-[calc(830px-216px)] xl:h-[calc(860px-216px)] md:h-[calc(785px-216px)] flex flex-col text-white'>
@@ -59,6 +60,7 @@ const CardHomeComponent = async({card}:CardPropType) => {
                                 width={assetAdd.fields?.file?.details && 'image' in assetAdd.fields.file.details ? (assetAdd.fields.file.details as AssetDetails).image?.width || 100 : 100}
                                 height={assetAdd.fields?.file?.details && 'image' in assetAdd.fields.file.details ? (assetAdd.fields.file.details as AssetDetails).image?.height || 25 : 25}
                                 priority
+                                fetchPriority='high'
                                 className='w-auto h-full'/>
                         ) : null;
                     })
