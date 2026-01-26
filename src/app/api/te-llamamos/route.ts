@@ -13,12 +13,12 @@ async function sendToExternalApi(data: TeLlamamosFormData): Promise<boolean> {
 
   // Preparar el payload según la especificación
   const payload: ExternalApiPayload = {
-    nombre: 'anonimo',
-    email: 'dummy@izzi.mx',
+    nombre: data.nombre || 'anonimo',
+    email: data.email || 'dummy@izzi.mx',
     telefono: data.telefono,
     Tipo: 'local',
-    utm: data.utm || null,
-    flujo: null,
+    utm: data.utm || "",
+    flujo: "footer",
     canal: 'llamame',
     captcha: data.recaptchaToken,
     from: data.url
