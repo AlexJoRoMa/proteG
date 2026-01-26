@@ -8,7 +8,7 @@
     "env:local": "node scripts/load-env.js local",
     "env:development": "node scripts/load-env.js development",
     "env:stage": "node scripts/load-env.js stage",
-    "env:prod": "node scripts/load-env.js production",
+    "env:prod": "node scripts/load-env.js prod",
     "build:dev": "npm run env:local && next build",
     "build:stage": "npm run env:stage && next build",
     "build:prod": "npm run env:prod && next build",
