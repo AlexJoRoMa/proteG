@@ -3,6 +3,7 @@ import { Lato } from "next/font/google";
 import NavigationLanding from "@/components/molecules/navigationLandingComponent";
 const lato = Lato({ subsets: ['latin'], weight: ['400', '700'] })
 import FooterLanding from "@/components/molecules/footerLandingComponent";
+import { GoogleTagManager } from "@next/third-parties/google";
 
 
 //TODO descomentar metadata cuando se tenga el contenido tomado desde contentful
@@ -19,6 +20,7 @@ export default function CheckoutLayout({
 }>) {
     return (
         <div className={lato.className}>
+            <GoogleTagManager gtmId={String(process.env.IZZI_PAQUETES)} />
             {/* header de las landing */}
             <NavigationLanding />
             {children}
