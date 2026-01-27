@@ -14,9 +14,11 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
   const page = await fetchComponentsBySlugPage(fullPath);
   const components = page.items || [];
   
+  const validComponent = components.filter(filt => filt.fields.paquetes === false);
 
-  const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
+  const seoEntry = validComponent[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
   const seo = seoEntry?.fields;
+
 
   if (page.total !== 1) {
     notFound();
@@ -28,10 +30,10 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
     {seo && <SEOHead seo={seo} slug={fullPath} />}
 
     <main>
-      {components[0]?.fields.components &&
-      Array.isArray(components[0].fields.components) &&
-      components[0].fields.components.length > 0 ? (
-        (components[0].fields.components as Entry<EntrySkeletonType, undefined, string>[]).map(
+      {validComponent[0]?.fields.components &&
+      Array.isArray(validComponent[0].fields.components) &&
+      validComponent[0].fields.components.length > 0 ? (
+        (validComponent[0].fields.components as Entry<EntrySkeletonType, undefined, string>[]).map(
           (component, index) => {
             const type = component.fields.type;
             const Component =
