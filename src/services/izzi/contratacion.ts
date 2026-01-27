@@ -76,6 +76,7 @@ export async function getIzziEnroll({
 
     const url = process.env.IZZI_ENRROLL_PATH;
     const accessToken = await getToken();
+    const apiKey = process.env.IZZI_API_KEY;
 
     try {
 
@@ -84,6 +85,7 @@ export async function getIzziEnroll({
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${accessToken}`,
+                ...(apiKey ? { "x-api-key": apiKey } : {}),
                 Cookie: headers.Cookie,
             },
             body: JSON.stringify(body)
