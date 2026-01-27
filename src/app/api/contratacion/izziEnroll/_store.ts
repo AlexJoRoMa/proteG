@@ -1,4 +1,4 @@
-'use server'
+// Store para jobs de izziEnroll
 
 export type JobStatus = "queued" | "running" | "done" | "failed";
 

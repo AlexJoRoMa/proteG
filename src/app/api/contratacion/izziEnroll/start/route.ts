@@ -1,5 +1,3 @@
-'use server'
-
 import { randomUUID } from "crypto";
 import { getIzziEnroll } from "@/services/izzi/contratacion";
 import { NextRequest } from "next/server";
@@ -18,10 +16,11 @@ export async function POST(request: NextRequest) {
         // Limpiar jobs viejos periódicamente
         cleanupOldJobs();
 
-        // Ejecutar en background "best effort" usando setImmediate/queueMicrotask
-        // No bloqueamos la respuesta HTTP
-        (async () => {
+        // Ejecutar en background usando setTimeout(0) para liberar el event loop
+        // Esto permite que la respuesta HTTP se envíe antes de iniciar el proceso largo
+        setTimeout(async () => {
             try {
+                console.log(`[Job ${jobId}] Iniciando proceso...`);
                 jobs.set(jobId, { 
                     status: "running", 
                     createdAt: jobs.get(jobId)?.createdAt ?? Date.now() 
@@ -32,6 +31,7 @@ export async function POST(request: NextRequest) {
                     headers: { Cookie }
                 });
 
+                console.log(`[Job ${jobId}] Proceso completado exitosamente`);
                 jobs.set(jobId, { 
                     status: "done", 
                     createdAt: jobs.get(jobId)?.createdAt ?? Date.now(), 
@@ -39,13 +39,14 @@ export async function POST(request: NextRequest) {
                 });
             } catch (e: unknown) {
                 const errorMessage = e instanceof Error ? e.message : "Unknown error";
+                console.error(`[Job ${jobId}] Error:`, errorMessage);
                 jobs.set(jobId, {
                     status: "failed",
                     createdAt: jobs.get(jobId)?.createdAt ?? Date.now(),
                     error: errorMessage,
                 });
             }
-        })();
+        }, 0);
 
         // Responder inmediatamente con el jobId (evita el timeout de 30s)
         return new Response(

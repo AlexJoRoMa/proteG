@@ -1,7 +1,7 @@
 import { CoberturaType, IzziSelection } from "@/types/ConfiguradorTypes";
 import { DatosContratacion } from "@/types/Contratacion";
 
-const POLLING_INTERVAL = 2000; // 2 segundos entre cada check
+const POLLING_INTERVAL = 5000; // 5 segundos entre cada check
 const MAX_POLLING_TIME = 5 * 60 * 1000; // Máximo 5 minutos de polling
 
 type JobStatus = "queued" | "running" | "done" | "failed";
@@ -33,6 +33,7 @@ async function pollForResult(jobId: string, startTime: number): Promise<unknown>
     const statusData: StatusResponse = await statusResponse.json();
 
     if (statusData.status === "failed") {
+        console.error(`[Polling] Job ${jobId} - FAILED:`, statusData.error);
         throw new Error(statusData.error || "Error en el proceso de enroll");
     }
 
@@ -42,6 +43,7 @@ async function pollForResult(jobId: string, startTime: number): Promise<unknown>
         const resultData: ResultResponse = await resultResponse.json();
 
         if (!resultResponse.ok) {
+            console.error(`[Polling] Job ${jobId} - Error al obtener resultado:`, resultData.error);
             throw new Error(resultData.error || "Error al obtener resultado");
         }
 
