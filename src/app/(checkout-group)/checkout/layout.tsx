@@ -1,6 +1,7 @@
 import { Lato } from 'next/font/google';
 import "@/styles/globals.css";
 import CheckoutHeader from '@/components/layouts/checkout/CheckoutHeader';
+import { GoogleTagManager } from '@next/third-parties/google';
 
 const lato = Lato({
   weight: '400',
@@ -23,6 +24,7 @@ export default function CheckoutLayout({
 }>) {
   return (
     <div lang="es" className={`${lato.variable}`}>
+      <GoogleTagManager gtmId={String(process.env.IZZI_HOGAR)} />
       <CheckoutHeader />
       {children}
     </div>

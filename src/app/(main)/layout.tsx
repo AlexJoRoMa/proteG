@@ -1,6 +1,7 @@
 import Footer from "@/components/molecules/footer";
 import Navigation from "@/components/molecules/navigation";
 import { Lato } from "next/font/google";
+import { GoogleTagManager } from "@next/third-parties/google";
 
 const lato = Lato({subsets: ['latin'], weight:['400', '700']})
 
@@ -18,6 +19,7 @@ export default function MainLayout({
 }>) {
     return (
         <div className={lato.className}>
+            <GoogleTagManager gtmId={String(process.env.IZZI_HOGAR)}/>
             <Navigation />
             {children}
             <Footer />
