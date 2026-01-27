@@ -6,6 +6,9 @@ const MAX_POLLING_TIME = 5 * 60 * 1000; // Máximo 5 minutos de polling
 
 type JobStatus = "queued" | "running" | "done" | "failed";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type IzziEnrollResponse = any;
+
 interface StatusResponse {
     jobId: string;
     status: JobStatus;
@@ -14,7 +17,7 @@ interface StatusResponse {
 
 interface ResultResponse {
     jobId: string;
-    result: unknown;
+    result: IzziEnrollResponse;
     error?: string;
 }
 
@@ -22,7 +25,7 @@ interface ResultResponse {
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Función de polling para verificar el estado del job
-async function pollForResult(jobId: string, startTime: number): Promise<unknown> {
+async function pollForResult(jobId: string, startTime: number): Promise<IzziEnrollResponse> {
     // Verificar si excedimos el tiempo máximo de polling
     if (Date.now() - startTime > MAX_POLLING_TIME) {
         throw new Error("Timeout: el proceso de enroll tardó demasiado");
@@ -55,7 +58,7 @@ async function pollForResult(jobId: string, startTime: number): Promise<unknown>
     return pollForResult(jobId, startTime);
 }
 
-export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratacion: Partial<DatosContratacion>, offNetIzzi: boolean, offNetSky: boolean, globalIzziSelection: IzziSelection | null) {
+export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratacion: Partial<DatosContratacion>, offNetIzzi: boolean, offNetSky: boolean, globalIzziSelection: IzziSelection | null): Promise<IzziEnrollResponse> {
 
     const BODY = {
         "stepSavedProspect": "",
