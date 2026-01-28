@@ -13,7 +13,6 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
 
   const page = await fetchComponentsBySlugPage(fullPath);
   const components = page.items || [];
-  
 
   const seoEntry = components[0]?.fields.seoMetadata as Entry<SeoFieldSkeleton, undefined, string>;
   const seo = seoEntry?.fields;
