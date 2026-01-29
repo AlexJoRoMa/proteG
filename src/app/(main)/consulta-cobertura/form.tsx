@@ -373,10 +373,12 @@ export default function CoberturaForm() {
     };
 
     const handleGoogglePlace = (place: google.maps.places.PlaceResult | null) => {
+      if(place) setSelectedPlace(place)
       const lat = place?.geometry?.location?.lat() ?? 0;
       const lng = place?.geometry?.location?.lng() ?? 0;
       
       if( lat !== 0 && lng !== 0 ){
+        
         setTimeout(() => {
           setLat(lat);
           setLng(lng);
