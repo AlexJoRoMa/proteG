@@ -52,7 +52,7 @@ const inputStyles = {
       
           const autoComplete = new places.Autocomplete(inputRef.current, options);
 
-          const listener = autoComplete.addListener('place_changed', () => {
+         autoComplete.addListener('place_changed', () => {
             const place = autoComplete.getPlace();
             console.log('🦧 place ', place );
 
@@ -65,7 +65,11 @@ const inputStyles = {
           });
 
           return () => {
-            google.maps.event.clearInstanceListeners(listener);
+            google.maps.event.clearInstanceListeners(autoComplete);
+            const contenedor = document.querySelectorAll('.pac-container');
+            if(contenedor.length > 1) {
+              contenedor.forEach(contenedor => contenedor.remove());
+            }
           };
         }, [places, onPlaceSelect]);
       
@@ -81,8 +85,6 @@ const inputStyles = {
                 type="text"
                 classNames={inputStyles}
                 disableAnimation={true}
-                onPointerDown={(e) => e.stopPropagation()}
-                onBlur={(e) =>{ e.preventDefault()}}
              />
         );
       };
@@ -131,6 +133,10 @@ const inputStyles = {
 
           return () => {
             google.maps.event.clearInstanceListeners(autocomplete);
+            const contenedor = document.querySelectorAll('.pac-container');
+            if(contenedor.length > 1) {
+              contenedor.forEach(contenedor => contenedor.remove());
+            }
           };
 
         }, [places, onPlaceSelect, onValueChange]);
@@ -149,8 +155,6 @@ console.log('🚩 value ', value)
           name={name}
           type={type}
           disableAnimation={true}
-          onPointerDown={(e) => e.stopPropagation()}
-          onBlur={(e) =>{ e.preventDefault()}}
           /> 
         );
       };
