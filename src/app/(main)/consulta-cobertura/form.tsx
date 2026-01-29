@@ -395,12 +395,6 @@ export default function CoberturaForm() {
 
       return (
         <>
-        <style dangerouslySetInnerHTML={{ __html: `
-          .pac-container {
-          z-index: 9999 !important;
-          pointer-events: auto !important
-          }`
-          }}/>
         <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
