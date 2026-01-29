@@ -41,7 +41,7 @@ const inputStyles = {
         
         const inputRef = useRef<HTMLInputElement>(null);
         const places = useMapsLibrary('places');
-        const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+        const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null); 
       
         useEffect(() => {
 
@@ -59,9 +59,7 @@ const inputStyles = {
             const place = autoCompleteRef.current?.getPlace();
 
             if(place && place.geometry){
-              setTimeout(() => {
-                onPlaceSelect(place)
-              }, 250);
+              onPlaceSelect(place)
             }
           });
 
@@ -103,11 +101,11 @@ const inputStyles = {
         label, placeholder, value, onValueChange, onPlaceSelect, errorMessage, name
       } : PostalProps) => {
         
-        const inputRef = useRef<HTMLInputElement>(null);
+        const inputRef = useRef<HTMLInputElement>(null); //guarda la instancia del autocomplete de google
         const places = useMapsLibrary('places');
 
         useEffect(() => {
-          const inputElement = inputRef.current?.querySelector('input') || inputRef.current;
+          const inputElement = inputRef.current?.querySelector('input') || inputRef.current; //Accede al input para uq lo cache google
           if (!places || !inputRef.current) return;
 
           const options = new places.Autocomplete(inputElement as HTMLInputElement, {
@@ -119,14 +117,15 @@ const inputStyles = {
           const listener = options.addListener('place_changed', () => {
             const place = options.getPlace();
             if(place && place.geometry) {
-              setTimeout(() => {
+              
                 const cp = place.name || '';
                 onValueChange(cp);
                 onPlaceSelect(place);
-              }, 230)
+              
             }
           });
 
+          //Limpia todos los eventos y evita que surga mas cuadros de direcciones para autocompletar
           return () => {
             google.maps.event.removeListener(listener);
             const contenedor = document.querySelectorAll('.pac-container');
@@ -372,23 +371,24 @@ export default function CoberturaForm() {
   }
     };
 
+/* 
+Se creo handleGogglePlace para poder actualizar el mapa, el Marker y tambien el formulario
+
+*/
     const handleGoogglePlace = (place: google.maps.places.PlaceResult | null) => {
       if(place) setSelectedPlace(place)
       const lat = place?.geometry?.location?.lat() ?? 0;
       const lng = place?.geometry?.location?.lng() ?? 0;
       
       if( lat !== 0 && lng !== 0 ){
-        
-        setTimeout(() => {
-          setLat(lat);
-          setLng(lng);
-          setMarkerPosition({lat: lat, lng: lng});
-          geocodeApi(lat, lng).then((result) => {
-            mapAddressFields(result)
-            setAddress(true);
-          });
+        setLat(lat);
+        setLng(lng);
+        setMarkerPosition({lat: lat, lng: lng});
+        geocodeApi(lat, lng).then((result) => {
+          mapAddressFields(result)
+          setAddress(true);
+        });
         if(map) map.panTo({lat, lng})
-        }, 150)
       }
     };
 
