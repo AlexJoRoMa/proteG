@@ -31,6 +31,131 @@ const inputStyles = {
     ]
   }
 
+  
+  interface PlaceAutocompleteProps {
+        onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
+        getValue: (key: string) => string;
+      }
+
+  const PlaceAutocomplete = ({ onPlaceSelect, getValue }: PlaceAutocompleteProps) => {
+        
+        const inputRef = useRef<HTMLInputElement>(null);
+        const places = useMapsLibrary('places');
+      
+        useEffect(() => {
+          if (!places || !inputRef.current) return;
+      
+          const options = {
+            fields: ['name', 'formatted_address', 'geometry.location'],
+            componentRestrictions: { country: ['mx'] }
+          };
+      
+          const autoComplete = new places.Autocomplete(inputRef.current, options);
+
+          const listener = autoComplete.addListener('place_changed', () => {
+            const place = autoComplete.getPlace();
+            console.log('🦧 place ', place );
+
+
+            if(place && place.geometry){
+              setTimeout(() => {
+                onPlaceSelect(place)
+              }, 250);
+            }
+          });
+
+          return () => {
+            google.maps.event.clearInstanceListeners(listener);
+          };
+        }, [places, onPlaceSelect]);
+      
+
+        return (
+            <Input ref={inputRef}
+                isRequired
+                label={getValue('cobertura.form.direccion.label')}
+                placeholder={getValue('cobertura.form.direccion.placeholder')}
+                errorMessage={getValue('cobertura.form.direccion.error')}
+                labelPlacement="outside"
+                name="address"
+                type="text"
+                classNames={inputStyles}
+                disableAnimation={true}
+                onPointerDown={(e) => e.stopPropagation()}
+                onBlur={(e) =>{ e.preventDefault()}}
+             />
+        );
+      };
+  interface PostalProps {
+        label: string;
+        placeholder: string;
+        value: string;
+        onValueChange: (val: string) => void;
+        onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
+        type: 'address' | 'postal_code';
+        errorMessage: string;
+        name: string;
+      }
+
+  const PostalAutoComplete = ({ 
+        label, placeholder, value, onValueChange, onPlaceSelect, type, errorMessage, name
+      } : PostalProps) => {
+        
+        const inputRef = useRef<HTMLInputElement>(null);
+        const places = useMapsLibrary('places');
+
+        useEffect(() => {
+          if (!places || !inputRef.current) return;
+
+          const options = {
+            fields: ['name', 'formatted_address', 'geometry.location'],
+            componentRestrictions: { country: ['mx'] },
+            types: ['(regions)']
+          };
+
+          const autocomplete = new places.Autocomplete(inputRef.current, options);
+          
+          autocomplete.addListener('place_changed', () => {
+
+            const place = autocomplete.getPlace();
+            
+            if(place && place.geometry) {
+              setTimeout(() => {
+                const cp = place.name || '';
+                onValueChange(cp);
+                onPlaceSelect(place);
+              }, 230)
+              
+            }
+          });
+
+          return () => {
+            google.maps.event.clearInstanceListeners(autocomplete);
+          };
+
+        }, [places, onPlaceSelect, onValueChange]);
+console.log('🚩 value ', value)
+        return(
+          <Input 
+          ref={inputRef}
+          isRequired
+          label={label}
+          placeholder={placeholder}
+          labelPlacement='outside'
+          value={value}
+          onValueChange={onValueChange}
+          errorMessage={errorMessage}
+          classNames={inputStyles}
+          name={name}
+          disableAnimation={true}
+          onPointerDown={(e) => e.stopPropagation()}
+          onBlur={(e) =>{ e.preventDefault()}}
+          /> 
+        );
+      };
+
+  
+
 export default function CoberturaForm() {
     const map = useMap();
     const [isSelected, setIsSelected] = useState<boolean>(false);
@@ -66,64 +191,7 @@ export default function CoberturaForm() {
     const {isOpen, onOpen, onOpenChange } = useDisclosure();
     
     const { setGlobalFlag, setFormattedAddress, setCoberturaData } = useIzziContent();
-
     
-    interface PlaceAutocompleteProps {
-        onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
-      }
-      
-      const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
-        const [placeAutocomplete, setPlaceAutocomplete] =
-          useState<google.maps.places.Autocomplete | null>(null);
-        const inputRef = useRef<HTMLInputElement>(null);
-        const places = useMapsLibrary('places');
-      
-        useEffect(() => {
-          if (!places || !inputRef.current) return;
-      
-          const options = {
-            fields: ['name', 'formatted_address', 'geometry.location'],
-            componentRestrictions: { country: ['mx'] }
-          };
-      
-          setPlaceAutocomplete(new places.Autocomplete(inputRef.current, options));
-        }, [places]);
-      
-        useEffect(() => {
-          if (!placeAutocomplete) return;
-      
-          placeAutocomplete.addListener('place_changed', () => {
-            const lat = placeAutocomplete.getPlace().geometry?.location?.lat() as number;
-            const lng = placeAutocomplete.getPlace().geometry?.location?.lng() as number;
-            if(lat && lng){
-                setLat(lat);
-                setLng(lng);
-                const data = geocodeApi(lat, lng);
-                data.then((result) => {
-                    mapAddressFields(result);  
-                });
-                setAddress(true);
-                onPlaceSelect(placeAutocomplete.getPlace());
-                setMarkerPosition({lat, lng});
-                if(map) map.panTo({lat, lng})
-            }
-          });
-        }, [onPlaceSelect, placeAutocomplete]);
-
-        return (
-            <Input ref={inputRef}
-                isRequired
-                label={getValue('cobertura.form.direccion.label')}
-                placeholder={getValue('cobertura.form.direccion.placeholder')}
-                errorMessage={getValue('cobertura.form.direccion.error')}
-                labelPlacement="outside"
-                name="address"
-                type="text"
-                classNames={inputStyles}
-                value={addressSelected ? street : undefined}
-                 />
-        );
-      };
 
     const modalData = {
       title: getValue2('stickyModal.title'),
@@ -234,42 +302,42 @@ export default function CoberturaForm() {
         alert("Sorry, no position available.");
     }
 
-function mapAddressFields(data: GeocodeType) {
-    const components = data?.results?.[0]?.address_components ?? [];
-  
-    for (const item of components) {
-      const value = item.long_name;
-  
-      for (const type of item.types) {
-        switch (type) {
-          case 'postal_code':
-            setPostalCode(value);
-            break;
-          case 'route':
-            setStreet(value);
-            break;
-          case 'street_number':
-            setStreetNumber(value);
-            break;
-          case 'neighborhood':
-          case 'sublocality':
-          case 'sublocality_level_1': 
-            setNeighborhood(value);
-            break;
-          case 'locality':
-            setLocality(value);
-            break;
-          case 'administrative_area_level_1':
-            setState(value);
-            break;
-          default:
-            break;
+    function mapAddressFields(data: GeocodeType) {
+      const components = data?.results?.[0]?.address_components ?? [];
+    
+      for (const item of components) {
+        const value = item.long_name;
+      
+        for (const type of item.types) {
+          switch (type) {
+            case 'postal_code':
+              setPostalCode(value);
+              break;
+            case 'route':
+              setStreet(value);
+              break;
+            case 'street_number':
+              setStreetNumber(value);
+              break;
+            case 'neighborhood':
+            case 'sublocality':
+            case 'sublocality_level_1': 
+              setNeighborhood(value);
+              break;
+            case 'locality':
+              setLocality(value);
+              break;
+            case 'administrative_area_level_1':
+              setState(value);
+              break;
+            default:
+              break;
+            }
+          }
         }
       }
-    }
-  }
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab'];
     
     if (allowedKeys.includes(e.key)) {
@@ -280,10 +348,10 @@ function mapAddressFields(data: GeocodeType) {
     if (!/\d/.test(e.key)) {
         e.preventDefault();
     }
-  };
+    };
 
   
-const handleCharPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleCharPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
   const allowedKeys = [
     'Backspace',
     'Delete',
@@ -302,11 +370,35 @@ const handleCharPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
   if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]$/.test(e.key)) {
     e.preventDefault();
   }
-};
+    };
+
+    const handleGoogglePlace = (place: google.maps.places.PlaceResult | null) => {
+      const lat = place?.geometry?.location?.lat() ?? 0;
+      const lng = place?.geometry?.location?.lng() ?? 0;
+      
+      if( lat !== 0 && lng !== 0 ){
+        setTimeout(() => {
+          setLat(lat);
+          setLng(lng);
+          setMarkerPosition({lat: lat, lng: lng});
+          geocodeApi(lat, lng).then((result) => {
+            mapAddressFields(result)
+            setAddress(true);
+          });
+        if(map) map.panTo({lat, lng})
+        }, 150)
+      }
+    };
 
 
       return (
         <>
+        <style dangerouslySetInnerHTML={{ __html: `
+          .pac-container {
+          z-index: 9999 !important;
+          pointer-events: auto !important
+          }`
+          }}/>
         <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
@@ -332,18 +424,15 @@ const handleCharPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         }
         <Form className="w-full max-w-[95%]" onSubmit={onSubmit}>
             {addressSelected && (
-            <Input
-                isRequired
-                disableAnimation={true}
+            <PostalAutoComplete
                 label={getValue('cobertura.form.codigo.label')}
                 placeholder={getValue('cobertura.form.codigo.placeholder')}
                 errorMessage={getValue('cobertura.form.codigo.error')}
-                labelPlacement="outside"
                 name="zipCode"
-                type="text"
+                type="postal_code"
                 value={postalCode}
                 onValueChange={setPostalCode}
-                classNames={inputStyles}
+                onPlaceSelect={handleGoogglePlace}
             />
             )}
             {addressSelected ?
@@ -360,7 +449,9 @@ const handleCharPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
                     classNames={inputStyles}
                 />
             :
-                <PlaceAutocomplete onPlaceSelect={setSelectedPlace} />
+                <PlaceAutocomplete 
+                getValue={getValue}
+                onPlaceSelect={handleGoogglePlace} />
             }
             <div className='flex col-2 w-full gap-4'>
                 {addressSelected ?
