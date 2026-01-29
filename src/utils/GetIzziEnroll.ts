@@ -1,61 +1,65 @@
 import { CoberturaType, IzziSelection } from "@/types/ConfiguradorTypes";
 import { DatosContratacion } from "@/types/Contratacion";
 
-const POLLING_INTERVAL = 5000; // 5 segundos entre cada check
-const MAX_POLLING_TIME = 5 * 60 * 1000; // Máximo 5 minutos de polling
-
-type JobStatus = "queued" | "running" | "done" | "failed";
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type IzziEnrollResponse = any;
 
-interface StatusResponse {
-    jobId: string;
-    status: JobStatus;
+interface StreamEvent {
+    type: "heartbeat" | "result" | "error";
+    timestamp?: number;
+    data?: IzziEnrollResponse;
     error?: string;
 }
 
-interface ResultResponse {
-    jobId: string;
-    result: IzziEnrollResponse;
-    error?: string;
-}
-
-// Función auxiliar para esperar
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-// Función de polling para verificar el estado del job
-async function pollForResult(jobId: string, startTime: number): Promise<IzziEnrollResponse> {
-    // Verificar si excedimos el tiempo máximo de polling
-    if (Date.now() - startTime > MAX_POLLING_TIME) {
-        throw new Error("Timeout: el proceso de enroll tardó demasiado");
+// Función para leer el stream SSE y obtener el resultado
+async function readStreamResponse(response: Response): Promise<IzziEnrollResponse> {
+    const reader = response.body?.getReader();
+    if (!reader) {
+        throw new Error("No se pudo leer la respuesta del servidor");
     }
 
-    // Verificar el status
-    const statusResponse = await fetch(`/api/contratacion/izziEnroll/status?jobId=${jobId}`);
-    const statusData: StatusResponse = await statusResponse.json();
+    const decoder = new TextDecoder();
+    let buffer = "";
 
-    if (statusData.status === "failed") {
-        console.error(`[Polling] Job ${jobId} - FAILED:`, statusData.error);
-        throw new Error(statusData.error || "Error en el proceso de enroll");
-    }
-
-    if (statusData.status === "done") {
-        // Obtener el resultado
-        const resultResponse = await fetch(`/api/contratacion/izziEnroll/result?jobId=${jobId}`);
-        const resultData: ResultResponse = await resultResponse.json();
-
-        if (!resultResponse.ok) {
-            console.error(`[Polling] Job ${jobId} - Error al obtener resultado:`, resultData.error);
-            throw new Error(resultData.error || "Error al obtener resultado");
+    while (true) {
+        const { done, value } = await reader.read();
+        
+        if (done) {
+            throw new Error("Stream cerrado sin resultado");
         }
 
-        return resultData.result;
-    }
+        buffer += decoder.decode(value, { stream: true });
+        
 
-    // Si todavía está queued o running, esperar y reintentar
-    await delay(POLLING_INTERVAL);
-    return pollForResult(jobId, startTime);
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() || ""; 
+
+        for (const line of lines) {
+            if (line.startsWith("data: ")) {
+                const jsonStr = line.slice(6); // Remover "data: "
+                try {
+                    const event: StreamEvent = JSON.parse(jsonStr);
+                    
+                    if (event.type === "heartbeat") {
+                        console.log(`[Stream] Heartbeat recibido - ${new Date(event.timestamp || 0).toLocaleTimeString()}`);
+                        continue;
+                    }
+                    
+                    if (event.type === "error") {
+                        console.error(`[Stream] Error:`, event.error);
+                        throw new Error(event.error || "Error en el proceso de enroll");
+                    }
+                    
+                    if (event.type === "result") {
+                        console.log(`[Stream] ✅ Resultado recibido`);
+                        return event.data;
+                    }
+                } catch (parseError) {
+                    console.warn("[Stream] Error parseando evento:", parseError);
+                }
+            }
+        }
+    }
 }
 
 export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratacion: Partial<DatosContratacion>, offNetIzzi: boolean, offNetSky: boolean, globalIzziSelection: IzziSelection | null): Promise<IzziEnrollResponse> {
@@ -137,25 +141,21 @@ export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratac
             "x-Cookie": "AWSALB=o1egXIGzDYyhgR/f3AClAKhYZWoK1aA21e+OlktWTOHChR5M/lVVVy1oNUm/hl4IBQpKEMtgeZ1zL4cUtmycbYyMyR/3DilCbHdr+QuZJF0oTQCZdCnLzp859mfr; AWSALBCORS=o1egXIGzDYyhgR/f3AClAKhYZWoK1aA21e+OlktWTOHChR5M/lVVVy1oNUm/hl4IBQpKEMtgeZ1zL4cUtmycbYyMyR/3DilCbHdr+QuZJF0oTQCZdCnLzp859mfr",
         });
 
-        // 1. Iniciar el job async
-        const startResponse = await fetch("/api/contratacion/izziEnroll/start", {
+        console.log("[IzziEnroll] Iniciando conexión con streaming...");
+
+        // Usar endpoint de streaming con SSE
+        const response = await fetch("/api/contratacion/izziEnroll/stream", {
             method: "POST",
             headers,
             body,
         });
 
-        if (!startResponse.ok) {
-            throw new Error("Error al iniciar el proceso de enroll");
+        if (!response.ok) {
+            throw new Error(`Error al conectar con el servidor: ${response.status}`);
         }
 
-        const { jobId } = await startResponse.json();
-
-        if (!jobId) {
-            throw new Error("No se recibió jobId del servidor");
-        }
-
-        // 2. Hacer polling hasta obtener el resultado
-        const result = await pollForResult(jobId, Date.now());
+        // Leer el stream y esperar el resultado
+        const result = await readStreamResponse(response);
 
         if (!result) throw new Error("Invalid response from server");
 
