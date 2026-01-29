@@ -41,21 +41,22 @@ const inputStyles = {
         
         const inputRef = useRef<HTMLInputElement>(null);
         const places = useMapsLibrary('places');
+        const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
       
         useEffect(() => {
-          if (!places || !inputRef.current) return;
+
+          const inputElement = inputRef.current?.querySelector('input') || inputRef.current;
+          if (!places || !inputElement) return;
       
           const options = {
             fields: ['name', 'formatted_address', 'geometry.location'],
             componentRestrictions: { country: ['mx'] }
           };
       
-          const autoComplete = new places.Autocomplete(inputRef.current, options);
+          autoCompleteRef.current = new places.Autocomplete(inputElement as HTMLInputElement, options);
 
-         autoComplete.addListener('place_changed', () => {
-            const place = autoComplete.getPlace();
-            console.log('🦧 place ', place );
-
+         const listener = autoCompleteRef.current.addListener('place_changed', () => {
+            const place = autoCompleteRef.current?.getPlace();
 
             if(place && place.geometry){
               setTimeout(() => {
@@ -65,7 +66,7 @@ const inputStyles = {
           });
 
           return () => {
-            google.maps.event.clearInstanceListeners(autoComplete);
+            google.maps.event.removeListener(listener);
             const contenedor = document.querySelectorAll('.pac-container');
             if(contenedor.length > 1) {
               contenedor.forEach(contenedor => contenedor.remove());
@@ -84,7 +85,7 @@ const inputStyles = {
                 name="address"
                 type="text"
                 classNames={inputStyles}
-                disableAnimation={true}
+                /* disableAnimation={true} */
              />
         );
       };
@@ -94,45 +95,40 @@ const inputStyles = {
         value: string;
         onValueChange: (val: string) => void;
         onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
-        type: 'address' | 'postal_code';
         errorMessage: string;
         name: string;
       }
 
   const PostalAutoComplete = ({ 
-        label, placeholder, value, onValueChange, onPlaceSelect, type, errorMessage, name
+        label, placeholder, value, onValueChange, onPlaceSelect, errorMessage, name
       } : PostalProps) => {
         
         const inputRef = useRef<HTMLInputElement>(null);
         const places = useMapsLibrary('places');
 
         useEffect(() => {
+          const inputElement = inputRef.current?.querySelector('input') || inputRef.current;
           if (!places || !inputRef.current) return;
 
-          const options = {
+          const options = new places.Autocomplete(inputElement as HTMLInputElement, {
             fields: ['name', 'formatted_address', 'geometry.location'],
             componentRestrictions: { country: ['mx'] },
             types: ['(regions)']
-          };
+          });
 
-          const autocomplete = new places.Autocomplete(inputRef.current, options);
-          
-          autocomplete.addListener('place_changed', () => {
-
-            const place = autocomplete.getPlace();
-            
+          const listener = options.addListener('place_changed', () => {
+            const place = options.getPlace();
             if(place && place.geometry) {
               setTimeout(() => {
                 const cp = place.name || '';
                 onValueChange(cp);
                 onPlaceSelect(place);
               }, 230)
-              
             }
           });
 
           return () => {
-            google.maps.event.clearInstanceListeners(autocomplete);
+            google.maps.event.removeListener(listener);
             const contenedor = document.querySelectorAll('.pac-container');
             if(contenedor.length > 1) {
               contenedor.forEach(contenedor => contenedor.remove());
@@ -140,7 +136,7 @@ const inputStyles = {
           };
 
         }, [places, onPlaceSelect, onValueChange]);
-console.log('🚩 value ', value)
+        
         return(
           <Input 
           ref={inputRef}
@@ -153,8 +149,7 @@ console.log('🚩 value ', value)
           errorMessage={errorMessage}
           classNames={inputStyles}
           name={name}
-          type={type}
-          disableAnimation={true}
+          type='text'
           /> 
         );
       };
@@ -436,7 +431,6 @@ export default function CoberturaForm() {
                 placeholder={getValue('cobertura.form.codigo.placeholder')}
                 errorMessage={getValue('cobertura.form.codigo.error')}
                 name="zipCode"
-                type="postal_code"
                 value={postalCode}
                 onValueChange={setPostalCode}
                 onPlaceSelect={handleGoogglePlace}
