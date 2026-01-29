@@ -147,6 +147,7 @@ console.log('🚩 value ', value)
           errorMessage={errorMessage}
           classNames={inputStyles}
           name={name}
+          type={type}
           disableAnimation={true}
           onPointerDown={(e) => e.stopPropagation()}
           onBlur={(e) =>{ e.preventDefault()}}
