@@ -25,6 +25,7 @@
     "@contentful/rich-text-react-renderer": "16.1.0",
     "@contentful/rich-text-types": "17.1.0",
     "@heroui/react": "2.8.1",
+    "@next/third-parties": "^16.1.5",
     "@paypal/react-paypal-js": "8.9.2",
     "@types/react-google-recaptcha": "2.1.9",
     "@uidotdev/usehooks": "2.4.1",

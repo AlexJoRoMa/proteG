@@ -18,11 +18,15 @@ export default function IzziMap(){
     setStreetNumber,
     setNeighborhood,
     setLocality,
-    setState
+    setState,
+    setLat,
+    setLng
    } = useContent();
 
   const HandleMapClick = (ev: MapMouseEvent) => {
       setMarkerPosition(ev.detail?.latLng as google.maps.LatLng | google.maps.LatLngLiteral);
+      setLat(ev.detail?.latLng?.lat as number);
+      setLng(ev.detail?.latLng?.lng as number);
       if (map){
           map.panTo(ev.detail?.latLng as google.maps.LatLng | google.maps.LatLngLiteral);
       }

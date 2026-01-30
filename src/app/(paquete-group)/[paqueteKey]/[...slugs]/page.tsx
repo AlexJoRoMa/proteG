@@ -267,7 +267,7 @@ export default async function LandingPage({ params}: DynamicPageProps) {
     'paquetes7/goo/co/3pm',
     'paquetes7/goo/co/izzitv',
     'paquetes7/goo/co/4p',
-    'paquetes7/goo/pr2/ulter',
+    'paquetes7/goo/pr2/ul',
     'paquetes7/goo/pr2/3p',
     'paquetes7/goo/pr2/2p',
     'paquetes7/goo/pr2/ml',
