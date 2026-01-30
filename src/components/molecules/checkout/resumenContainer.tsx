@@ -57,6 +57,7 @@ export default function ResumenContainer() {
     const izziEnrrollRef = useRef(izziEnroll);
     const processStatusRef = useRef(processStatus);
     const stepStatusRef = useRef<boolean | null>(null);
+    const isSubmittingRef = useRef(false);
 
     useEffect(() => {
         datosContratacionRef.current = datosContratacion;
@@ -74,6 +75,8 @@ export default function ResumenContainer() {
         stepStatusRef.current = isStepCompleted(currentStep)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentStep])
+
+    const isDisabled = loading || (!isStepValid && !stepStatusRef.current);
 
     // Logica Steps
     // Step 1
@@ -99,7 +102,7 @@ export default function ResumenContainer() {
 
         try {
             // IzziEnroll
-            const resultIzziEnroll = await GetIzziEnroll(coberturaData, {...datosContratacionRef.current, VerificacionContacto: stepData}, offnetIzzi, offnetSky,  globalIzziSelection);
+            const resultIzziEnroll = await GetIzziEnroll(coberturaData, { ...datosContratacionRef.current, VerificacionContacto: stepData }, offnetIzzi, offnetSky, globalIzziSelection);
             if (!resultIzziEnroll || resultIzziEnroll?.code || resultIzziEnroll?.error) {
                 router.push("/error");
             }
@@ -290,8 +293,12 @@ export default function ResumenContainer() {
     const steps = globalFlagDomicilio ? [step1, step2, step3, step4, step6] : [step1, step2, step3, step4, step5, step6];
 
     const handleContinue = async () => {
+        if (isSubmittingRef.current) return;
+
+        isSubmittingRef.current = true;
         setLoading(true)
         const step = currentStep;
+
         try {
             const ok = await validateCurrentStep()
             if (!ok) return;
@@ -305,6 +312,7 @@ export default function ResumenContainer() {
             await handler(stepData);
 
         } finally {
+            isSubmittingRef.current = false;
             setLoading(false)
         }
     }
@@ -312,7 +320,7 @@ export default function ResumenContainer() {
     // Botón Continuar
     const ContinueButton = (
         <Button
-            disabled={!isStepValid && !stepStatusRef.current}
+            disabled={isDisabled}
             className='py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50'
             onPress={handleContinue}
         >

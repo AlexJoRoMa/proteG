@@ -16,7 +16,7 @@ export async function getToken() {
                     client_id: "izzi_core",
                     client_secret: "izzi_core",
                     grant_type: "password",
-                    provision_key: "Uo7sIy4g2IKxFwYGKQYBYTr2HPSisIk4",
+                    provision_key: process.env.PROVISION_KEY,
                     authenticated_userid: "izzi_core",
                     scope: "write"
                 }),
