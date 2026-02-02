@@ -276,7 +276,11 @@ export default async function LandingPage({ params}: DynamicPageProps) {
     'paquetes7/goo/pr2/izzitv',
     'paquetes7/goo/pr2/4p',
     'paquetes/goo/br/2pmundial',
-    'paquetes/goo/br/3pmundial'
+    'paquetes/goo/br/3pmundial',
+    'paquetes7/goo/dsc/4p',
+    'paquetes5b/amz/nb/3pm',
+    'paquetes5b/amz/nb/izzitv',
+    'paquetes5b/amz/nb/4p'
     ];
     
     const fullPath = [paqueteKey, ...slugs].join('/');
