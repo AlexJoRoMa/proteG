@@ -173,6 +173,7 @@ export type ProviderProps = {
     resumenIcon: EntrySkeletonType<ResumenIcon>,
     ottsImages: Entry<EntrySkeletonType<OttsImages>>[],
     cobertura: boolean,
+    initialCoberturaData?: CoberturaType,
 }
 
 export type DataFields = {

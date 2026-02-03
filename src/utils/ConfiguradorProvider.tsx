@@ -22,7 +22,8 @@ export const ConfiguradorProvider = ({
     copysConfigurador,
     resumenIcon,
     ottsImages,
-    cobertura
+    cobertura,
+    initialCoberturaData
 }: ProviderProps) => {
 
     const [userAnswers, setUserAnswers] = useState<UserAnswers>({})
@@ -32,7 +33,17 @@ export const ConfiguradorProvider = ({
     const [disabled, setDisabled] = useState<boolean>(false);
     const [rehydrated, setRehydrated] = useState(false);
 
-    const { setGlobalUserAnswers, setGlobalIzziSelection, globalUserAnswers, setGlobalCheckedPromotions, setGlobalFlagDomicilio } = useIzziContent();
+    const { setGlobalUserAnswers, setGlobalIzziSelection, globalUserAnswers, setGlobalCheckedPromotions, setGlobalFlagDomicilio, setCoberturaData, setFormattedAddress } = useIzziContent();
+
+    // Sincronizar datos de cobertura desde las cookies al IzziProvider
+    useEffect(() => {
+        if (initialCoberturaData && Object.keys(initialCoberturaData).length > 0) {
+            setCoberturaData(initialCoberturaData);
+            if (initialCoberturaData.address) {
+                setFormattedAddress(initialCoberturaData.address);
+            }
+        }
+    }, [initialCoberturaData, setCoberturaData, setFormattedAddress]);
 
     useEffect(() => IzziSelectionGuard(userAnswers, setIzziSelection), [userAnswers])
 

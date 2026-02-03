@@ -27,11 +27,23 @@ async function getCobertura() {
         const lat = cookieStore.get('lat');
         const lng = cookieStore.get('lng');
         const zipCode = cookieStore.get('zipCode');
+        const municipio = cookieStore.get('municipio');
+        const colonia = cookieStore.get('colonia');
+        const calle = cookieStore.get('calle');
+        const numExt = cookieStore.get('numExt');
+        const estado = cookieStore.get('estado');
+        const formattedAddress = cookieStore.get('formattedAddress');
 
         return {
             lat: lat?.value,
             lng: lng?.value,
-            zipCode: zipCode?.value
+            zipCode: zipCode?.value,
+            municipio: municipio?.value,
+            colonia: colonia?.value,
+            calle: calle?.value,
+            numExt: numExt?.value,
+            estado: estado?.value,
+            address: formattedAddress?.value
         }
     }
     else {
@@ -90,6 +102,7 @@ export default async function Configurador() {
             resumenIcon={resumenIcon}
             ottsImages={ottImages}
             cobertura={cobertura}
+            initialCoberturaData={getCookies}
         >
             {/* Guard detector de salida del flujo */}
             <ExitGuard />

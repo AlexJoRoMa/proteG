@@ -176,7 +176,12 @@ export default function CoberturaForm() {
         lat: lat.toString(),
         lng: lng.toString(),
         zipCode: postalCode,
-        address: `${street}, ${streetNumber}, ${locality}`, 
+        address: `${street}, ${streetNumber}, ${locality}`,
+        municipio: locality,
+        colonia: neighborhood,
+        calle: street,
+        numExt: streetNumber,
+        estado: state
       }
 
       try{
@@ -192,14 +197,7 @@ export default function CoberturaForm() {
 
         setFormattedAddress(coveraData.address);
         setGlobalFlag(true);
-        setCoberturaData({
-            ...coveraData,
-            municipio: locality, 
-            colonia: neighborhood,
-            calle: street,
-            numExt: streetNumber,
-            estado: state
-        });
+        setCoberturaData(coveraData);
 
         await createCookie(coveraData);
       
