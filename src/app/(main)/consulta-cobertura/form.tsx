@@ -171,12 +171,17 @@ export default function CoberturaForm() {
     e.preventDefault();
     setIsLoading(true);
 
-    const coveraData = {
-      lat: lat.toString(),
-      lng: lng.toString(),
-      zipCode: postalCode,
-      address: `${street}, ${streetNumber}, ${locality}`,
-    }
+      const coveraData = {
+        lat: lat.toString(),
+        lng: lng.toString(),
+        zipCode: postalCode,
+        address: `${street}, ${streetNumber}, ${locality}`,
+        municipio: locality,
+        colonia: neighborhood,
+        calle: street,
+        numExt: streetNumber,
+        estado: state
+      }
 
     try {
 
@@ -189,16 +194,9 @@ export default function CoberturaForm() {
         return;
       }
 
-      setFormattedAddress(coveraData.address);
-      setGlobalFlag(true);
-      setCoberturaData({
-        ...coveraData,
-        municipio: locality,
-        colonia: neighborhood,
-        calle: street,
-        numExt: streetNumber,
-        estado: state
-      });
+        setFormattedAddress(coveraData.address);
+        setGlobalFlag(true);
+        setCoberturaData(coveraData);
 
       await createCookie(coveraData);
 

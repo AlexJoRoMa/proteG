@@ -39,6 +39,57 @@ export async function createCookie(data: CoberturaType) {
     maxAge: 3600
   });
 
+  // Guardar campos adicionales necesarios para el enroll
+  if (data.municipio) {
+    cookieStore.set({
+      name: 'municipio',
+      value: data.municipio,
+      httpOnly: true,
+      path: '/',
+      maxAge: 3600
+    });
+  }
+
+  if (data.colonia) {
+    cookieStore.set({
+      name: 'colonia',
+      value: data.colonia,
+      httpOnly: true,
+      path: '/',
+      maxAge: 3600
+    });
+  }
+
+  if (data.calle) {
+    cookieStore.set({
+      name: 'calle',
+      value: data.calle,
+      httpOnly: true,
+      path: '/',
+      maxAge: 3600
+    });
+  }
+
+  if (data.numExt) {
+    cookieStore.set({
+      name: 'numExt',
+      value: data.numExt,
+      httpOnly: true,
+      path: '/',
+      maxAge: 3600
+    });
+  }
+
+  if (data.estado) {
+    cookieStore.set({
+      name: 'estado',
+      value: data.estado,
+      httpOnly: true,
+      path: '/',
+      maxAge: 3600
+    });
+  }
+
   revalidatePath('/configurador')
   redirect('/configurador')
 }
