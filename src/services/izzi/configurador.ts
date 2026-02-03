@@ -3,35 +3,67 @@ import { CoberturaType, PackageInfo, QuoteInfo } from "@/types/ConfiguradorTypes
 import { redirect } from "next/navigation";
 
 export async function getToken() {
+    console.log('[getToken] === Iniciando obtención de token ===');
+    console.log('[getToken] Timestamp:', new Date().toISOString());
 
     const url = process.env.GET_TOKEN;
+    console.log('[getToken] URL configurada:', url ? 'Sí' : 'No');
+    console.log('[getToken] URL:', url);
+    console.log('[getToken] PROVISION_KEY configurada:', process.env.PROVISION_KEY ? 'Sí' : 'No');
+    
     try {
+        const requestBody = {
+            client_id: "izzi_core",
+            client_secret: "izzi_core",
+            grant_type: "password",
+            provision_key: process.env.PROVISION_KEY,
+            authenticated_userid: "izzi_core",
+            scope: "write"
+        };
+        
+        console.log('[getToken] Request Body:', JSON.stringify({
+            ...requestBody,
+            client_secret: '***',
+            provision_key: requestBody.provision_key ? '***' : 'NO CONFIGURADA'
+        }, null, 2));
+        
+        console.log('[getToken] Enviando petición POST...');
+        
         const response = await fetch(`${url}`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: "aplication/json"
                 },
-                body: JSON.stringify({
-                    client_id: "izzi_core",
-                    client_secret: "izzi_core",
-                    grant_type: "password",
-                    provision_key: process.env.PROVISION_KEY,
-                    authenticated_userid: "izzi_core",
-                    scope: "write"
-                }),
+                body: JSON.stringify(requestBody),
             }
         );
 
+        console.log('[getToken] Respuesta recibida');
+        console.log('[getToken] Status:', response.status);
+        console.log('[getToken] Status Text:', response.statusText);
+        console.log('[getToken] OK:', response.ok);
+        console.log('[getToken] Headers:', JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2));
+
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('[getToken] ❌ Error en la respuesta');
+            console.error('[getToken] Response Body:', errorText);
             throw new Error(`Error en la petición: ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();
+        console.log('[getToken] ✅ Token obtenido exitosamente');
+        console.log('[getToken] Response keys:', Object.keys(data));
+        console.log('[getToken] Token length:', data.access_token?.length || 0);
+        
         return data.access_token;
 
     } catch (error) {
-        console.error("Error al obtener el Access Token", error)
+        console.error('[getToken] ❌ ERROR CRÍTICO al obtener el Access Token');
+        console.error('[getToken] Error type:', error instanceof Error ? error.constructor.name : typeof error);
+        console.error('[getToken] Error message:', error instanceof Error ? error.message : String(error));
+        console.error('[getToken] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
         throw new Error("Error al obtener el Access Token");
     }
 }
