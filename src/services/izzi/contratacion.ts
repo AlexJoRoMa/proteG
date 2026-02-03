@@ -73,33 +73,76 @@ export async function getIzziEnroll({
     body,
     headers,
 }: EnrollProps): Promise<any> {
+    console.log('[getIzziEnroll] === Iniciando proceso de enroll ===');
+    console.log('[getIzziEnroll] Timestamp:', new Date().toISOString());
 
     const url = process.env.IZZI_ENRROLL_PATH;
+    console.log('[getIzziEnroll] URL configurada:', url ? 'Sí' : 'No');
+    console.log('[getIzziEnroll] URL:', url);
+    
+    console.log('[getIzziEnroll] Obteniendo token de acceso...');
     const accessToken = await getToken();
+    console.log('[getIzziEnroll] Token obtenido:', accessToken ? `Sí (${accessToken.substring(0, 20)}...)` : 'No');
+    
     const apiKey = process.env.IZZI_API_KEY;
+    console.log('[getIzziEnroll] API Key configurada:', apiKey ? 'Sí' : 'No');
+    console.log('[getIzziEnroll] Cookie recibida:', headers.Cookie ? `Sí (${headers.Cookie.substring(0, 50)}...)` : 'No');
+    
+    console.log('[getIzziEnroll] Request Body:', JSON.stringify(body, null, 2));
 
     try {
+        const requestHeaders = {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+            ...(apiKey ? { "x-api-key": apiKey } : {}),
+            Cookie: headers.Cookie,
+        };
+        
+        console.log('[getIzziEnroll] Request Headers:', JSON.stringify({
+            ...requestHeaders,
+            Authorization: accessToken ? `Bearer ${accessToken.substring(0, 20)}...` : 'NO TOKEN',
+            Cookie: headers.Cookie ? `${headers.Cookie.substring(0, 30)}...` : 'NO COOKIE'
+        }, null, 2));
+        
+        console.log('[getIzziEnroll] Enviando petición POST...');
+        const startTime = Date.now();
 
         const response = await fetch(`${url}`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${accessToken}`,
-                ...(apiKey ? { "x-api-key": apiKey } : {}),
-                Cookie: headers.Cookie,
-            },
+            headers: requestHeaders,
             body: JSON.stringify(body)
         });
+        
+        const endTime = Date.now();
+        const duration = endTime - startTime;
+        
+        console.log('[getIzziEnroll] Respuesta recibida');
+        console.log('[getIzziEnroll] Duración de la petición:', `${duration}ms (${(duration/1000).toFixed(2)}s)`);
+        console.log('[getIzziEnroll] Status:', response.status);
+        console.log('[getIzziEnroll] Status Text:', response.statusText);
+        console.log('[getIzziEnroll] OK:', response.ok);
+        console.log('[getIzziEnroll] Response Headers:', JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2));
 
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('[getIzziEnroll] ❌ Error en la respuesta');
+            console.error('[getIzziEnroll] Response Status:', response.status);
+            console.error('[getIzziEnroll] Response Body:', errorText);
             throw new Error(`Error HTTP ${response.status}`);
         }
 
         const data = await response.text();
+        console.log('[getIzziEnroll] ✅ Respuesta exitosa');
+        console.log('[getIzziEnroll] Response Body length:', data.length);
+        console.log('[getIzziEnroll] Response Body preview:', data.substring(0, 500));
+        
         return data;
 
     } catch (err) {
-        console.error("Error en getIzziEnroll:", err);
+        console.error('[getIzziEnroll] ❌ ERROR CRÍTICO');
+        console.error('[getIzziEnroll] Error type:', err instanceof Error ? err.constructor.name : typeof err);
+        console.error('[getIzziEnroll] Error message:', err instanceof Error ? err.message : String(err));
+        console.error('[getIzziEnroll] Error stack:', err instanceof Error ? err.stack : 'No stack trace');
         throw err;
     }
 }

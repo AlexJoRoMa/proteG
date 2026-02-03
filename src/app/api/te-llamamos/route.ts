@@ -84,10 +84,6 @@ async function sendToExternalApi(data: TeLlamamosFormData): Promise<boolean> {
     // Log de todos los headers de respuesta
     const allHeaders = Object.fromEntries(response.headers.entries());
     console.log('[Te Llamamos API] Response Headers completos:', JSON.stringify(allHeaders, null, 2));
-    
-    // Log de todos los headers de respuesta
-    const allHeaders = Object.fromEntries(response.headers.entries());
-    console.log('[Te Llamamos API] Response Headers completos:', JSON.stringify(allHeaders, null, 2));
 
     if (!response.ok) {
       const responseText = await response.text();
