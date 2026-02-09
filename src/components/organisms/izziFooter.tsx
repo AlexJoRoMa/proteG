@@ -125,7 +125,7 @@ export default function IzziFooterContent({FooterData}: FooterComponentProps) {
         </div>
         <ul className="mt-8 flex flex-wrap justify-center gap-4 text-xs sm:mt-0 xl:justify-end">
           <li>
-          <Link href={`${copyright.fields.footerProfecoLink}`} target='_blank'>
+          <Link href={`${copyright.fields.footerProfecoLink}`} target='_blank' rel='noopener noreferrer'>
             <Image width={144} height={24} src={`https:${copyright.fields.footerProfecoLogo.fields.file.url}`} alt={`${copyright.fields.footerProfecoLogo.fields.file.fileName}`}/>
           </Link>
           </li>

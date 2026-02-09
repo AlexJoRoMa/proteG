@@ -43,7 +43,7 @@ const TeAyudamosLandingModalComponent = ({ isOpen = true, onClose, modalData, te
                   backdropColor='black-0/80'>
                     <TeLlamamosModalComponent />
                   </LinkModal>
-                <a target='_blank' className='flex gap-3' href={`https://wa.me/${data.column1.row3.wpp.tel}?text=${data.column1.row3.wpp.promoText}`}><WhatsAppIcon />{data.column1.row3.wpp.text}</a>
+                <a target='_blank' rel='noopener noreferrer' className='flex gap-3' href={`https://wa.me/${data.column1.row3.wpp.tel}?text=${data.column1.row3.wpp.promoText}`}><WhatsAppIcon />{data.column1.row3.wpp.text}</a>
             </div>
         </div>
         <Button

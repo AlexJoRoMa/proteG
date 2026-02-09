@@ -31,7 +31,7 @@ const IframeModel = async ({id}: IframeModelID) => {
         md:h-[1030px]
         sm:h-[1070px] xsm:h-[500px]
          '>
-        <iframe
+        <iframe sandbox="allow-forms allow-scripts allow-popups allow-top-navigation-by-user-activation"
         src={getIframeURL}
         title='iframe'
         className='w-full h-full max-h-[1100px]'

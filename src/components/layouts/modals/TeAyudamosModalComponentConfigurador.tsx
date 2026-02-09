@@ -47,7 +47,7 @@ const TeAyudamosModalComponentConfig = ({ isOpen = true, onClose, modalData }: T
                   backdropColor='black-0/80'>
                     <TeLlamamosModalComponent />
                   </LinkModal>
-                <a target='_blank' className='flex gap-3' href={`https://wa.me/${data.column1.row3.wpp.tel}?text=${data.column1.row3.wpp.promoText}`}><WhatsAppIcon />{data.column1.row3.wpp.text}</a>
+                <a target='_blank' rel='noopener noreferrer' className='flex gap-3' href={`https://wa.me/${data.column1.row3.wpp.tel}?text=${data.column1.row3.wpp.promoText}`}><WhatsAppIcon />{data.column1.row3.wpp.text}</a>
             </div>
             <hr className='w-full xl:mb-10 mb-6 mt-8 block xl:hidden border-0 h-[1px] [background-image:var(--gradient-button-fixed)]' />
             
