@@ -495,7 +495,7 @@ export default function CoberturaForm() {
         <div>
           <Checkbox isRequired={true} isSelected={isSelected} onValueChange={setIsSelected} defaultSelected={false} color="default" className='text-gray-450 pt-4 pb-8' />
           <span className='mr-1'>{getValue('cobertura.form.privacidad.label')}</span>
-          <a target='_blank' href={getValue('cobertura.form.privacidad.Aviso.link') as string} >
+          <a target='_blank' rel='noopener noreferrer' href={getValue('cobertura.form.privacidad.Aviso.link') as string} >
             <span className='font-bold'>{getValue('cobertura.form.privacidad.Aviso') as string}</span>
           </a>
         </div>

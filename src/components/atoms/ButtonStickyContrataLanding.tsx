@@ -108,7 +108,7 @@ const ButtonFixedContracLanding = async() => {
              [background-clip:padding-box,border-box]
              flex md:hidden w-[116px]'
           > 
-              <a target='_blank' className='flex items-center justify-center w-full' 
+              <a target='_blank' rel='noopener noreferrer' className='flex items-center justify-center w-full' 
               href={`https://wa.me/${setWhatsNumber}?text=${setWhatsPromo}`} >
               { stikyWhats || 'WhatsApp'}
               </a>

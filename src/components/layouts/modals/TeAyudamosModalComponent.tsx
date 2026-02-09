@@ -47,14 +47,14 @@ const TeAyudamosModalComponent = ({ isOpen = true, onClose, modalData }: TeLlama
                   backdropColor='black-0/80'>
                     <TeLlamamosModalComponent />
                   </LinkModal>
-                <a target='_blank' className='flex gap-3' href={`https://wa.me/${data.column1.row3.wpp.tel}?text=${data.column1.row3.wpp.promoText}`}><WhatsAppIcon />{data.column1.row3.wpp.text}</a>
+                <a target='_blank' rel='noopener noreferrer' className='flex gap-3' href={`https://wa.me/${data.column1.row3.wpp.tel}?text=${data.column1.row3.wpp.promoText}`}><WhatsAppIcon />{data.column1.row3.wpp.text}</a>
             </div>
             <hr className='w-full xl:mb-10 mb-6 mt-8 block xl:hidden border-0 h-[1px] [background-image:var(--gradient-button-fixed)]' />
             <div className='flex flex-col'>
                 <strong className='mb-6'>{data.column2.title}</strong>
                 <p className='flex xl:mb-3.5 mb-4 gap-3'><CallMeIcon/> {data.column2.row1.text} <b>{data.column2.row1.tel}</b></p>
                 <Link className='flex xl:mb-3.5 mb-4 gap-3 underline text-black font-bold text-[16px]' href={data.column2.row2.link.url}><HeadPhonesIcon/>{data.column2.row2.link.text}</Link>
-                <a target='_blank' className='flex gap-3' href={`https://wa.me/${data.column2.row3.wpp.tel}?text=${data.column2.row3.wpp.promoText}`}><WhatsAppIcon />{data.column2.row3.wpp.text}</a>
+                <a target='_blank' rel='noopener noreferrer' className='flex gap-3' href={`https://wa.me/${data.column2.row3.wpp.tel}?text=${data.column2.row3.wpp.promoText}`}><WhatsAppIcon />{data.column2.row3.wpp.text}</a>
             </div>
         </div>
         <Button

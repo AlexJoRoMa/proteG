@@ -305,7 +305,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
                             <Checkbox className='' radius='sm' color='primary' isSelected={isSelected} onValueChange={setIsSelected}>
                                 {finalData.checkboxText}
                             </Checkbox>
-                            <Link target='_blank' className='text-black underline font-bold' href={finalData.privacyLink.url}>{finalData.privacyLink.text}</Link>
+                            <Link target='_blank' rel='noopener noreferrer' className='text-black underline font-bold' href={finalData.privacyLink.url}>{finalData.privacyLink.text}</Link>
                         </div>
 
                         <Input 
