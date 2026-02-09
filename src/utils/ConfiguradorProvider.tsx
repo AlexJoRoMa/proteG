@@ -45,7 +45,9 @@ export const ConfiguradorProvider = ({
         }
     }, [initialCoberturaData, setCoberturaData, setFormattedAddress]);
 
-    useEffect(() => IzziSelectionGuard(userAnswers, setIzziSelection), [userAnswers])
+    useEffect(() => {
+        IzziSelectionGuard(userAnswers, setIzziSelection)
+    }, [userAnswers])
 
     useEffect(() => {
 

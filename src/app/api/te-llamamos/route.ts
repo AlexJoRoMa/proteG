@@ -4,10 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 
 async function sendToExternalApi(data: TeLlamamosFormData): Promise<boolean> {
-  console.log('=== [Te Llamamos API] Iniciando envío a API externa ===');
   const apiEndpoint = process.env.API_TE_LLAMAMOS_ENDPOINT;
-  
-  console.log('[Te Llamamos API] Endpoint configurado:', apiEndpoint ? 'Sí' : 'No');
   
   if (!apiEndpoint) {
     console.error('[Te Llamamos API] ERROR: API_TE_LLAMAMOS_ENDPOINT no está configurado');
@@ -26,11 +23,9 @@ async function sendToExternalApi(data: TeLlamamosFormData): Promise<boolean> {
     captcha: data.recaptchaToken,
     from: data.url
   };
-  
-  console.log('[Te Llamamos API] Payload preparado:', JSON.stringify(payload, null, 2));
 
   try {
-    // Enviar como GET con parámetros en query string
+
     const url = new URL(apiEndpoint);
     Object.entries(payload).forEach(([key, value]) => {
       if (value !== null) {
@@ -38,35 +33,18 @@ async function sendToExternalApi(data: TeLlamamosFormData): Promise<boolean> {
       }
     });
 
-    console.log('[Te Llamamos API] URL completa a llamar:', url.toString());
-    console.log('[Te Llamamos API] URL base:', url.origin + url.pathname);
-    console.log('[Te Llamamos API] Query params count:', url.searchParams.toString().length);
-    console.log('[Te Llamamos API] Método:', 'GET');
-    console.log('[Te Llamamos API] Iniciando llamada al cliente...');
-
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
-      redirect: 'manual' // No seguir redirects automáticamente para detectar 301
+      redirect: 'manual' 
     });
 
-    console.log('[Te Llamamos API] Respuesta recibida - Status:', response.status);
-    console.log('[Te Llamamos API] Respuesta recibida - Status Text:', response.statusText);
-    console.log('[Te Llamamos API] Respuesta recibida - OK:', response.ok);
-    console.log('[Te Llamamos API] Respuesta recibida - Type:', response.type);
-    
-    // Detectar específicamente redirects 301, 302, 307, 308
     if (response.status === 301) {
       console.error('[Te Llamamos API] ⚠️ REDIRECT 301 DETECTADO (Moved Permanently)');
       const locationHeader = response.headers.get('location');
       console.error('[Te Llamamos API] Location header:', locationHeader);
-      console.error('[Te Llamamos API] Esto indica que el endpoint está redirigiendo a otra URL');
-      console.error('[Te Llamamos API] Posibles causas:');
-      console.error('[Te Llamamos API]   - Falta o sobra barra "/" al final de la URL');
-      console.error('[Te Llamamos API]   - Redirección HTTP -> HTTPS');
-      console.error('[Te Llamamos API]   - Configuración de Apache/Nginx redirigiendo');
     } else if (response.status === 302) {
       console.error('[Te Llamamos API] ⚠️ REDIRECT 302 DETECTADO (Found/Temporary)');
       const locationHeader = response.headers.get('location');
@@ -80,10 +58,6 @@ async function sendToExternalApi(data: TeLlamamosFormData): Promise<boolean> {
       const locationHeader = response.headers.get('location');
       console.error('[Te Llamamos API] Location header:', locationHeader);
     }
-    
-    // Log de todos los headers de respuesta
-    const allHeaders = Object.fromEntries(response.headers.entries());
-    console.log('[Te Llamamos API] Response Headers completos:', JSON.stringify(allHeaders, null, 2));
 
     if (!response.ok) {
       const responseText = await response.text();
@@ -95,18 +69,12 @@ async function sendToExternalApi(data: TeLlamamosFormData): Promise<boolean> {
       // Si es un redirect, dar instrucciones
       if (response.status >= 300 && response.status < 400) {
         console.error('[Te Llamamos API] 🔄 REDIRECCIÓN DETECTADA - Revisar configuración del endpoint');
-        console.error('[Te Llamamos API] Sugerencias:');
-        console.error('[Te Llamamos API]   1. Verificar que la URL no tenga redirects configurados');
-        console.error('[Te Llamamos API]   2. Usar la URL final después del redirect');
-        console.error('[Te Llamamos API]   3. Revisar configuración de Apache/Nginx');
       }
       
       return false;
     }
 
-    const responseText = await response.text();
-    console.log('[Te Llamamos API] Response Body exitoso:', responseText);
-    console.log('[Te Llamamos API] ✅ Llamada exitosa al endpoint del cliente');
+    await response.text();
     
     return response.status === 200;
   } catch (error) {
@@ -125,22 +93,8 @@ async function sendToExternalApi(data: TeLlamamosFormData): Promise<boolean> {
 }
 
 export async function POST(request: NextRequest) {
-  console.log('=== [Te Llamamos] Nueva petición POST recibida ===');
-  console.log('[Te Llamamos] Timestamp:', new Date().toISOString());
-  console.log('[Te Llamamos] Request URL:', request.url);
-  console.log('[Te Llamamos] Request Method:', request.method);
-  
   try {
     const formData: TeLlamamosFormData = await request.json();
-    
-    console.log('[Te Llamamos] Datos recibidos:', JSON.stringify({
-      telefono: formData.telefono ? `***${formData.telefono.slice(-4)}` : 'no proporcionado',
-      nombre: formData.nombre || 'no proporcionado',
-      email: formData.email ? `${formData.email.substring(0, 3)}***` : 'no proporcionado',
-      hasRecaptchaToken: !!formData.recaptchaToken,
-      utm: formData.utm || 'no proporcionado',
-      url: formData.url || 'no proporcionado'
-    }, null, 2));
 
     const { telefono, recaptchaToken, utm, url } = formData;
 
@@ -158,8 +112,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('[Te Llamamos] ✅ Validación exitosa - Procediendo a enviar a API externa');
-
     const externalApiSuccess = await sendToExternalApi(formData);
 
     if (!externalApiSuccess) {
@@ -169,8 +121,6 @@ export async function POST(request: NextRequest) {
         error: 'Error al procesar la solicitud. Intenta nuevamente.'
       }, { status: 500 });
     }
-
-    console.log('[Te Llamamos] ✅ Proceso completado exitosamente');
     
     return NextResponse.json({
       success: true,

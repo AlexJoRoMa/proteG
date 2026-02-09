@@ -56,6 +56,13 @@ export default function PlanesTv({ step }: StepProps) {
         setTvPlans(builtTvPlans);
     }, [builtTvPlans]);
 
+    useEffect(() => {
+        if (userAnswers.tv?.paquete) {
+            updateTvAnswers(builtTvPlans[0])
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userAnswers.internet])
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const updateTvAnswers = (selectedTv: OfferItem) => {
         setUserAnswers(prev => ({

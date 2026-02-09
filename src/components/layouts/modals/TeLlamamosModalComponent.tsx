@@ -29,10 +29,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
     const [persistUTM, setPersistUTM] = useState<string | null>(null);
 
     useEffect(() => {
-        console.log('[TeLlamamos Cliente] Componente montado');
-        console.log('[TeLlamamos Cliente] URL actual:', window.location.href);
         const getPersist = getPersistentQueryString();
-        console.log('[TeLlamamos Cliente] UTM persistente obtenido:', getPersist || 'No hay UTM');
         if(getPersist){
             setPersistUTM(getPersist);
         }
@@ -145,8 +142,6 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
 
     // Manejar cambio de reCAPTCHA
     const handleRecaptchaChange = (token: string | null) => {
-        console.log('[TeLlamamos Cliente] reCAPTCHA cambió:', token ? 'Token recibido' : 'Token null');
-        console.log('[TeLlamamos Cliente] Token length:', token?.length || 0);
         setRecaptchaToken(token);
     };
 
@@ -158,7 +153,6 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
 
     // Función para resetear el formulario y volver al estado inicial
     const resetForm = () => {
-        console.log('[TeLlamamos Cliente] Reseteando formulario');
         setPhoneValue('');
         setIsSelected(false);
         setRecaptchaToken(null);
@@ -167,7 +161,6 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
 
         try {
             if (window.grecaptcha && typeof window.grecaptcha.reset === 'function') {
-                console.log('[TeLlamamos Cliente] Reseteando reCAPTCHA');
                 window.grecaptcha.reset();
             }
         } catch (error) {
@@ -177,7 +170,6 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
 
     // Función para cerrar el modal
     const handleCloseModal = () => {
-        console.log('[TeLlamamos Cliente] Cerrando modal');
         try {
             resetForm(); 
         } catch (error) {
@@ -190,7 +182,6 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
         }
         
         if (onClose) {
-            console.log('[TeLlamamos Cliente] Ejecutando callback onClose');
             onClose();
         }
     };
@@ -198,8 +189,6 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
     // Manejar envío del formulario
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('[TeLlamamos Cliente] === Iniciando envío de formulario ===');
-        console.log('[TeLlamamos Cliente] Timestamp:', new Date().toISOString());
         
         if (!isFormValid()) {
             console.warn('[TeLlamamos Cliente] ⚠️ Validación fallida');
@@ -212,7 +201,6 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
             return;
         }
 
-        console.log('[TeLlamamos Cliente] ✅ Validación exitosa');
         setIsSubmitting(true);
         setSubmitError('');
 
@@ -227,34 +215,16 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
                 utm: setUTM || null,
             };
             
-            console.log('[TeLlamamos Cliente] Payload a enviar:', {
-                telefono: `***${cleanPhone.slice(-4)}`,
-                hasRecaptchaToken: !!recaptchaToken,
-                recaptchaTokenLength: recaptchaToken?.length || 0,
-                url: payload.url,
-                utm: payload.utm || 'Sin UTM'
-            });
-            console.log('[TeLlamamos Cliente] Endpoint:', '/api/te-llamamos');
-            console.log('[TeLlamamos Cliente] Método:', 'POST');
-            console.log('[TeLlamamos Cliente] Iniciando fetch...');
-            
             const response = await fetch('/api/te-llamamos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
 
-            console.log('[TeLlamamos Cliente] Respuesta recibida');
-            console.log('[TeLlamamos Cliente] Status:', response.status);
-            console.log('[TeLlamamos Cliente] Status Text:', response.statusText);
-            console.log('[TeLlamamos Cliente] OK:', response.ok);
-
             if (response.ok) {
-                const responseData = await response.json();
-                console.log('[TeLlamamos Cliente] ✅ Respuesta exitosa:', responseData);
+                await response.json();
                 setSubmitError('');
                 setIsSuccess(true);
-                console.log('[TeLlamamos Cliente] Estado cambiado a éxito');
             } else {
                 const errorData = await response.json();
                 console.error('[TeLlamamos Cliente] ❌ Error en respuesta:', errorData);
@@ -276,7 +246,6 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
             
             setSubmitError(error instanceof Error ? error.message : 'Error desconocido');
         } finally {
-            console.log('[TeLlamamos Cliente] Finalizando envío, isSubmitting = false');
             setIsSubmitting(false);
         }
     };

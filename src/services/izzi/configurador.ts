@@ -3,13 +3,8 @@ import { CoberturaType, PackageInfo, QuoteInfo } from "@/types/ConfiguradorTypes
 import { redirect } from "next/navigation";
 
 export async function getToken() {
-    console.log('[getToken] === Iniciando obtención de token ===');
-    console.log('[getToken] Timestamp:', new Date().toISOString());
 
     const url = process.env.GET_TOKEN;
-    console.log('[getToken] URL configurada:', url ? 'Sí' : 'No');
-    console.log('[getToken] URL:', url);
-    console.log('[getToken] PROVISION_KEY configurada:', process.env.PROVISION_KEY ? 'Sí' : 'No');
     
     try {
         const requestBody = {
@@ -21,14 +16,6 @@ export async function getToken() {
             scope: "write"
         };
         
-        console.log('[getToken] Request Body:', JSON.stringify({
-            ...requestBody,
-            client_secret: '***',
-            provision_key: requestBody.provision_key ? '***' : 'NO CONFIGURADA'
-        }, null, 2));
-        
-        console.log('[getToken] Enviando petición POST...');
-        
         const response = await fetch(`${url}`, {
                 method: "POST",
                 headers: {
@@ -39,12 +26,6 @@ export async function getToken() {
             }
         );
 
-        console.log('[getToken] Respuesta recibida');
-        console.log('[getToken] Status:', response.status);
-        console.log('[getToken] Status Text:', response.statusText);
-        console.log('[getToken] OK:', response.ok);
-        console.log('[getToken] Headers:', JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2));
-
         if (!response.ok) {
             const errorText = await response.text();
             console.error('[getToken] ❌ Error en la respuesta');
@@ -53,9 +34,6 @@ export async function getToken() {
         }
 
         const data = await response.json();
-        console.log('[getToken] ✅ Token obtenido exitosamente');
-        console.log('[getToken] Response keys:', Object.keys(data));
-        console.log('[getToken] Token length:', data.access_token?.length || 0);
         
         return data.access_token;
 
