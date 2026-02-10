@@ -80,22 +80,22 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     const { promoData, globalIzziSelection, setPrecioTotal, setPrecioCombinado, checkSwitch, setTotalSinDescuento } = useIzziContent();
     const { globalCheckedPromotions, setAhorroTotal } = useIzziContent();
     const [validateSwitch, setValidateSwitch] = useState(checkSwitch);
-    const [ priceTotal, setPriceTotal] = useState(0);
-    
+    const [priceTotal, setPriceTotal] = useState(0);
 
-    useEffect(() =>{
+
+    useEffect(() => {
         setValidateSwitch(checkSwitch)
     }, [checkSwitch])
 
-    useEffect(() =>{
-        const handleSwitch = (e: Event)=> {
+    useEffect(() => {
+        const handleSwitch = (e: Event) => {
             const customEvent = e as CustomEvent<boolean>;
             setValidateSwitch(customEvent.detail)
         };
-        
+
         window.addEventListener('switch-change', handleSwitch);
-        return ()=> window.removeEventListener('switch-change', handleSwitch);
-    },[])
+        return () => window.removeEventListener('switch-change', handleSwitch);
+    }, [])
 
 
     /* const ottPromos = promoData?.promos?.filter(promo =>
@@ -124,7 +124,13 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
         + Number(userSelection?.movil?.paquete?.precioPaquete || 0)
         + Number(userSelection?.tv?.paquete?.precioTachado || userSelection?.tv?.paquete?.precioPaquete || 0)
         + (totalOttPrice || 0);
-    const precioTotal = totalSinDescuento && promoData.promos ? totalSinDescuento - ahorroCombinado - (Math.abs(Number(totalPromoPrice)) || 0) : totalSinDescuento;
+
+    const precioTotal = globalCheckedPromotions ?
+        promoData.promos ?
+            totalSinDescuento - ahorroCombinado - (Math.abs(Number(totalPromoPrice)) || 0) :
+            totalSinDescuento - ahorroCombinado :
+        totalSinDescuento;
+
     const ahorroTotal = ((Number(ahorroCombinado) || 0) + (Number(pagoAnticipado) || 0)) + (Number(Math.abs(totalPromoPrice as number)) || 0);
 
     const promoMeses = calcularPromos(promotions);
@@ -137,10 +143,10 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
         setPrecioTotal(priceTotal as number);
     }, [ahorroCombinado, ahorroTotal, priceTotal, totalSinDescuento, setAhorroTotal, setPrecioCombinado, setPrecioTotal, setTotalSinDescuento]);
 
-    useEffect(() =>{
-        if(validateSwitch){
-            setPriceTotal(precioTotal-50)
-        } else{
+    useEffect(() => {
+        if (validateSwitch) {
+            setPriceTotal(precioTotal - 50)
+        } else {
             setPriceTotal(precioTotal)
         }
     }, [validateSwitch, precioTotal])
@@ -168,13 +174,13 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                             <h1 className="font-bold text-base leading-[24px] mb-[24px]">{resumenCopys.ahorro.titulo}</h1>
 
                             <div className="w-full font-normal leading-[24px] text-lg space-y-2">
-                                {(globalCheckedPromotions && (ahorroCombinado !== 0 || (promoVisible && promoVisible?.length > 0)) ) && (
+                                {(globalCheckedPromotions && (ahorroCombinado !== 0 || (promoVisible && promoVisible?.length > 0))) && (
                                     <div className="flex justify-between w-full">
-                                    <h5 className="text-left mr-[8px]">{resumenCopys.ahorro.paquete}</h5>
-                                    <h5 className="text-right">-{FormatPromotions(ahorroCombinado)}</h5>
-                                </div>
+                                        <h5 className="text-left mr-[8px]">{resumenCopys.ahorro.paquete}</h5>
+                                        <h5 className="text-right">-{FormatPromotions(ahorroCombinado)}</h5>
+                                    </div>
                                 )}
-                                
+
 
                                 {
                                     promoVisible?.map((promo, index) => {
@@ -188,13 +194,13 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                                     })
                                 }
 
-                                { validateSwitch && (
+                                {validateSwitch && (
                                     <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
-                                    <h5>{resumenCopys.ahorro.domicilio}</h5>
-                                    <h5>-{FormatCurrency(Number(50))}</h5>
+                                        <h5>{resumenCopys.ahorro.domicilio}</h5>
+                                        <h5>-{FormatCurrency(Number(50))}</h5>
                                     </div>
                                 )}
-                                
+
                             </div>
                         </div>
                     )}
@@ -233,19 +239,13 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                             <>
                                 {
                                     descuentoMeses.map((item) => {
-                                        let descuentoSwitch = 0;
-                                        const precioDespues = totalSinDescuento - Number(ahorroCombinado) + item.totalPromo;
+                                        const precioDespues = validateSwitch ? totalSinDescuento - Number(ahorroCombinado) + item.totalPromo - 50 : totalSinDescuento - Number(ahorroCombinado) + item.totalPromo;
                                         const copyMes = resumenCopys.ahorro.meses[item.mesId];
-                                         if(validateSwitch){
-                                            descuentoSwitch = precioDespues-50;
-                                        } else{
-                                            descuentoSwitch = precioDespues;
-                                        }
-                                        
+
                                         return (
                                             <div key={item.mesNumero} className="flex justify-between w-full font-normal leading-[24px] text-lg space-y-2">
                                                 <h5>{copyMes}</h5>
-                                                <h5>{FormatPromotions(descuentoSwitch)}</h5>
+                                                <h5>{FormatPromotions(precioDespues)}</h5>
                                             </div>
                                         )
                                     })
@@ -254,18 +254,18 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                         }
                     </div>
 
-                    { !validateSwitch && (
-                    <div className="flex flex-col gap-[8px] mb-[32px]">
-                        <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
-                            <h5>{resumenCopys.ahorro.domicilio}</h5>
-                            <h5>-{FormatCurrency(Number(50))}</h5>
+                    {!validateSwitch && (
+                        <div className="flex flex-col gap-[8px] mb-[32px]">
+                            <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
+                                <h5>{resumenCopys.ahorro.domicilio}</h5>
+                                <h5>-{FormatCurrency(Number(50))}</h5>
+                            </div>
+                            <h5 className="w-full font-normal leading-[24px] text-base text-gray-250">
+                                {resumenCopys.ahorro.infoAdicional}
+                            </h5>
                         </div>
-                        <h5 className="w-full font-normal leading-[24px] text-base text-gray-250">
-                            {resumenCopys.ahorro.infoAdicional}
-                        </h5>
-                    </div>
                     )}
-                    
+
                 </>
             </div >
         </>
