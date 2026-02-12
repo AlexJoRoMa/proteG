@@ -1,5 +1,7 @@
 import { CheckPlanesIcon, DropIcon, LoaderIcon } from "@/constants/IconsConstants";
+import { useMicrocopies } from "@/hooks/useMicrocopies";
 import { OttProps, OttsImages, PackageInfo } from "@/types/ConfiguradorTypes";
+import { PlanesTypes } from "@/types/PlanesExtrasTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { Accordion, AccordionItem, Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
@@ -7,12 +9,6 @@ import { EntrySkeletonType } from "contentful";
 import Image from "next/image";
 import { Key, useEffect, useState } from "react";
 import useSWR from "swr";
-
-const fetchMicrocopies = async (key: string) => {
-    const res = await fetch(`/api/microcopies?key=${key}`);
-    if (!res.ok) throw new Error("Error al obtener los microcopies desde Contentful");
-    return res.json();
-};
 
 const fetchGetPackageInfo = async ([url, data]: [string, PackageInfo]) => {
     const res = await fetch(url, {
@@ -25,13 +21,15 @@ const fetchGetPackageInfo = async ([url, data]: [string, PackageInfo]) => {
 
 export default function AccordionPlanesExtras() {
 
+    const { getValue: configValue } = useMicrocopies('Configurador');
+    const { rawData, getValue } = useMicrocopies('configurador-otts');
+
     const itemClasses = {
         indicator: "data-[open=true]:rotate-180",
         title: "leading-[24px] font-normal text-base",
     }
 
     const content = useContent();
-
     const ottsImages = content.ottsImages as unknown as EntrySkeletonType<OttsImages>[];
 
     const [selectedCard, setSelectedCard] = useState<OttProps[]>([]);
@@ -43,20 +41,6 @@ export default function AccordionPlanesExtras() {
     } as unknown as PackageInfo;
 
     const shouldFetch = Boolean(content.userAnswers.tv);
-
-
-    // Usar SWR para el fetching con caché optimizado
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { data: contentfulData, error: contentfulError, isLoading: contentfulLoading } = useSWR(
-        ['microcopies', 'configurador'],
-        () => fetchMicrocopies(`Configurador`),
-        {
-            dedupingInterval: 3600000, // 1 hora
-            revalidateOnFocus: false,
-            keepPreviousData: true,
-            revalidateIfStale: false,
-        }
-    );
 
     const { data: ottsData, error: errorOtts, isLoading: loadingOtts } = useSWR(
         shouldFetch ? ['api/configurador/planes-extras', packageInfo] : null,
@@ -70,32 +54,18 @@ export default function AccordionPlanesExtras() {
     );
 
     let planesExtras: OttProps[] | null = null;
+    const dataOtts: PlanesTypes[] | undefined = rawData?.[0].fields.resources;
 
     if (ottsData && ottsData.extrasMap?.ott) {
         const planes: OttProps[] = ottsData.extrasMap.ott;
-        
+
         planesExtras = planes?.filter(
-            extra => extra.categoriaExtra?.includes('Netflix') || 
-            extra.categoriaExtra?.includes('Disney+') ||
-            extra.titulo?.includes('Vix Premium') ||
-            extra.titulo?.includes('Vix Premium Mundial')
+            extra => extra.categoriaExtra?.includes('Netflix') ||
+                extra.categoriaExtra?.includes('Disney+') ||
+                extra.titulo?.includes('Vix Premium') ||
+                extra.titulo?.includes('Vix Premium Mundial')
         )
-        
     }
-
-    // Helper para encontrar valores por key
-    const getValueByKey = (key: string) => {
-
-        if (!contentfulData || !Array.isArray(contentfulData) || !contentfulData[0]?.fields?.resources) {
-            return '';
-        }
-
-        const item = contentfulData[0].fields.resources.find((item: { fields: { key: string; value: string } }) =>
-            item.fields?.key === key
-        );
-
-        return item?.fields?.value || '';
-    };
 
     function handleSelect(card: OttProps) {
 
@@ -103,11 +73,11 @@ export default function AccordionPlanesExtras() {
             const cardSelected = prev.some(item => item.idExtra === card.idExtra);
 
             //---Deseleccionar
-            if(cardSelected ){
+            if (cardSelected) {
                 let newSelect = prev.filter(item => item.idExtra !== card.idExtra);
 
                 //CASO VIX MUNDIAL
-                if(card.titulo === 'Vix Premium') {
+                if (card.titulo === 'Vix Premium') {
                     newSelect = newSelect.filter(item => item.titulo !== 'Vix Premium Mundial')
                 }
 
@@ -117,26 +87,26 @@ export default function AccordionPlanesExtras() {
 
             let newSelection = prev.filter(item => {
                 const isVixCombo = (card.titulo.includes('Vix') && item.titulo.includes('Vix'));
-                if(isVixCombo) return true;
-                return item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra; 
-                }
+                if (isVixCombo) return true;
+                return item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra;
+            }
             );
 
             //CASO VIX SLECCION
-            if(card.titulo === 'Vix Premium Mundial') {
+            if (card.titulo === 'Vix Premium Mundial') {
 
                 const hasVixPremium = planesExtras?.find(plan => plan.titulo === 'Vix Premium');
 
                 const noSelectedVix = newSelection.filter(item => !item.titulo.includes('Vix'));
-                
-                if(hasVixPremium) {
+
+                if (hasVixPremium) {
                     return newSelection = [...noSelectedVix, hasVixPremium, card];
                 } else {
                     newSelection = [...noSelectedVix, card];
                 }
-            } 
+            }
 
-            if(card.titulo === 'Vix Premium') {
+            if (card.titulo === 'Vix Premium') {
                 newSelection = newSelection.filter(item => item.titulo !== 'Vix Premium Mundial');
             }
             return [...newSelection, card];
@@ -157,7 +127,7 @@ export default function AccordionPlanesExtras() {
         setSelectedCard((prev) => {
             const selectedTitles = new Set(prev.map(item => item.titulo));
 
-            if( selectedTitles.has('Vix Premium Mundial')){
+            if (selectedTitles.has('Vix Premium Mundial')) {
                 selectedTitles.add('Vix Premium')
             }
 
@@ -168,7 +138,7 @@ export default function AccordionPlanesExtras() {
             const prevIds = prev.map(p => p.idExtra).sort().join(', ');
             const newIds = newSelect.map(p => p.idExtra).sort().join(', ');
 
-            if(prevIds === newIds) return prev;
+            if (prevIds === newIds) return prev;
             return newSelect;
             /* 
             const validIds = new Set(planesExtras.map(plan => plan.idExtra));
@@ -185,7 +155,7 @@ export default function AccordionPlanesExtras() {
 
         content.setUserAnswers((prev) => {
             const prevOTT = prev.tv?.ott?.planes ?? [];
-            const prevIds = prevOTT.map((plan)=> plan.idExtra).join(",");
+            const prevIds = prevOTT.map((plan) => plan.idExtra).join(",");
             const newIds = selectedCard.map((plan) => plan.idExtra).join(",");
 
             if (prevIds === newIds) return prev;
@@ -215,7 +185,7 @@ export default function AccordionPlanesExtras() {
             <AccordionItem
                 key="1"
                 aria-label="Accordion 1"
-                title={getValueByKey('configurador.tv.extras')}
+                title={configValue('configurador.tv.extras')}
                 indicator={<DropIcon />}
             >
                 {loadingOtts &&
@@ -246,6 +216,9 @@ export default function AccordionPlanesExtras() {
                         {planesExtras && planesExtras.map((ott: OttProps, index: Key) => {
                             const isSelected = selectedCard.some(item => item.idExtra === ott.idExtra || item.titulo === ott.titulo);
 
+                            const ottInfo = dataOtts?.find((info) => info.fields.valueLong === ott.nombreSiebel);
+                            const duration = ottInfo?.fields.value ?? getValue('ott.duracionDefecto');
+
                             return (
                                 <Card
                                     key={index}
@@ -259,8 +232,8 @@ export default function AccordionPlanesExtras() {
                                     }}
                                 >
                                     <CardHeader>
-                                        {(() =>{
-                                            const getIcon = ottsImages.find(icon => 
+                                        {(() => {
+                                            const getIcon = ottsImages.find(icon =>
                                                 ott.titulo.toLowerCase() === icon.fields.type.toLowerCase()
                                             );
 
@@ -268,14 +241,14 @@ export default function AccordionPlanesExtras() {
                                                 ott.titulo.toLowerCase().includes(icon.fields.type.toLowerCase())
                                             )
 
-                                            if(!setIcon) return null;
+                                            if (!setIcon) return null;
 
-                                            return(
+                                            return (
                                                 <Image
-                                                src={`https:${setIcon.fields.ottImage.fields.image.fields.file.url}`}
-                                                alt={setIcon.fields.ottImage.fields.altText || ott.titulo || "Ícono del servicio extra"}
-                                                width={96}
-                                                height={46}
+                                                    src={`https:${setIcon.fields.ottImage.fields.image.fields.file.url}`}
+                                                    alt={setIcon.fields.ottImage.fields.altText || ott.titulo || "Ícono del servicio extra"}
+                                                    width={96}
+                                                    height={46}
                                                 />
                                             )
                                         })()}
@@ -316,7 +289,7 @@ export default function AccordionPlanesExtras() {
                                         } */}
                                             <div className="flex flex-col gap-[4px]">
                                                 <h3 className="font-bold text-base leading-[24px]">{`+${FormatCurrency(ott.costo)}`}</h3>
-                                                <p className="font-normal text-sm leading-[16px]">{`al mes`}</p>
+                                                <p className="font-normal text-sm leading-[16px]">{duration}</p>
                                             </div>
                                             <div
                                                 className={`shrink-0 flex items-center justify-center w-[24px] h-[24px] rounded-md p-[1px] ${isSelected ? 'bg-conic-custom' : 'bg-gray-150'}`}
@@ -338,7 +311,7 @@ export default function AccordionPlanesExtras() {
                     </div>
                 )
                 }
-            </AccordionItem>
+            </AccordionItem >
         </Accordion >
     )
 }

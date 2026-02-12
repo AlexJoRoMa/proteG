@@ -4,6 +4,7 @@ interface MicrocopyItem {
     fields: {
         key: string;
         value: string;
+        valueLong: string;
     };
 }
 
