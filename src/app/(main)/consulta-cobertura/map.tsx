@@ -20,7 +20,8 @@ export default function IzziMap(){
     setLocality,
     setState,
     setLat,
-    setLng
+    setLng,
+    setMode
    } = useContent();
 
   const HandleMapClick = (ev: MapMouseEvent) => {
@@ -35,6 +36,7 @@ export default function IzziMap(){
         mapAddressFields(result);
       });
       setAddress(true);
+      setMode('postalCode');
     }
 
 function mapAddressFields(data: GeocodeType) {

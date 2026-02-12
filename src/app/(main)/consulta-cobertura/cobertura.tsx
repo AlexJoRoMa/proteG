@@ -27,34 +27,7 @@ export default function Cobertura() {
 
     return (
         <>
-            <CoberturaProvider
-                addressSelected={false}
-                selectedPlace={null}
-                setSelectedPlace={null}
-                markerPosition={{ lat: 0, lng: 0 }}
-                setMarkerPosition={{ lat: 0, lng: 0 }}
-                postalCode={''}
-                setPostalCode={''}
-                street={''}
-                setStreet={''}
-                streetNumber={''}
-                setStreetNumber={''}
-                aptNumber={''}
-                setAptNumber={''}
-                neighborhood={''}
-                setNeighborhood={''}
-                locality={''}
-                setLocality={''}
-                name={''}
-                setName={''}
-                phone={''}
-                setPhone={''}
-                lat={0}
-                setLat={0}
-                lng={0}
-                setLng={0}
-                formattedAddress=''
-                setFormattedAddress=''>
+            <CoberturaProvider>
                 <div className="items-center justify-center mb-8 mx-sm xl:mx-xl xl:justify-start">
                     <div className='flex flex-col'>
                         <p className="text-[32px] font-bold">{getValue('cobertura.title')}</p>
