@@ -36,7 +36,7 @@ function hasData(obj: unknown): boolean {
 export default function ResumenPedido() {
 
     const { userAnswers, copysResumen, setCheckedPromotions, checkedPromotions, infoDrawerContent, configuradorEntry, izziSelection } = useContent();
-    const { precioTotal, coberturaData, setPromoData, infoPaquetes, setInfoPaquetes, setParams } = useIzziContent();;
+    const { precioTotal, coberturaData, setPromoData, infoPaquetes, setInfoPaquetes } = useIzziContent();;
     const [loading, setLoading] = useState<boolean>(false);
     const [promoError, setPromoError] = useState(false);
     const [validComboCategories, setValidComboCategories] = useState<Set<string>>(new Set());
@@ -148,7 +148,6 @@ export default function ResumenPedido() {
     };
 
     function handleContratar() {
-        setParams({ plan: null, movil: null });
         setLoading(true);
         router.push(`${resumenCopys.boton.contratar.url}`)
     }
