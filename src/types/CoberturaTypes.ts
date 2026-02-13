@@ -1,5 +1,5 @@
 import { Asset, Entry, EntrySkeletonType } from "contentful";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 
 export type CoberturaID = {
     id: string;
@@ -43,34 +43,8 @@ export interface AddressType {
 
 export type ProviderProps = {
   children: ReactNode,
-  addressSelected: boolean,
-  selectedPlace: google.maps.places.PlaceResult | null,
-  setSelectedPlace: google.maps.places.PlaceResult | null,
-  markerPosition: google.maps.LatLng | google.maps.LatLngLiteral,
-  setMarkerPosition: google.maps.LatLng | google.maps.LatLngLiteral,
-  postalCode: string,
-  setPostalCode: string,
-  street: string,
-  setStreet: string,
-  streetNumber: string,
-  setStreetNumber: string,
-  aptNumber: string,
-  setAptNumber: string,
-  neighborhood: string,
-  setNeighborhood: string,
-  locality: string,
-  setLocality: string,
-  name: string,
-  setName: string,
-  phone: string,
-  setPhone: string,
-  lat: number,
-  setLat: number,
-  lng: number,
-  setLng: number,
-  formattedAddress: string,
-  setFormattedAddress: string
 }
+
 export type DataFields = {
   addressSelected: boolean,
   setAddress: React.Dispatch<React.SetStateAction<boolean>>
@@ -100,4 +74,6 @@ export type DataFields = {
   setLat: React.Dispatch<React.SetStateAction<number>>,
   lng: number,
   setLng: React.Dispatch<React.SetStateAction<number>>,
+  mode: 'address' | 'postalCode',
+  setMode: React.Dispatch<React.SetStateAction<'address' | 'postalCode'>>
 }

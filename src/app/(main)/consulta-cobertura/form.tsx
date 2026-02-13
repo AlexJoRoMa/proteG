@@ -124,12 +124,14 @@ export default function CoberturaForm() {
     setLat,
     lng,
     setLng,
+    mode,
+    setMode
   } = useContent();
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const { setGlobalFlag, setFormattedAddress, setCoberturaData } = useIzziContent();
-  const [mode, setMode] = useState<'address' | 'postalCode'>('address');
+
 
   const modalData = {
     title: getValue2('stickyModal.title'),
@@ -229,6 +231,7 @@ export default function CoberturaForm() {
       mapAddressFields(result);
     });
     setAddress(true);
+    setMode('postalCode');
     setMarkerPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
     if (map) map.panTo({ lat: position.coords.latitude, lng: position.coords.longitude });
   }
