@@ -9,11 +9,6 @@ export type ProviderProps = {
     setGlobalFlag?: boolean,
 }
 
-export type ConfigParams = {
-    plan: string | null;
-    movil: string | null;
-}
-
 export type DataFields = {
     globalFlag: boolean,
     setGlobalFlag: React.Dispatch<React.SetStateAction<boolean>>,
@@ -44,8 +39,6 @@ export type DataFields = {
     infoPaquetes: string
     setInfoPaquetes: React.Dispatch<React.SetStateAction<string>>
     clearCheckoutFlow: () => void
-    params: ConfigParams
-    setParams: React.Dispatch<React.SetStateAction<ConfigParams>>,
     globalCheckedPromotions: boolean,
     setGlobalCheckedPromotions: React.Dispatch<React.SetStateAction<boolean>>
     ahorroTotal: number,
