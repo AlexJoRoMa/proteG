@@ -3,7 +3,35 @@ import { CoberturaType } from '@/types/ConfiguradorTypes';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
- 
+
+export async function preSelectionCookie(data: CoberturaType) {
+  const cookieStore = await cookies();
+
+  if (data.seleccionPaquete) {
+    cookieStore.set({
+      name: 'seleccionPaquete',
+      value: data.seleccionPaquete,
+      httpOnly: true,
+      path: '/',
+      maxAge: 3600
+    });
+  } else {
+    cookieStore.delete('seleccionPaquete');
+  }
+
+  if (data.seleccionMovil) {
+    cookieStore.set({
+      name: 'seleccionMovil',
+      value: data.seleccionMovil,
+      httpOnly: true,
+      path: '/',
+      maxAge: 3600
+    });
+  } else {
+    cookieStore.delete('seleccionMovil');
+  }
+}
+
 export async function createCookie(data: CoberturaType) {
   const cookieStore = await cookies()
 

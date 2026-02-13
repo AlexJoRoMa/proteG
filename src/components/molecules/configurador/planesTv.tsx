@@ -3,7 +3,6 @@
 import LinkModal from "@/components/atoms/LinkModal";
 import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
 import AccordionPlanesExtras from "@/components/molecules/configurador/accordionPlanesExtras";
-import { useIzziContent } from "@/components/providers/IzziProvider";
 import { CheckPlanesIcon } from "@/constants/IconsConstants";
 import { OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
@@ -11,9 +10,8 @@ import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-export default function PlanesTv({ step }: StepProps) {
+export default function PlanesTv({ step, preSeleccion }: StepProps) {
     const { configuradorEntry, setUserAnswers, setDisabled, userAnswers, copysConfigurador } = useContent();
-    const { params } = useIzziContent();
 
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const tvUserInteracted = useRef(false);
@@ -110,12 +108,12 @@ export default function PlanesTv({ step }: StepProps) {
     }
 
     useEffect(() => {
-        if (!params?.plan) return;
+        if (!preSeleccion.seleccionPaquete) return;
         if (!tvPlans || tvPlans.length === 0) return;
         if (userAnswers.tv?.paquete) return;
         if (tvUserInteracted.current) return;
 
-        const planCode = String(params.plan);
+        const planCode = String(preSeleccion.seleccionPaquete);
         const lower = planCode.toLowerCase();
         const isSoloTv = lower.startsWith("izzitv");
         const isTriplePlay = !isSoloTv && lower.includes("_");
@@ -136,7 +134,7 @@ export default function PlanesTv({ step }: StepProps) {
         queueMicrotask(() => {
             setUserAnswers(prev => ({ ...prev, tv: { paquete: matchedOffer!, total: Number(matchedOffer!.precioPaquete) || 0 } }));
         });
-    }, [params.plan, setUserAnswers, tvPlans, userAnswers.tv?.paquete]);
+    }, [preSeleccion.seleccionPaquete, setUserAnswers, tvPlans, userAnswers.tv?.paquete]);
 
     useEffect(() => {
         const tvPaquete = userAnswers.tv?.paquete;

@@ -2,7 +2,6 @@
 
 import LinkModal from "@/components/atoms/LinkModal";
 import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
-import { useIzziContent } from "@/components/providers/IzziProvider";
 import { CheckPlanesIcon } from "@/constants/IconsConstants";
 import { movilComponentFields, OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
@@ -10,9 +9,8 @@ import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-export default function PlanesInternet({ step }: StepProps) {
+export default function PlanesInternet({ step, preSeleccion }: StepProps) {
     const { configuradorEntry, setUserAnswers, disabled, userAnswers, copysConfigurador, rehydrated } = useContent();
-    const { params } = useIzziContent();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const plans = configuradorEntry?.offers?.DOBLE_PLAY as OfferItem[] || [];
@@ -73,13 +71,13 @@ export default function PlanesInternet({ step }: StepProps) {
     const offersIds = useMemo(() => offersByType.map(o => String(o.idPaquete)).join('|'), [offersByType]);
 
     useEffect(() => {
-        if (!params?.plan) return;
+        if (!preSeleccion.seleccionPaquete) return;
         if (!offersByType.length) return;
         if (userAnswers.internet?.paquete) return;
         if (userInteracted.current) return;
 
-        const [internetCode] = String(params.plan).split('_', 2);
-        let matchedOffer = offersByType.find(o => String(o.nombreCode) === String(params.plan));
+        const [internetCode] = String(preSeleccion.seleccionPaquete).split('_', 2);
+        let matchedOffer = offersByType.find(o => String(o.nombreCode) === String(preSeleccion.seleccionPaquete));
 
         if (!matchedOffer && internetCode) {
             matchedOffer = offersByType.find(o => String(o.nombreCode) === String(internetCode));
@@ -96,7 +94,7 @@ export default function PlanesInternet({ step }: StepProps) {
                 internet: { paquete: matchedOffer!, total: Number(matchedOffer!.precioPaquete) || 0 }
             }));
         });
-    }, [params.plan, offersIds, rehydrated, offersByType, userAnswers.internet?.paquete, setUserAnswers]);
+    }, [preSeleccion.seleccionPaquete, offersIds, rehydrated, offersByType, userAnswers.internet?.paquete, setUserAnswers]);
 
     useEffect(() => {
         const internetPaquete = userAnswers.internet?.paquete;

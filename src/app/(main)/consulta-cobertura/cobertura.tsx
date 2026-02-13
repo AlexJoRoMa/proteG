@@ -6,7 +6,7 @@ import CoberturaForm from './form';
 import { CoberturaProvider } from '@/components/providers/CoberturaProvider';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import { useSearchParams } from 'next/navigation';
-import { useIzziContent } from '@/components/providers/IzziProvider';
+import { preSelectionCookie } from './actions';
 
 const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
 
@@ -16,14 +16,18 @@ export default function Cobertura() {
     const planParam = searchParams.get("plan"); //ej: izzi80m_izzitvhd
     const movilParam = searchParams.get("movil"); //ej: movil10gb
 
-    const { setParams } = useIzziContent();
-
     useEffect(() => {
-        setParams({
-            plan: planParam ?? null,
-            movil: movilParam ?? null,
-        });
-    }, [planParam, movilParam, setParams])
+
+        async function setParams() {
+            const cookieData = {
+                seleccionPaquete: planParam ?? null,
+                seleccionMovil: movilParam ?? null
+            }
+            await preSelectionCookie(cookieData);
+        }
+
+        setParams();
+    }, [planParam, movilParam])
 
     return (
         <>
