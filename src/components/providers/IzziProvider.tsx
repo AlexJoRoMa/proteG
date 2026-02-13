@@ -1,6 +1,6 @@
 'use client'
 
-import { ConfigParams, DataFields, ProviderProps } from "@/types/IzziTypes";
+import { DataFields, ProviderProps } from "@/types/IzziTypes";
 import { createContext, useCallback, useContext, useState } from "react";
 import { CoberturaType, IzziSelection, Promotion, UserAnswers } from "@/types/ConfiguradorTypes";
 import { DatosContratacion, ProcessStatus } from "@/types/Contratacion";
@@ -35,7 +35,6 @@ export const IzziProvider = ({
     const [offnetIzzi, setOffnetIzzi] = useState<boolean>(false);
     const [offnetSky, setOffnetSky] = useState<boolean>(false);
     const [infoPaquetes, setInfoPaquetes] = useState<string>("");
-    const [params, setParams] = useState<ConfigParams>({ plan: null, movil: null });
     const [globalCheckedPromotions, setGlobalCheckedPromotions] = useState<boolean>(false);
     const [ahorroTotal, setAhorroTotal] = useState<number>(0);
     const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
@@ -46,7 +45,6 @@ export const IzziProvider = ({
         setGlobalIzziSelection(null);
         setGlobalProcessStatus({});
         setGlobalUserAnswers({});
-        setParams({ plan: null, movil: null });
         setGlobalFlagDomicilio(false);
         setCheckSwitch(false);
     }, [])
@@ -82,8 +80,6 @@ export const IzziProvider = ({
             infoPaquetes,
             setInfoPaquetes,
             clearCheckoutFlow,
-            params,
-            setParams,
             globalCheckedPromotions,
             setGlobalCheckedPromotions,
             ahorroTotal, 

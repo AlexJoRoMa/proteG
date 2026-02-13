@@ -21,7 +21,7 @@ export default function ResumenContainerConfigurador() {
     const [loading, setLoading] = useState<boolean>(false);
     const [promoError, setPromoError] = useState(false);
     const [validComboCategories, setValidComboCategories] = useState<Set<string>>(new Set());
-    const { coberturaData, setRpt, setOffnetIzzi, setOffnetSky, setParams, ahorroTotal } = useIzziContent();
+    const { coberturaData, setRpt, setOffnetIzzi, setOffnetSky, ahorroTotal } = useIzziContent();
     const router = useRouter();
 
     useEffect(() => {
@@ -95,7 +95,6 @@ export default function ResumenContainerConfigurador() {
     };
 
     function handleContratar() {
-        setParams({ plan: null, movil: null });
         setLoading(true);
         router.push(`${resumenCopys.boton.contratar.url}`)
     }

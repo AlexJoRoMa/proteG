@@ -6,7 +6,7 @@ import CoberturaForm from './form';
 import { CoberturaProvider } from '@/components/providers/CoberturaProvider';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import { useSearchParams } from 'next/navigation';
-import { useIzziContent } from '@/components/providers/IzziProvider';
+import { preSelectionCookie } from './actions';
 
 const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
 
@@ -16,45 +16,22 @@ export default function Cobertura() {
     const planParam = searchParams.get("plan"); //ej: izzi80m_izzitvhd
     const movilParam = searchParams.get("movil"); //ej: movil10gb
 
-    const { setParams } = useIzziContent();
-
     useEffect(() => {
-        setParams({
-            plan: planParam ?? null,
-            movil: movilParam ?? null,
-        });
-    }, [planParam, movilParam, setParams])
+
+        async function setParams() {
+            const cookieData = {
+                seleccionPaquete: planParam ?? null,
+                seleccionMovil: movilParam ?? null
+            }
+            await preSelectionCookie(cookieData);
+        }
+
+        setParams();
+    }, [planParam, movilParam])
 
     return (
         <>
-            <CoberturaProvider
-                addressSelected={false}
-                selectedPlace={null}
-                setSelectedPlace={null}
-                markerPosition={{ lat: 0, lng: 0 }}
-                setMarkerPosition={{ lat: 0, lng: 0 }}
-                postalCode={''}
-                setPostalCode={''}
-                street={''}
-                setStreet={''}
-                streetNumber={''}
-                setStreetNumber={''}
-                aptNumber={''}
-                setAptNumber={''}
-                neighborhood={''}
-                setNeighborhood={''}
-                locality={''}
-                setLocality={''}
-                name={''}
-                setName={''}
-                phone={''}
-                setPhone={''}
-                lat={0}
-                setLat={0}
-                lng={0}
-                setLng={0}
-                formattedAddress=''
-                setFormattedAddress=''>
+            <CoberturaProvider>
                 <div className="items-center justify-center mb-8 mx-sm xl:mx-xl xl:justify-start">
                     <div className='flex flex-col'>
                         <p className="text-[32px] font-bold">{getValue('cobertura.title')}</p>

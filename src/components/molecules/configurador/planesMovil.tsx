@@ -3,7 +3,6 @@
 
 import LinkModal from "@/components/atoms/LinkModal";
 import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
-import { useIzziContent } from "@/components/providers/IzziProvider";
 import { CheckPlanesIcon } from "@/constants/IconsConstants";
 import { MovilPlansInfo, OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
@@ -11,9 +10,8 @@ import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader, Tab, Tabs } from "@heroui/react";
 import { useEffect, useMemo, useState } from "react";
 
-export default function PlanesMovil({ step }: StepProps) {
+export default function PlanesMovil({ step, preSeleccion }: StepProps) {
     const { configuradorEntry, setUserAnswers, userAnswers, copysConfigurador } = useContent();
-    const { params } = useIzziContent();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const plans = configuradorEntry?.offers.MOVIL as unknown as OfferItem[] || [];
     const offersCopys = copysConfigurador as unknown as OffersCopys;
@@ -84,14 +82,13 @@ export default function PlanesMovil({ step }: StepProps) {
         });
     }
 
-    // preseleccionar datos de los params solo si no hay datos previos en userAnswers
     useEffect(() => {
-        if (!params?.movil) return;
+        if (!preSeleccion.seleccionMovil) return;
         if (!plansInfo || plansInfo.length === 0) return;
         // no sobreescribir una seleccion
         if (userAnswers.movil?.paquete) return;
 
-        const mobileCode = String(params.movil);
+        const mobileCode = String(preSeleccion.seleccionMovil);
         const matched = allCards.find(card => String(card.nombreCode) === mobileCode);
         if (!matched) return;
 
@@ -103,7 +100,7 @@ export default function PlanesMovil({ step }: StepProps) {
             applyUserAnswersMovil(matched, parentTab?.tituloTab);
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [params?.movil, plansInfo]);
+    }, [preSeleccion.seleccionMovil, plansInfo]);
 
     useEffect(() => {
         const paquete = userAnswers.movil?.paquete;
