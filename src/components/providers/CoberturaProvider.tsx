@@ -30,6 +30,7 @@ export const CoberturaProvider = ({
     const [phone, setPhone] = useState<string>('');
     const [lat, setLat] = useState<number>(0);
     const [lng, setLng] = useState<number>(0);
+    const [mode, setMode] = useState<'address' | 'postalCode'>('address');
 
     return (
         <coberturaContext.Provider
@@ -62,6 +63,8 @@ export const CoberturaProvider = ({
                 setLat,
                 lng,
                 setLng,
+                mode, 
+                setMode
             }}
         >
             {children}

@@ -1,5 +1,5 @@
 import { contentfulClient } from "@/services/contentful/client";
-import { CoberturaType, ConfiguradorCopys, OttsImages, ResumenIcon } from "@/types/ConfiguradorTypes";
+import { CoberturaType, ConfiguradorCopys, OttsImages, PreSelection, ResumenIcon } from "@/types/ConfiguradorTypes";
 import { Entry, EntrySkeletonType } from "contentful";
 import { getCopyForComponent } from "@/services/contentful/components";
 import { ConfiguradorProvider } from "@/utils/ConfiguradorProvider";
@@ -51,10 +51,23 @@ async function getCobertura() {
     }
 }
 
+async function getPreseleccionPaquetes() {
+    const cookieStore = await cookies()
+
+    const plan = cookieStore.get('seleccionPaquete');
+    const movil = cookieStore.get('seleccionMovil');
+
+    return {
+        seleccionPaquete: plan?.value ?? null,
+        seleccionMovil: movil?.value ?? null,
+    }
+}
+
 export default async function Configurador() {
 
     const getCookies = await getCobertura() as unknown as CoberturaType;
     const dataOffersEntry = await getOfertas(getCookies);
+    const preSeleccionPaquetes = await getPreseleccionPaquetes();
 
     const resumenIcon = await contentfulClient.getEntries({
         content_type: 'media',
@@ -131,7 +144,7 @@ export default async function Configurador() {
                                                 const componentType = component;
                                                 const Component = typeof componentType === 'string' && componentType in componentMap ? componentMap[componentType as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
 
-                                                return Component ? <Component key={index} step={index + 1} /> : null;
+                                                return Component ? <Component key={index} step={index + 1} preSeleccion={preSeleccionPaquetes as PreSelection}/> : null;
                                             }))
                                         ) : (
                                             <p>No existen componentes cargados.</p>
@@ -141,7 +154,7 @@ export default async function Configurador() {
                                                 const componentType = component;
                                                 const Component = typeof componentType === 'string' && componentType in componentMap ? componentMap[componentType as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
 
-                                                return Component ? <Component key={index} step={index + 1} /> : null;
+                                                return Component ? <Component key={index} step={index + 1} preSeleccion={preSeleccionPaquetes as PreSelection}/> : null;
                                             }))
                                         ) : (
                                             <p>No existen componentes cargados.</p>

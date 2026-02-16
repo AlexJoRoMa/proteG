@@ -11,6 +11,7 @@ import { GeocodeType } from '@/types/CoberturaTypes';
 import { useIzziContent } from '@/components/providers/IzziProvider';
 import { getOfertas } from '@/services/izzi/configurador';
 import TeAyudamosModalComponentConfig from '../../../components/layouts/modals/TeAyudamosModalComponentConfigurador';
+import { InputFilter } from '@/utils/inputFilters';
 
 
 const inputStyles = {
@@ -82,6 +83,12 @@ const GooglePlacesInput = ({ mode, value, onValueChange, onPlaceSelect, label, p
         name={mode === 'postalCode' ? 'zipCode' : 'address'}
         type='text'
         classNames={inputStyles}
+        maxLength={mode === 'postalCode' ? 5 : undefined}
+        onInput={
+          mode === 'postalCode' ?
+            (e) => InputFilter(e, 'numeros') :
+            undefined
+        }
       />
     </div>
   )
@@ -117,12 +124,14 @@ export default function CoberturaForm() {
     setLat,
     lng,
     setLng,
+    mode,
+    setMode
   } = useContent();
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const { setGlobalFlag, setFormattedAddress, setCoberturaData } = useIzziContent();
-  const [mode, setMode] = useState<'address' | 'postalCode'>('address');
+
 
   const modalData = {
     title: getValue2('stickyModal.title'),
@@ -171,17 +180,17 @@ export default function CoberturaForm() {
     e.preventDefault();
     setIsLoading(true);
 
-      const coveraData = {
-        lat: lat.toString(),
-        lng: lng.toString(),
-        zipCode: postalCode,
-        address: `${street}, ${streetNumber}, ${locality}`,
-        municipio: locality,
-        colonia: neighborhood,
-        calle: street,
-        numExt: streetNumber,
-        estado: state
-      }
+    const coveraData = {
+      lat: lat.toString(),
+      lng: lng.toString(),
+      zipCode: postalCode,
+      address: `${street}, ${streetNumber}, ${locality}`,
+      municipio: locality,
+      colonia: neighborhood,
+      calle: street,
+      numExt: streetNumber,
+      estado: state
+    }
 
     try {
 
@@ -194,9 +203,9 @@ export default function CoberturaForm() {
         return;
       }
 
-        setFormattedAddress(coveraData.address);
-        setGlobalFlag(true);
-        setCoberturaData(coveraData);
+      setFormattedAddress(coveraData.address);
+      setGlobalFlag(true);
+      setCoberturaData(coveraData);
 
       await createCookie(coveraData);
 
@@ -222,6 +231,7 @@ export default function CoberturaForm() {
       mapAddressFields(result);
     });
     setAddress(true);
+    setMode('postalCode');
     setMarkerPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
     if (map) map.panTo({ lat: position.coords.latitude, lng: position.coords.longitude });
   }
@@ -495,7 +505,7 @@ export default function CoberturaForm() {
         <div>
           <Checkbox isRequired={true} isSelected={isSelected} onValueChange={setIsSelected} defaultSelected={false} color="default" className='text-gray-450 pt-4 pb-8' />
           <span className='mr-1'>{getValue('cobertura.form.privacidad.label')}</span>
-          <a target='_blank' href={getValue('cobertura.form.privacidad.Aviso.link') as string} >
+          <a target='_blank' rel='noopener noreferrer' href={getValue('cobertura.form.privacidad.Aviso.link') as string} >
             <span className='font-bold'>{getValue('cobertura.form.privacidad.Aviso') as string}</span>
           </a>
         </div>

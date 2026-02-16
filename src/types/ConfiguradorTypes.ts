@@ -8,6 +8,12 @@ export type ConfiguradorProps = {
 
 export type StepProps = {
     step: number
+    preSeleccion: PreSelection
+}
+
+export type PreSelection = {
+    seleccionPaquete: string | null
+    seleccionMovil: string | null
 }
 export interface ConfiguradorCopyFields {
     cobertura: string;
@@ -397,7 +403,9 @@ export interface CoberturaType {
     colonia?: string,
     calle?: string,
     numExt?: string,
-    estado?: string
+    estado?: string,
+    seleccionPaquete?: string | null,
+    seleccionMovil?: string | null
 }
 
 export type ClientProps = {

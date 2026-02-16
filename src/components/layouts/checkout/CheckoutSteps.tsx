@@ -7,7 +7,11 @@ import { CheckStepIcon, EditIcon } from '@/constants/IconsConstants'
 import ResumenContainer from '@/components/molecules/checkout/resumenContainer'
 import { useIzziContent } from '@/components/providers/IzziProvider'
 
-const CheckoutSteps = () => {
+interface CheckoutStepsProps {
+  isDesktop: boolean;
+}
+
+const CheckoutSteps = ({ isDesktop }: CheckoutStepsProps) => {
   const { globalFlagDomicilio } = useIzziContent();
   const { currentStep, goToStep, canGoToStep, nextStep, prevStep, totalSteps } = useCheckout()
 
@@ -61,7 +65,7 @@ const CheckoutSteps = () => {
                 </div>
 
                 {/* CheckoutContent - solo en móvil, después del step actual */}
-                {currentStep === stepNumber && (
+                {!isDesktop && currentStep === stepNumber && (
                   <div className={`xl:hidden w-full border-gradient-fixed mb-[8px]`}>
                     <CheckoutContent />
                   </div>
