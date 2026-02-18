@@ -191,7 +191,7 @@ export default function CoberturaForm() {
       numExt: streetNumber,
       estado: state
     }
-    
+
     try {
 
       const response = await getOfertas(coveraData)
@@ -241,12 +241,12 @@ export default function CoberturaForm() {
     alert("Sorry, no position available.");
   }
 
- function mapAddressFields(data: GeocodeType) {
+  function mapAddressFields(data: GeocodeType) {
     const components = data?.results?.[0]?.address_components ?? [];
-    
+
     //Se busca si existe un array con administrative_area_level_3
-    const getAreaLevel = data?.results?.find( result => 
-      result.address_components.some( component => 
+    const getAreaLevel = data?.results?.find(result =>
+      result.address_components.some(component =>
         component.types.includes('administrative_area_level_3')
       )
     );
@@ -254,13 +254,13 @@ export default function CoberturaForm() {
     const typeAreaLevel = getAreaLevel?.address_components ?? [];
 
     const allComponents = [...components, ...typeAreaLevel]
-  
+
     let valueLocality = '';
     let valueArealvl3 = '';
 
     for (const item of allComponents) {
       const value = item.long_name;
-  
+
       for (const type of item.types) {
         switch (type) {
           case 'postal_code':
@@ -292,9 +292,9 @@ export default function CoberturaForm() {
       }
     }
 
-    if(valueArealvl3){
+    if (valueArealvl3) {
       setLocality(valueArealvl3);
-    } else if(valueLocality){
+    } else if (valueLocality) {
       setLocality(valueLocality);
     }
 
@@ -340,11 +340,11 @@ export default function CoberturaForm() {
   
   */
   const handleGoogglePlace = (place: google.maps.places.PlaceResult | null) => {
-    
+
     if (place) setSelectedPlace(place)
     const lat = place?.geometry?.location?.lat() ?? 0;
     const lng = place?.geometry?.location?.lng() ?? 0;
-    
+
 
     if (lat !== 0 && lng !== 0) {
       setLat(lat);
@@ -463,7 +463,7 @@ export default function CoberturaForm() {
             placeholder={getValue('cobertura.form.colonia.placeholder')}
             errorMessage={getValue('cobertura.form.colonia.error')}
             labelPlacement="outside"
-            name="locality"
+            name="neighborhood"
             type="text"
             value={neighborhood}
             onValueChange={setNeighborhood}
