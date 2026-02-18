@@ -27,6 +27,7 @@ export default function PayPalScript({ amount, rptGetOffer, account, isRecurrent
 
     let payPalPaymentRef: string | undefined;
     let PaypalStatus: string | undefined;
+    const safeAccount = encodeURIComponent(account ?? "");
 
     /**
    * Creates a PayPal order by sending a POST request to the server.
@@ -46,7 +47,7 @@ export default function PayPalScript({ amount, rptGetOffer, account, isRecurrent
                 "rpt": rptGetOffer,
             });
 
-            const res = await fetch(`/api/paypal/createOrder/${account}`, {
+            const res = await fetch(`/api/paypal/createOrder/${safeAccount}`, {
                 method: 'POST',
                 headers,
                 body,
@@ -88,7 +89,7 @@ export default function PayPalScript({ amount, rptGetOffer, account, isRecurrent
                 "rpt": rptGetOffer,
             });
 
-            const res = await fetch(`/api/paypal/captureOrder/${account}`, {
+            const res = await fetch(`/api/paypal/captureOrder/${safeAccount}`, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify(data),
@@ -100,7 +101,7 @@ export default function PayPalScript({ amount, rptGetOffer, account, isRecurrent
             PaypalStatus = details.status;
             if (PaypalStatus !== "COMPLETED") {
                 //TODO: add error handling
-                console.warn("Pago no completado correctamente:", PaypalStatus);
+                console.warn("Pago no completado correctamente");
                 return;
             }
             //TODO: add handling for capture response if needed
@@ -130,7 +131,7 @@ export default function PayPalScript({ amount, rptGetOffer, account, isRecurrent
                 "rpt": rptGetOffer,
             });
 
-            const res = await fetch(`/api/paypal/cancelOrder/${account}`, {
+            const res = await fetch(`/api/paypal/cancelOrder/${safeAccount}`, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify(req),

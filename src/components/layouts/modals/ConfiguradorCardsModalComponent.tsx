@@ -10,13 +10,15 @@ import Link from "next/link";
 import useSWR from "swr";
 
 const fetchMicrocopies = async (key: string) => {
-    const res = await fetch(`/api/microcopies?key=${key}`);
+    const params = new URLSearchParams({ key });
+    const res = await fetch(`/api/microcopies?${params.toString()}`);
     if (!res.ok) throw new Error("Error al obtener los microcopies desde Contentful");
     return res.json();
 };
 
 const fetchMediaBlocks = async (key: string) => {
-    const res = await fetch(`/api/configurador/modal?key=${key}`);
+    const params = new URLSearchParams({ key });
+    const res = await fetch(`/api/configurador/modal?${params.toString()}`);
     if (!res.ok) throw new Error("Error al obtener los medias desde Contentful");
     return res.json();
 };
@@ -28,7 +30,6 @@ const ConfiguradorCardsModalComponent = ({ modalData, onClose, variables, type }
 
 const ConfiguradorCardsModalContent = ({ modalData, onClose, variables, type }: ConfiguradorCardsModalProps & { onClose?: () => void }) => {
 
-    // Usar SWR para el fetching con caché optimizado
     const { data: contentfulData, error: contentfulError, isLoading: contentfulLoading } = useSWR(
         ['microcopies', type],
         () => fetchMicrocopies(`modal-configurador-${type}`),
