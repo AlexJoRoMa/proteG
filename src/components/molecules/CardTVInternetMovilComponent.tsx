@@ -15,8 +15,6 @@ const CardTVInternetMovilComponent = ({ card, promo }: CardPropType) => {
   const type = card?.fields?.type as string;
   const color = type === 'internet' ? INTERNETCOLOR : type === 'tv' ? TVCOLOR : type === 'movil' ? MOVILCOLOR : '#000000';
 
-  /* const assetsLength =  Array.isArray(card?.fields?.adds) ? card?.fields?.adds.length : 0;
-  const gridType =  assetsLength > 4 ? 'grid-cols-4 grid-rows-2' : 'grid-cols-2 grid-rows-2 '; */
   const promoHeight = promo ? 'py-1 mb-[32px] -mt-[32px] min-h-[32px]' : '';
 
 
