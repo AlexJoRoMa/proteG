@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
-    const Cookie = request.headers.get("x-Cookie") ?? "";
+    const upstreamCookie = request.headers.get("cookie") ?? request.headers.get("x-upstream-cookie") ?? "";
 
     // Crear un stream de respuesta
     const encoder = new TextEncoder();
@@ -17,10 +17,11 @@ export async function POST(request: NextRequest) {
             // Función para enviar heartbeat
             const sendHeartbeat = () => {
                 try {
-                    const heartbeatMsg = `data: {"type":"heartbeat","timestamp":${Date.now()}}\n\n`;
+                    const heartbeatMsg = `data: ${JSON.stringify({ type: "heartbeat", timestamp: Date.now() })}\n\n`;
                     controller.enqueue(encoder.encode(heartbeatMsg));
                 } catch (err) {
-                    console.error("[Stream Route] Error en la peticion: "+err);
+                    void err;
+                    console.error("[Stream Route] Error en heartbeat");
                 }
             };
 
@@ -35,21 +36,18 @@ export async function POST(request: NextRequest) {
                 // Llamar al servicio real (esto puede tardar 40-50s)
                 const data = await getIzziEnroll({
                     body,
-                    headers: { Cookie }
+                    headers: { Cookie: upstreamCookie }
                 });
 
                 // Enviar el resultado
-                const resultMsg = `data: {"type":"result","data":${JSON.stringify(data)}}\n\n`;
+                const resultMsg = `data: ${JSON.stringify({ type: "result", data })}\n\n`;
                 controller.enqueue(encoder.encode(resultMsg));
                 
             } catch (error) {
-                console.error("[Stream Route] ❌ ERROR en izziEnroll");
-                console.error('[Stream Route] Error type:', error instanceof Error ? error.constructor.name : typeof error);
-                console.error('[Stream Route] Error message:', error instanceof Error ? error.message : String(error));
-                console.error('[Stream Route] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+                console.error("[Stream Route] Error en izziEnroll");
                 
                 const errorMessage = error instanceof Error ? error.message : "Error desconocido";
-                const errorMsg = `data: {"type":"error","error":"${errorMessage}"}\n\n`;
+                const errorMsg = `data: ${JSON.stringify({ type: "error", error: errorMessage })}\n\n`;
                 controller.enqueue(encoder.encode(errorMsg));
             } finally {
                 clearInterval(heartbeatInterval);
