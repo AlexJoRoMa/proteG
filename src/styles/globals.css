@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@config "../../tailwind.config.js";
+@config "../../tailwind.config.mjs";
 @import '../styles/CarouselCardComponent.css';
 @import '../styles/ChannelPromoBannerComponent.css';
 

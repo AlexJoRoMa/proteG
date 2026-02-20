@@ -10,8 +10,8 @@ import Image from "next/image";
 import { Key, useEffect, useState } from "react";
 import useSWR from "swr";
 
-const fetchGetPackageInfo = async ([url, data]: [string, PackageInfo]) => {
-    const res = await fetch(url, {
+const fetchGetPackageInfo = async ([, data]: [string, PackageInfo]) => {
+    const res = await fetch('/api/configurador/planes-extras', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -43,7 +43,7 @@ export default function AccordionPlanesExtras() {
     const shouldFetch = Boolean(content.userAnswers.tv);
 
     const { data: ottsData, error: errorOtts, isLoading: loadingOtts } = useSWR(
-        shouldFetch ? ['api/configurador/planes-extras', packageInfo] : null,
+        shouldFetch ? ['planes-extras', packageInfo] : null,
         fetchGetPackageInfo,
         {
             dedupingInterval: 3600000, // 1 hora

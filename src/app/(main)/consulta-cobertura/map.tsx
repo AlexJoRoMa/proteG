@@ -41,8 +41,22 @@ export default function IzziMap(){
 
 function mapAddressFields(data: GeocodeType) {
     const components = data?.results?.[0]?.address_components ?? [];
+    
+    //Se busca si existe un array con administrative_area_level_3
+    const getAreaLevel = data?.results?.find( result => 
+      result.address_components.some( component => 
+        component.types.includes('administrative_area_level_3')
+      )
+    );
+
+    const typeAreaLevel = getAreaLevel?.address_components ?? [];
+
+    const allComponents = [...components, ...typeAreaLevel]
   
-    for (const item of components) {
+    let valueLocality = '';
+    let valueArealvl3 = '';
+
+    for (const item of allComponents) {
       const value = item.long_name;
   
       for (const type of item.types) {
@@ -62,16 +76,26 @@ function mapAddressFields(data: GeocodeType) {
             setNeighborhood(value);
             break;
           case 'locality':
-            setLocality(value);
+            valueLocality = value;
             break;
           case 'administrative_area_level_1':
             setState(value);
+            break;
+          case 'administrative_area_level_3':
+            valueArealvl3 = value;
             break;
           default:
             break;
         }
       }
     }
+
+    if(valueArealvl3){
+      setLocality(valueArealvl3);
+    } else if(valueLocality){
+      setLocality(valueLocality);
+    }
+
   }
 
   return (
