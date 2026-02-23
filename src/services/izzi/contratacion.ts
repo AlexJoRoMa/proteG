@@ -94,10 +94,8 @@ export async function getIzziEnroll({
         });
 
         if (!response.ok) {
-            const errorText = await response.text();
-            console.error('[getIzziEnroll] ❌ Error en la respuesta');
+            console.error('[getIzziEnroll] Error en la respuesta');
             console.error('[getIzziEnroll] Response Status:', response.status);
-            console.error('[getIzziEnroll] Response Body:', errorText);
             throw new Error(`Error HTTP ${response.status}`);
         }
 
@@ -106,10 +104,7 @@ export async function getIzziEnroll({
         return data;
 
     } catch (err) {
-        console.error('[getIzziEnroll] ❌ ERROR CRÍTICO');
-        console.error('[getIzziEnroll] Error type:', err instanceof Error ? err.constructor.name : typeof err);
-        console.error('[getIzziEnroll] Error message:', err instanceof Error ? err.message : String(err));
-        console.error('[getIzziEnroll] Error stack:', err instanceof Error ? err.stack : 'No stack trace');
+        console.error('[getIzziEnroll] Error en la ejecucion');
         throw err;
     }
 }
@@ -124,7 +119,8 @@ export async function GetProcessStatus({
 
     try {
 
-        const response = await fetch(`${url}?processId=${headers.processId}`, {
+        const processStatusParams = new URLSearchParams({ processId: headers.processId });
+        const response = await fetch(`${url}?${processStatusParams.toString()}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -216,7 +212,8 @@ export async function getCapacity({
 
     try {
 
-        const response = await fetch(`${url}?processId=${headers.processId}`, {
+        const capacityParams = new URLSearchParams({ processId: headers.processId });
+        const response = await fetch(`${url}?${capacityParams.toString()}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

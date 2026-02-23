@@ -15,7 +15,8 @@ interface MicrocopyEntry {
 }
 
 async function fetchMicrocopies(key: string) {
-    const res = await fetch(`/api/microcopies?key=${key}`);
+    const params = new URLSearchParams({ key });
+    const res = await fetch(`/api/microcopies?${params.toString()}`);
 
     if (!res.ok) throw new Error("Error al obtener los microcopies desde Contentful");
     return res.json();

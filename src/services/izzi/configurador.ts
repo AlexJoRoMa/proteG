@@ -27,9 +27,7 @@ export async function getToken() {
         );
 
         if (!response.ok) {
-            const errorText = await response.text();
-            console.error('[getToken] ❌ Error en la respuesta');
-            console.error('[getToken] Response Body:', errorText);
+            console.error('[getToken] Error en la respuesta del servicio de token');
             throw new Error(`Error en la petición: ${response.status} ${response.statusText}`);
         }
 
@@ -37,11 +35,8 @@ export async function getToken() {
         
         return data.access_token;
 
-    } catch (error) {
-        console.error('[getToken] ❌ ERROR CRÍTICO al obtener el Access Token');
-        console.error('[getToken] Error type:', error instanceof Error ? error.constructor.name : typeof error);
-        console.error('[getToken] Error message:', error instanceof Error ? error.message : String(error));
-        console.error('[getToken] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    } catch {
+        console.error('[getToken] Error al obtener access token');
         throw new Error("Error al obtener el Access Token");
     }
 }
@@ -55,7 +50,7 @@ export async function getOfertas(dataCobertura: CoberturaType) {
     try {
 
         if ( !dataCobertura.zipCode || !dataCobertura.lat || !dataCobertura.lng ) {
-            console.error("Datos de cobertura inválidos:", dataCobertura);
+            console.error("Datos de cobertura invalidos");
             redirect("/error");
         }
 
@@ -91,8 +86,8 @@ export async function getOfertas(dataCobertura: CoberturaType) {
         const data = await response.json();
         return data;
 
-    } catch (error) {
-        console.error("Error al obtenerY las ofertas", error)
+    } catch {
+        console.error("Error al obtenerY las ofertas")
         throw new Error("Error al obtenerZ las ofertas");
     }
 }
@@ -135,8 +130,8 @@ export async function getQuote(body: QuoteInfo) {
         const data = await response.json();
         return data;
 
-    } catch (error) {
-        console.error("Error al obtener las ofertas", error)
+    } catch {
+        console.error("Error al obtener las ofertas")
         throw new Error("Error al obtener las ofertas");
     }
 }

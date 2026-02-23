@@ -74,46 +74,6 @@ const CheckoutSteps = ({ isDesktop }: CheckoutStepsProps) => {
             )
           })}
         </div>
-
-        {/* Botones temporales para navegación - TEMPORAL PARA DESARROLLO */}
-        {/* <div className="fixed bottom-4 right-4 bg-white shadow-lg rounded-lg p-4 border z-50">
-          <div className="text-sm font-semibold mb-2 text-gray-700">
-            Navegación temporal (Step {currentStep} de {totalSteps})
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={prevStep}
-              disabled={currentStep === 1}
-              className="px-3 py-1 bg-gray-500 text-white rounded text-sm disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-gray-600 transition-colors"
-            >
-              ← Anterior
-            </button>
-            <button
-              onClick={nextStep}
-              disabled={currentStep === totalSteps}
-              className="px-3 py-1 bg-blue-500 text-white rounded text-sm disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
-            >
-              Siguiente →
-            </button>
-          </div>
-          <div className="flex gap-1 mt-2">
-            {Array.from({ length: totalSteps }, (_, i) => i + 1).map((step) => (
-              <button
-                key={step}
-                onClick={() => goToStep(step)}
-                disabled={!canGoToStep(step)}
-                className={`w-8 h-8 rounded text-xs font-semibold transition-colors ${step === currentStep
-                  ? 'bg-blue-500 text-white'
-                  : canGoToStep(step)
-                    ? 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  }`}
-              >
-                {step}
-              </button>
-            ))}
-          </div>
-        </div> */}
       </div>
 
       <div className='block xl:hidden'>

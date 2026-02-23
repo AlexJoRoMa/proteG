@@ -244,7 +244,21 @@ export default function CoberturaForm() {
   function mapAddressFields(data: GeocodeType) {
     const components = data?.results?.[0]?.address_components ?? [];
 
-    for (const item of components) {
+    //Se busca si existe un array con administrative_area_level_3
+    const getAreaLevel = data?.results?.find(result =>
+      result.address_components.some(component =>
+        component.types.includes('administrative_area_level_3')
+      )
+    );
+
+    const typeAreaLevel = getAreaLevel?.address_components ?? [];
+
+    const allComponents = [...components, ...typeAreaLevel]
+
+    let valueLocality = '';
+    let valueArealvl3 = '';
+
+    for (const item of allComponents) {
       const value = item.long_name;
 
       for (const type of item.types) {
@@ -264,16 +278,26 @@ export default function CoberturaForm() {
             setNeighborhood(value);
             break;
           case 'locality':
-            setLocality(value);
+            valueLocality = value;
             break;
           case 'administrative_area_level_1':
             setState(value);
+            break;
+          case 'administrative_area_level_3':
+            valueArealvl3 = value;
             break;
           default:
             break;
         }
       }
     }
+
+    if (valueArealvl3) {
+      setLocality(valueArealvl3);
+    } else if (valueLocality) {
+      setLocality(valueLocality);
+    }
+
   }
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -316,9 +340,11 @@ export default function CoberturaForm() {
   
   */
   const handleGoogglePlace = (place: google.maps.places.PlaceResult | null) => {
+
     if (place) setSelectedPlace(place)
     const lat = place?.geometry?.location?.lat() ?? 0;
     const lng = place?.geometry?.location?.lng() ?? 0;
+
 
     if (lat !== 0 && lng !== 0) {
       setLat(lat);
@@ -437,7 +463,7 @@ export default function CoberturaForm() {
             placeholder={getValue('cobertura.form.colonia.placeholder')}
             errorMessage={getValue('cobertura.form.colonia.error')}
             labelPlacement="outside"
-            name="locality"
+            name="neighborhood"
             type="text"
             value={neighborhood}
             onValueChange={setNeighborhood}

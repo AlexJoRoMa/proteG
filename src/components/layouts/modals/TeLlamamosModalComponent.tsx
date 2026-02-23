@@ -10,7 +10,8 @@ import { getPersistentQueryString } from '@/services/izzi/trackService';
 const ReCAPTCHA = lazy(() => import('react-google-recaptcha'));
 
 const fetchMicrocopies = async (key: string) => {
-    const res = await fetch(`/api/microcopies?key=${key}`);
+    const params = new URLSearchParams({ key });
+    const res = await fetch(`/api/microcopies?${params.toString()}`);
     if (!res.ok) throw new Error("Error al obtener los microcopies desde Contentful");
     return res.json();
 };
@@ -191,12 +192,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
         e.preventDefault();
         
         if (!isFormValid()) {
-            console.warn('[TeLlamamos Cliente] ⚠️ Validación fallida');
-            console.warn('[TeLlamamos Cliente] Estado del formulario:', {
-                phoneLength: phoneValue.replace(/\D/g, '').length,
-                isSelected,
-                hasRecaptchaToken: !!recaptchaToken
-            });
+            console.warn('[TeLlamamos Cliente] Validacion fallida');
             setSubmitError('Por favor completa todos los campos correctamente');
             return;
         }
@@ -227,23 +223,10 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
                 setIsSuccess(true);
             } else {
                 const errorData = await response.json();
-                console.error('[TeLlamamos Cliente] ❌ Error en respuesta:', errorData);
                 throw new Error(errorData.message || errorData.error || 'Error al enviar formulario');
             }
         } catch (error) {
-            console.error('[TeLlamamos Cliente] ❌ ERROR CRÍTICO en formulario');
-            console.error('[TeLlamamos Cliente] Error type:', error instanceof Error ? error.constructor.name : typeof error);
-            console.error('[TeLlamamos Cliente] Error message:', error instanceof Error ? error.message : String(error));
-            console.error('[TeLlamamos Cliente] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
-            
-            // Identificar tipos específicos de errores
-            if (error instanceof TypeError) {
-                console.error('[TeLlamamos Cliente] TypeError - Posible problema de red o fetch');
-            }
-            if (error instanceof SyntaxError) {
-                console.error('[TeLlamamos Cliente] SyntaxError - Posible problema al parsear respuesta JSON');
-            }
-            
+            console.error('[TeLlamamos Cliente] Error al enviar formulario');
             setSubmitError(error instanceof Error ? error.message : 'Error desconocido');
         } finally {
             setIsSubmitting(false);
