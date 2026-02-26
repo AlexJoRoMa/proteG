@@ -94,7 +94,7 @@ export default function PagoTarjeta() {
 
             {urlFrame && !loadingLiga && (
                 <div className="mt-[24px] xl:mt-[27px] w-full h-full">
-                    <iframe sandbox="allow-forms allow-scripts allow-popups allow-top-navigation-by-user-activation"
+                    <iframe sandbox="allow-forms allow-scripts allow-popups allow-top-navigation-by-user-activation allow-same-origin"
                         id="pago con tarjeta"
                         src={urlFrame}
                         width={300}
