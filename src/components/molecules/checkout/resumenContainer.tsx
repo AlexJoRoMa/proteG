@@ -11,6 +11,7 @@ import { GetIzziEnroll } from "@/utils/GetIzziEnroll";
 import { GetSubmitOffer } from "@/utils/GetSubmitOffer";
 import { validatePayment } from "@/utils/validatePayment";
 import { GetCapacity } from "@/utils/GetCapacity";
+import { GetProcessStatus } from "@/utils/GetProcessStatus";
 import { useEffect, useRef, useState } from "react";
 import { GetSubmitCapacity } from "@/utils/GetSubmitCapacity";
 import { useRouter } from "next/navigation";
@@ -161,17 +162,42 @@ export default function ResumenContainer() {
 
     // Step 6
     const step6 = async () => {
+        const metodoPago = datosContratacion.Pago?.metodoPago;
+
         // ValidaPago
-        const response = await validatePayment(datosContratacion, setDatosContratacion, processStatusRef.current, paymentReference);
+        const response = await validatePayment(
+            datosContratacion,
+            setDatosContratacion,
+            processStatusRef.current,
+            paymentReference
+        );
 
-        if (response === true) {
+        if (!response) {
+            return;
+        }
 
-            // SubmitCapacity
-            const submitResponse = await runSubmitCapacity();
+        // Flujo específico para pago con técnico: reintentos + modal
+        if (metodoPago === "tecnico") {
+            const success = await runWithModal(
+                () => runSubmitCapacityWithRetries(),
+                "modal-generico"
+            );
 
-            if (submitResponse) {
+            if (success) {
                 router.push("/thank-you");
+            } else {
+                console.error("SubmitCapacity failed after 3 attempts for pago tecnico");
+                router.push("/error");
             }
+
+            return;
+        }
+
+        // Flujo actual para otros métodos de pago
+        const submitResponse = await runSubmitCapacity();
+
+        if (submitResponse) {
+            router.push("/thank-you");
         }
     }
 
@@ -216,6 +242,21 @@ export default function ResumenContainer() {
         }
     };
 
+    const runWithModal = async (
+        action: () => Promise<boolean>,
+        modalKey: string
+    ): Promise<boolean> => {
+        setModalName(modalKey);
+        setModalLoading(true);
+
+        try {
+            const result = await action();
+            return result;
+        } finally {
+            setModalLoading(false);
+        }
+    };
+
     const { trigger: runSubmitOffer, isLoading: loadingOrder } = useControlledAction({
         action: async () => {
             const res = await GetSubmitOffer(izziEnrrollRef.current, globalIzziSelection, precioTotal, globalUserAnswers, offnetIzzi, offnetSky);
@@ -237,6 +278,15 @@ export default function ResumenContainer() {
 
             const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
+            
+            // Después de attachFiles, consultar processStatus una vez para actualizar waitingForAction
+            if (izziEnroll) {
+                const updatedStatus = await GetProcessStatus(izziEnroll);
+                if (updatedStatus) {
+                    setProcessStatus(updatedStatus);
+                }
+            }
+            
             return data;
         },
         resetKey: `step-4-attachFileIne`,
@@ -250,6 +300,15 @@ export default function ResumenContainer() {
 
             const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
+            
+            // Después de attachFiles, consultar processStatus una vez para actualizar waitingForAction
+            if (izziEnroll) {
+                const updatedStatus = await GetProcessStatus(izziEnroll);
+                if (updatedStatus) {
+                    setProcessStatus(updatedStatus);
+                }
+            }
+            
             return data;
         },
         resetKey: `step-4-attachFileComprobante`,
@@ -289,6 +348,33 @@ export default function ResumenContainer() {
         resetKey: `step-6-submitCapacity`,
         autoExecute: false,
     });
+
+    const MAX_SUBMIT_CAPACITY_ATTEMPTS = 3;
+    const ATTEMPT_TIMEOUT_MS = 5000;
+
+    const runSubmitCapacityWithTimeout = async (): Promise<boolean> => {
+        return Promise.race<boolean>([
+            (async () => {
+                const result = await runSubmitCapacity();
+                return !!result;
+            })(),
+            new Promise<boolean>((resolve) =>
+                setTimeout(() => resolve(false), ATTEMPT_TIMEOUT_MS)
+            ),
+        ]);
+    };
+
+    const runSubmitCapacityWithRetries = async (): Promise<boolean> => {
+        for (let attempt = 1; attempt <= MAX_SUBMIT_CAPACITY_ATTEMPTS; attempt++) {
+            const success = await runSubmitCapacityWithTimeout();
+
+            if (success) {
+                return true;
+            }
+        }
+
+        return false;
+    };
 
     const steps = globalFlagDomicilio ? [step1, step2, step3, step4, step6] : [step1, step2, step3, step4, step5, step6];
 
