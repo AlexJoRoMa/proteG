@@ -60,10 +60,10 @@ export default function AccordionPlanesExtras() {
         const planes: OttProps[] = ottsData.extrasMap.ott;
 
         planesExtras = planes?.filter(
-            extra => extra.categoriaExtra?.includes('Netflix') ||
-                extra.categoriaExtra?.includes('Disney+') ||
-                extra.titulo?.includes('Vix Premium') ||
-                extra.titulo?.includes('Vix Premium Mundial')
+            extra => extra.categoriaExtra?.toLowerCase().includes('netflix') ||
+                extra.categoriaExtra?.toLowerCase().includes('disney+') ||
+                extra.titulo?.toLowerCase().includes('vix premium') ||
+                extra.titulo?.toLowerCase().includes('vix premium mundial')
         )
     }
 
@@ -77,8 +77,8 @@ export default function AccordionPlanesExtras() {
                 let newSelect = prev.filter(item => item.idExtra !== card.idExtra);
 
                 //CASO VIX MUNDIAL
-                if (card.titulo === 'Vix Premium') {
-                    newSelect = newSelect.filter(item => item.titulo !== 'Vix Premium Mundial')
+                if (card.titulo.toLowerCase() === 'vix premium') {
+                    newSelect = newSelect.filter(item => item.titulo.toLowerCase() !== 'vix premium mundial')
                 }
 
                 return newSelect;
@@ -86,18 +86,18 @@ export default function AccordionPlanesExtras() {
 
 
             let newSelection = prev.filter(item => {
-                const isVixCombo = (card.titulo.includes('Vix') && item.titulo.includes('Vix'));
+                const isVixCombo = (card.titulo.toLowerCase().includes('vix') && item.titulo.toLowerCase().includes('vix'));
                 if (isVixCombo) return true;
                 return item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra;
             }
             );
 
             //CASO VIX SLECCION
-            if (card.titulo === 'Vix Premium Mundial') {
+            if (card.titulo.toLowerCase() === 'vix premium mundial') {
 
-                const hasVixPremium = planesExtras?.find(plan => plan.titulo === 'Vix Premium');
+                const hasVixPremium = planesExtras?.find(plan => plan.titulo.toLowerCase() === 'vix premium');
 
-                const noSelectedVix = newSelection.filter(item => !item.titulo.includes('Vix'));
+                const noSelectedVix = newSelection.filter(item => !item.titulo.toLowerCase().includes('vix'));
 
                 if (hasVixPremium) {
                     return newSelection = [...noSelectedVix, hasVixPremium, card];
@@ -106,8 +106,8 @@ export default function AccordionPlanesExtras() {
                 }
             }
 
-            if (card.titulo === 'Vix Premium') {
-                newSelection = newSelection.filter(item => item.titulo !== 'Vix Premium Mundial');
+            if (card.titulo.toLowerCase() === 'vix premium') {
+                newSelection = newSelection.filter(item => item.titulo.toLowerCase() !== 'vix premium mundial');
             }
             return [...newSelection, card];
         });
@@ -127,7 +127,7 @@ export default function AccordionPlanesExtras() {
         setSelectedCard((prev) => {
             const selectedTitles = new Set(prev.map(item => item.titulo));
 
-            if (selectedTitles.has('Vix Premium Mundial')) {
+            if (selectedTitles.has('ViX Premium Mundial')) {
                 selectedTitles.add('Vix Premium')
             }
 
