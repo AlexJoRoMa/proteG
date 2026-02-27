@@ -117,8 +117,12 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     const pagoAnticipado = promoData?.promos?.find(promo => promo.promoName.toLowerCase().includes('pago anticipado'));
     /* const totalAfterPromos = Math.abs(Number((pagoAnticipado?.promoPrice || 0))); */
     const descuentoTv = Math.abs((Number(userSelection?.tv?.paquete?.precioPaquete)) - (Number(userSelection?.tv?.paquete?.precioTachado)));
+    const totalOttDescuentoCombo = globalIzziSelection?.extrasMap?.ott?.reduce(
+        (acc, ott) => acc + Number(ott.descuentoCombo?.monto || 0),
+        0
+    ) || 0;
 
-    const ahorroCombinado = (descuentoTv || 0);
+    const ahorroCombinado = (descuentoTv || 0) + totalOttDescuentoCombo;
 
     const totalSinDescuento = Number(userSelection?.internet?.paquete?.precioTachado || 0)
         + Number(userSelection?.movil?.paquete?.precioPaquete || 0)
