@@ -297,6 +297,11 @@ export type OttProps = {
     costo: string,
     descripcion: string,
     descripcionCombo: string,
+    descuentoCombo?: {
+        monto: string,
+        aplica?: string,
+        play?: string
+    },
     grupo?: number,
     categoriaExtra?: string
 }
