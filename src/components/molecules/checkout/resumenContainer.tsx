@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import { useCheckout } from "@/components/providers/CheckoutProvider"
+import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useControlledAction } from "@/hooks/checkout/useControlledAction";
 import { useGlobalProcessStatus } from "@/hooks/checkout/useGlobalProcessStatus";
 import { DatosContratacion } from "@/types/Contratacion";
@@ -22,6 +22,8 @@ import { ResumenData } from "@/types/ResumenCompra";
 import ResumenContent from "../resumenCompra/resumenContent";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { FormatCurrency } from "@/utils/Currency";
+import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
+import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
 
 export default function ResumenContainer() {
 
@@ -59,6 +61,7 @@ export default function ResumenContainer() {
     const processStatusRef = useRef(processStatus);
     const stepStatusRef = useRef<boolean | null>(null);
     const isSubmittingRef = useRef(false);
+    const trackedStepsRef = useRef<Set<number>>(new Set());
 
     useEffect(() => {
         datosContratacionRef.current = datosContratacion;
@@ -377,6 +380,66 @@ export default function ResumenContainer() {
     };
 
     const steps = globalFlagDomicilio ? [step1, step2, step3, step4, step6] : [step1, step2, step3, step4, step5, step6];
+
+    useEffect(() => {
+        if (!globalIzziSelection || !globalIzziSelection.idPaquete) return;
+        if (!precioTotal) return;
+
+        const { buildPlanItem, normalizeUserData, pushEcommerceEvent } = izziDataLayerHelpers;
+
+        const items = [
+            buildPlanItem(
+                {
+                    id: String(globalIzziSelection.idPaquete),
+                    name: globalIzziSelection.tituloTriplePlay ?? globalIzziSelection.titulo,
+                    category: "Bundle",
+                    technology: globalIzziSelection.spTV || globalIzziSelection.spMovil ? "Triple_Play" : "Doble_Play",
+                    price: precioTotal,
+                    speed: globalIzziSelection.velocidadMinima,
+                    channels: globalIzziSelection.canales,
+                    contractMonths: globalIzziSelection.tiempoPlan,
+                },
+                0,
+                "checkout",
+                "Checkout - plan principal"
+            ),
+        ];
+
+        if (!trackedStepsRef.current.has(currentStep)) {
+            const extraParams: Record<string, unknown> = {
+                checkout_step: currentStep,
+            };
+
+            const datosPersonales = datosContratacion?.DatosPersonales?.personal;
+
+            if (datosPersonales) {
+                const userData = normalizeUserData({
+                    email: datosPersonales.email,
+                    phone: datosPersonales.phone,
+                    firstName: datosPersonales.firstName,
+                    lastName: datosPersonales.firstLastName,
+                    street: coberturaData.address,
+                    city: coberturaData.municipio,
+                    state: coberturaData.estado,
+                    postalCode: coberturaData.zipCode,
+                });
+
+                extraParams.user_data = userData;
+            }
+
+            pushEcommerceEvent(
+                EVENTS.CHECKOUT_PROGRESS,
+                {
+                    currency: CURRENCY,
+                    value: precioTotal,
+                    items,
+                },
+                extraParams
+            );
+
+            trackedStepsRef.current.add(currentStep);
+        }
+    }, [currentStep, globalIzziSelection, precioTotal, datosContratacion, coberturaData]);
 
     const handleContinue = async () => {
         if (isSubmittingRef.current) return;

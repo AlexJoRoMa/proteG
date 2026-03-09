@@ -12,6 +12,8 @@ import { useIzziContent } from '@/components/providers/IzziProvider';
 import { getOfertas } from '@/services/izzi/configurador';
 import TeAyudamosModalComponentConfig from '../../../components/layouts/modals/TeAyudamosModalComponentConfigurador';
 import { InputFilter } from '@/utils/inputFilters';
+import izziDataLayerHelpers from '@/utils/izzi-data-layer-helpers';
+import { EVENTS, CURRENCY } from '@/lib/tracking/constants';
 
 
 const inputStyles = {
@@ -248,6 +250,46 @@ export default function CoberturaForm() {
       setGlobalFlag(true);
       setCoberturaData(coveraData);
       setIsLoading(false);
+
+        const { generateLeadId, normalizeUserData, pushEcommerceEvent } = izziDataLayerHelpers;
+
+        const leadId = generateLeadId();
+        const userData = normalizeUserData({
+            phone,
+            firstName: name,
+            street: coveraData.address,
+            city: locality,
+            state,
+            postalCode: postalCode,
+        });
+
+        pushEcommerceEvent(
+            EVENTS.COVERAGE_COMPLETE,
+            {
+                value: 0,
+                currency: CURRENCY,
+            },
+            {
+                lead_id: leadId,
+                coverage_timestamp: new Date().toISOString(),
+                coverage_available: true,
+                coverage_type: 'fiber',
+                coverage_region: locality,
+                lead_data: {
+                    name,
+                    phone: userData.phone_number,
+                    email: userData.email,
+                    address: {
+                        street: coveraData.address,
+                        colony: neighborhood,
+                        city: locality,
+                        state,
+                        postal_code: postalCode,
+                    },
+                },
+                user_data: userData,
+            }
+        );
 
       await createCookie(coveraData);
 
