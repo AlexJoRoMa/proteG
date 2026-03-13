@@ -86,6 +86,10 @@ const izziDataLayerHelpers = {
     generateLeadId: () => {
         return 'LEAD-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6);
     },
+    /** ID único para tracking de abandono (doc: session_id formato COV-...) */
+    generateCoverageSessionId: () => {
+        return 'COV-' + Date.now() + '-' + Math.random().toString(36).substring(2, 8);
+    },
     pushEcommerceEvent: (eventName: string, ecommerceData: Record<string, unknown>, additionalParams?: Record<string, unknown>) => {
         if (typeof window === 'undefined') return;
 

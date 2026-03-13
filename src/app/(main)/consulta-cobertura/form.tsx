@@ -251,12 +251,19 @@ export default function CoberturaForm() {
       setCoberturaData(coveraData);
       setIsLoading(false);
 
-        const { generateLeadId, normalizeUserData, pushEcommerceEvent } = izziDataLayerHelpers;
+        const { generateLeadId, generateCoverageSessionId, normalizeUserData, pushEcommerceEvent } = izziDataLayerHelpers;
 
         const leadId = generateLeadId();
+        const sessionId = generateCoverageSessionId();
+        const trimmedName = name.trim();
+        const spaceIdx = trimmedName.indexOf(' ');
+        const firstName = spaceIdx > 0 ? trimmedName.slice(0, spaceIdx) : trimmedName;
+        const lastName = spaceIdx > 0 ? trimmedName.slice(spaceIdx + 1).trim() || null : null;
+
         const userData = normalizeUserData({
             phone,
-            firstName: name,
+            firstName,
+            lastName,
             street: coveraData.address,
             city: locality,
             state,
@@ -270,6 +277,7 @@ export default function CoberturaForm() {
                 currency: CURRENCY,
             },
             {
+                session_id: sessionId,
                 lead_id: leadId,
                 coverage_timestamp: new Date().toISOString(),
                 coverage_available: true,

@@ -8,6 +8,8 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useIzziContent } from "../providers/IzziProvider";
+import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
+import { EVENTS } from "@/lib/tracking/constants";
 
 export const CloseIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
@@ -63,6 +65,40 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
 
     //Interceptar reload del navegador.
 
+    const trackCheckoutExitIntent = () => {
+        if (typeof window === "undefined") return;
+        if (!window.location.pathname.startsWith("/checkout")) return;
+
+        const sessionId = window.sessionStorage.getItem("izzi-checkout-session-id") || undefined;
+
+        const extraParams: Record<string, unknown> = {};
+        if (sessionId) extraParams.checkout_session_id = sessionId;
+
+        const hasParams = Object.keys(extraParams).length > 0;
+        izziDataLayerHelpers.pushEcommerceEvent(
+            EVENTS.CHECKOUT_EXIT_INTENT,
+            {},
+            hasParams ? extraParams : undefined
+        );
+    };
+
+    const trackCheckoutAbandon = () => {
+        if (typeof window === "undefined") return;
+        if (!window.location.pathname.startsWith("/checkout")) return;
+
+        const sessionId = window.sessionStorage.getItem("izzi-checkout-session-id") || undefined;
+        const extraParams: Record<string, unknown> = {
+            abandon_reason: "user_confirmed_exit",
+        };
+        if (sessionId) extraParams.checkout_session_id = sessionId;
+
+        izziDataLayerHelpers.pushEcommerceEvent(
+            EVENTS.CHECKOUT_ABANDON,
+            {},
+            extraParams
+        );
+    };
+
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             e.preventDefault();
@@ -105,6 +141,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
 
             pendingRouteRef.current = url.pathname + url.search + url.hash;
             setTimeout(() => {
+                trackCheckoutExitIntent();
                 onOpen();
             }, 0);
         }
@@ -121,6 +158,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
         pendingRouteRef.current = null;
         clearCheckoutFlow();
         onClose();
+        trackCheckoutAbandon();
 
         if (toRoute) {
             currentPathRef.current = toRoute;

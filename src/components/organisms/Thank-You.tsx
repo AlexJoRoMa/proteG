@@ -95,6 +95,23 @@ export default function ThankYou() {
             })
             : undefined;
 
+        let checkoutSessionId: string | undefined;
+        if (typeof window !== "undefined") {
+            const existing = sessionStorage.getItem("izzi-checkout-session-id");
+            if (existing) {
+                checkoutSessionId = existing;
+            }
+        }
+
+        const additionalParams: Record<string, unknown> = {
+            account_number: globalProcessStatus.accountNumber ? String(globalProcessStatus.accountNumber) : undefined,
+            user_data: userData,
+        };
+
+        if (checkoutSessionId) {
+            additionalParams.checkout_session_id = checkoutSessionId;
+        }
+
         pushEcommerceEvent(
             EVENTS.PURCHASE,
             {
@@ -103,10 +120,7 @@ export default function ThankYou() {
                 transaction_id: String(globalProcessStatus.orderNumber),
                 items,
             },
-            {
-                account_number: globalProcessStatus.accountNumber ? String(globalProcessStatus.accountNumber) : undefined,
-                user_data: userData,
-            }
+            additionalParams
         );
 
         setPurchaseTracked(true);
