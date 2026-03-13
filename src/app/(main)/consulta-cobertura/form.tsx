@@ -301,11 +301,14 @@ export default function CoberturaForm() {
       setCoberturaData(coveraData);
       setIsLoading(false);
 
-        const { generateLeadId, normalizeUserData, pushEcommerceEvent } = izziDataLayerHelpers;
+        const { generateLeadId, generateCoverageSessionId, normalizeUserData, pushEcommerceEvent } = izziDataLayerHelpers;
 
         const leadId = generateLeadId();
+        const sessionId = generateCoverageSessionId();
+      
+        
+
         const userData = normalizeUserData({
-          
             street: coveraData.address,
             city: locality,
             state,
@@ -319,6 +322,7 @@ export default function CoberturaForm() {
                 currency: CURRENCY,
             },
             {
+                session_id: sessionId,
                 lead_id: leadId,
                 coverage_timestamp: new Date().toISOString(),
                 coverage_available: true,
@@ -326,7 +330,6 @@ export default function CoberturaForm() {
                 coverage_region: locality,
                 lead_data: {
                     phone: userData.phone_number,
-                    email: userData.email,
                     address: {
                         street: coveraData.address,
                         colony: neighborhood,

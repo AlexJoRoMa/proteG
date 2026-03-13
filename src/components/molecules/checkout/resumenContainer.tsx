@@ -62,6 +62,10 @@ export default function ResumenContainer() {
     const stepStatusRef = useRef<boolean | null>(null);
     const isSubmittingRef = useRef(false);
     const trackedStepsRef = useRef<Set<number>>(new Set());
+    const addShippingInfoTrackedRef = useRef(false);
+    const addPaymentInfoTrackedRef = useRef(false);
+
+    const CHECKOUT_SESSION_STORAGE_KEY = 'izzi-checkout-session-id';
 
     useEffect(() => {
         datosContratacionRef.current = datosContratacion;
@@ -94,7 +98,56 @@ export default function ResumenContainer() {
             ...prev,
             DatosPersonales: stepData
         }));
-        nextStep()
+
+        if (!addShippingInfoTrackedRef.current && globalIzziSelection && globalIzziSelection.idPaquete && precioTotal) {
+            const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
+
+            const items = [
+                buildPlanItem(
+                    {
+                        id: String(globalIzziSelection.idPaquete),
+                        name: globalIzziSelection.tituloTriplePlay ?? globalIzziSelection.titulo,
+                        category: "Bundle",
+                        technology: globalIzziSelection.spTV || globalIzziSelection.spMovil ? "Triple_Play" : "Doble_Play",
+                        price: precioTotal,
+                        speed: globalIzziSelection.velocidadMinima,
+                        channels: globalIzziSelection.canales,
+                        contractMonths: globalIzziSelection.tiempoPlan,
+                    },
+                    0,
+                    "checkout",
+                    "Checkout - plan principal"
+                ),
+            ];
+
+            let checkoutSessionId: string | undefined;
+            if (typeof window !== "undefined") {
+                const existing = sessionStorage.getItem(CHECKOUT_SESSION_STORAGE_KEY);
+                if (existing) {
+                    checkoutSessionId = existing;
+                }
+            }
+
+            const additionalParams: Record<string, unknown> = {};
+            if (checkoutSessionId) {
+                additionalParams.checkout_session_id = checkoutSessionId;
+            }
+
+            pushEcommerceEvent(
+                EVENTS.ADD_SHIPPING_INFO,
+                {
+                    currency: CURRENCY,
+                    value: precioTotal,
+                    shipping_tier: "standard_installation",
+                    items,
+                },
+                Object.keys(additionalParams).length ? additionalParams : undefined
+            );
+
+            addShippingInfoTrackedRef.current = true;
+        }
+
+        nextStep();
     }
 
     //Step 3
@@ -177,6 +230,69 @@ export default function ResumenContainer() {
 
         if (!response) {
             return;
+        }
+
+        if (
+            !addPaymentInfoTrackedRef.current &&
+            metodoPago &&
+            globalIzziSelection &&
+            globalIzziSelection.idPaquete &&
+            precioTotal
+        ) {
+            const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
+
+            const items = [
+                buildPlanItem(
+                    {
+                        id: String(globalIzziSelection.idPaquete),
+                        name: globalIzziSelection.tituloTriplePlay ?? globalIzziSelection.titulo,
+                        category: "Bundle",
+                        technology: globalIzziSelection.spTV || globalIzziSelection.spMovil ? "Triple_Play" : "Doble_Play",
+                        price: precioTotal,
+                        speed: globalIzziSelection.velocidadMinima,
+                        channels: globalIzziSelection.canales,
+                        contractMonths: globalIzziSelection.tiempoPlan,
+                    },
+                    0,
+                    "checkout",
+                    "Checkout - plan principal"
+                ),
+            ];
+
+            let checkoutSessionId: string | undefined;
+            if (typeof window !== "undefined") {
+                const existing = sessionStorage.getItem(CHECKOUT_SESSION_STORAGE_KEY);
+                if (existing) {
+                    checkoutSessionId = existing;
+                }
+            }
+
+            let paymentType: string | undefined;
+            if (metodoPago === "creditCard") {
+                paymentType = "credit_card";
+            } else if (metodoPago === "paypal") {
+                paymentType = "bank_transfer";
+            } else if (metodoPago === "tecnico") {
+                paymentType = "oxxo";
+            }
+
+            const additionalParams: Record<string, unknown> = {};
+            if (checkoutSessionId) {
+                additionalParams.checkout_session_id = checkoutSessionId;
+            }
+
+            pushEcommerceEvent(
+                EVENTS.ADD_PAYMENT_INFO,
+                {
+                    currency: CURRENCY,
+                    value: precioTotal,
+                    payment_type: paymentType,
+                    items,
+                },
+                Object.keys(additionalParams).length ? additionalParams : undefined
+            );
+
+            addPaymentInfoTrackedRef.current = true;
         }
 
         // Flujo específico para pago con técnico: reintentos + modal
@@ -410,6 +526,18 @@ export default function ResumenContainer() {
                 checkout_step: currentStep,
             };
 
+            let checkoutSessionId: string | undefined;
+            if (typeof window !== "undefined") {
+                const existing = sessionStorage.getItem(CHECKOUT_SESSION_STORAGE_KEY);
+                if (existing) {
+                    checkoutSessionId = existing;
+                }
+            }
+
+            if (checkoutSessionId) {
+                extraParams.checkout_session_id = checkoutSessionId;
+            }
+
             const datosPersonales = datosContratacion?.DatosPersonales?.personal;
 
             if (datosPersonales) {
@@ -425,6 +553,13 @@ export default function ResumenContainer() {
                 });
 
                 extraParams.user_data = userData;
+            }
+
+            if (currentStep === 1) {
+                extraParams.checkout_step_name = "package_configuration";
+                extraParams.coverage_verified = true;
+                extraParams.coverage_type = "fiber";
+                extraParams.coverage_region = coberturaData?.municipio || null;
             }
 
             pushEcommerceEvent(

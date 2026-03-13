@@ -9,13 +9,14 @@ import izziDataLayerHelpers from '@/utils/izzi-data-layer-helpers';
 import { EVENTS, CURRENCY } from '@/lib/tracking/constants';
 import { pushToDataLayer } from '@/utils/gtm';
 
+const CHECKOUT_SESSION_STORAGE_KEY = 'izzi-checkout-session-id';
+
 export default function Checkout() {
     const { formattedAddress, coberturaData, globalIzziSelection, precioTotal } = useIzziContent();
     const router = useRouter();
     const [isHydrated, setIsHydrated] = useState(false);
     const [isDesktop, setIsDesktop] = useState(false);
     const beginCheckoutTrackedRef = useRef(false);
-    const addToCartTrackedRef = useRef(false);
 
     useEffect(() => {
         // Marcar como hidratado después de mount
@@ -78,7 +79,7 @@ export default function Checkout() {
             precioTotal ||
             (globalIzziSelection.precioPaquete ? parseFloat(globalIzziSelection.precioPaquete) || 0 : 0);
 
-        const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
+        const { buildPlanItem, pushEcommerceEvent, generateCheckoutSessionId } = izziDataLayerHelpers;
 
         const items = [
             buildPlanItem(
@@ -90,7 +91,6 @@ export default function Checkout() {
                     price: value,
                     speed: globalIzziSelection.velocidadMinima,
                     channels: globalIzziSelection.canales,
-                    contractMonths: globalIzziSelection.tiempoPlan,
                 },
                 0,
                 'checkout',
@@ -98,42 +98,33 @@ export default function Checkout() {
             ),
         ];
 
-        if (!addToCartTrackedRef.current) {
+        if (!beginCheckoutTrackedRef.current) {
+            let checkoutSessionId: string | undefined;
+
+            if (typeof window !== 'undefined') {
+                const existing = sessionStorage.getItem(CHECKOUT_SESSION_STORAGE_KEY);
+                if (existing) {
+                    checkoutSessionId = existing;
+                } else {
+                    checkoutSessionId = generateCheckoutSessionId();
+                    sessionStorage.setItem(CHECKOUT_SESSION_STORAGE_KEY, checkoutSessionId);
+                }
+            }
+
+            const additionalParams: Record<string, unknown> = {};
+            if (checkoutSessionId) {
+                additionalParams.checkout_session_id = checkoutSessionId;
+            }
+
             pushEcommerceEvent(
-                EVENTS.ADD_TO_CART,
+                EVENTS.BEGIN_CHECKOUT,
                 {
                     currency: CURRENCY,
                     value,
                     items,
-                }
+                },
+                Object.keys(additionalParams).length ? additionalParams : undefined
             );
-            addToCartTrackedRef.current = true;
-        }
-
-        if (!beginCheckoutTrackedRef.current) {
-            if (typeof window !== 'undefined') {
-                const key = 'izzi-begin-checkout-tracked';
-                if (!sessionStorage.getItem(key)) {
-                    pushEcommerceEvent(
-                        EVENTS.BEGIN_CHECKOUT,
-                        {
-                            currency: CURRENCY,
-                            value,
-                            items,
-                        }
-                    );
-                    sessionStorage.setItem(key, '1');
-                }
-            } else {
-                pushEcommerceEvent(
-                    EVENTS.BEGIN_CHECKOUT,
-                    {
-                        currency: CURRENCY,
-                        value,
-                        items,
-                    }
-                );
-            }
 
             beginCheckoutTrackedRef.current = true;
         }
