@@ -180,6 +180,38 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
         }
     }
 
+    function trackPlanDetailView(card: OfferItem, index: number) {
+        const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
+        const listId = "tv";
+        const listName = offersCopys.tv.titulo;
+
+        const item = buildPlanItem(
+            {
+                id: String(card.idPaquete),
+                sku: card.nombreCode,
+                name: card.tituloTriplePlay ?? card.titulo,
+                category: "Bundle",
+                technology: card.tiempoPlan?.includes("TRIPLE") ? "Triple_Play" : "Doble_Play",
+                price: card.precioPaquete,
+                speed: card.velocidadMinima,
+                channels: card.canales,
+                contractMonths: card.tiempoPlan,
+            },
+            index,
+            listId,
+            listName
+        );
+
+        pushEcommerceEvent(
+            EVENTS.VIEW_ITEM,
+            {
+                currency: CURRENCY,
+                value: Number(card.precioPaquete) || 0,
+                items: [item],
+            }
+        );
+    }
+
     useEffect(() => {
         if (!preSeleccion.seleccionPaquete) return;
         if (!tvPlans.length) return;
@@ -321,7 +353,15 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
                                             }
                                         </div>
                                         <div className="flex flex-row gap-[16px] items-center justify-between">
-                                            <LinkModal classNames='underline text-black-0 text-[16px] cursor-pointer' text={offersCopys.internet.cards.info} closeButtonStroke='black' modalContentClassName="w-full h-auto sm:w-[80vw] xl:h-auto xl:w-[90vw] 2xl:w-[62vw] 2xl:h-auto" backdropColor='black-0/80' idModal={""}>
+                                            <LinkModal
+                                                classNames='underline text-black-0 text-[16px] cursor-pointer'
+                                                text={offersCopys.internet.cards.info}
+                                                closeButtonStroke='black'
+                                                modalContentClassName="w-full h-auto sm:w-[80vw] xl:h-auto xl:w-[90vw] 2xl:w-[62vw] 2xl:h-auto"
+                                                backdropColor='black-0/80'
+                                                idModal={""}
+                                                onOpenModal={() => trackPlanDetailView(card, index)}
+                                            >
                                                 <ConfiguradorCardsModalComponent variables={{ canales: card.canales, precioPaquete: card.precioPaquete, extras: card.extrasIncluidos }} type="tv" />
                                             </LinkModal>
                                             <span className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`} aria-pressed={isSelected}>

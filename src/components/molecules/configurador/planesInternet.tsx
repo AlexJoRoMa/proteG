@@ -56,6 +56,34 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
     const listId = "internet";
     const listName = offersCopys.internet.titulo;
 
+    function trackPlanDetailView(card: OfferItem, index: number) {
+        const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
+        const item = buildPlanItem(
+            {
+                id: String(card.idPaquete),
+                sku: card.nombreCode,
+                name: card.tituloTriplePlay ?? card.titulo,
+                category: "Bundle",
+                technology: card.tiempoPlan?.includes("TRIPLE") ? "Triple_Play" : "Doble_Play",
+                price: card.precioPaquete,
+                speed: card.velocidadMinima,
+                channels: card.canales,
+                contractMonths: card.tiempoPlan,
+            },
+            index,
+            listId,
+            listName
+        );
+        pushEcommerceEvent(
+            EVENTS.VIEW_ITEM,
+            {
+                currency: CURRENCY,
+                value: Number(card.precioPaquete) || 0,
+                items: [item],
+            }
+        );
+    }
+
     function handleSelect(index: number, card: OfferItem) {
         userInteracted.current = true;
         const isSelected = selectedIndex === index;
@@ -261,7 +289,9 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
                                                     closeButtonStroke='black'
                                                     modalContentClassName="w-full h-auto sm:w-[80vw] xl:h-auto xl:w-[90vw] 2xl:w-[62vw] 2xl:h-auto"
                                                     backdropColor='black-0/80'
-                                                    idModal={""}>
+                                                    idModal={""}
+                                                    onOpenModal={() => trackPlanDetailView(card, index)}
+                                                >
                                                     <ConfiguradorCardsModalComponent
                                                         variables={{
                                                             velocidadMinima: card.velocidadMinima,

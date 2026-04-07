@@ -12,7 +12,7 @@ export const EVENTS = {
     CHECKOUT_ABANDON: 'checkout_abandon',
     SELECT_ITEM: 'select_item',
     VIEW_ITEM_LIST: 'view_item_list',
-    VIEW_ITEM: 'view_item', // para cuando implementes view_item
+    VIEW_ITEM: 'view_item',
 } as const;
 
 export const CURRENCY = 'MXN' as const;
