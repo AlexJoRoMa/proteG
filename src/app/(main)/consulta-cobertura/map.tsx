@@ -106,6 +106,10 @@ function mapAddressFields(data: GeocodeType) {
           defaultCenter={{lat: 19.4311231, lng: -99.1777154}}
           defaultZoom={15}
           disableDefaultUI={true}
+          zoomControl={true}
+          keyboardShortcuts={true}
+          gestureHandling={'greedy'}
+          draggable={true}
           onClick={HandleMapClick}
       >
       <AdvancedMarker ref={markerRef} position={markerPosition} />
