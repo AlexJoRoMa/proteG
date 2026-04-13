@@ -168,7 +168,7 @@ export default function CoberturaForm() {
 
   const { setGlobalFlag, setFormattedAddress, setCoberturaData } = useIzziContent();
 
-  const isDisabledSubmit = !addressSelected || !isSelected || isLoading;
+  const isDisabledSubmit = !addressSelected || !isSelected || isLoading || hasResponse;
   const isDisabledPosition = isLoading || hasResponse;
 
   const modalData = {
