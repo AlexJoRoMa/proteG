@@ -32,6 +32,22 @@ const inputStyles = {
   ]
 }
 
+const inputDisableStyles = {
+  label: "text-black",
+  inputWrapper: [
+    "bg-gray-100",
+    "border border-gray-100 border-solid rounded-md",
+  ],
+  input: [
+    "bg-transparent",
+    "text-black",
+    "placeholder:text-black",
+  ],
+  innerWrapper: [
+    "bg-transparent",
+  ]
+}
+
 type Mode = 'address' | 'postalCode';
 
 interface GooglePlacesInputProps {
@@ -82,7 +98,7 @@ const GooglePlacesInput = ({ mode, value, onValueChange, onPlaceSelect, label, p
         errorMessage={errorMessage}
         name={mode === 'postalCode' ? 'zipCode' : 'address'}
         type='text'
-        classNames={inputStyles}
+        classNames={inputDisableStyles}
         maxLength={mode === 'postalCode' ? 5 : undefined}
         onInput={
           mode === 'postalCode' ?
@@ -97,7 +113,7 @@ const GooglePlacesInput = ({ mode, value, onValueChange, onPlaceSelect, label, p
 const FALLBACKS: Record<string, string> = {
   'cobertura.form.direccion.label': 'Dirección',
   'cobertura.form.codigo.label': 'Código postal',
-  'cobertura.form.direccion.placeholder': 'Introduce tu dirección',
+  'cobertura.form.direccion.placeholder': 'Introduce tu dirección o código postal',
   'cobertura.form.direccion.error': 'Ingresa una dirección válida',
   'cobertura.form.codigo.placeholder': 'Introduce tu código postal',
   'cobertura.form.codigo.error': 'Ingresa un código postal válido',
@@ -108,7 +124,7 @@ const FALLBACKS: Record<string, string> = {
   'cobertura.form.numInterno.placeholder': 'Introduce tu número interior',
   'cobertura.form.colonia.label': 'Colonia',
   'cobertura.form.colonia.placeholder': 'Introduce tu colonia',
-  'cobertura.form.colonia.error': 'Ingresa una colonia válida',
+  'cobertura.form.colonia.error': 'Ingresa una colonia válida', 
   'cobertura.form.municipio.label': 'Alcaldia o Municipio',
   'cobertura.form.municipio.placeholder': 'Introduce tu alcaldia',
   'cobertura.form.estado.label': 'Estado',
@@ -423,28 +439,6 @@ export default function CoberturaForm() {
         </div>
       }
       <Form className="w-full max-w-[95%]" onSubmit={onSubmit}>
-        <GooglePlacesInput
-          mode={mode}
-          value={postalCode}
-          onValueChange={setPostalCode}
-          onPlaceSelect={handleGoogglePlace}
-          label={
-            mode === 'address' ?
-              getText('cobertura.form.direccion.label') :
-              getText('cobertura.form.codigo.label')
-          }
-          placeholder={
-            mode === 'address' ?
-              getText('cobertura.form.direccion.placeholder') :
-              getText('cobertura.form.codigo.placeholder')
-          }
-          errorMessage={
-            mode === 'postalCode' ?
-              getText('cobertura.form.codigo.error') :
-              undefined
-          }
-        />
-
         {addressSelected ?
           <Input
             isRequired
@@ -460,7 +454,6 @@ export default function CoberturaForm() {
           />
           : <></>
         }
-
         <div className='flex col-2 w-full gap-4'>
           {addressSelected ?
             <Input
@@ -491,6 +484,27 @@ export default function CoberturaForm() {
             />
             : <></>}
         </div>
+        <GooglePlacesInput
+          mode={mode}
+          value={postalCode}
+          onValueChange={setPostalCode}
+          onPlaceSelect={handleGoogglePlace}
+          label={
+            mode === 'address' ?
+              getText('cobertura.form.direccion.label') :
+              getText('cobertura.form.codigo.label')
+          }
+          placeholder={
+            mode === 'address' ?
+              getText('cobertura.form.direccion.placeholder') :
+              getText('cobertura.form.codigo.placeholder')
+          }
+          errorMessage={
+            mode === 'postalCode' ?
+              getText('cobertura.form.codigo.error') :
+              undefined
+          }
+        />
         {addressSelected ?
           <Input
             isRequired
@@ -515,7 +529,7 @@ export default function CoberturaForm() {
             value={locality}
             onKeyDown={handleCharPress}
             onValueChange={setLocality}
-            classNames={inputStyles}
+            classNames={inputDisableStyles}
           />
           : <></>}
         {addressSelected ?
@@ -530,10 +544,10 @@ export default function CoberturaForm() {
             value={state}
             onKeyDown={handleCharPress}
             onValueChange={setState}
-            classNames={inputStyles}
+            classNames={inputDisableStyles}
           />
           : <></>}
-        <Input
+        {/* <Input
           isRequired
           label={getText('cobertura.form.nombre.label')}
           placeholder={getText('cobertura.form.nombre.placeholder')}
@@ -562,15 +576,15 @@ export default function CoberturaForm() {
           maxLength={10}
           minLength={10}
           classNames={inputStyles}
-        />
-        <div>
+        /> */}
+       {/*  <div>
           <Checkbox isRequired={true} isSelected={isSelected} onValueChange={setIsSelected} defaultSelected={false} color="default" className='text-gray-450 pt-4 pb-8' />
           <span className='mr-1'>{getText('cobertura.form.privacidad.label')}</span>
           <a target='_blank' rel='noopener noreferrer' href={getText('cobertura.form.privacidad.Aviso.link') as string} >
             <span className='font-bold'>{getText('cobertura.form.privacidad.Aviso') as string}</span>
           </a>
-        </div>
-        <div className='w-full pb-4 lg:flex lg:col-2 gap-4'>
+        </div> */}
+        <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-8'>
           <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange}>
             {getText('cobertura.button.ubicacion')}
           </Button>
