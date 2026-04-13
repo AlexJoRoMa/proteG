@@ -521,6 +521,10 @@ export default function ResumenContainer() {
             ),
         ];
 
+        if (typeof window !== "undefined") {
+            sessionStorage.setItem('izzi-checkout-current-step', String(currentStep));
+        }
+
         if (!trackedStepsRef.current.has(currentStep)) {
             const extraParams: Record<string, unknown> = {
                 checkout_step: currentStep,
