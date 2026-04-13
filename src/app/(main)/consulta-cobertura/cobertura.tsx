@@ -10,8 +10,15 @@ import { preSelectionCookie } from './actions';
 
 const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
 
+const FALLBACKS: Record<string, string> = {
+    'cobertura.title': 'Comprueba tu cobertura',
+    'cobertura.subtitle': 'Ingresa tu dirección y te mostraremos los paquetes y promociones que puedes contratar.',
+};
+
+
 export default function Cobertura() {
     const { getValue } = useMicrocopies('cobertura');
+    const getText = (key: string) => getValue(key) || FALLBACKS[key] || key;
     const searchParams = useSearchParams();
     const planParam = searchParams.get("plan"); //ej: izzi80m_izzitvhd
     const movilParam = searchParams.get("movil"); //ej: movil10gb
@@ -34,8 +41,8 @@ export default function Cobertura() {
             <CoberturaProvider>
                 <div className="items-center justify-center mb-8 mx-sm xl:mx-xl xl:justify-start">
                     <div className='flex flex-col'>
-                        <p className="text-[32px] font-bold">{getValue('cobertura.title')}</p>
-                        <p className="text-[18px]">{getValue('cobertura.subtitle')}</p>
+                        <p className="text-[32px] font-bold">{getText('cobertura.title')}</p>
+                        <p className="text-[18px]">{getText('cobertura.subtitle')}</p>
                     </div>
                     <APIProvider
                         solutionChannel='2'
