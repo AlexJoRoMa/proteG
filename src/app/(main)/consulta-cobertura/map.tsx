@@ -24,20 +24,44 @@ export default function IzziMap(){
     setMode
    } = useContent();
 
-  const HandleMapClick = (ev: MapMouseEvent) => {
-      setMarkerPosition(ev.detail?.latLng as google.maps.LatLng | google.maps.LatLngLiteral);
-      setLat(ev.detail?.latLng?.lat as number);
-      setLng(ev.detail?.latLng?.lng as number);
-      if (map){
-          map.panTo(ev.detail?.latLng as google.maps.LatLng | google.maps.LatLngLiteral);
-      }
-      const data = geocodeApi(ev.detail?.latLng?.lat as number, ev.detail?.latLng?.lng as number);
-      data.then((result) => {
-        mapAddressFields(result);
-      });
-      setAddress(true);
-      setMode('postalCode');
+  const updateLocationData = async (lat: number, lng: number) => {
+    const nextPosition = {lat, lng};
+
+    setMarkerPosition(nextPosition);
+    setLat(lat);
+    setLng(lng);
+
+    if (map) {
+      map.panTo(nextPosition);
     }
+
+    const result = await geocodeApi(lat, lng);
+    mapAddressFields(result);
+    setAddress(true);
+    setMode('postalCode');
+  };
+
+  const HandleMapClick = (ev: MapMouseEvent) => {
+      const lat = ev.detail?.latLng?.lat;
+      const lng = ev.detail?.latLng?.lng;
+
+      if (typeof lat !== 'number' || typeof lng !== 'number') {
+        return;
+      }
+
+      updateLocationData(lat, lng);
+    }
+
+  const handleMarkerDragEnd = (ev: google.maps.MapMouseEvent) => {
+      const lat = ev.latLng?.lat();
+      const lng = ev.latLng?.lng();
+
+      if (typeof lat !== 'number' || typeof lng !== 'number') {
+        return;
+      }
+
+      updateLocationData(lat, lng);
+    };
 
 function mapAddressFields(data: GeocodeType) {
     const components = data?.results?.[0]?.address_components ?? [];
@@ -106,9 +130,18 @@ function mapAddressFields(data: GeocodeType) {
           defaultCenter={{lat: 19.4311231, lng: -99.1777154}}
           defaultZoom={15}
           disableDefaultUI={true}
+          zoomControl={true}
+          keyboardShortcuts={true}
+          gestureHandling={'greedy'}
+          draggable={true}
           onClick={HandleMapClick}
       >
-      <AdvancedMarker ref={markerRef} position={markerPosition} />
+      <AdvancedMarker
+        ref={markerRef}
+        position={markerPosition}
+        draggable
+        onDragEnd={handleMarkerDragEnd}
+      />
       </Map>
       </>
   );

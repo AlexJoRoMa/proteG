@@ -80,6 +80,7 @@ const GooglePlacesInput = ({ mode, value, onValueChange, onPlaceSelect, label, p
         value={value}
         onValueChange={onValueChange}
         errorMessage={errorMessage}
+        autoComplete='off'
         name={mode === 'postalCode' ? 'zipCode' : 'address'}
         type='text'
         classNames={inputStyles}
@@ -133,6 +134,7 @@ export default function CoberturaForm() {
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [error] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasResponse, setHasResponse] = useState<boolean>(false);
   const { getValue } = useMicrocopies('cobertura');
   const getText = (key: string) => getValue(key) || FALLBACKS[key] || key;
   const { getValue2 } = useMicrocopies('contrataahoramodal');
@@ -167,6 +169,8 @@ export default function CoberturaForm() {
 
   const { setGlobalFlag, setFormattedAddress, setCoberturaData } = useIzziContent();
 
+  const isDisabledSubmit = !addressSelected || !isSelected || isLoading || hasResponse;
+  const isDisabledPosition = isLoading || hasResponse;
 
   const modalData = {
     title: getValue2('stickyModal.title'),
@@ -211,7 +215,7 @@ export default function CoberturaForm() {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
-
+    if (isLoading || hasResponse) return;
     e.preventDefault();
     setIsLoading(true);
 
@@ -234,13 +238,16 @@ export default function CoberturaForm() {
       if (response.message === 'Address is in a WIZZ coverage area') {
 
         setIsLoading(false);
+        setHasResponse(true);
         onOpen();
         return;
       }
 
+      setHasResponse(true);
       setFormattedAddress(coveraData.address);
       setGlobalFlag(true);
       setCoberturaData(coveraData);
+      setIsLoading(false);
 
       await createCookie(coveraData);
 
@@ -571,11 +578,11 @@ export default function CoberturaForm() {
           </a>
         </div>
         <div className='w-full pb-4 lg:flex lg:col-2 gap-4'>
-          <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange}>
+          <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange} isDisabled={isDisabledPosition}>
             {getText('cobertura.button.ubicacion')}
           </Button>
           <Button
-            className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} isDisabled={addressSelected && isSelected ? false : true} type="submit">
+            className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} isDisabled={isDisabledSubmit} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
         </div>
