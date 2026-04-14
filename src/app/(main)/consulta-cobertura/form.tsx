@@ -35,8 +35,8 @@ const FALLBACKS: Record<string, string> = {
   'obertura.form.estado.error': 'Ingresa un estado válido',
   'cobertura.button.ubicacion': 'utilizar mi ubicación actual',
   'cobertura.button.confirmar': 'confirmar dirección',
-  'cobertura.descripcion.direccion': 'Selecciona una opción de la lista para avanzar'
-
+  'cobertura.descripcion.direccion': 'Selecciona una opción de la lista para avanzar',
+  
 };
 
 const inputStyles = {
@@ -55,7 +55,10 @@ const inputStyles = {
   innerWrapper: [
     "bg-transparent",
   ],
-  description: 'text-black'
+  description: [
+    "text-black",
+    "text-[12px]"
+  ]
 }
 
 const inputDisableStyles = {
@@ -72,19 +75,23 @@ const inputDisableStyles = {
   innerWrapper: [
     "bg-transparent",
   ],
-  description: 'text-black'
+  description: [
+    "text-black",
+    "text-[12px]"
+  ]
 }
 
 type Mode = 'address' | 'postalCode';
 
 const CheckIcon = () => (
-  <div className='flex items-center justify-center w-5 h-5 bg-green-500 rounded-full'>
+  <div className='flex items-center justify-center w-5 h-5 
+  border-2 border-green-500 rounded-full'>
     <svg
     fill='none'
-    stroke='white'
-    strokeWidth='3'
+    stroke='#22c55e'
+    strokeWidth='4'
     viewBox='0 0 24 24'
-    className='w-3 h-3'>
+    className='w-2 h-2'>
       <path strokeLinecap='round' strokeLinejoin='round' d='M5 13l4 4L19 7'/>
     </svg>
   </div>
@@ -201,7 +208,7 @@ export default function CoberturaForm() {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const { setGlobalFlag, setFormattedAddress, setCoberturaData } = useIzziContent();
+  const { setGlobalFlag, setFormattedAddress, setCoberturaData, setAddressFielSelected, setStreetDireccion } = useIzziContent();
 
 
   const modalData = {
@@ -302,6 +309,7 @@ export default function CoberturaForm() {
       mapAddressFields(result);
     });
     setAddress(true);
+    setAddressFielSelected(true);
     setMode('postalCode');
     setMarkerPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
     if (map) map.panTo({ lat: position.coords.latitude, lng: position.coords.longitude });
@@ -339,6 +347,7 @@ export default function CoberturaForm() {
             break;
           case 'route':
             setStreet(value);
+            setStreetDireccion(value);
             break;
           case 'street_number':
             setStreetNumber(value);
@@ -424,6 +433,7 @@ export default function CoberturaForm() {
       geocodeApi(lat, lng).then((result) => {
         mapAddressFields(result)
         setAddress(true);
+        setAddressFielSelected(true);
       });
       if (map) map.panTo({ lat, lng })
     }
@@ -578,12 +588,12 @@ export default function CoberturaForm() {
           />
           : <></>}
         
-        <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-8'>
+        <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-5'>
           <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange}>
             {getText('cobertura.button.ubicacion')}
           </Button>
           <Button
-            className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} isDisabled={addressSelected && isSelected ? false : true} type="submit">
+            className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} isDisabled={addressSelected ? false : true} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
         </div>
