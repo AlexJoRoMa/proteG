@@ -11,7 +11,6 @@ import { GeocodeType } from '@/types/CoberturaTypes';
 import { useIzziContent } from '@/components/providers/IzziProvider';
 import { getOfertas } from '@/services/izzi/configurador';
 import TeAyudamosModalComponentConfig from '../../../components/layouts/modals/TeAyudamosModalComponentConfigurador';
-import { InputFilter } from '@/utils/inputFilters';
 
 const FALLBACKS: Record<string, string> = {
   'cobertura.form.direccion.label': 'Dirección',
@@ -28,7 +27,7 @@ const FALLBACKS: Record<string, string> = {
   'cobertura.form.colonia.label': 'Colonia',
   'cobertura.form.colonia.placeholder': 'Introduce tu colonia',
   'cobertura.form.colonia.error': 'Ingresa una colonia válida', 
-  'cobertura.form.municipio.label': 'Alcaldia o Municipio',
+  'cobertura.form.municipio.label': 'Alcaldia o Municipio (Opc.)',
   'cobertura.form.municipio.placeholder': 'Introduce tu alcaldia',
   'cobertura.form.estado.label': 'Estado',
   'cobertura.form.estado.placeholder': 'Introduce tu estado',
@@ -63,15 +62,16 @@ const inputStyles = {
 }
 
 const inputDisableStyles = {
-  label: "text-black",
+  label: "text-black opacity-100",
   inputWrapper: [
     "bg-gray-100",
     "border border-gray-100 border-solid rounded-md",
+    "cursor-not-allowed"
   ],
   input: [
-    "bg-transparent",
     "text-black",
     "placeholder:text-black",
+    "cursor-not-allowed"
   ],
   innerWrapper: [
     "bg-transparent",
@@ -144,14 +144,13 @@ const GooglePlacesInput = ({
   return (
     <div ref={wrapperRef} className='w-full'>
       <Input
-        description={description ? ( 
+        description={ 
           <div className='flex items-center gap-2 mt-1'>
-            <CheckIcon />
+            {description ? <CheckIcon /> : ''}
             <span>
             {descriptionText as string}
             </span>
-            </div>)
-            :''
+            </div>
           }
         isRequired
         label={label}
@@ -495,6 +494,7 @@ export default function CoberturaForm() {
         </div>
         {addressSelected ?
           <Input
+            isReadOnly
             isRequired
             label={getText('cobertura.form.codigo.label')}
             placeholder={getText('cobertura.form.codigo.placeholder')}
@@ -525,7 +525,7 @@ export default function CoberturaForm() {
           : <></>}
         {addressSelected ?
           <Input
-            isDisabled
+            isReadOnly
             label={getText('cobertura.form.municipio.label')}
             placeholder={getText('cobertura.form.municipio.placeholder')}
             labelPlacement="outside"
@@ -539,7 +539,7 @@ export default function CoberturaForm() {
           : <></>}
         {addressSelected ?
           <Input
-            isDisabled
+            isReadOnly
             isRequired
             label={getText('cobertura.form.estado.label')}
             placeholder={getText('cobertura.form.estado.placeholder')}

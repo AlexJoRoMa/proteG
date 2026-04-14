@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { APIProvider } from '@vis.gl/react-google-maps';
 import IzziMap from './map';
 import CoberturaForm from './form';
@@ -26,8 +26,11 @@ export default function Cobertura() {
     const searchParams = useSearchParams();
     const planParam = searchParams.get("plan"); //ej: izzi80m_izzitvhd
     const movilParam = searchParams.get("movil"); //ej: movil10gb
-     const { addressFielSelected, streetDireccion } = useIzziContent();
+    const { addressFielSelected, streetDireccion } = useIzziContent();
+    const [initialStreet] = useState(streetDireccion);
 
+    const checkValue = addressFielSelected && streetDireccion !== initialStreet && streetDireccion.length > 0;
+    
     useEffect(() => {
 
         async function setParams() {
@@ -61,7 +64,7 @@ export default function Cobertura() {
                             </div>
                             {/* Lado derecho de la pagina */}
                             <div className='lg:w-1/2'>
-                                {addressFielSelected ?
+                                {checkValue ?
                                     <div className='pb-4'>
                                         <p className='xsm:text-[20px] lg:text-[24px] font-bold pb-2'>
                                         {getText('cobertura.direccion.seleccionada')}
