@@ -74,17 +74,9 @@ export default function PlanesMovil({ step, preSeleccion }: StepProps) {
         applyUserAnswersMovil(card, selectedTabKey);
     }
 
-    function clearSelection() {
-        setSelectedCardId(null);
-        setUserAnswers(prev => {
-            const { movil, ...rest } = prev;
-            return rest;
-        });
-    }
-
     useEffect(() => {
         if (!preSeleccion.seleccionMovil) return;
-        if (!plansInfo || plansInfo.length === 0) return;
+        if (!plansInfo.length) return;
         // no sobreescribir una seleccion
         if (userAnswers.movil?.paquete) return;
 
@@ -96,8 +88,25 @@ export default function PlanesMovil({ step, preSeleccion }: StepProps) {
         if (parentTab) setSelectedTabKey(parentTab.tituloTab);
 
         queueMicrotask(() => {
-            setSelectedCardId(matched.idPaquete);
-            applyUserAnswersMovil(matched, parentTab?.tituloTab);
+            setSelectedCardId(prev => {
+                if (prev === matched.idPaquete) return prev;
+                return matched.idPaquete;
+            });
+
+            setUserAnswers(prev => {
+                if (prev.movil?.paquete?.idPaquete === matched.idPaquete) {
+                    return prev;
+                }
+
+                return {
+                    ...prev,
+                    movil: {
+                        paquete: matched,
+                        contrato: parentTab?.tituloTab ?? selectedTabKey,
+                        total: Number(matched.precioPaquete) || 0,
+                    }
+                };
+            });
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [preSeleccion.seleccionMovil, plansInfo]);
@@ -105,22 +114,19 @@ export default function PlanesMovil({ step, preSeleccion }: StepProps) {
     useEffect(() => {
         const paquete = userAnswers.movil?.paquete;
         if (!paquete) {
-            setSelectedCardId(null);
+            if (selectedCardId !== null) {
+                setSelectedCardId(null);
+            }
             return;
         }
 
-        const matchedId = String(paquete.idPaquete);
-        const currentSelected = selectedCardId !== null ? String(selectedCardId) : null;
-        if (currentSelected !== matchedId) {
-            setSelectedCardId(Number(matchedId));
+        const matchedId = Number(paquete.idPaquete);
+        if (selectedCardId !== matchedId) {
+            setSelectedCardId(matchedId);
         }
 
-        const parentTab = plansInfo.find(tab => tab.cards?.some(c => String(c.idPaquete) === matchedId));
-        if (parentTab && parentTab.tituloTab !== selectedTabKey) {
-            setSelectedTabKey(parentTab.tituloTab);
-        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [String(userAnswers.movil?.paquete?.idPaquete), plansInfo]);
+    }, [userAnswers.movil?.paquete?.idPaquete, plansInfo]);
 
     const onTabChange = (key: string) => {
         setSelectedTabKey(key);

@@ -7,7 +7,7 @@ import { movilComponentFields, OfferItem, OffersCopys, StepProps } from "@/types
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 export default function PlanesInternet({ step, preSeleccion }: StepProps) {
     const { configuradorEntry, setUserAnswers, disabled, userAnswers, copysConfigurador, rehydrated } = useContent();
@@ -26,40 +26,53 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
         });
     }, [plans]);
 
-    const mapOffersByType = {
+    const mapOffersByType = useMemo(() => ({
         hfc: [80, 100, 150],
         ftth: [80, 100, 200, 1000]
-    };
+    }), []);
 
     const offersByType = useMemo(() => {
-        return plansInfo.filter((plan: OfferItem) =>
-            coverageType === 'HFC' ? mapOffersByType.hfc.includes(plan.velocidadMinima as number)
+        return plansInfo.filter((plan) =>
+            coverageType === 'HFC'
+                ? mapOffersByType.hfc.includes(plan.velocidadMinima as number)
                 : mapOffersByType.ftth.includes(plan.velocidadMinima as number)
         );
-    }, [plansInfo, coverageType, mapOffersByType.hfc, mapOffersByType.ftth]);
+    }, [plansInfo, coverageType, mapOffersByType]);
+    
+    const selectedIndex = useMemo(() => {
+        const paquete = userAnswers.internet?.paquete;
+        if (!paquete) return null;
 
-    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-    const [hasMovil, setHasMovil] = useState<boolean>(false);
+        return offersByType.findIndex(
+            offer => String(offer.idPaquete) === String(paquete.idPaquete)
+        );
+    }, [userAnswers.internet?.paquete, offersByType]);
+
     const userInteracted = useRef(false);
 
     function handleSelect(index: number, card: OfferItem) {
         userInteracted.current = true;
-        if (selectedIndex !== null && selectedIndex === index) {
-            setSelectedIndex(null);
             setUserAnswers(prev => {
-                const newState = { ...prev };
-                delete newState.internet;
-                return newState;
+                const isSelected = selectedIndex === index;
+
+                if (isSelected) {
+                    const newState = { ...prev };
+                    delete newState.internet;
+                    return newState;
+                }
+
+                return {
+                    ...prev,
+                    internet: {
+                        paquete: card,
+                        total: Number(card.precioPaquete) || 0
+                    }
+                };
             });
-            return;
-        }
-        setSelectedIndex(index);
-        setUserAnswers(prev => ({ ...prev, internet: { paquete: card, total: Number(card.precioPaquete) || 0 } }));
     }
 
     useEffect(() => {
         if (disabled && (userAnswers.internet?.paquete !== null)) {
-            setSelectedIndex(null);
             setUserAnswers(prev => {
                 const newState = { ...prev };
                 delete newState.internet;
@@ -68,7 +81,10 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
         }
     }, [disabled, setUserAnswers, userAnswers.internet?.paquete]);
 
-    const offersIds = useMemo(() => offersByType.map(o => String(o.idPaquete)).join('|'), [offersByType]);
+    const offersIds = useMemo(
+        () => offersByType.map(o => String(o.idPaquete)).join('|'),
+        [offersByType]
+    );
 
     useEffect(() => {
         if (!preSeleccion.seleccionPaquete) return;
@@ -82,34 +98,22 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
         if (!matchedOffer && internetCode) {
             matchedOffer = offersByType.find(o => String(o.nombreCode) === String(internetCode));
         }
+
         if (!matchedOffer) return;
 
-        const matchedId = String(matchedOffer.idPaquete);
-        const idx = offersByType.findIndex(o => String(o.idPaquete) === matchedId);
-        if (idx !== -1) setSelectedIndex(idx);
+        setUserAnswers(prev => ({
+            ...prev,
+            internet: {
+                paquete: matchedOffer!,
+                total: Number(matchedOffer!.precioPaquete) || 0
+            }
+        }));
 
-        queueMicrotask(() => {
-            setUserAnswers(prev => ({
-                ...prev,
-                internet: { paquete: matchedOffer!, total: Number(matchedOffer!.precioPaquete) || 0 }
-            }));
-        });
     }, [preSeleccion.seleccionPaquete, offersIds, rehydrated, offersByType, userAnswers.internet?.paquete, setUserAnswers]);
 
-    useEffect(() => {
-        const internetPaquete = userAnswers.internet?.paquete;
-        if (!internetPaquete || !offersByType.length) return;
-        const index = offersByType.findIndex(offer => String(offer.idPaquete) === String(internetPaquete.idPaquete));
-        if (index !== -1 && selectedIndex !== index) setSelectedIndex(index);
-    }, [offersByType, selectedIndex, userAnswers.internet?.paquete]);
-
-    useEffect(() => {
+    const hasMovil = useMemo(() => {
         const movil = userAnswers.movil as unknown as movilComponentFields;
-        if (movil && movil !== null && Object.keys(movil).length > 0) {
-            setHasMovil(true);
-        } else {
-            setHasMovil(false);
-        }
+        return !!movil && Object.keys(movil).length > 0;
     }, [userAnswers.movil]);
 
     return (
@@ -126,7 +130,7 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
 
                         return (
                             <div
-                                key={index}
+                                key={card.idPaquete}
                                 className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}
                             >
                                 <Card
