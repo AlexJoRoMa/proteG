@@ -17,7 +17,7 @@ const FALLBACKS: Record<string, string> = {
   'cobertura.form.direccion.label': 'Dirección',
   'cobertura.form.codigo.label': 'Código postal',
   'cobertura.form.direccion.placeholder': 'Introduce tu dirección o código postal',
-  'cobertura.form.direccion.error': 'Ingresa una dirección válida',
+  'cobertura.form.direccion.error': 'Ingresa tu dirección y selecciona uno de la lista',
   'cobertura.form.codigo.placeholder': 'Introduce tu código postal',
   'cobertura.form.codigo.error': 'Ingresa un código postal válido',
   'cobertura.form.numExterno.label': 'Número exterior',
@@ -36,8 +36,9 @@ const FALLBACKS: Record<string, string> = {
   'cobertura.button.ubicacion': 'utilizar mi ubicación actual',
   'cobertura.button.confirmar': 'confirmar dirección',
   'cobertura.descripcion.direccion': 'Selecciona una opción de la lista para avanzar',
-  
 };
+
+let descriptionText = '';
 
 const inputStyles = {
   label: "text-black/50",
@@ -81,7 +82,6 @@ const inputDisableStyles = {
   ]
 }
 
-type Mode = 'address' | 'postalCode';
 
 const CheckIcon = () => (
   <div className='flex items-center justify-center w-5 h-5 
@@ -98,18 +98,16 @@ const CheckIcon = () => (
 );
 
 interface GooglePlacesInputProps {
-  mode: Mode;
   value: string;
   onValueChange: (value: string) => void;
   onPlaceSelect: (place: google.maps.places.PlaceResult) => void;
   label: string;
   placeholder: string;
   errorMessage?: string;
-  description?: string;
+  description?: boolean;
 }
 
 const GooglePlacesInput = ({ 
-  mode, 
   value, 
   onValueChange, 
   onPlaceSelect, 
@@ -146,7 +144,15 @@ const GooglePlacesInput = ({
   return (
     <div ref={wrapperRef} className='w-full'>
       <Input
-        description={description}
+        description={description ? ( 
+          <div className='flex items-center gap-2 mt-1'>
+            <CheckIcon />
+            <span>
+            {descriptionText as string}
+            </span>
+            </div>)
+            :''
+          }
         isRequired
         label={label}
         placeholder={placeholder}
@@ -155,25 +161,17 @@ const GooglePlacesInput = ({
         onValueChange={onValueChange}
         errorMessage={errorMessage}
         autoComplete='off'
-        name={mode === 'postalCode' ? 'zipCode' : 'address'}
+        name={'address'}
         type='text'
-        classNames={mode === 'postalCode' ? inputDisableStyles : inputStyles}
-        maxLength={mode === 'postalCode' ? 5 : undefined}
-        onInput={
-          mode === 'postalCode' ?
-            (e) => InputFilter(e, 'numeros') :
-            undefined
-        }
+        classNames={inputStyles}
+        
       />
     </div>
   )
 }
 
-
-
 export default function CoberturaForm() {
   const map = useMap();
-  const [isSelected, setIsSelected] = useState<boolean>(false);
   const [error] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { getValue } = useMicrocopies('cobertura');
@@ -194,10 +192,6 @@ export default function CoberturaForm() {
     setLocality,
     state,
     setState,
-    name,
-    setName,
-    phone,
-    setPhone,
     lat,
     setLat,
     lng,
@@ -205,6 +199,7 @@ export default function CoberturaForm() {
     mode,
     setMode
   } = useContent();
+  descriptionText = getText('cobertura.descripcion.direccion');
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -469,29 +464,16 @@ export default function CoberturaForm() {
         </div>
       }
       <Form className="w-full max-w-[95%]" onSubmit={onSubmit}>
-        {addressSelected ?
-          <Input
-            description={
-              addressSelected ? (
-                <div className='flex items-center gap-2 mt-1'>
-                  <CheckIcon />
-                  <span>{getText('cobertura.descripcion.direccion')}</span>
-                </div>
-              ) : ''
-            }
-            isRequired
-            label={getText('cobertura.form.direccion.label')}
-            placeholder={getText('cobertura.form.direccion.placeholder')}
-            errorMessage={getText('cobertura.form.direccion.error')}
-            labelPlacement="outside"
-            name="address"
-            type="text"
-            value={street}
-            onValueChange={setStreet}
-            classNames={inputStyles}
-          />
-          : <></>
-        }
+        
+        <GooglePlacesInput
+          value={street}
+          onValueChange={setStreet}
+          onPlaceSelect={handleGoogglePlace}
+          label={getText('cobertura.form.direccion.label')}
+          placeholder={getText('cobertura.form.direccion.placeholder')}
+          errorMessage={getText('cobertura.form.direccion.error')}
+          description={addressSelected}
+        />
         <div className='flex col-2 w-full gap-4'>
           {addressSelected ?
             <Input
@@ -505,7 +487,6 @@ export default function CoberturaForm() {
               value={streetNumber}
               onValueChange={setStreetNumber}
               classNames={inputStyles}
-
             />
             : <></>}
           {addressSelected ?
@@ -522,29 +503,22 @@ export default function CoberturaForm() {
             />
             : <></>}
         </div>
-        <GooglePlacesInput
-          mode={mode}
-          value={postalCode}
-          onValueChange={setPostalCode}
-          onPlaceSelect={handleGoogglePlace}
-          label={
-            mode === 'address' ?
-              getText('cobertura.form.direccion.label') :
-              getText('cobertura.form.codigo.label')
-          }
-          placeholder={
-            mode === 'address' ?
-              getText('cobertura.form.direccion.placeholder') :
-              getText('cobertura.form.codigo.placeholder')
-          }
-          errorMessage={
-            mode === 'postalCode' ?
-              getText('cobertura.form.codigo.error') :
-              undefined
-          }
-          description={mode === 'address' ? 
-            getText('cobertura.descripcion.direccion') : ''}
-        />
+        {addressSelected ?
+          <Input
+            isRequired
+            label={getText('cobertura.form.codigo.label')}
+            placeholder={getText('cobertura.form.codigo.placeholder')}
+            errorMessage={getText('cobertura.form.codigo.error')}
+            labelPlacement="outside"
+            name="postalCode"
+            type="text"
+            value={postalCode}
+            onValueChange={setPostalCode}
+            classNames={inputDisableStyles}
+            maxLength={5}
+          />
+          : <></>
+        }
         {addressSelected ?
           <Input
             isRequired
@@ -561,6 +535,7 @@ export default function CoberturaForm() {
           : <></>}
         {addressSelected ?
           <Input
+            isDisabled
             label={getText('cobertura.form.municipio.label')}
             placeholder={getText('cobertura.form.municipio.placeholder')}
             labelPlacement="outside"
@@ -574,6 +549,7 @@ export default function CoberturaForm() {
           : <></>}
         {addressSelected ?
           <Input
+            isDisabled
             isRequired
             label={getText('cobertura.form.estado.label')}
             placeholder={getText('cobertura.form.estado.placeholder')}

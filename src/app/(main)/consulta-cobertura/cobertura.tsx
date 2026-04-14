@@ -27,7 +27,6 @@ export default function Cobertura() {
     const planParam = searchParams.get("plan"); //ej: izzi80m_izzitvhd
     const movilParam = searchParams.get("movil"); //ej: movil10gb
      const { addressFielSelected, streetDireccion } = useIzziContent();
-     console.log('🐯🐯🐯🐯 streetDireccion ', streetDireccion)
 
     useEffect(() => {
 
@@ -63,14 +62,14 @@ export default function Cobertura() {
                             {/* Lado derecho de la pagina */}
                             <div className='lg:w-1/2'>
                                 {addressFielSelected ?
-                                    <div>
-                                        <p className=' text-[24px] font-bold pt-3'>
+                                    <div className='pb-4'>
+                                        <p className='xsm:text-[20px] lg:text-[24px] font-bold pb-2'>
                                         {getText('cobertura.direccion.seleccionada')}
-                                        </p>
+                                        </p> 
                                     
                                         <div className='flex items-center gap-2'>
                                             <LocationIcon />
-                                            <p className='text-[18px]'>
+                                            <p className='xsm:text-[16px] lg:text-[18px]'>
                                             {streetDireccion}
                                             </p>
                                         </div> 
