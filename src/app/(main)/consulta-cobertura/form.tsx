@@ -174,6 +174,7 @@ export default function CoberturaForm() {
   const map = useMap();
   const [error] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasResponse, setHasResponse] = useState<boolean>(false);
   const { getValue } = useMicrocopies('cobertura');
   const getText = (key: string) => getValue(key) || FALLBACKS[key] || key;
   const { getValue2 } = useMicrocopies('contrataahoramodal');
@@ -204,7 +205,6 @@ export default function CoberturaForm() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const { setGlobalFlag, setFormattedAddress, setCoberturaData, setAddressFielSelected, setStreetDireccion } = useIzziContent();
-
 
   const modalData = {
     title: getValue2('stickyModal.title'),
@@ -249,7 +249,7 @@ export default function CoberturaForm() {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
-
+    if (isLoading || hasResponse) return;
     e.preventDefault();
     setIsLoading(true);
 
@@ -272,13 +272,16 @@ export default function CoberturaForm() {
       if (response.message === 'Address is in a WIZZ coverage area') {
 
         setIsLoading(false);
+        setHasResponse(true);
         onOpen();
         return;
       }
 
+      setHasResponse(true);
       setFormattedAddress(coveraData.address);
       setGlobalFlag(true);
       setCoberturaData(coveraData);
+      setIsLoading(false);
 
       await createCookie(coveraData);
 
@@ -374,19 +377,6 @@ export default function CoberturaForm() {
     }
 
   }
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab'];
-
-    if (allowedKeys.includes(e.key)) {
-      return;
-    }
-
-
-    if (!/\d/.test(e.key)) {
-      e.preventDefault();
-    }
-  };
 
 
   const handleCharPress = (e: React.KeyboardEvent<HTMLInputElement>) => {

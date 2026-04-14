@@ -1,7 +1,7 @@
 'use client'
 
 import { DataFields, IzziSelection, ProviderProps, UserAnswers } from "@/types/ConfiguradorTypes";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { IzziSelectionGuard } from "./guards/IzziSelectionGuard";
 import { useIzziContent } from "../components/providers/IzziProvider";
 
@@ -91,28 +91,42 @@ export const ConfiguradorProvider = ({
         setRehydrated(true);
     }, [globalUserAnswers, rehydrated, userAnswers.internet, userAnswers.movil, userAnswers.tv]);
 
+    const value = useMemo(() => ({
+        configuradorEntry,
+        copysResumen,
+        copysConfigurador,
+        resumenIcon,
+        cobertura,
+        userAnswers,
+        setUserAnswers,
+        izziSelection,
+        setIzziSelection,
+        checkedPromotions,
+        setCheckedPromotions,
+        ottsImages,
+        infoDrawerContent,
+        setInfoDrawerContent,
+        disabled,
+        setDisabled,
+        rehydrated,
+    }), [
+        configuradorEntry, 
+        copysResumen, 
+        copysConfigurador, 
+        resumenIcon, 
+        cobertura, 
+        userAnswers, 
+        izziSelection, 
+        checkedPromotions, 
+        ottsImages, 
+        infoDrawerContent, 
+        disabled, 
+        rehydrated
+    ]);
+    
     return (
         <configuradorContext.Provider
-            value={{
-                configuradorEntry,
-                copysResumen,
-                copysConfigurador,
-                resumenIcon,
-                cobertura,
-                userAnswers,
-                setUserAnswers,
-                izziSelection,
-                setIzziSelection,
-                checkedPromotions,
-                setCheckedPromotions,
-                ottsImages,
-                infoDrawerContent,
-                setInfoDrawerContent,
-                disabled,
-                setDisabled,
-                rehydrated,
-            }
-            }
+            value={value}
         >
             {children}
         </configuradorContext.Provider>
