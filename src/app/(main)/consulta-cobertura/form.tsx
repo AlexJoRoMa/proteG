@@ -1,6 +1,6 @@
 'use client'
 import { useContent } from '@/components/providers/CoberturaProvider';
-import { Button, Form, Input, Checkbox, useDisclosure, Modal, ModalContent } from '@heroui/react';
+import { Button, Form, Input, useDisclosure, Modal, ModalContent } from '@heroui/react';
 import { createCookie } from './actions';
 import { LoaderIcon, LocationIcon } from '@/constants/IconsConstants';
 import { useEffect, useRef, useState } from 'react';
@@ -13,6 +13,31 @@ import { getOfertas } from '@/services/izzi/configurador';
 import TeAyudamosModalComponentConfig from '../../../components/layouts/modals/TeAyudamosModalComponentConfigurador';
 import { InputFilter } from '@/utils/inputFilters';
 
+const FALLBACKS: Record<string, string> = {
+  'cobertura.form.direccion.label': 'Dirección',
+  'cobertura.form.codigo.label': 'Código postal',
+  'cobertura.form.direccion.placeholder': 'Introduce tu dirección o código postal',
+  'cobertura.form.direccion.error': 'Ingresa una dirección válida',
+  'cobertura.form.codigo.placeholder': 'Introduce tu código postal',
+  'cobertura.form.codigo.error': 'Ingresa un código postal válido',
+  'cobertura.form.numExterno.label': 'Número exterior',
+  'cobertura.form.numExterno.placeholder': 'Introduce tu número exterior',
+  'cobertura.form.numExterno.error': 'Ingresa un número válido',
+  'cobertura.form.numInterno.label': 'Número interior',
+  'cobertura.form.numInterno.placeholder': 'Introduce tu número interior',
+  'cobertura.form.colonia.label': 'Colonia',
+  'cobertura.form.colonia.placeholder': 'Introduce tu colonia',
+  'cobertura.form.colonia.error': 'Ingresa una colonia válida', 
+  'cobertura.form.municipio.label': 'Alcaldia o Municipio',
+  'cobertura.form.municipio.placeholder': 'Introduce tu alcaldia',
+  'cobertura.form.estado.label': 'Estado',
+  'cobertura.form.estado.placeholder': 'Introduce tu estado',
+  'obertura.form.estado.error': 'Ingresa un estado válido',
+  'cobertura.button.ubicacion': 'utilizar mi ubicación actual',
+  'cobertura.button.confirmar': 'confirmar dirección',
+  'cobertura.descripcion.direccion': 'Selecciona una opción de la lista para avanzar'
+
+};
 
 const inputStyles = {
   label: "text-black/50",
@@ -29,7 +54,8 @@ const inputStyles = {
   ],
   innerWrapper: [
     "bg-transparent",
-  ]
+  ],
+  description: 'text-black'
 }
 
 const inputDisableStyles = {
@@ -45,10 +71,24 @@ const inputDisableStyles = {
   ],
   innerWrapper: [
     "bg-transparent",
-  ]
+  ],
+  description: 'text-black'
 }
 
 type Mode = 'address' | 'postalCode';
+
+const CheckIcon = () => (
+  <div className='flex items-center justify-center w-5 h-5 bg-green-500 rounded-full'>
+    <svg
+    fill='none'
+    stroke='white'
+    strokeWidth='3'
+    viewBox='0 0 24 24'
+    className='w-3 h-3'>
+      <path strokeLinecap='round' strokeLinejoin='round' d='M5 13l4 4L19 7'/>
+    </svg>
+  </div>
+);
 
 interface GooglePlacesInputProps {
   mode: Mode;
@@ -58,9 +98,19 @@ interface GooglePlacesInputProps {
   label: string;
   placeholder: string;
   errorMessage?: string;
+  description?: string;
 }
 
-const GooglePlacesInput = ({ mode, value, onValueChange, onPlaceSelect, label, placeholder, errorMessage }: GooglePlacesInputProps) => {
+const GooglePlacesInput = ({ 
+  mode, 
+  value, 
+  onValueChange, 
+  onPlaceSelect, 
+  label, 
+  placeholder, 
+  errorMessage,
+  description
+ }: GooglePlacesInputProps) => {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -89,6 +139,7 @@ const GooglePlacesInput = ({ mode, value, onValueChange, onPlaceSelect, label, p
   return (
     <div ref={wrapperRef} className='w-full'>
       <Input
+        description={description}
         isRequired
         label={label}
         placeholder={placeholder}
@@ -98,7 +149,7 @@ const GooglePlacesInput = ({ mode, value, onValueChange, onPlaceSelect, label, p
         errorMessage={errorMessage}
         name={mode === 'postalCode' ? 'zipCode' : 'address'}
         type='text'
-        classNames={inputDisableStyles}
+        classNames={mode === 'postalCode' ? inputDisableStyles : inputStyles}
         maxLength={mode === 'postalCode' ? 5 : undefined}
         onInput={
           mode === 'postalCode' ?
@@ -110,39 +161,7 @@ const GooglePlacesInput = ({ mode, value, onValueChange, onPlaceSelect, label, p
   )
 }
 
-const FALLBACKS: Record<string, string> = {
-  'cobertura.form.direccion.label': 'Dirección',
-  'cobertura.form.codigo.label': 'Código postal',
-  'cobertura.form.direccion.placeholder': 'Introduce tu dirección o código postal',
-  'cobertura.form.direccion.error': 'Ingresa una dirección válida',
-  'cobertura.form.codigo.placeholder': 'Introduce tu código postal',
-  'cobertura.form.codigo.error': 'Ingresa un código postal válido',
-  'cobertura.form.numExterno.label': 'Número exterior',
-  'cobertura.form.numExterno.placeholder': 'Introduce tu número exterior',
-  'cobertura.form.numExterno.error': 'Ingresa un número válido',
-  'cobertura.form.numInterno.label': 'Número interior',
-  'cobertura.form.numInterno.placeholder': 'Introduce tu número interior',
-  'cobertura.form.colonia.label': 'Colonia',
-  'cobertura.form.colonia.placeholder': 'Introduce tu colonia',
-  'cobertura.form.colonia.error': 'Ingresa una colonia válida', 
-  'cobertura.form.municipio.label': 'Alcaldia o Municipio',
-  'cobertura.form.municipio.placeholder': 'Introduce tu alcaldia',
-  'cobertura.form.estado.label': 'Estado',
-  'cobertura.form.estado.placeholder': 'Introduce tu estado',
-  'obertura.form.estado.error': 'Ingresa un estado válido',
-  'cobertura.form.nombre.label': 'Nombre',
-  'cobertura.form.nombre.placeholder': 'Introduce tu nombre',
-  'cobertura.form.nombre.error': 'Ingresa un nombre válido',
-  'cobertura.form.telefono.label': 'Número de teléfono',
-  'cobertura.form.telefono.placeholder': 'Introduce tu teléfono',
-  'cobertura.form.telefono.error': 'Ingresa un número de teléfono válido',
-  'cobertura.form.privacidad.label': 'Acepto los',
-  'cobertura.form.privacidad.Aviso.link': 'https://qaizzi.izzi.mx/aviso-de-privacidad',
-  'cobertura.form.privacidad.Aviso': 'Avisos de Privacidad',
-  'cobertura.button.ubicacion': 'utilizar mi ubicación actual',
-  'cobertura.button.confirmar': 'confirmar dirección'
 
-};
 
 export default function CoberturaForm() {
   const map = useMap();
@@ -441,6 +460,14 @@ export default function CoberturaForm() {
       <Form className="w-full max-w-[95%]" onSubmit={onSubmit}>
         {addressSelected ?
           <Input
+            description={
+              addressSelected ? (
+                <div className='flex items-center gap-2 mt-1'>
+                  <CheckIcon />
+                  <span>{getText('cobertura.descripcion.direccion')}</span>
+                </div>
+              ) : ''
+            }
             isRequired
             label={getText('cobertura.form.direccion.label')}
             placeholder={getText('cobertura.form.direccion.placeholder')}
@@ -504,6 +531,8 @@ export default function CoberturaForm() {
               getText('cobertura.form.codigo.error') :
               undefined
           }
+          description={mode === 'address' ? 
+            getText('cobertura.descripcion.direccion') : ''}
         />
         {addressSelected ?
           <Input
@@ -547,43 +576,7 @@ export default function CoberturaForm() {
             classNames={inputDisableStyles}
           />
           : <></>}
-        {/* <Input
-          isRequired
-          label={getText('cobertura.form.nombre.label')}
-          placeholder={getText('cobertura.form.nombre.placeholder')}
-          errorMessage={getText('cobertura.form.nombre.error')}
-          labelPlacement="outside"
-          name="name"
-          type="text"
-          value={name}
-          onKeyDown={handleCharPress}
-          onValueChange={setName}
-          maxLength={100}
-          minLength={3}
-          classNames={inputStyles}
-        />
-        <Input
-          isRequired
-          label={getText('cobertura.form.telefono.label')}
-          placeholder={getText('cobertura.form.telefono.placeholder')}
-          errorMessage={getText('cobertura.form.telefono.error')}
-          labelPlacement="outside"
-          name="phone"
-          type="tel"
-          value={phone}
-          onValueChange={setPhone}
-          onKeyDown={handleKeyPress}
-          maxLength={10}
-          minLength={10}
-          classNames={inputStyles}
-        /> */}
-       {/*  <div>
-          <Checkbox isRequired={true} isSelected={isSelected} onValueChange={setIsSelected} defaultSelected={false} color="default" className='text-gray-450 pt-4 pb-8' />
-          <span className='mr-1'>{getText('cobertura.form.privacidad.label')}</span>
-          <a target='_blank' rel='noopener noreferrer' href={getText('cobertura.form.privacidad.Aviso.link') as string} >
-            <span className='font-bold'>{getText('cobertura.form.privacidad.Aviso') as string}</span>
-          </a>
-        </div> */}
+        
         <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-8'>
           <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange}>
             {getText('cobertura.button.ubicacion')}
