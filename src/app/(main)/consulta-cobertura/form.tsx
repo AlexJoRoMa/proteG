@@ -80,6 +80,7 @@ const GooglePlacesInput = ({ mode, value, onValueChange, onPlaceSelect, label, p
         value={value}
         onValueChange={onValueChange}
         errorMessage={errorMessage}
+        autoComplete='off'
         name={mode === 'postalCode' ? 'zipCode' : 'address'}
         type='text'
         classNames={inputStyles}
