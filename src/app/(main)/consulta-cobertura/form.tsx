@@ -147,6 +147,7 @@ const GooglePlacesInput = ({
         value={value}
         onValueChange={onValueChange}
         errorMessage={errorMessage}
+        autoComplete='off'
         name={mode === 'postalCode' ? 'zipCode' : 'address'}
         type='text'
         classNames={mode === 'postalCode' ? inputDisableStyles : inputStyles}
