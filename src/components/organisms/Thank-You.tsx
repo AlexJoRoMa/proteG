@@ -126,6 +126,9 @@ export default function ThankYou() {
         setPurchaseTracked(true);
         if (typeof window !== 'undefined') {
             sessionStorage.setItem('izzi-purchase-tracked', '1');
+            // Limpiar claves de checkout al finalizar el flujo para evitar contaminación
+            sessionStorage.removeItem('izzi-checkout-session-id');
+            sessionStorage.removeItem('izzi-checkout-current-step');
         }
     }, [purchaseTracked, globalProcessStatus.orderNumber, globalProcessStatus.accountNumber, globalIzziSelection, globalDatosContratacion, coberturaData, precioTotal, totalSinDescuento]);
 

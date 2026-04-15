@@ -42,3 +42,7 @@ yarn-error.log*
 next-env.d.ts
 .env.local
 *.local
+
+# no subir archivos pdf ni markdown
+*.pdf
+*.md
