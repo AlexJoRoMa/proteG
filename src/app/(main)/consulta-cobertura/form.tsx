@@ -34,7 +34,7 @@ const FALLBACKS: Record<string, string> = {
   'obertura.form.estado.error': 'Ingresa un estado válido',
   'cobertura.button.ubicacion': 'utilizar mi ubicación actual',
   'cobertura.button.confirmar': 'confirmar dirección',
-  'cobertura.descripcion.direccion': 'Selecciona una opción de la lista para avanzar',
+  'cobertura.descripcion.direccion': 'Ingresa tu dirección y selecciona uno de la lista',
 };
 
 let descriptionText = '';
@@ -125,6 +125,7 @@ const GooglePlacesInput = ({
     autocompleteRef.current = new places.Autocomplete(input, {
       fields: ['name', 'formatted_address', 'geometry.location', 'address_components'],
       componentRestrictions: { country: ['mx'] },
+      types: ['address']
     });
 
     autocompleteRef.current.addListener('place_changed', () => {

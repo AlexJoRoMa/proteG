@@ -50,8 +50,8 @@ export default function Cobertura() {
 
                 <div className="items-center justify-center mb-8 mx-sm xl:mx-xl xl:justify-start">
                     <div className='flex flex-col'>
-                        <p className="text-[32px] font-bold">{getText('cobertura.title')}</p>
-                        <p className="text-[18px]">{getText('cobertura.subtitle')}</p>
+                        <p className="xsm:text-[20px] lg:text-[32px] font-bold">{getText('cobertura.title')}</p>
+                        <p className="xsm:text-[16px] lg:text-[18px]">{getText('cobertura.subtitle')}</p>
                     </div>
                     <APIProvider
                         solutionChannel='2'
