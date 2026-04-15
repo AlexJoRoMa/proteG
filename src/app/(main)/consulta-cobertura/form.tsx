@@ -39,7 +39,7 @@ const FALLBACKS: Record<string, string> = {
 
 let descriptionText = '';
 
-const inputStyles = {
+const inputStyles = (isAddressSelected?: boolean) => ({
   label: "text-black/50",
   inputWrapper: [
     "bg-transparent",
@@ -48,7 +48,7 @@ const inputStyles = {
   ],
   input: [
     "bg-transparent",
-    "text-gray-200",
+    isAddressSelected ? "text-black" : "text-gray-200",
     "placeholder:text-gray-200",
     "hover: bg-transparent",
   ],
@@ -59,7 +59,7 @@ const inputStyles = {
     "text-black",
     "text-[12px]"
   ]
-}
+});
 
 const inputDisableStyles = {
   label: "text-black opacity-100",
@@ -105,6 +105,9 @@ interface GooglePlacesInputProps {
   placeholder: string;
   errorMessage?: string;
   description?: boolean;
+  addressValid?: boolean;
+  onBlur: () => void;
+  addressSelected?: boolean;
 }
 
 const GooglePlacesInput = ({ 
@@ -114,7 +117,10 @@ const GooglePlacesInput = ({
   label, 
   placeholder, 
   errorMessage,
-  description
+  description,
+  addressValid,
+  onBlur,
+  addressSelected
  }: GooglePlacesInputProps) => {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -158,12 +164,13 @@ const GooglePlacesInput = ({
         labelPlacement='outside'
         value={value}
         onValueChange={onValueChange}
-        errorMessage={errorMessage}
+        errorMessage={addressValid ? errorMessage : null}
         autoComplete='off'
         name={'address'}
         type='text'
-        classNames={inputStyles}
-        
+        classNames={inputStyles(addressSelected) }
+        isInvalid={addressValid}
+        onBlur={onBlur}
       />
     </div>
   )
@@ -174,6 +181,7 @@ export default function CoberturaForm() {
   const [error] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasResponse, setHasResponse] = useState<boolean>(false);
+  const [addressValid, setAddressValid] = useState<boolean>(false);
   const { getValue } = useMicrocopies('cobertura');
   const getText = (key: string) => getValue(key) || FALLBACKS[key] || key;
   const { getValue2 } = useMicrocopies('contrataahoramodal');
@@ -409,10 +417,10 @@ export default function CoberturaForm() {
     const lat = place?.geometry?.location?.lat() ?? 0;
     const lng = place?.geometry?.location?.lng() ?? 0;
 
-
     if (lat !== 0 && lng !== 0) {
       setLat(lat);
       setLng(lng);
+      setAddressValid(false)
       setMarkerPosition({ lat: lat, lng: lng });
       geocodeApi(lat, lng).then((result) => {
         mapAddressFields(result)
@@ -425,6 +433,27 @@ export default function CoberturaForm() {
       setMode('postalCode')
     }
   };
+
+  useEffect(() => {
+    if(addressSelected){
+      setAddressValid(false);
+    }
+  }, [addressSelected]);
+
+  const handleDirectionBlur = () => {
+    
+    if(!addressSelected || street.trim() === "") {
+      setAddressValid(true);
+    }
+    
+  }
+
+  const handleStreetChange = (val: string) => {
+    setStreet(val);
+    if(addressValid){
+      setAddressValid(false);
+    }
+  }
 
 
   return (
@@ -456,12 +485,15 @@ export default function CoberturaForm() {
         
         <GooglePlacesInput
           value={street}
-          onValueChange={setStreet}
+          onValueChange={handleStreetChange}
           onPlaceSelect={handleGoogglePlace}
           label={getText('cobertura.form.direccion.label')}
           placeholder={getText('cobertura.form.direccion.placeholder')}
           errorMessage={getText('cobertura.form.direccion.error')}
           description={addressSelected}
+          addressValid={addressValid}
+          onBlur={handleDirectionBlur}
+          addressSelected={addressSelected}
         />
         <div className='flex col-2 w-full gap-4'>
           {addressSelected ?
