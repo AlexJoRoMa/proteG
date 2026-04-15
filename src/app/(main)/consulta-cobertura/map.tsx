@@ -2,6 +2,7 @@ import { useContent } from '@/components/providers/CoberturaProvider';
 import geocodeApi from '@/services/google-maps/api';
 import {
     AdvancedMarker,
+    ControlPosition,
     Map,
     useMap,
     useAdvancedMarkerRef,
@@ -26,6 +27,8 @@ export default function IzziMap(){
    } = useContent();
 
    const { setAddressFielSelected, setStreetDireccion } = useIzziContent();
+   const DEFAULT_CENTER = { lat: 19.4326, lng: -99.1332 };
+   const DEFAULT_ZOOM = 15;
 
   const updateLocationData = async (lat: number, lng: number) => {
     const nextPosition = {lat, lng};
@@ -132,15 +135,18 @@ function mapAddressFields(data: GeocodeType) {
       <Map
           mapId={'bf51a910020fa25a'}
           style={{height: '400px'}}
-          defaultCenter={{lat: 19.4311231, lng: -99.1777154}}
-          defaultZoom={15}
+          defaultCenter={DEFAULT_CENTER}
+          defaultZoom={DEFAULT_ZOOM}
           disableDefaultUI={true}
+          cameraControl={true}
+          cameraControlOptions={{position: ControlPosition.LEFT_BOTTOM}}
           zoomControl={true}
           keyboardShortcuts={true}
           gestureHandling={'greedy'}
           draggable={true}
           onClick={HandleMapClick}
       >
+
       <AdvancedMarker
         ref={markerRef}
         position={markerPosition}
