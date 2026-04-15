@@ -415,58 +415,80 @@ export default function CoberturaForm() {
     const lat = place?.geometry?.location?.lat() ?? 0;
     const lng = place?.geometry?.location?.lng() ?? 0;
     const addressExist = place?.name || place?.formatted_address || '';
+    
     setHasAddress(addressExist);
-    setIsSearching(false);
     setAddressValid(false)
+    setAddress(true);
 
     if (lat !== 0 && lng !== 0) {
       setLat(lat);
-      setLng(lng);
+      setLng(lng);/* 
       setAddressValid(false)
+      setAddress(true); */
       setMarkerPosition({ lat: lat, lng: lng });
       geocodeApi(lat, lng).then((result) => {
         mapAddressFields(result)
-        setAddress(true);
+        /* setAddress(true); */
         setAddressFielSelected(true);
+        setIsSearching(false);
       });
       if (map) map.panTo({ lat, lng })
-    }
+    } else {
+      setIsSearching(false);
+  }
     if (mode === 'address') {
       setMode('postalCode')
     }
   };
 
   useEffect(() => {
-    if(addressSelected && street !== hasAddress){
+    if(isSearching) {
+      setAddressValid(false);
+      return;
+    }
+    if(addressSelected){
+      setAddressValid(false);
+    } else if (street.trim() !== ''){
       setAddressValid(true);
-    } else if (addressSelected && street === hasAddress){
+    } else {
       setAddressValid(false);
     }
-  }, [addressSelected, street, hasAddress]);
+  }, [addressSelected, street, isSearching]);
 
 
   const handleDirectionBlur = () => {
     setTimeout(() => {
       setIsSearching(false);
-      if(!addressSelected || street.trim() !== hasAddress) {
+      if(!addressSelected && street.trim() !== '' ) {
         setAddressValid(true);
+      } else {
+        setAddressValid(false);
       }
-    }, 200)
+    }, 300)
   }
 
   const handleDirectionChange = (change: string) => {
     const isEmpty = change.trim() === "";
-    const wasNotEmpty = street.trim() !== "";
+    /* const wasNotEmpty = street.trim() !== ""; */
 
-    if (isEmpty && wasNotEmpty) {
+    if (isEmpty /* && wasNotEmpty */) {
       resetForm();
       return;
+    }
+    /* if(change !== street){
+      setAddress(false)
+    } */
+
+    if(addressSelected && change !== hasAddress){
+      setAddress(false)
+      setAddressValid(false)
     }
     setStreet(change)
   }
 
   const handleFocus = () => {
     setIsSearching(true);
+    setAddressValid(false);
   }
 
   const resetForm = () => {
@@ -485,7 +507,10 @@ export default function CoberturaForm() {
       </Button>
     )
   }
-
+console.log('🚩 addressSelected ', addressSelected)
+console.log('🚩 addressValid ', addressValid)
+console.log('🚩 hasAddress ', hasAddress)
+console.log('🚩 isSearching ', isSearching)
   return (
     <>
       <Modal
@@ -540,7 +565,7 @@ export default function CoberturaForm() {
               type="text"
               value={streetNumber}
               onValueChange={setStreetNumber}
-              classNames={inputStyles(true)}
+              classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
             />
             : <></>}
           {addressSelected ?
@@ -553,7 +578,7 @@ export default function CoberturaForm() {
               type="text"
               value={aptNumber}
               onValueChange={setAptNumber}
-              classNames={inputStyles(true)}
+              classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
               className='max-w-[95%]'
             />
             : <></>}
@@ -587,7 +612,7 @@ export default function CoberturaForm() {
             type="text"
             value={neighborhood}
             onValueChange={setNeighborhood}
-            classNames={inputStyles(true)}
+            classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
           />
           : <></>}
         {addressSelected ?
@@ -626,7 +651,8 @@ export default function CoberturaForm() {
             {getText('cobertura.button.ubicacion')}
           </Button>
           <Button
-            className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} isDisabled={addressSelected ? false : true} type="submit">
+            className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} 
+            isDisabled={!addressSelected  || addressValid || isSearching} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
         </div>
