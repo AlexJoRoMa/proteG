@@ -2,8 +2,8 @@
 import { useContent } from '@/components/providers/CoberturaProvider';
 import { Button, Form, Input, useDisclosure, Modal, ModalContent } from '@heroui/react';
 import { createCookie } from './actions';
-import { LoaderIcon, LocationIcon } from '@/constants/IconsConstants';
-import { useEffect, useRef, useState } from 'react';
+import { CheckCoberturaIcon, CloseBlackIcon, LoaderIcon, LocationIcon } from '@/constants/IconsConstants';
+import React, { useEffect, useRef, useState } from 'react';
 import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import geocodeApi from '@/services/google-maps/api';
@@ -11,7 +11,6 @@ import { GeocodeType } from '@/types/CoberturaTypes';
 import { useIzziContent } from '@/components/providers/IzziProvider';
 import { getOfertas } from '@/services/izzi/configurador';
 import TeAyudamosModalComponentConfig from '../../../components/layouts/modals/TeAyudamosModalComponentConfigurador';
-import { InputFilter } from '@/utils/inputFilters';
 
 const FALLBACKS: Record<string, string> = {
   'cobertura.form.direccion.label': 'Dirección',
@@ -46,6 +45,7 @@ const inputStyles = {
     "bg-transparent",
     "hover: bg-transparent",
     "border-1 border-solid rounded-md",
+    "!pr-0"
   ],
   input: [
     "bg-transparent",
@@ -82,21 +82,6 @@ const inputDisableStyles = {
   ]
 }
 
-
-const CheckIcon = () => (
-  <div className='flex items-center justify-center w-5 h-5 
-  border-2 border-green-500 rounded-full'>
-    <svg
-    fill='none'
-    stroke='#22c55e'
-    strokeWidth='4'
-    viewBox='0 0 24 24'
-    className='w-2 h-2'>
-      <path strokeLinecap='round' strokeLinejoin='round' d='M5 13l4 4L19 7'/>
-    </svg>
-  </div>
-);
-
 interface GooglePlacesInputProps {
   value: string;
   onValueChange: (value: string) => void;
@@ -105,6 +90,7 @@ interface GooglePlacesInputProps {
   placeholder: string;
   errorMessage?: string;
   description?: boolean;
+  clear: () => React.ReactNode;
 }
 
 const GooglePlacesInput = ({ 
@@ -114,7 +100,8 @@ const GooglePlacesInput = ({
   label, 
   placeholder, 
   errorMessage,
-  description
+  description,
+  clear
  }: GooglePlacesInputProps) => {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -146,7 +133,7 @@ const GooglePlacesInput = ({
       <Input
         description={description ? ( 
           <div className='flex items-center gap-2 mt-1'>
-            <CheckIcon />
+            <CheckCoberturaIcon />
             <span>
             {descriptionText as string}
             </span>
@@ -164,7 +151,7 @@ const GooglePlacesInput = ({
         name={'address'}
         type='text'
         classNames={inputStyles}
-        
+        endContent={description && clear()}
       />
     </div>
   )
@@ -198,7 +185,8 @@ export default function CoberturaForm() {
     lng,
     setLng,
     mode,
-    setMode
+    setMode,
+    resetCobertura
   } = useContent();
   descriptionText = getText('cobertura.descripcion.direccion');
 
@@ -427,6 +415,22 @@ export default function CoberturaForm() {
     }
   };
 
+  const resetForm = () => {
+    resetCobertura();
+  }
+
+  const clearForm = () => {
+    return (
+      <Button
+        onPress={resetForm}
+        radius='none'
+        isIconOnly={true}
+        className='bg-transparent'
+      >
+        <CloseBlackIcon />
+      </Button>
+    )
+  }
 
   return (
     <>
@@ -463,6 +467,7 @@ export default function CoberturaForm() {
           placeholder={getText('cobertura.form.direccion.placeholder')}
           errorMessage={getText('cobertura.form.direccion.error')}
           description={addressSelected}
+          clear={clearForm}
         />
         <div className='flex col-2 w-full gap-4'>
           {addressSelected ?

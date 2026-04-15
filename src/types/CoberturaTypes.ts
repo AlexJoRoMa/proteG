@@ -2,19 +2,19 @@ import { Asset, Entry, EntrySkeletonType } from "contentful";
 import React, { ReactNode } from "react";
 
 export type CoberturaID = {
-    id: string;
+  id: string;
 }
 
 interface MediaEntryFields {
   image?: Asset;
 }
 
-interface MediaEntrySkeleton extends EntrySkeletonType{
+interface MediaEntrySkeleton extends EntrySkeletonType {
   contentTypeId: 'media';
   fields: MediaEntryFields;
 }
 
-export interface StepTabEntryFields extends EntrySkeletonType{
+export interface StepTabEntryFields extends EntrySkeletonType {
   image?: Entry<MediaEntrySkeleton>;
   entryTitle?: string;
   entryBody?: string;
@@ -22,7 +22,7 @@ export interface StepTabEntryFields extends EntrySkeletonType{
   linkBoton1?: string;
 }
 
-export interface StepTabEntrySkeleton extends EntrySkeletonType{
+export interface StepTabEntrySkeleton extends EntrySkeletonType {
   contentTypeId: 'stepTabEntry';
   fields: StepTabEntryFields;
 }
@@ -34,9 +34,9 @@ export interface GeocodeType {
 export interface AddressType {
   formatted_address: string,
   address_components: [{
-      long_name: string,
-      short_name: string,
-      types: string[]
+    long_name: string,
+    short_name: string,
+    types: string[]
   }]
 }
 
@@ -75,5 +75,6 @@ export type DataFields = {
   lng: number,
   setLng: React.Dispatch<React.SetStateAction<number>>,
   mode: 'address' | 'postalCode',
-  setMode: React.Dispatch<React.SetStateAction<'address' | 'postalCode'>>
+  setMode: React.Dispatch<React.SetStateAction<'address' | 'postalCode'>>,
+  resetCobertura: () => void,
 }
