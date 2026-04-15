@@ -40,7 +40,6 @@ export default function Cobertura() {
             }
             await preSelectionCookie(cookieData);
         }
-
         setParams();
     }, [planParam, movilParam])
 
