@@ -26,7 +26,7 @@ const FALLBACKS: Record<string, string> = {
   'cobertura.form.numInterno.placeholder': 'Introduce tu número interior',
   'cobertura.form.colonia.label': 'Colonia',
   'cobertura.form.colonia.placeholder': 'Introduce tu colonia',
-  'cobertura.form.colonia.error': 'Ingresa una colonia válida', 
+  'cobertura.form.colonia.error': 'Ingresa una colonia válida',
   'cobertura.form.municipio.label': 'Alcaldia o Municipio (Opc.)',
   'cobertura.form.municipio.placeholder': 'Introduce tu alcaldia',
   'cobertura.form.estado.label': 'Estado',
@@ -98,12 +98,12 @@ interface GooglePlacesInputProps {
   onFocus: () => void;
 }
 
-const GooglePlacesInput = ({ 
-  value, 
-  onValueChange, 
-  onPlaceSelect, 
-  label, 
-  placeholder, 
+const GooglePlacesInput = ({
+  value,
+  onValueChange,
+  onPlaceSelect,
+  label,
+  placeholder,
   errorMessage,
   description,
   addressValid,
@@ -141,14 +141,14 @@ const GooglePlacesInput = ({
   return (
     <div ref={wrapperRef} className='w-full'>
       <Input
-        description={ 
+        description={
           <div className='flex items-center gap-2 mt-1'>
             {description ? <CheckCoberturaIcon /> : ''}
             <span>
-            {descriptionText as string}
+              {descriptionText as string}
             </span>
-            </div>
-          }
+          </div>
+        }
         isRequired
         label={label}
         placeholder={placeholder}
@@ -159,7 +159,7 @@ const GooglePlacesInput = ({
         autoComplete='off'
         name={'address'}
         type='text'
-        classNames={inputStyles(addressSelected) }
+        classNames={inputStyles(addressSelected)}
         isInvalid={addressValid}
         onBlur={onBlur}
         endContent={description && clear()}
@@ -449,10 +449,20 @@ export default function CoberturaForm() {
     setTimeout(() => {
       setIsSearching(false);
       if(!addressSelected || street.trim() !== hasAddress) {
-      setAddressValid(true);
-    }
+        setAddressValid(true);
+      }
     }, 200)
-    
+  }
+
+  const handleDirectionChange = (change: string) => {
+    const isEmpty = change.trim() === "";
+    const wasNotEmpty = street.trim() !== "";
+
+    if (isEmpty && wasNotEmpty) {
+      resetForm();
+      return;
+    }
+    setStreet(change)
   }
 
   const handleFocus = () => {
@@ -502,10 +512,10 @@ export default function CoberturaForm() {
         </div>
       }
       <Form className="w-full max-w-[95%]" onSubmit={onSubmit}>
-        
+
         <GooglePlacesInput
           value={street}
-          onValueChange={setStreet}
+          onValueChange={(e) => handleDirectionChange(e)}
           onPlaceSelect={handleGoogglePlace}
           label={getText('cobertura.form.direccion.label')}
           placeholder={getText('cobertura.form.direccion.placeholder')}
@@ -610,7 +620,7 @@ export default function CoberturaForm() {
             classNames={inputDisableStyles}
           />
           : <></>}
-        
+
         <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-5'>
           <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange}>
             {getText('cobertura.button.ubicacion')}
