@@ -507,7 +507,7 @@ export default function CoberturaForm() {
               type="text"
               value={streetNumber}
               onValueChange={setStreetNumber}
-              classNames={inputStyles}
+              classNames={inputStyles(true)}
             />
             : <></>}
           {addressSelected ?
@@ -519,7 +519,7 @@ export default function CoberturaForm() {
               type="text"
               value={aptNumber}
               onValueChange={setAptNumber}
-              classNames={inputStyles}
+              classNames={inputStyles(true)}
               className='max-w-[95%]'
             />
             : <></>}
@@ -552,7 +552,7 @@ export default function CoberturaForm() {
             type="text"
             value={neighborhood}
             onValueChange={setNeighborhood}
-            classNames={inputStyles}
+            classNames={inputStyles(true)}
           />
           : <></>}
         {addressSelected ?
