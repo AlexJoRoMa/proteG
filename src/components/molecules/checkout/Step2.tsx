@@ -11,11 +11,19 @@ import ButtonGhost from '@/components/atoms/ButtonGhost';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import { useIzziContent } from '@/components/providers/IzziProvider';
 
+const FALLBACKS: Record<string, string> = {
+  'datosPersonales.privacidad.textoPrevio': 'Acepto los',
+  'datosPersonales.privacidad.textoPrincipal': 'Avisos de Privacidad',
+  'datosPersonales.privacidad.url': 'https://qaizzi.izzi.mx/aviso-de-privacidad',
+};
+
 const Step2 = () => {
-  const { setCheckboxChecked } = useCheckout();
+  const { setConditionCheckboxChecked, setPrivacyCheckboxChecked } = useCheckout();
   const { getValue } = useMicrocopies('contratacion-datosPersonales');
-  const [checked, setChecked] = useState(false);
+  const [conditionChecked, setConditionChecked] = useState(false);
+  const [privacyChecked, setPrivacyChecked] = useState(false);
   const { formattedAddress } = useIzziContent();
+  const getText = (key: string) => getValue(key) || FALLBACKS[key] || key;
 
   const {
     DatosPersonalesRef,
@@ -38,10 +46,16 @@ const Step2 = () => {
     setIsDireccionFacturacionValid
   } = useStep2Form();
 
-  const hanldeCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const hanldeConditionCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.checked;
-    setChecked(value);
-    setCheckboxChecked(value);
+    setConditionChecked(value);
+    setConditionCheckboxChecked(value);
+  }
+
+  const hanldePrivacyCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.checked;
+    setPrivacyChecked(value);
+    setPrivacyCheckboxChecked(value);
   }
 
   useEffect(() => {
@@ -172,29 +186,57 @@ const Step2 = () => {
 
       <Divider orientation="horizontal" className='!border-[var(--color-gray-300)] mt-6 mb-7' />
 
-      <Checkbox
-        defaultSelected={false}
-        isRequired
-        color={"default"}
-        checked={checked}
-        onChange={hanldeCheckboxChange}
-        radius='sm'
-        className='text-gray-450 pt-4 pb-8'
-        classNames={{
-          wrapper: "before:!bg-white-0 before:border-0 !border-1 border-black-0 group-data-[selected=true]:after:!bg-white-0",
-          icon: "w-[14px] h-[12px]",
-        }}
-      >
-        {getValue('datosPersonales.terminos.textoPrevio')}
-      </Checkbox>
-      <ButtonGhost
-        classStyles='text-black underline font-bold text-[16px] leading-6 underline p-0 border-0 ml-[4px]'
-        text={getValue('datosPersonales.terminos.textoPrincipal')}
-        href={getValue('datosPersonales.terminos.url')}
-        external={true}
-      >
-      </ButtonGhost>
+      <div className='flex flex-col gap-[12px] pb-8'>
+        <div>
+          <Checkbox
+            defaultSelected={false}
+            isRequired
+            color={"default"}
+            checked={conditionChecked}
+            onChange={hanldeConditionCheckboxChange}
+            radius='sm'
+            className='text-gray-450'
+            classNames={{
+              wrapper: "before:!bg-white-0 before:border-0 !border-1 border-black-0 group-data-[selected=true]:after:!bg-white-0",
+              icon: "w-[14px] h-[12px]",
+            }}
+          >
+            {getValue('datosPersonales.terminos.textoPrevio')}
+          </Checkbox>
+          <ButtonGhost
+            classStyles='text-black underline font-bold text-[16px] leading-6 underline p-0 border-0 ml-[4px]'
+            text={getValue('datosPersonales.terminos.textoPrincipal')}
+            href={getValue('datosPersonales.terminos.url')}
+            external={true}
+          >
+          </ButtonGhost>
+        </div>
 
+        <div>
+          <Checkbox
+            isRequired
+            checked={privacyChecked}
+            onChange={hanldePrivacyCheckboxChange}
+            defaultSelected={false}
+            color="default"
+            radius='sm'
+            className='text-gray-450'
+            classNames={{
+              wrapper: "before:!bg-white-0 before:border-0 !border-1 border-black-0 group-data-[selected=true]:after:!bg-white-0",
+              icon: "w-[14px] h-[12px]",
+            }}
+          >
+            {getValue('datosPersonales.terminos.textoPrevio')}
+          </Checkbox>
+          <ButtonGhost
+            classStyles='text-black underline font-bold text-[16px] leading-6 underline p-0 border-0 ml-[4px]'
+            text={getText('datosPersonales.privacidad.textoPrincipal')}
+            href={getValue('datosPersonales.terminos.url')}
+            external={true}
+          >
+          </ButtonGhost>
+        </div>
+      </div>
 
     </div>
   )
