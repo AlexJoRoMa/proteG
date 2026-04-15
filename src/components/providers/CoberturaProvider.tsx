@@ -1,7 +1,8 @@
 'use client'
 
 import { DataFields, ProviderProps } from "@/types/CoberturaTypes";
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
+import { useIzziContent } from "./IzziProvider";
 
 const coberturaContext = createContext<DataFields | undefined>(undefined);
 
@@ -16,6 +17,9 @@ export const useContent = () => {
 export const CoberturaProvider = ({
     children,
 }: ProviderProps) => {
+
+    const { setAddressFielSelected, setStreetDireccion } = useIzziContent();
+
     const [addressSelected, setAddress] = useState<boolean>(false);
     const [selectedPlace, setSelectedPlace] = useState<google.maps.places.PlaceResult | null>(null);
     const [markerPosition, setMarkerPosition] = useState<google.maps.LatLng | google.maps.LatLngLiteral>({ lat: 0, lng: 0 });
@@ -32,6 +36,25 @@ export const CoberturaProvider = ({
     const [lng, setLng] = useState<number>(0);
     const [mode, setMode] = useState<'address' | 'postalCode'>('address');
 
+    const resetCobertura = useCallback(() => {
+        setAddress(false);
+        setSelectedPlace(null);
+        setMarkerPosition({ lat: 0, lng: 0 });
+        setPostalCode('');
+        setStreetNumber('');
+        setAptNumber('');
+        setNeighborhood('');
+        setLocality('');
+        setState('');
+        setLat(0);
+        setLng(0);
+        setStreet('');
+        setAddressFielSelected(false);
+        setStreetDireccion('');
+    }, [setAddressFielSelected, setStreetDireccion]);
+
+
+
     return (
         <coberturaContext.Provider
             value={{
@@ -41,30 +64,31 @@ export const CoberturaProvider = ({
                 setSelectedPlace,
                 markerPosition,
                 setMarkerPosition,
-                postalCode, 
+                postalCode,
                 setPostalCode,
-                street, 
+                street,
                 setStreet,
-                streetNumber, 
+                streetNumber,
                 setStreetNumber,
-                aptNumber, 
+                aptNumber,
                 setAptNumber,
-                neighborhood, 
+                neighborhood,
                 setNeighborhood,
-                locality, 
+                locality,
                 setLocality,
                 state,
                 setState,
-                name, 
+                name,
                 setName,
-                phone, 
+                phone,
                 setPhone,
                 lat,
                 setLat,
                 lng,
                 setLng,
-                mode, 
-                setMode
+                mode,
+                setMode,
+                resetCobertura,
             }}
         >
             {children}

@@ -47,7 +47,7 @@ export default function Cobertura() {
     return (
         <>
             <CoberturaProvider>
-                
+
                 <div className="items-center justify-center mb-8 mx-sm xl:mx-xl xl:justify-start">
                     <div className='flex flex-col'>
                         <p className="text-[32px] font-bold">{getText('cobertura.title')}</p>
@@ -67,28 +67,28 @@ export default function Cobertura() {
                                 {checkValue ?
                                     <div className='pb-4'>
                                         <p className='xsm:text-[20px] lg:text-[24px] font-bold pb-2'>
-                                        {getText('cobertura.direccion.seleccionada')}
-                                        </p> 
-                                    
+                                            {getText('cobertura.direccion.seleccionada')}
+                                        </p>
+
                                         <div className='flex items-center gap-2'>
                                             <LocationIcon />
                                             <p className='xsm:text-[16px] lg:text-[18px]'>
-                                            {streetDireccion}
+                                                {streetDireccion}
                                             </p>
-                                        </div> 
+                                        </div>
                                     </div>
-                                : <></>}
+                                    : <></>}
                                 <div className='bg-blue-700 rounded-lg text-white px-[20px] py-[16px] flex items-center gap-3 mb-4'>
                                     <div className='flex items-center justify-center w-5 h-5 border-1 border-white rounded-full flex-shrink-0'>
                                         <span className='text-[12px] font-bold pl-[1px]'>i</span>
                                     </div>
-                                        <p className='fonrt-normal text-[16px] text-white leading-[1.4]'>
-                                            {getText('cobertura.alertaAzul.mensaje')}
-                                        </p>
+                                    <p className='fonrt-normal text-[16px] text-white leading-[1.4]'>
+                                        {getText('cobertura.alertaAzul.mensaje')}
+                                    </p>
                                 </div>
 
                                 <IzziMap />
-                                
+
                             </div>
                         </div>
                     </APIProvider>
