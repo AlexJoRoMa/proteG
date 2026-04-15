@@ -205,7 +205,7 @@ export default function CoberturaForm() {
   } = useContent();
   descriptionText = getText('cobertura.descripcion.direccion');
 
-  const isFieldDisabled = isSearching || (addressSelected && street !== hasAddress) || !addressSelected;
+  const isFieldDisabled = isSearching || !addressSelected;
   const isInvalidAddress = !addressSelected && street.trim() !== '' && !isSearching;
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -311,9 +311,12 @@ export default function CoberturaForm() {
     const data = geocodeApi(position.coords.latitude, position.coords.longitude);
     data.then((result) => {
       mapAddressFields(result);
+      const formatted = result?.results?.[0]?.formatted_address || '';
+      setHasAddress(formatted)
     });
     setAddress(true);
     setAddressFielSelected(true);
+    setIsSearching(false)
     setMode('postalCode');
     setMarkerPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
     if (map) map.panTo({ lat: position.coords.latitude, lng: position.coords.longitude });
