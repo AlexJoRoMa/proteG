@@ -95,6 +95,7 @@ interface GooglePlacesInputProps {
   onBlur: () => void;
   addressSelected?: boolean;
   clear: () => React.ReactNode;
+  onFocus: () => void;
 }
 
 const GooglePlacesInput = ({ 
@@ -108,7 +109,8 @@ const GooglePlacesInput = ({
   addressValid,
   onBlur,
   addressSelected,
-  clear
+  clear,
+  onFocus
  }: GooglePlacesInputProps) => {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -161,6 +163,7 @@ const GooglePlacesInput = ({
         isInvalid={addressValid}
         onBlur={onBlur}
         endContent={description && clear()}
+        onFocus={onFocus}
       />
     </div>
   )
@@ -172,6 +175,8 @@ export default function CoberturaForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasResponse, setHasResponse] = useState<boolean>(false);
   const [addressValid, setAddressValid] = useState<boolean>(false);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [hasAddress, setHasAddress] = useState<string>('');
   const { getValue } = useMicrocopies('cobertura');
   const getText = (key: string) => getValue(key) || FALLBACKS[key] || key;
   const { getValue2 } = useMicrocopies('contrataahoramodal');
@@ -199,6 +204,8 @@ export default function CoberturaForm() {
     resetCobertura
   } = useContent();
   descriptionText = getText('cobertura.descripcion.direccion');
+
+  const isFieldDisabled = isSearching || (addressSelected && street !== hasAddress) || !addressSelected;
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -407,6 +414,10 @@ export default function CoberturaForm() {
     if (place) setSelectedPlace(place)
     const lat = place?.geometry?.location?.lat() ?? 0;
     const lng = place?.geometry?.location?.lng() ?? 0;
+    const addressExist = place?.name || place?.formatted_address || '';
+    setHasAddress(addressExist);
+    setIsSearching(false);
+    setAddressValid(false)
 
     if (lat !== 0 && lng !== 0) {
       setLat(lat);
@@ -426,17 +437,26 @@ export default function CoberturaForm() {
   };
 
   useEffect(() => {
-    if(addressSelected){
+    if(addressSelected && street !== hasAddress){
+      setAddressValid(true);
+    } else if (addressSelected && street === hasAddress){
       setAddressValid(false);
     }
-  }, [addressSelected]);
+  }, [addressSelected, street, hasAddress]);
+
 
   const handleDirectionBlur = () => {
-    
-    if(!addressSelected || street.trim() === "") {
+    setTimeout(() => {
+      setIsSearching(false);
+      if(!addressSelected || street.trim() !== hasAddress) {
       setAddressValid(true);
     }
+    }, 200)
     
+  }
+
+  const handleFocus = () => {
+    setIsSearching(true);
   }
 
   const resetForm = () => {
@@ -495,10 +515,12 @@ export default function CoberturaForm() {
           onBlur={handleDirectionBlur}
           addressSelected={addressSelected}
           clear={clearForm}
+          onFocus={handleFocus}
         />
         <div className='flex col-2 w-full gap-4'>
           {addressSelected ?
             <Input
+              isReadOnly={isFieldDisabled}
               isRequired
               label={getText('cobertura.form.numExterno.label')}
               placeholder={getText('cobertura.form.numExterno.placeholder')}
@@ -513,6 +535,7 @@ export default function CoberturaForm() {
             : <></>}
           {addressSelected ?
             <Input
+              isReadOnly={isFieldDisabled}
               label={getText('cobertura.form.numInterno.label')}
               placeholder={getText('cobertura.form.numInterno.placeholder')}
               labelPlacement="outside"
@@ -544,6 +567,7 @@ export default function CoberturaForm() {
         }
         {addressSelected ?
           <Input
+            isReadOnly={isFieldDisabled}
             isRequired
             label={getText('cobertura.form.colonia.label')}
             placeholder={getText('cobertura.form.colonia.placeholder')}
