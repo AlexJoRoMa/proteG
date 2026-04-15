@@ -102,13 +102,12 @@ export default function Checkout() {
             let checkoutSessionId: string | undefined;
 
             if (typeof window !== 'undefined') {
-                const existing = sessionStorage.getItem(CHECKOUT_SESSION_STORAGE_KEY);
-                if (existing) {
-                    checkoutSessionId = existing;
-                } else {
-                    checkoutSessionId = generateCheckoutSessionId();
-                    sessionStorage.setItem(CHECKOUT_SESSION_STORAGE_KEY, checkoutSessionId);
-                }
+                // Limpiar claves de sesiones anteriores para evitar contaminación entre flujos
+                sessionStorage.removeItem('izzi-purchase-tracked');
+                sessionStorage.removeItem('izzi-checkout-current-step');
+
+                checkoutSessionId = generateCheckoutSessionId();
+                sessionStorage.setItem(CHECKOUT_SESSION_STORAGE_KEY, checkoutSessionId);
             }
 
             const additionalParams: Record<string, unknown> = {};

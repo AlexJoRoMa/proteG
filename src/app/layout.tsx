@@ -3,8 +3,6 @@ import "../styles/globals.css";
 import { IzziProvider } from '@/components/providers/IzziProvider';
 import { ScrollReset } from '@/utils/scroll-reset';
 
-import { GoogleTagManager } from "@next/third-parties/google";
-
 
 const lato = Lato({
   weight: '400',
@@ -28,7 +26,6 @@ export default function RootLayout({
     <html lang="es" className={`${lato.variable}`}>
       <body>
         <IzziProvider>
-        <GoogleTagManager gtmId={String(process.env.IZZI_HOGAR)} />
           <ScrollReset />
           {children}
         </IzziProvider>
