@@ -34,7 +34,7 @@ const FALLBACKS: Record<string, string> = {
   'obertura.form.estado.error': 'Ingresa un estado válido',
   'cobertura.button.ubicacion': 'utilizar mi ubicación actual',
   'cobertura.button.confirmar': 'confirmar dirección',
-  'cobertura.descripcion.direccion': 'Selecciona una opción de la lista para avanzar',
+  'cobertura.descripcion.direccion': 'Ingresa tu dirección y selecciona uno de la lista',
 };
 
 let descriptionText = '';
@@ -95,6 +95,7 @@ interface GooglePlacesInputProps {
   onBlur: () => void;
   addressSelected?: boolean;
   clear: () => React.ReactNode;
+  onFocus: () => void;
 }
 
 const GooglePlacesInput = ({
@@ -108,8 +109,9 @@ const GooglePlacesInput = ({
   addressValid,
   onBlur,
   addressSelected,
-  clear
-}: GooglePlacesInputProps) => {
+  clear,
+  onFocus
+ }: GooglePlacesInputProps) => {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -125,6 +127,7 @@ const GooglePlacesInput = ({
     autocompleteRef.current = new places.Autocomplete(input, {
       fields: ['name', 'formatted_address', 'geometry.location', 'address_components'],
       componentRestrictions: { country: ['mx'] },
+      types: ['address']
     });
 
     autocompleteRef.current.addListener('place_changed', () => {
@@ -160,6 +163,7 @@ const GooglePlacesInput = ({
         isInvalid={addressValid}
         onBlur={onBlur}
         endContent={description && clear()}
+        onFocus={onFocus}
       />
     </div>
   )
@@ -171,6 +175,8 @@ export default function CoberturaForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasResponse, setHasResponse] = useState<boolean>(false);
   const [addressValid, setAddressValid] = useState<boolean>(false);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [hasAddress, setHasAddress] = useState<string>('');
   const { getValue } = useMicrocopies('cobertura');
   const getText = (key: string) => getValue(key) || FALLBACKS[key] || key;
   const { getValue2 } = useMicrocopies('contrataahoramodal');
@@ -198,6 +204,9 @@ export default function CoberturaForm() {
     resetCobertura
   } = useContent();
   descriptionText = getText('cobertura.descripcion.direccion');
+
+  const isFieldDisabled = isSearching || !addressSelected;
+  const isInvalidAddress = !addressSelected && street.trim() !== '' && !isSearching;
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -302,9 +311,12 @@ export default function CoberturaForm() {
     const data = geocodeApi(position.coords.latitude, position.coords.longitude);
     data.then((result) => {
       mapAddressFields(result);
+      const formatted = result?.results?.[0]?.formatted_address || '';
+      setHasAddress(formatted)
     });
     setAddress(true);
     setAddressFielSelected(true);
+    setIsSearching(false)
     setMode('postalCode');
     setMarkerPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
     if (map) map.panTo({ lat: position.coords.latitude, lng: position.coords.longitude });
@@ -406,45 +418,45 @@ export default function CoberturaForm() {
     if (place) setSelectedPlace(place)
     const lat = place?.geometry?.location?.lat() ?? 0;
     const lng = place?.geometry?.location?.lng() ?? 0;
+    const addressExist = place?.name || place?.formatted_address || '';
+    
+    setHasAddress(addressExist);
+    setAddress(true);
+    setIsSearching(false)
 
     if (lat !== 0 && lng !== 0) {
       setLat(lat);
-      setLng(lng);
+      setLng(lng);/* 
       setAddressValid(false)
+      setAddress(true); */
       setMarkerPosition({ lat: lat, lng: lng });
       geocodeApi(lat, lng).then((result) => {
         mapAddressFields(result)
-        setAddress(true);
+        /* setAddress(true); */
         setAddressFielSelected(true);
+        setIsSearching(false);
       });
       if (map) map.panTo({ lat, lng })
-    }
+    } else {
+      setIsSearching(false);
+  }
     if (mode === 'address') {
       setMode('postalCode')
     }
   };
 
-  useEffect(() => {
-    if (addressSelected) {
-      setAddressValid(false);
-    }
-  }, [addressSelected]);
-
-  const handleDirectionBlur = () => {
-
-    if (!addressSelected || street.trim() === "") {
-      setAddressValid(true);
-    }
-
-  }
-
   const handleDirectionChange = (change: string) => {
     const isEmpty = change.trim() === "";
-    const wasNotEmpty = street.trim() !== "";
+    /* const wasNotEmpty = street.trim() !== ""; */
 
-    if (isEmpty && wasNotEmpty) {
+    if (isEmpty /* && wasNotEmpty */) {
       resetForm();
       return;
+    }
+
+    if(change !== hasAddress){
+      setAddress(false)
+      setAddressValid(false)
     }
     setStreet(change)
   }
@@ -501,14 +513,16 @@ export default function CoberturaForm() {
           placeholder={getText('cobertura.form.direccion.placeholder')}
           errorMessage={getText('cobertura.form.direccion.error')}
           description={addressSelected}
-          addressValid={addressValid}
-          onBlur={handleDirectionBlur}
+          addressValid={isInvalidAddress}
+          onBlur={() => setTimeout(() =>setIsSearching(false), 300)}
           addressSelected={addressSelected}
           clear={clearForm}
+          onFocus={()=>setIsSearching(true)}
         />
         <div className='flex col-2 w-full gap-4'>
           {addressSelected ?
             <Input
+              isReadOnly={isFieldDisabled}
               isRequired
               label={getText('cobertura.form.numExterno.label')}
               placeholder={getText('cobertura.form.numExterno.placeholder')}
@@ -518,11 +532,12 @@ export default function CoberturaForm() {
               type="text"
               value={streetNumber}
               onValueChange={setStreetNumber}
-              classNames={inputStyles(true)}
+              classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
             />
             : <></>}
           {addressSelected ?
             <Input
+              isReadOnly={isFieldDisabled}
               label={getText('cobertura.form.numInterno.label')}
               placeholder={getText('cobertura.form.numInterno.placeholder')}
               labelPlacement="outside"
@@ -530,7 +545,7 @@ export default function CoberturaForm() {
               type="text"
               value={aptNumber}
               onValueChange={setAptNumber}
-              classNames={inputStyles(true)}
+              classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
               className='max-w-[95%]'
             />
             : <></>}
@@ -554,6 +569,7 @@ export default function CoberturaForm() {
         }
         {addressSelected ?
           <Input
+            isReadOnly={isFieldDisabled}
             isRequired
             label={getText('cobertura.form.colonia.label')}
             placeholder={getText('cobertura.form.colonia.placeholder')}
@@ -563,7 +579,7 @@ export default function CoberturaForm() {
             type="text"
             value={neighborhood}
             onValueChange={setNeighborhood}
-            classNames={inputStyles(true)}
+            classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
           />
           : <></>}
         {addressSelected ?
@@ -602,7 +618,8 @@ export default function CoberturaForm() {
             {getText('cobertura.button.ubicacion')}
           </Button>
           <Button
-            className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} isDisabled={addressSelected ? false : true} type="submit">
+            className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} 
+            isDisabled={!addressSelected  || addressValid || isSearching} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
         </div>
