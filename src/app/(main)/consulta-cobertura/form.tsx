@@ -206,6 +206,7 @@ export default function CoberturaForm() {
   descriptionText = getText('cobertura.descripcion.direccion');
 
   const isFieldDisabled = isSearching || (addressSelected && street !== hasAddress) || !addressSelected;
+  const isInvalidAddress = !addressSelected && street.trim() !== '' && !isSearching;
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -417,8 +418,8 @@ export default function CoberturaForm() {
     const addressExist = place?.name || place?.formatted_address || '';
     
     setHasAddress(addressExist);
-    setAddressValid(false)
     setAddress(true);
+    setIsSearching(false)
 
     if (lat !== 0 && lng !== 0) {
       setLat(lat);
@@ -441,32 +442,6 @@ export default function CoberturaForm() {
     }
   };
 
-  useEffect(() => {
-    if(isSearching) {
-      setAddressValid(false);
-      return;
-    }
-    if(addressSelected){
-      setAddressValid(false);
-    } else if (street.trim() !== ''){
-      setAddressValid(true);
-    } else {
-      setAddressValid(false);
-    }
-  }, [addressSelected, street, isSearching]);
-
-
-  const handleDirectionBlur = () => {
-    setTimeout(() => {
-      setIsSearching(false);
-      if(!addressSelected && street.trim() !== '' ) {
-        setAddressValid(true);
-      } else {
-        setAddressValid(false);
-      }
-    }, 300)
-  }
-
   const handleDirectionChange = (change: string) => {
     const isEmpty = change.trim() === "";
     /* const wasNotEmpty = street.trim() !== ""; */
@@ -475,20 +450,12 @@ export default function CoberturaForm() {
       resetForm();
       return;
     }
-    /* if(change !== street){
-      setAddress(false)
-    } */
 
-    if(addressSelected && change !== hasAddress){
+    if(change !== hasAddress){
       setAddress(false)
       setAddressValid(false)
     }
     setStreet(change)
-  }
-
-  const handleFocus = () => {
-    setIsSearching(true);
-    setAddressValid(false);
   }
 
   const resetForm = () => {
@@ -507,10 +474,7 @@ export default function CoberturaForm() {
       </Button>
     )
   }
-console.log('🚩 addressSelected ', addressSelected)
-console.log('🚩 addressValid ', addressValid)
-console.log('🚩 hasAddress ', hasAddress)
-console.log('🚩 isSearching ', isSearching)
+
   return (
     <>
       <Modal
@@ -546,11 +510,11 @@ console.log('🚩 isSearching ', isSearching)
           placeholder={getText('cobertura.form.direccion.placeholder')}
           errorMessage={getText('cobertura.form.direccion.error')}
           description={addressSelected}
-          addressValid={addressValid}
-          onBlur={handleDirectionBlur}
+          addressValid={isInvalidAddress}
+          onBlur={() => setTimeout(() =>setIsSearching(false), 300)}
           addressSelected={addressSelected}
           clear={clearForm}
-          onFocus={handleFocus}
+          onFocus={()=>setIsSearching(true)}
         />
         <div className='flex col-2 w-full gap-4'>
           {addressSelected ?
