@@ -258,7 +258,7 @@ export default function CoberturaForm() {
         const trimmedName = name.trim();
         const spaceIdx = trimmedName.indexOf(' ');
         const firstName = spaceIdx > 0 ? trimmedName.slice(0, spaceIdx) : trimmedName;
-        const lastName = spaceIdx > 0 ? trimmedName.slice(spaceIdx + 1).trim() || null : null;
+        const lastName = spaceIdx > 0 ? trimmedName.slice(spaceIdx + 1).trim() || undefined : undefined;
 
         const userData = normalizeUserData({
             phone,

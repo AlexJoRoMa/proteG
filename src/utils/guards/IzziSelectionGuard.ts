@@ -12,6 +12,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
         setIzziSelection({
             idPaquete: userAnswers.internet?.paquete?.idPaquete,
             idExtra: userAnswers.internet?.paquete?.idExtra,
+            tiempoPlan: userAnswers.internet?.paquete?.tiempoPlan,
             periodicidad: userAnswers.internet?.paquete?.periodicidad,
             titulo: userAnswers.internet?.paquete?.titulo,
             descripcion: userAnswers.internet?.paquete?.descripcion,
@@ -34,6 +35,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
         setIzziSelection({
             idPaquete: userAnswers.tv?.paquete?.idPaquete,
             idExtra: userAnswers.tv?.paquete?.idExtra,
+            tiempoPlan: userAnswers.tv?.paquete?.tiempoPlan,
             periodicidad: userAnswers.tv?.paquete?.periodicidad,
             titulo: userAnswers.tv?.paquete?.titulo,
             tituloTriplePlay: userAnswers.tv?.paquete?.tituloTriplePlay,
@@ -63,6 +65,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
         setIzziSelection({
             idPaquete: userAnswers.internet?.paquete?.idPaquete,
             idExtra: userAnswers.internet?.paquete?.idExtra,
+            tiempoPlan: userAnswers.internet?.paquete?.tiempoPlan,
             periodicidad: userAnswers.internet?.paquete?.periodicidad,
             titulo: userAnswers.internet?.paquete?.titulo,
             descripcion: userAnswers.internet?.paquete?.descripcion,
@@ -101,6 +104,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
         setIzziSelection({
             idPaquete: userAnswers.tv?.paquete?.idPaquete,
             idExtra: userAnswers.tv?.paquete?.idExtra,
+            tiempoPlan: userAnswers.tv?.paquete?.tiempoPlan,
             periodicidad: userAnswers.tv?.paquete?.periodicidad,
             titulo: userAnswers.tv?.paquete?.titulo,
             descripcion: userAnswers.tv?.paquete?.descripcion,
@@ -129,6 +133,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
         setIzziSelection({
             idPaquete: userAnswers.tv?.paquete?.idPaquete,
             idExtra: userAnswers.tv?.paquete?.idExtra,
+            tiempoPlan: userAnswers.tv?.paquete?.tiempoPlan,
             periodicidad: userAnswers.tv?.paquete?.periodicidad,
             titulo: userAnswers.tv?.paquete?.titulo,
             descripcion: userAnswers.tv?.paquete?.descripcion,
@@ -173,6 +178,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
         setIzziSelection({
             idPaquete: userAnswers.movil?.paquete?.idPaquete,
             idExtra: userAnswers.movil?.paquete?.idExtra,
+            tiempoPlan: userAnswers.movil?.paquete?.tiempoPlan,
             periodicidad: userAnswers.movil?.paquete?.periodicidad,
             titulo: userAnswers.movil?.paquete?.titulo,
             descripcion: userAnswers.movil?.paquete?.descripcion,
@@ -196,6 +202,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
             idExtra: userAnswers.tv?.paquete?.idExtra,
             titulo: userAnswers.tv?.paquete?.titulo,
             tituloTriplePlay: userAnswers.tv?.paquete?.tituloTriplePlay,
+            tiempoPlan: userAnswers.tv?.paquete?.tiempoPlan,
             periodicidad: userAnswers.tv?.paquete?.periodicidad,
             descripcion: userAnswers.tv?.paquete?.descripcion,
             precioPaquete: userAnswers.tv?.paquete?.precioTriplePlay,
