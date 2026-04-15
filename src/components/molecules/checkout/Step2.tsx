@@ -46,13 +46,13 @@ const Step2 = () => {
     setIsDireccionFacturacionValid
   } = useStep2Form();
 
-  const hanldeConditionCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleConditionCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.checked;
     setConditionChecked(value);
     setConditionCheckboxChecked(value);
   }
 
-  const hanldePrivacyCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePrivacyCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.checked;
     setPrivacyChecked(value);
     setPrivacyCheckboxChecked(value);
@@ -193,7 +193,7 @@ const Step2 = () => {
             isRequired
             color={"default"}
             checked={conditionChecked}
-            onChange={hanldeConditionCheckboxChange}
+            onChange={handleConditionCheckboxChange}
             radius='sm'
             className='text-gray-450'
             classNames={{
@@ -201,12 +201,12 @@ const Step2 = () => {
               icon: "w-[14px] h-[12px]",
             }}
           >
-            {getValue('datosPersonales.terminos.textoPrevio')}
+            {getText('datosPersonales.terminos.textoPrevio')}
           </Checkbox>
           <ButtonGhost
             classStyles='text-black underline font-bold text-[16px] leading-6 underline p-0 border-0 ml-[4px]'
-            text={getValue('datosPersonales.terminos.textoPrincipal')}
-            href={getValue('datosPersonales.terminos.url')}
+            text={getText('datosPersonales.terminos.textoPrincipal')}
+            href={getText('datosPersonales.terminos.url')}
             external={true}
           >
           </ButtonGhost>
@@ -216,7 +216,7 @@ const Step2 = () => {
           <Checkbox
             isRequired
             checked={privacyChecked}
-            onChange={hanldePrivacyCheckboxChange}
+            onChange={handlePrivacyCheckboxChange}
             defaultSelected={false}
             color="default"
             radius='sm'
@@ -226,12 +226,12 @@ const Step2 = () => {
               icon: "w-[14px] h-[12px]",
             }}
           >
-            {getValue('datosPersonales.privacidad.textoPrevio')}
+            {getText('datosPersonales.privacidad.textoPrevio')}
           </Checkbox>
           <ButtonGhost
             classStyles='text-black underline font-bold text-[16px] leading-6 underline p-0 border-0 ml-[4px]'
             text={getText('datosPersonales.privacidad.textoPrincipal')}
-            href={getValue('datosPersonales.privacidad.url')}
+            href={getText('datosPersonales.privacidad.url')}
             external={true}
           >
           </ButtonGhost>
