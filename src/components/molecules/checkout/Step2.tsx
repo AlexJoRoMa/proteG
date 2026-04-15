@@ -226,12 +226,12 @@ const Step2 = () => {
               icon: "w-[14px] h-[12px]",
             }}
           >
-            {getValue('datosPersonales.terminos.textoPrevio')}
+            {getValue('datosPersonales.privacidad.textoPrevio')}
           </Checkbox>
           <ButtonGhost
             classStyles='text-black underline font-bold text-[16px] leading-6 underline p-0 border-0 ml-[4px]'
             text={getText('datosPersonales.privacidad.textoPrincipal')}
-            href={getValue('datosPersonales.terminos.url')}
+            href={getValue('datosPersonales.privacidad.url')}
             external={true}
           >
           </ButtonGhost>
