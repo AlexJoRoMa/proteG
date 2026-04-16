@@ -9,6 +9,7 @@ import {
     MapMouseEvent,
   } from '@vis.gl/react-google-maps';
 import { GeocodeType } from '@/types/CoberturaTypes';
+import { useIzziContent } from '@/components/providers/IzziProvider';
 
 export default function IzziMap(){
   const map = useMap();
@@ -25,6 +26,7 @@ export default function IzziMap(){
     setMode
    } = useContent();
 
+   const { setAddressFielSelected, setStreetDireccion } = useIzziContent();
    const DEFAULT_CENTER = { lat: 19.4326, lng: -99.1332 };
    const DEFAULT_ZOOM = 15;
 
@@ -54,6 +56,7 @@ export default function IzziMap(){
       }
 
       updateLocationData(lat, lng);
+      setAddressFielSelected(true)
     }
 
   const handleMarkerDragEnd = (ev: google.maps.MapMouseEvent) => {
@@ -94,6 +97,7 @@ function mapAddressFields(data: GeocodeType) {
             break;
           case 'route':
             setStreet(value);
+            setStreetDireccion(value);
             break;
           case 'street_number':
             setStreetNumber(value);
