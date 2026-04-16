@@ -31,7 +31,6 @@ export default function Cobertura() {
 
     const checkValue = addressFielSelected && streetDireccion !== initialStreet && streetDireccion.length > 0;
 
-
     useEffect(() => {
 
         async function setParams() {
