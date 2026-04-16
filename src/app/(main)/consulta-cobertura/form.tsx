@@ -174,7 +174,6 @@ export default function CoberturaForm() {
   const [error] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasResponse, setHasResponse] = useState<boolean>(false);
-  const [addressValid, setAddressValid] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [hasAddress, setHasAddress] = useState<string>('');
   const { getValue } = useMicrocopies('cobertura');
@@ -316,7 +315,6 @@ export default function CoberturaForm() {
     });
     setAddress(true);
     setAddressFielSelected(true);
-    setIsSearching(false)
     setMode('postalCode');
     setMarkerPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
     if (map) map.panTo({ lat: position.coords.latitude, lng: position.coords.longitude });
@@ -422,24 +420,17 @@ export default function CoberturaForm() {
     
     setHasAddress(addressExist);
     setAddress(true);
-    setIsSearching(false)
 
     if (lat !== 0 && lng !== 0) {
       setLat(lat);
-      setLng(lng);/* 
-      setAddressValid(false)
-      setAddress(true); */
+      setLng(lng);
       setMarkerPosition({ lat: lat, lng: lng });
       geocodeApi(lat, lng).then((result) => {
         mapAddressFields(result)
-        /* setAddress(true); */
         setAddressFielSelected(true);
-        setIsSearching(false);
       });
       if (map) map.panTo({ lat, lng })
-    } else {
-      setIsSearching(false);
-  }
+    } 
     if (mode === 'address') {
       setMode('postalCode')
     }
@@ -447,16 +438,15 @@ export default function CoberturaForm() {
 
   const handleDirectionChange = (change: string) => {
     const isEmpty = change.trim() === "";
-    /* const wasNotEmpty = street.trim() !== ""; */
+    const wasNotEmpty = street.trim() !== "";
 
-    if (isEmpty /* && wasNotEmpty */) {
+    if (isEmpty && wasNotEmpty) {
       resetForm();
       return;
     }
 
     if(change !== hasAddress){
       setAddress(false)
-      setAddressValid(false)
     }
     setStreet(change)
   }
@@ -619,7 +609,7 @@ export default function CoberturaForm() {
           </Button>
           <Button
             className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} 
-            isDisabled={!addressSelected  || addressValid || isSearching} type="submit">
+            isDisabled={!addressSelected || isSearching} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
         </div>
