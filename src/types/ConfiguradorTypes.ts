@@ -255,8 +255,6 @@ export interface IzziSelection {
     idExtra?: number,
     titulo?: string,
     tituloTriplePlay?: string,
-    /** Plazo de contrato (p. ej. desde OfferItem), usado en data layer / buildPlanItem */
-    tiempoPlan?: string,
     periodicidad?: string,
     descripcion?: string,
     precioPaquete?: string,
@@ -406,8 +404,6 @@ export interface CoberturaType {
     lng?: string,
     zipCode?: string,
     address?: string,
-    /** Ciudad / municipio (alias usado en algunos flujos de cobertura) */
-    locality?: string,
     municipio?: string,
     colonia?: string,
     calle?: string,

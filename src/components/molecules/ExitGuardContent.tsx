@@ -8,8 +8,6 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useIzziContent } from "../providers/IzziProvider";
-import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
-import { EVENTS } from "@/lib/tracking/constants";
 
 export const CloseIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
@@ -34,15 +32,6 @@ function useIsMobile(breakpoint = 768) {
     return isMobile;
 }
 
-const CHECKOUT_STEP_NAMES: Record<number, string> = {
-    1: "package_configuration",
-    2: "personal_data",
-    3: "contact_verification",
-    4: "documents",
-    5: "installation_date",
-    6: "payment",
-};
-
 export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonType<IzziLogo>, text: ModalCopys }) {
 
     const router = useRouter();
@@ -51,7 +40,6 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
     const isMobile = useIsMobile(768);
     const scopePrefix = ["/configurador", "/checkout", "/thank-you"];
     const { clearCheckoutFlow } = useIzziContent();
-    const exitIntentTrackedRef = useRef(false);
 
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -73,48 +61,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
         return !isAllowed;
     };
 
-    // Helpers de tracking compartidos
-
-    const getCheckoutTrackingParams = () => {
-        const sessionId = window.sessionStorage.getItem("izzi-checkout-session-id") || undefined;
-        const rawStep = window.sessionStorage.getItem("izzi-checkout-current-step");
-        const step = rawStep ? parseInt(rawStep, 10) : undefined;
-        return { sessionId, step };
-    };
-
-    const trackCheckoutExitIntent = () => {
-        if (typeof window === "undefined") return;
-        if (!window.location.pathname.startsWith("/checkout")) return;
-
-        const { sessionId, step } = getCheckoutTrackingParams();
-        const extraParams: Record<string, unknown> = {};
-        if (sessionId) extraParams.checkout_session_id = sessionId;
-        if (step) {
-            extraParams.exit_intent_checkout_step = step;
-            extraParams.exit_intent_checkout_step_name = CHECKOUT_STEP_NAMES[step] ?? `step_${step}`;
-        }
-
-        izziDataLayerHelpers.pushEcommerceEvent(
-            EVENTS.CHECKOUT_EXIT_INTENT,
-            {},
-            Object.keys(extraParams).length > 0 ? extraParams : undefined
-        );
-    };
-
-    const trackCheckoutAbandon = (reason: string) => {
-        if (typeof window === "undefined") return;
-        if (!window.location.pathname.startsWith("/checkout")) return;
-
-        const { sessionId, step } = getCheckoutTrackingParams();
-        const extraParams: Record<string, unknown> = { abandon_reason: reason };
-        if (sessionId) extraParams.checkout_session_id = sessionId;
-        if (step) {
-            extraParams.abandon_checkout_step = step;
-            extraParams.abandon_checkout_step_name = CHECKOUT_STEP_NAMES[step] ?? `step_${step}`;
-        }
-
-        izziDataLayerHelpers.pushEcommerceEvent(EVENTS.CHECKOUT_ABANDON, {}, extraParams);
-    };
+    //Interceptar reload del navegador.
 
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -122,36 +69,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
         };
         window.addEventListener("beforeunload", handleBeforeUnload);
         return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-    }, []);
 
-    // Tracking por cambio de visibilidad (cambiar tab, minimizar, cerrar pestaña)
-
-    useEffect(() => {
-        const handleVisibilityChange = () => {
-            if (document.visibilityState === 'visible') {
-                exitIntentTrackedRef.current = false;
-                return;
-            }
-            if (!window.location.pathname.startsWith("/checkout")) return;
-            if (exitIntentTrackedRef.current) return;
-
-            exitIntentTrackedRef.current = true;
-            trackCheckoutExitIntent();
-        };
-
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-    }, []);
-
-    // Tracking por cierre real de página (pagehide cubre cierre de tab y navegación)
-
-    useEffect(() => {
-        const handlePageHide = () => {
-            trackCheckoutAbandon("page_unload");
-        };
-
-        window.addEventListener('pagehide', handlePageHide);
-        return () => window.removeEventListener('pagehide', handlePageHide);
     }, []);
 
     //Captura de clicks (<a> || <Link>)
@@ -187,7 +105,6 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
 
             pendingRouteRef.current = url.pathname + url.search + url.hash;
             setTimeout(() => {
-                trackCheckoutExitIntent();
                 onOpen();
             }, 0);
         }
@@ -204,7 +121,6 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
         pendingRouteRef.current = null;
         clearCheckoutFlow();
         onClose();
-        trackCheckoutAbandon("user_confirmed_exit");
 
         if (toRoute) {
             currentPathRef.current = toRoute;
