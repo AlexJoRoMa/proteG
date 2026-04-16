@@ -342,7 +342,7 @@ export default function CoberturaForm() {
       neighborhood ? `Col. ${neighborhood}` : null,
       postalCode ? `C.P .${postalCode}` : null,
       locality ? locality : null,
-      state ? state : null
+      state ? state : null,
      ];
 
      return parts.filter(Boolean).join(', ');
