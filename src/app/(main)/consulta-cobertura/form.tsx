@@ -91,7 +91,6 @@ interface GooglePlacesInputProps {
   placeholder: string;
   errorMessage?: string;
   description?: boolean;
-  /* addressValid?: boolean; */
   onBlur: () => void;
   addressSelected?: boolean;
   clear: () => React.ReactNode;
@@ -106,7 +105,6 @@ const GooglePlacesInput = ({
   placeholder,
   errorMessage,
   description,
- /*  addressValid, */
   onBlur,
   addressSelected,
   clear,
@@ -443,11 +441,13 @@ export default function CoberturaForm() {
 
     if (isEmpty && wasNotEmpty) {
       resetForm();
+      setAddressFielSelected(false);
       return;
     }
 
     if(change !== hasAddress){
       setAddress(false)
+      setAddressFielSelected(false)
     }
     setStreet(change)
   }
