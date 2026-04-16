@@ -1,10 +1,9 @@
 import { contentfulClient } from "@/services/contentful/client";
-import { CoberturaType, ConfiguradorCopys, OttsImages, PreSelection, ResumenIcon } from "@/types/ConfiguradorTypes";
+import { CoberturaType, ConfiguradorCopys, OttsImages, ResumenIcon } from "@/types/ConfiguradorTypes";
 import { Entry, EntrySkeletonType } from "contentful";
 import { getCopyForComponent } from "@/services/contentful/components";
 import { ConfiguradorProvider } from "@/utils/ConfiguradorProvider";
 import ExitGuard from "@/utils/guards/ExitGuard";
-import { componentMap } from "@/lib/configurador/dynamic-map";
 import Link from "next/link";
 import ResumenPedido from "../molecules/configurador/resumenPedido";
 import ResumenInfo from "../molecules/configurador/resumenInfo";
@@ -15,10 +14,11 @@ import TeAyudamosModalComponent from "../layouts/modals/TeAyudamosModalComponent
 import { Arrow } from "@/constants/IconsConstants";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import StepsRenderer from "@/lib/configurador/step-Renderer";
 
 async function getCobertura() {
     const cookieStore = await cookies()
-    
+
     const existZipCode = cookieStore.has('zipCode');
     const existLat = cookieStore.has('lat');
     const existLng = cookieStore.has('lng');
@@ -98,15 +98,15 @@ export default async function Configurador() {
     const entryHelp = copysConfigurador.page.ayuda.textoInfo;
     const entryCTA = copysConfigurador.page.ayuda.botonAyuda;
 
-    
+
     let cobertura: boolean = false;
-    
-    if (dataOffersEntry?.offers.DOBLE_PLAY ) {
+
+    if (dataOffersEntry?.offers.DOBLE_PLAY) {
         cobertura = true;
     } else {
         cobertura = false;
     }
-    
+
     return (
         <ConfiguradorProvider
             configuradorEntry={dataOffersEntry}
@@ -137,29 +137,9 @@ export default async function Configurador() {
 
                             {/* Mapeo dinamico de pasos del configurador según cobertura */}
                             <div className='grid gap-[24px]'>
-                                {
-                                    cobertura ?
-                                        Array.isArray(STEPSCOVERAGECOMPONENT) && STEPSCOVERAGECOMPONENT.length > 0 ? (
-                                            (STEPSCOVERAGECOMPONENT.map((component, index) => {
-                                                const componentType = component;
-                                                const Component = typeof componentType === 'string' && componentType in componentMap ? componentMap[componentType as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
-
-                                                return Component ? <Component key={index} step={index + 1} preSeleccion={preSeleccionPaquetes as PreSelection}/> : null;
-                                            }))
-                                        ) : (
-                                            <p>No existen componentes cargados.</p>
-                                        ) :
-                                        Array.isArray(STEPSNOCOVERAGECOMPONENT) && STEPSNOCOVERAGECOMPONENT.length > 0 ? (
-                                            (STEPSNOCOVERAGECOMPONENT.map((component, index) => {
-                                                const componentType = component;
-                                                const Component = typeof componentType === 'string' && componentType in componentMap ? componentMap[componentType as keyof typeof componentMap] : null as unknown as React.ComponentType<unknown>;
-
-                                                return Component ? <Component key={index} step={index + 1} preSeleccion={preSeleccionPaquetes as PreSelection}/> : null;
-                                            }))
-                                        ) : (
-                                            <p>No existen componentes cargados.</p>
-                                        )
-                                }
+                                <StepsRenderer
+                                    steps={cobertura ? STEPSCOVERAGECOMPONENT : STEPSNOCOVERAGECOMPONENT}
+                                    preSeleccion={preSeleccionPaquetes} />
                             </div>
 
                             <div className='flex flex-col my-[24px] gap-[10px]'>
@@ -191,7 +171,7 @@ export default async function Configurador() {
                         </div>
                     </div>
                 </div>
-                </section>
+            </section>
         </ConfiguradorProvider>
     )
 }
