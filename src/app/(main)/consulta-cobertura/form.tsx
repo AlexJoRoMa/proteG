@@ -91,7 +91,7 @@ interface GooglePlacesInputProps {
   placeholder: string;
   errorMessage?: string;
   description?: boolean;
-  addressValid?: boolean;
+  /* addressValid?: boolean; */
   onBlur: () => void;
   addressSelected?: boolean;
   clear: () => React.ReactNode;
@@ -106,7 +106,7 @@ const GooglePlacesInput = ({
   placeholder,
   errorMessage,
   description,
-  addressValid,
+ /*  addressValid, */
   onBlur,
   addressSelected,
   clear,
@@ -116,6 +116,7 @@ const GooglePlacesInput = ({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const places = useMapsLibrary('places');
+  const isInvalid = !addressSelected && value.trim() !== '';
 
   useEffect(() => {
     if (!places || autocompleteRef.current) return;
@@ -155,12 +156,12 @@ const GooglePlacesInput = ({
         labelPlacement='outside'
         value={value}
         onValueChange={onValueChange}
-        errorMessage={addressValid ? errorMessage : null}
+        errorMessage={isInvalid ? errorMessage : null}
         autoComplete='off'
         name={'address'}
         type='text'
         classNames={inputStyles(addressSelected)}
-        isInvalid={addressValid}
+        isInvalid={isInvalid}
         onBlur={onBlur}
         endContent={description && clear()}
         onFocus={onFocus}
@@ -204,8 +205,8 @@ export default function CoberturaForm() {
   } = useContent();
   descriptionText = getText('cobertura.descripcion.direccion');
 
-  const isFieldDisabled = isSearching || !addressSelected;
-  const isInvalidAddress = !addressSelected && street.trim() !== '' && !isSearching;
+  const showFields = (addressSelected || hasAddress !== '') && street.trim() !== '';
+  const isFieldDisabled = !addressSelected;
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -494,23 +495,23 @@ export default function CoberturaForm() {
         </div>
       }
       <Form className="w-full max-w-[95%]" onSubmit={onSubmit}>
-
         <GooglePlacesInput
           value={street}
           onValueChange={(e) => handleDirectionChange(e)}
           onPlaceSelect={handleGoogglePlace}
           label={getText('cobertura.form.direccion.label')}
           placeholder={getText('cobertura.form.direccion.placeholder')}
-          errorMessage={getText('cobertura.form.direccion.error')}
+          errorMessage={ getText('cobertura.form.direccion.error')}
           description={addressSelected}
-          addressValid={isInvalidAddress}
           onBlur={() => setTimeout(() =>setIsSearching(false), 300)}
           addressSelected={addressSelected}
           clear={clearForm}
           onFocus={()=>setIsSearching(true)}
         />
-        <div className='flex col-2 w-full gap-4'>
-          {addressSelected ?
+
+        {showFields && (
+          <>
+          <div className='flex col-2 w-full gap-4'>
             <Input
               isReadOnly={isFieldDisabled}
               isRequired
@@ -524,8 +525,6 @@ export default function CoberturaForm() {
               onValueChange={setStreetNumber}
               classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
             />
-            : <></>}
-          {addressSelected ?
             <Input
               isReadOnly={isFieldDisabled}
               label={getText('cobertura.form.numInterno.label')}
@@ -538,9 +537,7 @@ export default function CoberturaForm() {
               classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
               className='max-w-[95%]'
             />
-            : <></>}
         </div>
-        {addressSelected ?
           <Input
             isReadOnly
             isRequired
@@ -555,9 +552,6 @@ export default function CoberturaForm() {
             classNames={inputDisableStyles}
             maxLength={5}
           />
-          : <></>
-        }
-        {addressSelected ?
           <Input
             isReadOnly={isFieldDisabled}
             isRequired
@@ -571,8 +565,6 @@ export default function CoberturaForm() {
             onValueChange={setNeighborhood}
             classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
           />
-          : <></>}
-        {addressSelected ?
           <Input
             isReadOnly
             label={getText('cobertura.form.municipio.label')}
@@ -585,8 +577,6 @@ export default function CoberturaForm() {
             onValueChange={setLocality}
             classNames={inputDisableStyles}
           />
-          : <></>}
-        {addressSelected ?
           <Input
             isReadOnly
             isRequired
@@ -601,7 +591,9 @@ export default function CoberturaForm() {
             onValueChange={setState}
             classNames={inputDisableStyles}
           />
-          : <></>}
+          </>
+        )}
+        
 
         <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-5'>
           <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
