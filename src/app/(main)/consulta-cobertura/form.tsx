@@ -83,6 +83,15 @@ const inputDisableStyles = {
   ]
 }
 
+interface AddressParts {
+  street: string,
+  streetNumber: string,
+  aptNumber: string,
+  neighborhood: string,
+  postalCode: string,
+  locality: string,
+  state: string,
+}
 interface GooglePlacesInputProps {
   value: string;
   onValueChange: (value: string) => void;
@@ -324,6 +333,35 @@ export default function CoberturaForm() {
     alert("Sorry, no position available.");
   }
 
+  const formatFullAddress = (data: AddressParts) => {
+    const {street, streetNumber, aptNumber, neighborhood, postalCode, locality, state} = data;
+     const parts = [
+      street,
+      streetNumber ? `#${streetNumber}` : null,
+      aptNumber ? `Int.${aptNumber}` : null,
+      neighborhood ? `Col. ${neighborhood}` : null,
+      postalCode ? `C.P .${postalCode}` : null,
+      locality ? locality : null,
+      state ? state : null,
+     ];
+
+     return parts.filter(Boolean).join(', ');
+  }
+
+  useEffect(() => {
+    const bannerAddress = formatFullAddress({
+      street,
+      streetNumber,
+      aptNumber,
+      neighborhood,
+      postalCode,
+      locality,
+      state,
+    })
+
+    setStreetDireccion(bannerAddress);
+  }, [street, streetNumber, aptNumber, neighborhood, postalCode, locality, state, setStreetDireccion])
+
   function mapAddressFields(data: GeocodeType) {
     const components = data?.results?.[0]?.address_components ?? [];
 
@@ -351,7 +389,6 @@ export default function CoberturaForm() {
             break;
           case 'route':
             setStreet(value);
-            setStreetDireccion(value);
             break;
           case 'street_number':
             setStreetNumber(value);
