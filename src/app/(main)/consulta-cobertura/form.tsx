@@ -83,6 +83,15 @@ const inputDisableStyles = {
   ]
 }
 
+interface AddressParts {
+  street: string,
+  streetNumber: string,
+  aptNumber: string,
+  neighborhood: string,
+  postalCode: string,
+  locality: string,
+  state: string,
+}
 interface GooglePlacesInputProps {
   value: string;
   onValueChange: (value: string) => void;
@@ -91,7 +100,6 @@ interface GooglePlacesInputProps {
   placeholder: string;
   errorMessage?: string;
   description?: boolean;
-  addressValid?: boolean;
   onBlur: () => void;
   addressSelected?: boolean;
   clear: () => React.ReactNode;
@@ -106,7 +114,6 @@ const GooglePlacesInput = ({
   placeholder,
   errorMessage,
   description,
-  addressValid,
   onBlur,
   addressSelected,
   clear,
@@ -116,6 +123,7 @@ const GooglePlacesInput = ({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const places = useMapsLibrary('places');
+  const isInvalid = !addressSelected && value.trim() !== '';
 
   useEffect(() => {
     if (!places || autocompleteRef.current) return;
@@ -155,12 +163,12 @@ const GooglePlacesInput = ({
         labelPlacement='outside'
         value={value}
         onValueChange={onValueChange}
-        errorMessage={addressValid ? errorMessage : null}
+        errorMessage={isInvalid ? errorMessage : null}
         autoComplete='off'
         name={'address'}
         type='text'
         classNames={inputStyles(addressSelected)}
-        isInvalid={addressValid}
+        isInvalid={isInvalid}
         onBlur={onBlur}
         endContent={description && clear()}
         onFocus={onFocus}
@@ -204,8 +212,8 @@ export default function CoberturaForm() {
   } = useContent();
   descriptionText = getText('cobertura.descripcion.direccion');
 
-  const isFieldDisabled = isSearching || !addressSelected;
-  const isInvalidAddress = !addressSelected && street.trim() !== '' && !isSearching;
+  const showFields = (addressSelected || hasAddress !== '') && street.trim() !== '';
+  const isFieldDisabled = !addressSelected;
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -325,6 +333,35 @@ export default function CoberturaForm() {
     alert("Sorry, no position available.");
   }
 
+  const formatFullAddress = (data: AddressParts) => {
+    const {street, streetNumber, aptNumber, neighborhood, postalCode, locality, state} = data;
+     const parts = [
+      street,
+      streetNumber ? `#${streetNumber}` : null,
+      aptNumber ? `Int.${aptNumber}` : null,
+      neighborhood ? `Col. ${neighborhood}` : null,
+      postalCode ? `C.P .${postalCode}` : null,
+      locality ? locality : null,
+      state ? state : null,
+     ];
+
+     return parts.filter(Boolean).join(', ');
+  }
+
+  useEffect(() => {
+    const bannerAddress = formatFullAddress({
+      street,
+      streetNumber,
+      aptNumber,
+      neighborhood,
+      postalCode,
+      locality,
+      state,
+    })
+
+    setStreetDireccion(bannerAddress);
+  }, [street, streetNumber, aptNumber, neighborhood, postalCode, locality, state, setStreetDireccion])
+
   function mapAddressFields(data: GeocodeType) {
     const components = data?.results?.[0]?.address_components ?? [];
 
@@ -352,7 +389,6 @@ export default function CoberturaForm() {
             break;
           case 'route':
             setStreet(value);
-            setStreetDireccion(value);
             break;
           case 'street_number':
             setStreetNumber(value);
@@ -442,11 +478,13 @@ export default function CoberturaForm() {
 
     if (isEmpty && wasNotEmpty) {
       resetForm();
+      setAddressFielSelected(false);
       return;
     }
 
     if(change !== hasAddress){
       setAddress(false)
+      setAddressFielSelected(false)
     }
     setStreet(change)
   }
@@ -494,23 +532,23 @@ export default function CoberturaForm() {
         </div>
       }
       <Form className="w-full max-w-[95%]" onSubmit={onSubmit}>
-
         <GooglePlacesInput
           value={street}
           onValueChange={(e) => handleDirectionChange(e)}
           onPlaceSelect={handleGoogglePlace}
           label={getText('cobertura.form.direccion.label')}
           placeholder={getText('cobertura.form.direccion.placeholder')}
-          errorMessage={getText('cobertura.form.direccion.error')}
+          errorMessage={ getText('cobertura.form.direccion.error')}
           description={addressSelected}
-          addressValid={isInvalidAddress}
           onBlur={() => setTimeout(() =>setIsSearching(false), 300)}
           addressSelected={addressSelected}
           clear={clearForm}
           onFocus={()=>setIsSearching(true)}
         />
-        <div className='flex col-2 w-full gap-4'>
-          {addressSelected ?
+
+        {showFields && (
+          <>
+          <div className='flex col-2 w-full gap-4'>
             <Input
               isReadOnly={isFieldDisabled}
               isRequired
@@ -524,8 +562,6 @@ export default function CoberturaForm() {
               onValueChange={setStreetNumber}
               classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
             />
-            : <></>}
-          {addressSelected ?
             <Input
               isReadOnly={isFieldDisabled}
               label={getText('cobertura.form.numInterno.label')}
@@ -538,9 +574,7 @@ export default function CoberturaForm() {
               classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
               className='max-w-[95%]'
             />
-            : <></>}
         </div>
-        {addressSelected ?
           <Input
             isReadOnly
             isRequired
@@ -555,9 +589,6 @@ export default function CoberturaForm() {
             classNames={inputDisableStyles}
             maxLength={5}
           />
-          : <></>
-        }
-        {addressSelected ?
           <Input
             isReadOnly={isFieldDisabled}
             isRequired
@@ -571,8 +602,6 @@ export default function CoberturaForm() {
             onValueChange={setNeighborhood}
             classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
           />
-          : <></>}
-        {addressSelected ?
           <Input
             isReadOnly
             label={getText('cobertura.form.municipio.label')}
@@ -585,8 +614,6 @@ export default function CoberturaForm() {
             onValueChange={setLocality}
             classNames={inputDisableStyles}
           />
-          : <></>}
-        {addressSelected ?
           <Input
             isReadOnly
             isRequired
@@ -601,7 +628,9 @@ export default function CoberturaForm() {
             onValueChange={setState}
             classNames={inputDisableStyles}
           />
-          : <></>}
+          </>
+        )}
+        
 
         <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-5'>
           <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
