@@ -183,7 +183,7 @@ export default function CoberturaForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasResponse, setHasResponse] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState<boolean>(false);
-  const [coloniaError, setColoniaError] = useState<boolean>(false);
+ /*  const [coloniaError, setColoniaError] = useState<boolean>(false); */
   const [hasAddress, setHasAddress] = useState<string>('');
   const { getValue } = useMicrocopies('cobertura');
   const getText = (key: string) => getValue(key) || FALLBACKS[key] || key;
@@ -218,7 +218,8 @@ export default function CoberturaForm() {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const { setGlobalFlag, setFormattedAddress, setCoberturaData, setAddressFielSelected, setStreetDireccion } = useIzziContent();
+  const { setGlobalFlag, setFormattedAddress, setCoberturaData, 
+    setAddressFielSelected, setStreetDireccion, setColoniaError, coloniaError } = useIzziContent();
 
   const modalData = {
     title: getValue2('stickyModal.title'),
