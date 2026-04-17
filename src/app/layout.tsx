@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="es" className={`${lato.variable}`}>
       <body>
         <IzziProvider>
-          <GoogleTagManager gtmId={String("FALTA GTM ID CONSEGUIR PLS")}/>
+        <GoogleTagManager gtmId={String(process.env.IZZI_HOGAR)} />
           <ScrollReset />
           {children}
         </IzziProvider>

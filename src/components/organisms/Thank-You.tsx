@@ -12,6 +12,9 @@ import ResumenContent from "../molecules/resumenCompra/resumenContent";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { ResumenData } from "@/types/ResumenCompra";
 import { redirect } from "next/navigation";
+import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
+import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
+import { pushToDataLayer } from "@/utils/gtm";
 
 type Shift = {
     day: number | string,
@@ -23,10 +26,11 @@ type Shift = {
 
 export default function ThankYou() {
 
-    const { globalUserAnswers, globalDatosContratacion, globalIzziSelection, globalProcessStatus, clearCheckoutFlow, globalFlagDomicilio, totalSinDescuento } = useIzziContent();
+    const { globalUserAnswers, globalDatosContratacion, globalIzziSelection, globalProcessStatus, clearCheckoutFlow, globalFlagDomicilio, totalSinDescuento, precioTotal, coberturaData } = useIzziContent();
     const { icon, copys, copyResumen } = useThankYou();
 
     const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
+    const [purchaseTracked, setPurchaseTracked] = useState(false);
 
     const copy = copys as ThankyouCopys;
     const resumenCopys = copyResumen as ResumenData;
@@ -36,6 +40,80 @@ export default function ThankYou() {
             redirect('/consulta-cobertura');
         }
     }, [globalDatosContratacion.Pago?.metodoPago, globalProcessStatus.accountNumber]);
+
+    useEffect(() => {
+        pushToDataLayer(EVENTS.PAGE_DATA, {
+            page_type: 'confirmation',
+            page_name: 'thank_you',
+        });
+    }, []);
+
+    useEffect(() => {
+        if (purchaseTracked) return;
+        if (typeof window !== 'undefined' && sessionStorage.getItem('izzi-purchase-tracked')) return;
+        if (!globalProcessStatus.orderNumber) return;
+        if (!globalIzziSelection || !globalIzziSelection.idPaquete) return;
+
+        const { buildPlanItem, normalizeUserData, pushEcommerceEvent } = izziDataLayerHelpers;
+
+        const value =
+            precioTotal ||
+            (globalIzziSelection.precioPaquete ? parseFloat(globalIzziSelection.precioPaquete) || 0 : 0) ||
+            totalSinDescuento ||
+            0;
+
+        const items = [
+            buildPlanItem(
+                {
+                    id: String(globalIzziSelection.idPaquete),
+                    name: globalIzziSelection.tituloTriplePlay ?? globalIzziSelection.titulo,
+                    category: "Bundle",
+                    technology: globalIzziSelection.spTV || globalIzziSelection.spMovil ? "Triple_Play" : "Doble_Play",
+                    price: value,
+                    speed: globalIzziSelection.velocidadMinima,
+                    channels: globalIzziSelection.canales,
+                    contractMonths: globalIzziSelection.tiempoPlan,
+                },
+                0,
+                "checkout",
+                "Checkout - plan principal"
+            ),
+        ];
+
+        const datosPersonales = globalDatosContratacion.DatosPersonales?.personal;
+
+        const userData = datosPersonales
+            ? normalizeUserData({
+                email: datosPersonales.email,
+                phone: datosPersonales.phone,
+                firstName: datosPersonales.firstName,
+                lastName: datosPersonales.firstLastName,
+                street: coberturaData.address,
+                city: coberturaData.municipio,
+                state: coberturaData.estado,
+                postalCode: coberturaData.zipCode,
+            })
+            : undefined;
+
+        pushEcommerceEvent(
+            EVENTS.PURCHASE,
+            {
+                currency: CURRENCY,
+                value,
+                transaction_id: String(globalProcessStatus.orderNumber),
+                items,
+            },
+            {
+                account_number: globalProcessStatus.accountNumber ? String(globalProcessStatus.accountNumber) : undefined,
+                user_data: userData,
+            }
+        );
+
+        setPurchaseTracked(true);
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem('izzi-purchase-tracked', '1');
+        }
+    }, [purchaseTracked, globalProcessStatus.orderNumber, globalProcessStatus.accountNumber, globalIzziSelection, globalDatosContratacion, coberturaData, precioTotal, totalSinDescuento]);
 
     useEffect(() => {
         const horario = globalDatosContratacion.Instalacion;

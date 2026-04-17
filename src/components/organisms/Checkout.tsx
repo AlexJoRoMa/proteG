@@ -1,16 +1,21 @@
 'use client'
 
-import CheckoutContent from '@/components/layouts/checkout/CheckoutContent'
-import CheckoutSteps from '@/components/layouts/checkout/CheckoutSteps'
-import { useIzziContent } from '../providers/IzziProvider'
-import { useEffect, useState } from 'react';
+import CheckoutContent from '@/components/layouts/checkout/CheckoutContent';
+import CheckoutSteps from '@/components/layouts/checkout/CheckoutSteps';
+import { useIzziContent } from '../providers/IzziProvider';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import izziDataLayerHelpers from '@/utils/izzi-data-layer-helpers';
+import { EVENTS, CURRENCY } from '@/lib/tracking/constants';
+import { pushToDataLayer } from '@/utils/gtm';
 
 export default function Checkout() {
-    const { formattedAddress, coberturaData, globalIzziSelection } = useIzziContent();
+    const { formattedAddress, coberturaData, globalIzziSelection, precioTotal } = useIzziContent();
     const router = useRouter();
     const [isHydrated, setIsHydrated] = useState(false);
     const [isDesktop, setIsDesktop] = useState(false);
+    const beginCheckoutTrackedRef = useRef(false);
+    const addToCartTrackedRef = useRef(false);
 
     useEffect(() => {
         // Marcar como hidratado después de mount
@@ -55,6 +60,85 @@ export default function Checkout() {
         return () => clearTimeout(timer);
     }, [isHydrated, formattedAddress, coberturaData, globalIzziSelection, router]);
 
+    useEffect(() => {
+        if (!isHydrated) return;
+
+        // page_data básico para checkout
+        pushToDataLayer(EVENTS.PAGE_DATA, {
+            page_type: 'checkout',
+            page_name: 'checkout',
+        });
+    }, [isHydrated]);
+
+    useEffect(() => {
+        if (!isHydrated) return;
+        if (!globalIzziSelection || !globalIzziSelection.idPaquete) return;
+
+        const value =
+            precioTotal ||
+            (globalIzziSelection.precioPaquete ? parseFloat(globalIzziSelection.precioPaquete) || 0 : 0);
+
+        const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
+
+        const items = [
+            buildPlanItem(
+                {
+                    id: String(globalIzziSelection.idPaquete),
+                    name: globalIzziSelection.tituloTriplePlay ?? globalIzziSelection.titulo,
+                    category: 'Bundle',
+                    technology: globalIzziSelection.spTV || globalIzziSelection.spMovil ? 'Triple_Play' : 'Doble_Play',
+                    price: value,
+                    speed: globalIzziSelection.velocidadMinima,
+                    channels: globalIzziSelection.canales,
+                    contractMonths: globalIzziSelection.tiempoPlan,
+                },
+                0,
+                'checkout',
+                'Checkout - plan principal'
+            ),
+        ];
+
+        if (!addToCartTrackedRef.current) {
+            pushEcommerceEvent(
+                EVENTS.ADD_TO_CART,
+                {
+                    currency: CURRENCY,
+                    value,
+                    items,
+                }
+            );
+            addToCartTrackedRef.current = true;
+        }
+
+        if (!beginCheckoutTrackedRef.current) {
+            if (typeof window !== 'undefined') {
+                const key = 'izzi-begin-checkout-tracked';
+                if (!sessionStorage.getItem(key)) {
+                    pushEcommerceEvent(
+                        EVENTS.BEGIN_CHECKOUT,
+                        {
+                            currency: CURRENCY,
+                            value,
+                            items,
+                        }
+                    );
+                    sessionStorage.setItem(key, '1');
+                }
+            } else {
+                pushEcommerceEvent(
+                    EVENTS.BEGIN_CHECKOUT,
+                    {
+                        currency: CURRENCY,
+                        value,
+                        items,
+                    }
+                );
+            }
+
+            beginCheckoutTrackedRef.current = true;
+        }
+    }, [isHydrated, globalIzziSelection, precioTotal]);
+
     return (
         <>
             {/* CheckoutSteps maneja móvil + desktop steps, incluye CheckoutContent en móvil */}
@@ -68,5 +152,5 @@ export default function Checkout() {
             )}
 
         </>
-    )
+    );
 }

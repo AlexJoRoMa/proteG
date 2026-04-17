@@ -23,6 +23,12 @@ export interface PlanItemInput {
     contractMonths?: string | number | null;
 }
 
+declare global {
+    interface Window {
+        izziDataLayerHelpers?: unknown;
+    }
+}
+
 const normalizePhone = (phone: string) => {
     if (!phone) return null;
     const digits = phone.replace(/\D/g, '');
@@ -35,6 +41,44 @@ const normalizePhone = (phone: string) => {
     return null;
 };
 
+const normalizeUserData = (rawData: RawUserData) => {
+    return {
+        email: rawData.email ? rawData.email.trim().toLowerCase() : null,
+        phone_number: normalizePhone(rawData.phone ?? ''),
+        address: {
+            first_name: rawData.firstName ? rawData.firstName.trim().toLowerCase() : null,
+            last_name: rawData.lastName ? rawData.lastName.trim().toLowerCase() : null,
+            street: rawData.street || null,
+            city: rawData.city || null,
+            region: rawData.state || null,
+            postal_code: rawData.postalCode ? rawData.postalCode.toString().padStart(5, '0') : null,
+            country: 'MX'
+        }
+    };
+};
+
+const buildPlanItem = (plan: PlanItemInput, index: number, listId: string, listName: string) => {
+    const price = plan.price != null ? parseFloat(String(plan.price)) : 0;
+    return {
+        item_id: plan.sku || plan.id,
+        item_name: plan.name,
+        item_brand: 'izzi',
+        item_category: plan.category,
+        item_category2: 'Residencial',
+        item_category3: plan.technology || 'Fibra',
+        item_category4: plan.speedTier || null,
+        item_category5: plan.contractTerm ?? null,
+        item_list_id: listId || null,
+        item_list_name: listName || null,
+        index,
+        price,
+        quantity: 1,
+        speed_mbps: plan.speed ?? null,
+        channel_count: plan.channels != null ? String(plan.channels) : '0',
+        contract_months: plan.contractMonths ?? null
+    };
+};
+
 const izziDataLayerHelpers = {
     generateCheckoutSessionId: () => {
         return 'CHK-' + Date.now() + '-' + Math.random().toString(36).substring(2, 9);
@@ -43,56 +87,35 @@ const izziDataLayerHelpers = {
         return 'LEAD-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6);
     },
     pushEcommerceEvent: (eventName: string, ecommerceData: Record<string, unknown>, additionalParams?: Record<string, unknown>) => {
-        const dataLayer = window.dataLayer || [];
-        dataLayer.push({ ecommerce: null });
-        const payload = {
+        if (typeof window === 'undefined') return;
+
+        const w = window as typeof window & { dataLayer?: unknown[] };
+
+        if (!Array.isArray(w.dataLayer)) {
+            w.dataLayer = [];
+        }
+
+        w.dataLayer.push({ ecommerce: null });
+
+        const payload: Record<string, unknown> = {
             event: eventName,
             ecommerce: ecommerceData
         };
+
         if (additionalParams) {
             Object.assign(payload, additionalParams);
         }
-        dataLayer.push(payload);
+
+        w.dataLayer.push(payload);
     },
     normalizePhone,
-    normalizeUserData: (rawData: RawUserData) => {
-        return {
-            email: rawData.email ? rawData.email.trim().toLowerCase() : null,
-            phone_number: normalizePhone(rawData.phone ?? ''),
-            address: {
-                first_name: rawData.firstName ? rawData.firstName.trim().toLowerCase() : null,
-                last_name: rawData.lastName ? rawData.lastName.trim().toLowerCase() : null,
-                street: rawData.street || null,
-                city: rawData.city || null,
-                region: rawData.state || null,
-                postal_code: rawData.postalCode ? rawData.postalCode.toString().padStart(5, '0') : null,
-                country: 'MX'
-            }
-        };
-    },
-    buildPlanItem: (plan: PlanItemInput, index: number, listId: string, listName: string) => {
-        const price = plan.price != null ? parseFloat(String(plan.price)) : 0;
-        return {
-            item_id: plan.sku || plan.id,
-            item_name: plan.name,
-            item_brand: 'izzi',
-            item_category: plan.category,
-            item_category2: 'Residencial',
-            item_category3: plan.technology || 'Fibra',
-            item_category4: plan.speedTier || null,
-            item_category5: plan.contractTerm ?? null,
-            item_list_id: listId || null,
-            item_list_name: listName || null,
-            index,
-            price,
-            quantity: 1,
-            speed_mbps: plan.speed ?? null,
-            channel_count: plan.channels != null ? String(plan.channels) : '0',
-            contract_months: plan.contractMonths ?? null
-        };
-    },
-}
+    normalizeUserData,
+    buildPlanItem,
+    Item: buildPlanItem,
+};
 
-window.izziDataLayerHelpers = izziDataLayerHelpers;
+if (typeof window !== 'undefined') {
+    window.izziDataLayerHelpers = izziDataLayerHelpers;
+}
 
 export default izziDataLayerHelpers;

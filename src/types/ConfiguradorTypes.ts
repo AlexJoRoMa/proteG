@@ -255,6 +255,7 @@ export interface IzziSelection {
     idExtra?: number,
     titulo?: string,
     tituloTriplePlay?: string,
+    tiempoPlan?: string,
     periodicidad?: string,
     descripcion?: string,
     precioPaquete?: string,
