@@ -141,7 +141,6 @@ export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratac
             "x-upstream-cookie": "AWSALB=o1egXIGzDYyhgR/f3AClAKhYZWoK1aA21e+OlktWTOHChR5M/lVVVy1oNUm/hl4IBQpKEMtgeZ1zL4cUtmycbYyMyR/3DilCbHdr+QuZJF0oTQCZdCnLzp859mfr; AWSALBCORS=o1egXIGzDYyhgR/f3AClAKhYZWoK1aA21e+OlktWTOHChR5M/lVVVy1oNUm/hl4IBQpKEMtgeZ1zL4cUtmycbYyMyR/3DilCbHdr+QuZJF0oTQCZdCnLzp859mfr",
         });
 
-
         console.log("[IzziEnroll] Iniciando conexión con streaming...");
 
         // Usar endpoint de streaming con SSE

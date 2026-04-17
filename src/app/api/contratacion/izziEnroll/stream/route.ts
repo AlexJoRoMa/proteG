@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
                 // Enviar el resultado
                 const resultMsg = `data: ${JSON.stringify({ type: "result", data })}\n\n`;
                 controller.enqueue(encoder.encode(resultMsg));
+                
             } catch (error) {
                 console.error("[Stream Route] Error en izziEnroll");
                 
