@@ -38,6 +38,7 @@ const FALLBACKS: Record<string, string> = {
 };
 
 let descriptionText = '';
+const COVERAGE_LOG_PREFIX = '[Cobertura][API]';
 
 const inputStyles = (isAddressSelected?: boolean) => ({
   label: "text-black/50",
@@ -183,6 +184,7 @@ export default function CoberturaForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasResponse, setHasResponse] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState<boolean>(false);
+ /*  const [coloniaError, setColoniaError] = useState<boolean>(false); */
   const [hasAddress, setHasAddress] = useState<string>('');
   const { getValue } = useMicrocopies('cobertura');
   const getText = (key: string) => getValue(key) || FALLBACKS[key] || key;
@@ -217,7 +219,8 @@ export default function CoberturaForm() {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const { setGlobalFlag, setFormattedAddress, setCoberturaData, setAddressFielSelected, setStreetDireccion } = useIzziContent();
+  const { setGlobalFlag, setFormattedAddress, setCoberturaData, 
+    setAddressFielSelected, setStreetDireccion, setColoniaError, coloniaError } = useIzziContent();
 
   const modalData = {
     title: getValue2('stickyModal.title'),
@@ -279,8 +282,10 @@ export default function CoberturaForm() {
     }
 
     try {
+      console.log(`${COVERAGE_LOG_PREFIX} getOfertas.request`, coveraData);
 
       const response = await getOfertas(coveraData)
+      console.log(`${COVERAGE_LOG_PREFIX} getOfertas.response`, response);
 
       if (response.message === 'Address is in a WIZZ coverage area') {
 
@@ -299,6 +304,7 @@ export default function CoberturaForm() {
       await createCookie(coveraData);
 
     } catch (error) {
+      console.error(`${COVERAGE_LOG_PREFIX} getOfertas.error`, error);
       console.error("Error validacion Wizz ", error)
       setIsLoading(false);
     }
@@ -365,6 +371,9 @@ export default function CoberturaForm() {
   function mapAddressFields(data: GeocodeType) {
     const components = data?.results?.[0]?.address_components ?? [];
 
+    setNeighborhood('')
+    setColoniaError(false)
+
     //Se busca si existe un array con administrative_area_level_3
     const getAreaLevel = data?.results?.find(result =>
       result.address_components.some(component =>
@@ -378,6 +387,7 @@ export default function CoberturaForm() {
 
     let valueLocality = '';
     let valueArealvl3 = '';
+    let coloniaExist = false;
 
     for (const item of allComponents) {
       const value = item.long_name;
@@ -397,6 +407,7 @@ export default function CoberturaForm() {
           case 'sublocality':
           case 'sublocality_level_1':
             setNeighborhood(value);
+            coloniaExist = true;
             break;
           case 'locality':
             valueLocality = value;
@@ -417,6 +428,10 @@ export default function CoberturaForm() {
       setLocality(valueArealvl3);
     } else if (valueLocality) {
       setLocality(valueLocality);
+    }
+
+    if(!coloniaExist) {
+      setColoniaError(true)
     }
 
   }
@@ -592,6 +607,7 @@ export default function CoberturaForm() {
           <Input
             isReadOnly={isFieldDisabled}
             isRequired
+            isInvalid={coloniaError}
             label={getText('cobertura.form.colonia.label')}
             placeholder={getText('cobertura.form.colonia.placeholder')}
             errorMessage={getText('cobertura.form.colonia.error')}
@@ -599,7 +615,10 @@ export default function CoberturaForm() {
             name="neighborhood"
             type="text"
             value={neighborhood}
-            onValueChange={setNeighborhood}
+            onValueChange={(val) =>{
+              setNeighborhood(val);
+              setColoniaError(val.trim() === '')
+            }}
             classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
           />
           <Input
@@ -638,7 +657,7 @@ export default function CoberturaForm() {
           </Button>
           <Button
             className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} 
-            isDisabled={!addressSelected || isSearching || hasResponse || isLoading} type="submit">
+            isDisabled={!addressSelected || isSearching || hasResponse || coloniaError || isLoading} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
         </div>

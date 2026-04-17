@@ -26,7 +26,7 @@ export default function IzziMap(){
     setMode
    } = useContent();
 
-   const { setAddressFielSelected, setStreetDireccion } = useIzziContent();
+   const { setAddressFielSelected, setStreetDireccion, setColoniaError } = useIzziContent();
    const DEFAULT_CENTER = { lat: 19.4326, lng: -99.1332 };
    const DEFAULT_ZOOM = 15;
 
@@ -72,6 +72,7 @@ export default function IzziMap(){
 
 function mapAddressFields(data: GeocodeType) {
     const components = data?.results?.[0]?.address_components ?? [];
+    let coloniaExist = false;
     
     //Se busca si existe un array con administrative_area_level_3
     const getAreaLevel = data?.results?.find( result => 
@@ -106,6 +107,7 @@ function mapAddressFields(data: GeocodeType) {
           case 'sublocality':
           case 'sublocality_level_1':
             setNeighborhood(value);
+            coloniaExist = true;
             break;
           case 'locality':
             valueLocality = value;
@@ -127,6 +129,8 @@ function mapAddressFields(data: GeocodeType) {
     } else if(valueLocality){
       setLocality(valueLocality);
     }
+
+    setColoniaError(!coloniaExist)
 
   }
 
