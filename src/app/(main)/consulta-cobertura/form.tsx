@@ -38,6 +38,7 @@ const FALLBACKS: Record<string, string> = {
 };
 
 let descriptionText = '';
+const COVERAGE_LOG_PREFIX = '[Cobertura][API]';
 
 const inputStyles = (isAddressSelected?: boolean) => ({
   label: "text-black/50",
@@ -279,8 +280,10 @@ export default function CoberturaForm() {
     }
 
     try {
+      console.log(`${COVERAGE_LOG_PREFIX} getOfertas.request`, coveraData);
 
       const response = await getOfertas(coveraData)
+      console.log(`${COVERAGE_LOG_PREFIX} getOfertas.response`, response);
 
       if (response.message === 'Address is in a WIZZ coverage area') {
 
@@ -299,6 +302,7 @@ export default function CoberturaForm() {
       await createCookie(coveraData);
 
     } catch (error) {
+      console.error(`${COVERAGE_LOG_PREFIX} getOfertas.error`, error);
       console.error("Error validacion Wizz ", error)
       setIsLoading(false);
     }
