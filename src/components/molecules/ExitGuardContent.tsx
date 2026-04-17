@@ -9,7 +9,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useIzziContent } from "../providers/IzziProvider";
 import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
-import { EVENTS } from "@/lib/tracking/constants";
+import { CURRENCY, EVENTS } from "@/lib/tracking/constants";
+import type { IzziSelection, UserAnswers } from "@/types/ConfiguradorTypes";
+import {
+    getCheckoutStepTrackingMeta,
+    type CheckoutStepMetaSerialized,
+} from "@/utils/checkoutStepTracking";
 
 export const CloseIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
@@ -34,7 +39,8 @@ function useIsMobile(breakpoint = 768) {
     return isMobile;
 }
 
-const CHECKOUT_STEP_NAMES: Record<number, string> = {
+/** Fallback si no hay meta ni se puede derivar el paso (sesión antigua). */
+const LEGACY_CHECKOUT_STEP_NAMES: Record<number, string> = {
     1: "package_configuration",
     2: "personal_data",
     3: "contact_verification",
@@ -43,6 +49,28 @@ const CHECKOUT_STEP_NAMES: Record<number, string> = {
     6: "payment",
 };
 
+function countSelectedPackages(userAnswers: UserAnswers, selection: IzziSelection | null): number {
+    let n = 0;
+    if (userAnswers.internet?.paquete) n += 1;
+    if (userAnswers.tv?.paquete) n += 1;
+    if (userAnswers.movil?.paquete) n += 1;
+    if (n === 0 && selection?.idPaquete) n = 1;
+    const ott =
+        (userAnswers.tv?.ott?.planes?.length ?? 0);
+    return n + ott;
+}
+
+function buildFullName(p: {
+    firstName?: string;
+    secondName?: string;
+    firstLastName?: string;
+    secondLastName?: string;
+} | undefined): string | undefined {
+    if (!p) return undefined;
+    const s = [p.firstName, p.secondName, p.firstLastName, p.secondLastName].filter(Boolean).join(" ").trim();
+    return s || undefined;
+}
+
 export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonType<IzziLogo>, text: ModalCopys }) {
 
     const router = useRouter();
@@ -50,7 +78,32 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
     const pendingRouteRef = useRef<string | null>(null);
     const isMobile = useIsMobile(768);
     const scopePrefix = ["/configurador", "/checkout", "/thank-you"];
-    const { clearCheckoutFlow } = useIzziContent();
+    const {
+        clearCheckoutFlow,
+        globalDatosContratacion,
+        globalIzziSelection,
+        globalUserAnswers,
+        precioTotal,
+        coberturaData,
+        globalFlagDomicilio,
+    } = useIzziContent();
+
+    const trackingSnapshotRef = useRef({
+        globalDatosContratacion,
+        globalIzziSelection,
+        globalUserAnswers,
+        precioTotal,
+        coberturaData,
+        globalFlagDomicilio,
+    });
+    trackingSnapshotRef.current = {
+        globalDatosContratacion,
+        globalIzziSelection,
+        globalUserAnswers,
+        precioTotal,
+        coberturaData,
+        globalFlagDomicilio,
+    };
     const exitIntentTrackedRef = useRef(false);
 
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -82,22 +135,117 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
         return { sessionId, step };
     };
 
+    const resolveCheckoutStepMetaForExit = (): CheckoutStepMetaSerialized | null => {
+        if (typeof window === "undefined") return null;
+        const raw = window.sessionStorage.getItem("izzi-checkout-step-meta");
+        if (raw) {
+            try {
+                const parsed = JSON.parse(raw) as CheckoutStepMetaSerialized;
+                if (typeof parsed.flowStep === "number" && typeof parsed.uiStep === "number") {
+                    return parsed;
+                }
+            } catch {
+                /* ignore */
+            }
+        }
+        const rawUi = window.sessionStorage.getItem("izzi-checkout-current-step");
+        const uiStep = rawUi ? parseInt(rawUi, 10) : NaN;
+        if (!Number.isFinite(uiStep)) return null;
+        const computed = getCheckoutStepTrackingMeta(uiStep, trackingSnapshotRef.current.globalFlagDomicilio);
+        if (!computed) return null;
+        return {
+            uiStep: computed.uiStep,
+            flowStep: computed.flowStep,
+            label: computed.label,
+            analyticsStepName: computed.analyticsStepName,
+        };
+    };
+
+    const buildEcommercePayloadForExit = (): Record<string, unknown> => {
+        const { globalIzziSelection, precioTotal } = trackingSnapshotRef.current;
+        const { buildPlanItem } = izziDataLayerHelpers;
+
+        if (!globalIzziSelection?.idPaquete) {
+            return { currency: CURRENCY, value: 0, items: [] };
+        }
+
+        const value =
+            precioTotal ||
+            (globalIzziSelection.precioPaquete ? parseFloat(globalIzziSelection.precioPaquete) || 0 : 0);
+
+        const items = [
+            buildPlanItem(
+                {
+                    id: String(globalIzziSelection.idPaquete),
+                    name: globalIzziSelection.tituloTriplePlay ?? globalIzziSelection.titulo,
+                    category: "Bundle",
+                    technology: globalIzziSelection.spTV || globalIzziSelection.spMovil ? "Triple_Play" : "Doble_Play",
+                    price: value,
+                    speed: globalIzziSelection.velocidadMinima,
+                    channels: globalIzziSelection.canales,
+                    contractMonths: globalIzziSelection.tiempoPlan,
+                },
+                0,
+                "checkout",
+                "Checkout - plan principal"
+            ),
+        ];
+
+        return { currency: CURRENCY, value, items };
+    };
+
+    const enrichCheckoutExitParams = (extraParams: Record<string, unknown>) => {
+        const { globalDatosContratacion, globalIzziSelection, globalUserAnswers, coberturaData } =
+            trackingSnapshotRef.current;
+
+        const datosPersonales = globalDatosContratacion?.DatosPersonales?.personal;
+        extraParams.package_count = countSelectedPackages(globalUserAnswers, globalIzziSelection);
+
+        const fullName = buildFullName(datosPersonales);
+        if (fullName) extraParams.full_name = fullName;
+
+        if (datosPersonales?.email) {
+            extraParams.email = datosPersonales.email.trim().toLowerCase();
+        }
+
+        if (datosPersonales) {
+            extraParams.user_data = izziDataLayerHelpers.normalizeUserData({
+                email: datosPersonales.email,
+                phone: datosPersonales.phone,
+                firstName: datosPersonales.firstName,
+                lastName: datosPersonales.firstLastName,
+                street: coberturaData.address,
+                city: coberturaData.municipio,
+                state: coberturaData.estado,
+                postalCode: coberturaData.zipCode,
+            });
+        }
+    };
+
     const trackCheckoutExitIntent = () => {
         if (typeof window === "undefined") return;
         if (!window.location.pathname.startsWith("/checkout")) return;
 
         const { sessionId, step } = getCheckoutTrackingParams();
+        const stepMeta = resolveCheckoutStepMetaForExit();
         const extraParams: Record<string, unknown> = {};
         if (sessionId) extraParams.checkout_session_id = sessionId;
-        if (step) {
+        if (stepMeta) {
+            extraParams.exit_intent_checkout_step = stepMeta.flowStep;
+            extraParams.exit_intent_checkout_step_ui = stepMeta.uiStep;
+            extraParams.exit_intent_checkout_step_label = stepMeta.label;
+            extraParams.exit_intent_checkout_step_name = stepMeta.analyticsStepName;
+        } else if (step) {
             extraParams.exit_intent_checkout_step = step;
-            extraParams.exit_intent_checkout_step_name = CHECKOUT_STEP_NAMES[step] ?? `step_${step}`;
+            extraParams.exit_intent_checkout_step_name = LEGACY_CHECKOUT_STEP_NAMES[step] ?? `step_${step}`;
         }
+
+        enrichCheckoutExitParams(extraParams);
 
         izziDataLayerHelpers.pushEcommerceEvent(
             EVENTS.CHECKOUT_EXIT_INTENT,
-            {},
-            Object.keys(extraParams).length > 0 ? extraParams : undefined
+            buildEcommercePayloadForExit(),
+            extraParams
         );
     };
 
@@ -106,14 +254,26 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
         if (!window.location.pathname.startsWith("/checkout")) return;
 
         const { sessionId, step } = getCheckoutTrackingParams();
+        const stepMeta = resolveCheckoutStepMetaForExit();
         const extraParams: Record<string, unknown> = { abandon_reason: reason };
         if (sessionId) extraParams.checkout_session_id = sessionId;
-        if (step) {
+        if (stepMeta) {
+            extraParams.abandon_checkout_step = stepMeta.flowStep;
+            extraParams.abandon_checkout_step_ui = stepMeta.uiStep;
+            extraParams.abandon_checkout_step_label = stepMeta.label;
+            extraParams.abandon_checkout_step_name = stepMeta.analyticsStepName;
+        } else if (step) {
             extraParams.abandon_checkout_step = step;
-            extraParams.abandon_checkout_step_name = CHECKOUT_STEP_NAMES[step] ?? `step_${step}`;
+            extraParams.abandon_checkout_step_name = LEGACY_CHECKOUT_STEP_NAMES[step] ?? `step_${step}`;
         }
 
-        izziDataLayerHelpers.pushEcommerceEvent(EVENTS.CHECKOUT_ABANDON, {}, extraParams);
+        enrichCheckoutExitParams(extraParams);
+
+        izziDataLayerHelpers.pushEcommerceEvent(
+            EVENTS.CHECKOUT_ABANDON,
+            buildEcommercePayloadForExit(),
+            extraParams
+        );
     };
 
     useEffect(() => {
@@ -202,9 +362,9 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
     const confirmExit = () => {
         const toRoute = pendingRouteRef.current;
         pendingRouteRef.current = null;
+        trackCheckoutAbandon("user_confirmed_exit");
         clearCheckoutFlow();
         onClose();
-        trackCheckoutAbandon("user_confirmed_exit");
 
         if (toRoute) {
             currentPathRef.current = toRoute;

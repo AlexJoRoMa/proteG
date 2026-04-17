@@ -24,6 +24,10 @@ import { useIzziContent } from "@/components/providers/IzziProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
 import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
+import {
+    getCheckoutStepTrackingMeta,
+    type CheckoutStepMetaSerialized,
+} from "@/utils/checkoutStepTracking";
 
 export default function ResumenContainer() {
 
@@ -61,6 +65,7 @@ export default function ResumenContainer() {
     const processStatusRef = useRef(processStatus);
     const stepStatusRef = useRef<boolean | null>(null);
     const isSubmittingRef = useRef(false);
+    /** Dedupe por código de paso fijo (10–13, 19, 20), no por índice UI. */
     const trackedStepsRef = useRef<Set<number>>(new Set());
     const addShippingInfoTrackedRef = useRef(false);
     const addPaymentInfoTrackedRef = useRef(false);
@@ -521,13 +526,27 @@ export default function ResumenContainer() {
             ),
         ];
 
+        const stepMeta = getCheckoutStepTrackingMeta(currentStep, globalFlagDomicilio);
+        if (!stepMeta) return;
+
         if (typeof window !== "undefined") {
-            sessionStorage.setItem('izzi-checkout-current-step', String(currentStep));
+            sessionStorage.setItem("izzi-checkout-current-step", String(currentStep));
+            const serialized: CheckoutStepMetaSerialized = {
+                uiStep: stepMeta.uiStep,
+                flowStep: stepMeta.flowStep,
+                label: stepMeta.label,
+                analyticsStepName: stepMeta.analyticsStepName,
+            };
+            sessionStorage.setItem("izzi-checkout-step-meta", JSON.stringify(serialized));
         }
 
-        if (!trackedStepsRef.current.has(currentStep)) {
+        if (!trackedStepsRef.current.has(stepMeta.flowStep)) {
             const extraParams: Record<string, unknown> = {
-                checkout_step: currentStep,
+                /** Código fijo de paso (10–13, 19, 20). Pago = siempre 20 aunque el índice UI sea 5 o 6. */
+                checkout_step: stepMeta.flowStep,
+                checkout_step_ui: stepMeta.uiStep,
+                checkout_step_label: stepMeta.label,
+                checkout_step_name: stepMeta.analyticsStepName,
             };
 
             let checkoutSessionId: string | undefined;
@@ -560,7 +579,6 @@ export default function ResumenContainer() {
             }
 
             if (currentStep === 1) {
-                extraParams.checkout_step_name = "package_configuration";
                 extraParams.coverage_verified = true;
                 extraParams.coverage_type = "fiber";
                 extraParams.coverage_region = coberturaData?.municipio || null;
@@ -576,9 +594,9 @@ export default function ResumenContainer() {
                 extraParams
             );
 
-            trackedStepsRef.current.add(currentStep);
+            trackedStepsRef.current.add(stepMeta.flowStep);
         }
-    }, [currentStep, globalIzziSelection, precioTotal, datosContratacion, coberturaData]);
+    }, [currentStep, globalFlagDomicilio, globalIzziSelection, precioTotal, datosContratacion, coberturaData]);
 
     const handleContinue = async () => {
         if (isSubmittingRef.current) return;
