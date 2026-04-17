@@ -613,7 +613,7 @@ export default function CoberturaForm() {
             value={neighborhood}
             onValueChange={(val) =>{
               setNeighborhood(val);
-              if(val.trim() !== '') setColoniaError(false);
+              setColoniaError(val.trim() === '')
             }}
             classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
           />
