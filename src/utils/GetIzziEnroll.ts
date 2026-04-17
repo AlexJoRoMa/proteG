@@ -141,6 +141,9 @@ export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratac
             "x-upstream-cookie": "AWSALB=o1egXIGzDYyhgR/f3AClAKhYZWoK1aA21e+OlktWTOHChR5M/lVVVy1oNUm/hl4IBQpKEMtgeZ1zL4cUtmycbYyMyR/3DilCbHdr+QuZJF0oTQCZdCnLzp859mfr; AWSALBCORS=o1egXIGzDYyhgR/f3AClAKhYZWoK1aA21e+OlktWTOHChR5M/lVVVy1oNUm/hl4IBQpKEMtgeZ1zL4cUtmycbYyMyR/3DilCbHdr+QuZJF0oTQCZdCnLzp859mfr",
         });
 
+        console.log('getIzziEnroll BODY ', body)
+        console.log('getIzziEnroll headers ', headers)
+
         console.log("[IzziEnroll] Iniciando conexión con streaming...");
 
         // Usar endpoint de streaming con SSE
@@ -149,14 +152,14 @@ export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratac
             headers,
             body,
         });
-
+console.log('getIzziEnroll fetch stream ', response)
         if (!response.ok) {
             throw new Error(`Error al conectar con el servidor: ${response.status}`);
         }
 
         // Leer el stream y esperar el resultado
         const result = await readStreamResponse(response);
-
+console.log('getIzziEnroll read stream response ', result)
         if (!result) throw new Error("Invalid response from server");
 
         return result;

@@ -8,6 +8,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const upstreamCookie = request.headers.get("cookie") ?? request.headers.get("x-upstream-cookie") ?? "";
 
+    console.log('🚩 body ', JSON.stringify(body))
     // Crear un stream de respuesta
     const encoder = new TextEncoder();
     
@@ -18,6 +19,7 @@ export async function POST(request: NextRequest) {
             const sendHeartbeat = () => {
                 try {
                     const heartbeatMsg = `data: ${JSON.stringify({ type: "heartbeat", timestamp: Date.now() })}\n\n`;
+                    console.log('heartbeatMsg ', heartbeatMsg)
                     controller.enqueue(encoder.encode(heartbeatMsg));
                 } catch (err) {
                     void err;
@@ -42,7 +44,7 @@ export async function POST(request: NextRequest) {
                 // Enviar el resultado
                 const resultMsg = `data: ${JSON.stringify({ type: "result", data })}\n\n`;
                 controller.enqueue(encoder.encode(resultMsg));
-                
+                console.log('🚩 getIzziEnroll Data ', data);
             } catch (error) {
                 console.error("[Stream Route] Error en izziEnroll");
                 
