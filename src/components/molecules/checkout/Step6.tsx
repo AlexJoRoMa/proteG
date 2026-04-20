@@ -9,6 +9,7 @@ import PagoTarjeta from './metodosPago/PagoTarjeta';
 import { useCheckout } from '@/components/providers/CheckoutProvider';
 import { useIzziContent } from '@/components/providers/IzziProvider';
 import { MetodoPago, TabConfigItem } from '@/types/Contratacion';
+import { PiggyBank } from "@/constants/IconsConstants";
 
 const RadioStyles = {
   base: "flex items-center p-0 xl:py-0 w-full m-0 pl-3 ",
@@ -104,6 +105,7 @@ const Step6 = () => {
         classNames={RadioStyles}
         >
           <p>{getValue('pago.tarjet.titulo')}</p>
+          <PiggyBank/>
         </Radio>
       {radioState === 'creditCard' && (
         <div className={topMargin}>
@@ -114,7 +116,7 @@ const Step6 = () => {
 
       <div className={boxStyle}>
         <Radio
-        value={'Pago Paypal'}
+        value='paypal'
         classNames={RadioStyles}
         >
           <p>{getValue('pago.paypal.titulo')}</p>
@@ -124,7 +126,7 @@ const Step6 = () => {
       <h2>Pagon en efectivo</h2>
       <div className={boxStyle}>
         <Radio
-        value={'Pago Tecnico'}
+        value='tecnico'
         classNames={RadioStyles}
         >
           <p>{getValue('pago.tecnico.titulo')}</p>

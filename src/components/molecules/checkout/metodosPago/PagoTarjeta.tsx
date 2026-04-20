@@ -7,7 +7,7 @@ import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { PaymentLiga } from "@/types/Contratacion";
-import { LoaderIcon, PiggyBank } from "@/constants/IconsConstants";
+import { LoaderIcon, CreditCardIcon, PayPalIcon, ToolboxIcon } from "@/constants/IconsConstants";
 
 export default function PagoTarjeta() {
 
