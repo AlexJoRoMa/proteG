@@ -163,33 +163,24 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
 
     const buildEcommercePayloadForExit = (): Record<string, unknown> => {
         const { globalIzziSelection, precioTotal } = trackingSnapshotRef.current;
-        const { buildPlanItem } = izziDataLayerHelpers;
+        const { buildEcommerceLineItems, normalizeEcommerceValue } = izziDataLayerHelpers;
 
         if (!globalIzziSelection?.idPaquete) {
             return { currency: CURRENCY, value: 0, items: [] };
         }
 
-        const value =
+        const rawValue =
             precioTotal ||
             (globalIzziSelection.precioPaquete ? parseFloat(globalIzziSelection.precioPaquete) || 0 : 0);
+        const value = normalizeEcommerceValue(rawValue);
 
-        const items = [
-            buildPlanItem(
-                {
-                    id: String(globalIzziSelection.idPaquete),
-                    name: globalIzziSelection.tituloTriplePlay ?? globalIzziSelection.titulo,
-                    category: "Bundle",
-                    technology: globalIzziSelection.spTV || globalIzziSelection.spMovil ? "Triple_Play" : "Doble_Play",
-                    price: value,
-                    speed: globalIzziSelection.velocidadMinima,
-                    channels: globalIzziSelection.canales,
-                    contractMonths: globalIzziSelection.tiempoPlan,
-                },
-                0,
-                "checkout",
-                "Checkout - plan principal"
-            ),
-        ];
+        const items = buildEcommerceLineItems(globalIzziSelection, {
+            precioTotal: value,
+            mainListId: "checkout",
+            mainListName: "Checkout - plan principal",
+            extrasListId: "checkout",
+            extrasListName: "Checkout - extras",
+        });
 
         return { currency: CURRENCY, value, items };
     };

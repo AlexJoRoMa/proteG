@@ -75,28 +75,21 @@ export default function Checkout() {
         if (!isHydrated) return;
         if (!globalIzziSelection || !globalIzziSelection.idPaquete) return;
 
-        const value =
+        const { buildEcommerceLineItems, normalizeEcommerceValue, pushEcommerceEvent, generateCheckoutSessionId } =
+            izziDataLayerHelpers;
+
+        const rawValue =
             precioTotal ||
             (globalIzziSelection.precioPaquete ? parseFloat(globalIzziSelection.precioPaquete) || 0 : 0);
+        const value = normalizeEcommerceValue(rawValue);
 
-        const { buildPlanItem, pushEcommerceEvent, generateCheckoutSessionId } = izziDataLayerHelpers;
-
-        const items = [
-            buildPlanItem(
-                {
-                    id: String(globalIzziSelection.idPaquete),
-                    name: globalIzziSelection.tituloTriplePlay ?? globalIzziSelection.titulo,
-                    category: 'Bundle',
-                    technology: globalIzziSelection.spTV || globalIzziSelection.spMovil ? 'Triple_Play' : 'Doble_Play',
-                    price: value,
-                    speed: globalIzziSelection.velocidadMinima,
-                    channels: globalIzziSelection.canales,
-                },
-                0,
-                'checkout',
-                'Checkout - plan principal'
-            ),
-        ];
+        const items = buildEcommerceLineItems(globalIzziSelection, {
+            precioTotal: value,
+            mainListId: 'checkout',
+            mainListName: 'Checkout - plan principal',
+            extrasListId: 'checkout',
+            extrasListName: 'Checkout - extras',
+        });
 
         if (!beginCheckoutTrackedRef.current) {
             let checkoutSessionId: string | undefined;

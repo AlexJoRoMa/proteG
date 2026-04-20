@@ -161,31 +161,22 @@ export default function ResumenPedido() {
             return;
         }
         if (globalIzziSelection && globalIzziSelection.idPaquete && precioTotal) {
-            const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
+            const { buildEcommerceLineItems, normalizeEcommerceValue, pushEcommerceEvent } = izziDataLayerHelpers;
+            const ecommerceValue = normalizeEcommerceValue(precioTotal);
 
-            const items = [
-                buildPlanItem(
-                    {
-                        id: String(globalIzziSelection.idPaquete),
-                        name: globalIzziSelection.tituloTriplePlay ?? globalIzziSelection.titulo,
-                        category: "Bundle",
-                        technology: globalIzziSelection.spTV || globalIzziSelection.spMovil ? "Triple_Play" : "Doble_Play",
-                        price: precioTotal,
-                        speed: globalIzziSelection.velocidadMinima,
-                        channels: globalIzziSelection.canales,
-                        contractMonths: globalIzziSelection.tiempoPlan,
-                    },
-                    0,
-                    "configurador",
-                    "Configurador - plan principal"
-                ),
-            ];
+            const items = buildEcommerceLineItems(globalIzziSelection, {
+                precioTotal: ecommerceValue,
+                mainListId: "configurador",
+                mainListName: "Configurador - plan principal",
+                extrasListId: "configurador",
+                extrasListName: "Configurador - extras",
+            });
 
             pushEcommerceEvent(
                 EVENTS.ADD_TO_CART,
                 {
                     currency: CURRENCY,
-                    value: precioTotal,
+                    value: ecommerceValue,
                     items,
                 }
             );

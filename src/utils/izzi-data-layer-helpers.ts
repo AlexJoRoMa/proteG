@@ -1,3 +1,5 @@
+import type { IzziSelection, OttProps } from '@/types/ConfiguradorTypes';
+
 interface RawUserData {
     email?: string;
     phone?: string;
@@ -57,6 +59,18 @@ const normalizeUserData = (rawData: RawUserData) => {
     };
 };
 
+/** Evita totales negativos en GA4 cuando el resumen aplica descuentos netos raros. */
+const normalizeEcommerceValue = (v: number) => (Number.isFinite(v) ? Math.max(0, v) : 0);
+
+export type BuildEcommerceLineItemsOptions = {
+    /** Total del carrito; se reparte entre línea principal y extras para que sume con `value`. */
+    precioTotal: number;
+    mainListId?: string;
+    mainListName?: string;
+    extrasListId?: string;
+    extrasListName?: string;
+};
+
 const buildPlanItem = (plan: PlanItemInput, index: number, listId: string, listName: string) => {
     const price = plan.price != null ? parseFloat(String(plan.price)) : 0;
     return {
@@ -77,6 +91,114 @@ const buildPlanItem = (plan: PlanItemInput, index: number, listId: string, listN
         channel_count: plan.channels != null ? String(plan.channels) : '0',
         contract_months: plan.contractMonths ?? null
     };
+};
+
+const buildOttLineItem = (
+    ott: OttProps,
+    index: number,
+    listId: string,
+    listName: string
+) =>
+    buildPlanItem(
+        {
+            id: String(ott.idExtra),
+            sku: ott.nombreSiebel,
+            name: ott.titulo,
+            category: 'Add-on',
+            technology: ott.categoriaExtra ?? 'OTT',
+            price: ott.costo,
+            speed: null,
+            channels: null,
+            contractMonths: null,
+        },
+        index,
+        listId,
+        listName
+    );
+
+const buildMovilAddonLineItem = (
+    extras: NonNullable<IzziSelection['extras']>,
+    index: number,
+    listId: string,
+    listName: string
+) =>
+    buildPlanItem(
+        {
+            id: String(extras.idPaquete ?? extras.idExtra),
+            name: extras.titulo ?? '',
+            category: 'Add-on',
+            technology: 'Movil',
+            price: extras.precioPaquete,
+            speed: extras.velocidadMinima,
+            channels: extras.canales,
+            contractMonths: null,
+        },
+        index,
+        listId,
+        listName
+    );
+
+/**
+ * Líneas de ecommerce (GA4): paquete principal + OTTs + línea móvil add-on si aplica.
+ * El precio del bundle es `precioTotal` menos extras para que la suma de líneas coincida con `value`.
+ */
+const buildEcommerceLineItems = (
+    selection: IzziSelection | null,
+    options: BuildEcommerceLineItemsOptions
+) => {
+    if (!selection?.idPaquete) {
+        return [] as ReturnType<typeof buildPlanItem>[];
+    }
+
+    const mainListId = options.mainListId ?? 'checkout';
+    const mainListName = options.mainListName ?? 'Checkout - plan principal';
+    const extrasListId = options.extrasListId ?? mainListId;
+    const extrasListName = options.extrasListName ?? 'Checkout - extras';
+
+    const otts = selection.extrasMap?.ott ?? [];
+    const sumOtt = otts.reduce((acc, o) => acc + (Number(o.costo) || 0), 0);
+    const movilExtra = selection.extras;
+    const movilPrice = movilExtra ? Number(movilExtra.precioPaquete) || 0 : 0;
+
+    const safeTotal = normalizeEcommerceValue(options.precioTotal);
+    const mainPrice = Math.max(0, safeTotal - sumOtt - movilPrice);
+
+    const bundleTechnology = (() => {
+        const tp = selection.tiempoPlan;
+        if (tp) {
+            return tp.includes('TRIPLE') ? 'Triple_Play' : 'Doble_Play';
+        }
+        return selection.spTV || selection.spMovil ? 'Triple_Play' : 'Doble_Play';
+    })();
+
+    const items: ReturnType<typeof buildPlanItem>[] = [
+        buildPlanItem(
+            {
+                id: String(selection.idPaquete),
+                sku: selection.nombreCode,
+                name: selection.tituloTriplePlay ?? selection.titulo ?? '',
+                category: 'Bundle',
+                technology: bundleTechnology,
+                price: mainPrice,
+                speed: selection.velocidadMinima,
+                channels: selection.canales,
+                contractMonths: selection.tiempoPlan,
+            },
+            0,
+            mainListId,
+            mainListName
+        ),
+    ];
+
+    otts.forEach((ott) => {
+        items.push(buildOttLineItem(ott, items.length, extrasListId, extrasListName));
+    });
+
+    if (movilExtra) {
+        items.push(buildMovilAddonLineItem(movilExtra, items.length, extrasListId, extrasListName));
+    }
+
+    return items;
 };
 
 const izziDataLayerHelpers = {
@@ -114,7 +236,9 @@ const izziDataLayerHelpers = {
     },
     normalizePhone,
     normalizeUserData,
+    normalizeEcommerceValue,
     buildPlanItem,
+    buildEcommerceLineItems,
     Item: buildPlanItem,
 };
 

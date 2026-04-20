@@ -253,6 +253,8 @@ export interface UserAnswers {
 export interface IzziSelection {
     idPaquete?: number,
     idExtra?: number,
+    /** Código comercial (p. ej. izzitv_light); mismo criterio que select_item vía `sku` en GA4 */
+    nombreCode?: string,
     titulo?: string,
     tituloTriplePlay?: string,
     tiempoPlan?: string,

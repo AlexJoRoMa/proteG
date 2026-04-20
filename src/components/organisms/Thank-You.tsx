@@ -54,31 +54,23 @@ export default function ThankYou() {
         if (!globalProcessStatus.orderNumber) return;
         if (!globalIzziSelection || !globalIzziSelection.idPaquete) return;
 
-        const { buildPlanItem, normalizeUserData, pushEcommerceEvent } = izziDataLayerHelpers;
+        const { buildEcommerceLineItems, normalizeEcommerceValue, normalizeUserData, pushEcommerceEvent } =
+            izziDataLayerHelpers;
 
-        const value =
+        const rawValue =
             precioTotal ||
             (globalIzziSelection.precioPaquete ? parseFloat(globalIzziSelection.precioPaquete) || 0 : 0) ||
             totalSinDescuento ||
             0;
+        const value = normalizeEcommerceValue(rawValue);
 
-        const items = [
-            buildPlanItem(
-                {
-                    id: String(globalIzziSelection.idPaquete),
-                    name: globalIzziSelection.tituloTriplePlay ?? globalIzziSelection.titulo,
-                    category: "Bundle",
-                    technology: globalIzziSelection.spTV || globalIzziSelection.spMovil ? "Triple_Play" : "Doble_Play",
-                    price: value,
-                    speed: globalIzziSelection.velocidadMinima,
-                    channels: globalIzziSelection.canales,
-                    contractMonths: globalIzziSelection.tiempoPlan,
-                },
-                0,
-                "checkout",
-                "Checkout - plan principal"
-            ),
-        ];
+        const items = buildEcommerceLineItems(globalIzziSelection, {
+            precioTotal: value,
+            mainListId: "checkout",
+            mainListName: "Checkout - plan principal",
+            extrasListId: "checkout",
+            extrasListName: "Checkout - extras",
+        });
 
         const datosPersonales = globalDatosContratacion.DatosPersonales?.personal;
 

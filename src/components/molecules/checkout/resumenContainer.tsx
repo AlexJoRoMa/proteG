@@ -105,25 +105,16 @@ export default function ResumenContainer() {
         }));
 
         if (!addShippingInfoTrackedRef.current && globalIzziSelection && globalIzziSelection.idPaquete && precioTotal) {
-            const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
+            const { buildEcommerceLineItems, normalizeEcommerceValue, pushEcommerceEvent } = izziDataLayerHelpers;
+            const ecommerceValue = normalizeEcommerceValue(precioTotal);
 
-            const items = [
-                buildPlanItem(
-                    {
-                        id: String(globalIzziSelection.idPaquete),
-                        name: globalIzziSelection.tituloTriplePlay ?? globalIzziSelection.titulo,
-                        category: "Bundle",
-                        technology: globalIzziSelection.spTV || globalIzziSelection.spMovil ? "Triple_Play" : "Doble_Play",
-                        price: precioTotal,
-                        speed: globalIzziSelection.velocidadMinima,
-                        channels: globalIzziSelection.canales,
-                        contractMonths: globalIzziSelection.tiempoPlan,
-                    },
-                    0,
-                    "checkout",
-                    "Checkout - plan principal"
-                ),
-            ];
+            const items = buildEcommerceLineItems(globalIzziSelection, {
+                precioTotal: ecommerceValue,
+                mainListId: "checkout",
+                mainListName: "Checkout - plan principal",
+                extrasListId: "checkout",
+                extrasListName: "Checkout - extras",
+            });
 
             let checkoutSessionId: string | undefined;
             if (typeof window !== "undefined") {
@@ -142,7 +133,7 @@ export default function ResumenContainer() {
                 EVENTS.ADD_SHIPPING_INFO,
                 {
                     currency: CURRENCY,
-                    value: precioTotal,
+                    value: ecommerceValue,
                     shipping_tier: "standard_installation",
                     items,
                 },
@@ -244,25 +235,16 @@ export default function ResumenContainer() {
             globalIzziSelection.idPaquete &&
             precioTotal
         ) {
-            const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
+            const { buildEcommerceLineItems, normalizeEcommerceValue, pushEcommerceEvent } = izziDataLayerHelpers;
+            const ecommerceValue = normalizeEcommerceValue(precioTotal);
 
-            const items = [
-                buildPlanItem(
-                    {
-                        id: String(globalIzziSelection.idPaquete),
-                        name: globalIzziSelection.tituloTriplePlay ?? globalIzziSelection.titulo,
-                        category: "Bundle",
-                        technology: globalIzziSelection.spTV || globalIzziSelection.spMovil ? "Triple_Play" : "Doble_Play",
-                        price: precioTotal,
-                        speed: globalIzziSelection.velocidadMinima,
-                        channels: globalIzziSelection.canales,
-                        contractMonths: globalIzziSelection.tiempoPlan,
-                    },
-                    0,
-                    "checkout",
-                    "Checkout - plan principal"
-                ),
-            ];
+            const items = buildEcommerceLineItems(globalIzziSelection, {
+                precioTotal: ecommerceValue,
+                mainListId: "checkout",
+                mainListName: "Checkout - plan principal",
+                extrasListId: "checkout",
+                extrasListName: "Checkout - extras",
+            });
 
             let checkoutSessionId: string | undefined;
             if (typeof window !== "undefined") {
@@ -290,7 +272,7 @@ export default function ResumenContainer() {
                 EVENTS.ADD_PAYMENT_INFO,
                 {
                     currency: CURRENCY,
-                    value: precioTotal,
+                    value: ecommerceValue,
                     payment_type: paymentType,
                     items,
                 },
@@ -506,25 +488,17 @@ export default function ResumenContainer() {
         if (!globalIzziSelection || !globalIzziSelection.idPaquete) return;
         if (!precioTotal) return;
 
-        const { buildPlanItem, normalizeUserData, pushEcommerceEvent } = izziDataLayerHelpers;
+        const { buildEcommerceLineItems, normalizeEcommerceValue, normalizeUserData, pushEcommerceEvent } =
+            izziDataLayerHelpers;
+        const ecommerceValue = normalizeEcommerceValue(precioTotal);
 
-        const items = [
-            buildPlanItem(
-                {
-                    id: String(globalIzziSelection.idPaquete),
-                    name: globalIzziSelection.tituloTriplePlay ?? globalIzziSelection.titulo,
-                    category: "Bundle",
-                    technology: globalIzziSelection.spTV || globalIzziSelection.spMovil ? "Triple_Play" : "Doble_Play",
-                    price: precioTotal,
-                    speed: globalIzziSelection.velocidadMinima,
-                    channels: globalIzziSelection.canales,
-                    contractMonths: globalIzziSelection.tiempoPlan,
-                },
-                0,
-                "checkout",
-                "Checkout - plan principal"
-            ),
-        ];
+        const items = buildEcommerceLineItems(globalIzziSelection, {
+            precioTotal: ecommerceValue,
+            mainListId: "checkout",
+            mainListName: "Checkout - plan principal",
+            extrasListId: "checkout",
+            extrasListName: "Checkout - extras",
+        });
 
         const stepMeta = getCheckoutStepTrackingMeta(currentStep, globalFlagDomicilio);
         if (!stepMeta) return;
@@ -588,7 +562,7 @@ export default function ResumenContainer() {
                 EVENTS.CHECKOUT_PROGRESS,
                 {
                     currency: CURRENCY,
-                    value: precioTotal,
+                    value: ecommerceValue,
                     items,
                 },
                 extraParams
