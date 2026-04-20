@@ -7,7 +7,7 @@ import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { PaymentLiga } from "@/types/Contratacion";
-import { LoaderIcon } from "@/constants/IconsConstants";
+import { LoaderIcon, PiggyBank } from "@/constants/IconsConstants";
 
 export default function PagoTarjeta() {
 
@@ -63,10 +63,17 @@ export default function PagoTarjeta() {
 
 
     return (
-        <section className="w-full">
-            <div className='flex flex-row w-full justify-between mt-[24px] xl:mt-[27px]'>
-                <h1 className='font-normal text-lg leading-[24px]'>
-                    {getValue('pago.pagoRecurrente.titulo')}
+        <section className="w-full flex flex-col items-center">
+            <div className="w-[97%] bg-gray-50 mx-3">
+            <div className='flex flex-row w-[96%] justify-between items-start bg-white rounded-xl border border-gray-100 p-3 mt-6 mx-3'>
+                <h1 className='flex flex-1 items-center font-normal text-[18px] leading-[24px]'>
+                    <span className="flex items-center gap-1 flex-wrap">
+                        <PiggyBank />
+                        <b>{getValue('pago.pagoRecurrente.titulo.negrillas')}</b>
+                        
+                        {getValue('pago.pagoRecurrente.titulo')}
+                    </span>
+                    
                 </h1>
                 <Switch
                     checked={checkSwitch}
@@ -78,12 +85,22 @@ export default function PagoTarjeta() {
                         wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
                         thumb: "bg-white-0"
                     }}
-
                 />
             </div>
-            <p className='mt-[8px] w-full text-sm xl:text-base leading-[24px]'>
-                {getValue('pago.pagoRecurrente.subTitulo')}
-            </p>
+            <div className="mt-4 w-full text-[16px] leading-[24px] mb-5 pl-7">
+                <p>
+                    {getValue('pago.pagoRecurrente.subTitulo')}{' '}
+                    <a
+                    href={getValue('pago.pagoRecurrente.subTitulo.url')}
+                    className="font-bold underline"
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    >
+                        {getValue('pago.pagoRecurrente.subTitulo.terminos')}
+                    </a>
+                </p>
+            </div>
+            </div>
             {loadingLiga && (
                 <div className="mt-[24px] xl:mt-[27px] w-full h-[20vh] xl:h-[30vh] flex justify-center items-center">
                     <div className="!w-[80px] !h-[80px]">

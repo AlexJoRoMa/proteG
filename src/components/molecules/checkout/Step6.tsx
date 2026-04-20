@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
-import { Card, CardBody, Tab, Tabs } from '@heroui/react'
+import { Card, CardBody, Tab, Tabs, Radio, RadioGroup } from '@heroui/react'
 import PagoTecnico from './metodosPago/PagoTecnico';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import PaymentInfoBanner from './metodosPago/PaymentInfoBanner';
@@ -9,6 +9,15 @@ import PagoTarjeta from './metodosPago/PagoTarjeta';
 import { useCheckout } from '@/components/providers/CheckoutProvider';
 import { useIzziContent } from '@/components/providers/IzziProvider';
 import { MetodoPago, TabConfigItem } from '@/types/Contratacion';
+
+const RadioStyles = {
+  base: "flex items-center p-0 xl:py-0 w-full m-0 pl-3 ",
+  control: "group-data-[selected=true]:bg-black-0 h-[10px] w-[10px]",
+  wrapper: "bg-white-0 group-data-[selected=true]:border-black-0 border-1 h-[24px] w-[24px]",
+  label: "text-base xl:text-lg"
+}
+const boxStyle = 'border border-gray-100 rounded-xl pt-4 pb-4';
+const topMargin = 'mt-5'
 
 const TABS_CONFIG = (getValue: (key: string) => string, globalFlagDomicilio: boolean): TabConfigItem[] => {
   const baseTabs: TabConfigItem[] = [
@@ -46,6 +55,8 @@ const Step6 = () => {
   const [selectedTab, setSelectedTab] = useState<MetodoPago>("creditCard");
   const tabsConfig = TABS_CONFIG(getValue, globalFlagDomicilio);
 
+  const [radioState, setRadioState] = useState<MetodoPago | ''>('');
+
   useEffect(() => {
     if (currentStep === totalSteps) {
       setIsStepValid(true);
@@ -75,8 +86,54 @@ const Step6 = () => {
 
   return (
     <>
+    <h1>{getValue('pago.seleccionar.titulo')}</h1>
+    <RadioGroup
+    orientation='vertical'
+    className='flex flex-col gap-6 mt-6 w-full items-start h-[144px]'
+    value={radioState}
+    classNames={{
+      wrapper: "flex flex-col w-full !gap-6",
+      base: "h-full"
+    }}
+    onValueChange={(val) => setRadioState(val as MetodoPago)}
+    >
+      <h2>Pagon en línea</h2>
+      <div className={boxStyle}>
+        <Radio
+        value='creditCard'
+        classNames={RadioStyles}
+        >
+          <p>{getValue('pago.tarjet.titulo')}</p>
+        </Radio>
+      {radioState === 'creditCard' && (
+        <div className={topMargin}>
+          <PagoTarjeta/>
+        </div>
+      )}
+      </div>
 
-      <Tabs
+      <div className={boxStyle}>
+        <Radio
+        value={'Pago Paypal'}
+        classNames={RadioStyles}
+        >
+          <p>{getValue('pago.paypal.titulo')}</p>
+        </Radio>
+      </div>
+
+      <h2>Pagon en efectivo</h2>
+      <div className={boxStyle}>
+        <Radio
+        value={'Pago Tecnico'}
+        classNames={RadioStyles}
+        >
+          <p>{getValue('pago.tecnico.titulo')}</p>
+        </Radio>
+      </div>
+
+    </RadioGroup>
+
+      {/* <Tabs
         aria-label="Options"
         className='w-full'
         fullWidth={true}
@@ -99,7 +156,7 @@ const Step6 = () => {
             </Tab>
           ))
         }
-      </Tabs>
+      </Tabs> */}
 
     </>
   )
