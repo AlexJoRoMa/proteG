@@ -15,13 +15,13 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
 
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const tvUserInteracted = useRef(false);
-    const [tvPlans, setTvPlans] = useState<OfferItem[] | undefined>(configuradorEntry?.offers.TV);
 
     const offersCopys = copysConfigurador as unknown as OffersCopys;
     const precioTv = configuradorEntry?.offers.TV.find((offer) => offer.titulo === 'izzi tv')?.precioPaquete;
 
-    const builtTvPlans = useMemo(() => {
+    const tvPlans = useMemo(() => {
         const internet = userAnswers.internet;
+
         if (internet?.paquete) {
             const tvLight = configuradorEntry?.offers.TV.filter(item => item.titulo.includes("light")) as OfferItem[] || [];
             const tvPremium = configuradorEntry?.offers.TV.filter(item => item.titulo.includes("premium")) as OfferItem[] || [];
@@ -40,25 +40,20 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
                     } as OfferItem;
                 }) as OfferItem[];
             return [...triplePlay, ...tvPremium, ...tvLight];
-        } else {
-            return (configuradorEntry?.offers.TV || []).map((item: OfferItem) => {
-                if (!item.titulo.includes("light") && !item.titulo.includes("premium")) {
-                    return { ...item, titulo: offersCopys.tv.cards.tituloPlus } as OfferItem;
-                }
-                return item as OfferItem;
-            });
         }
+        return (configuradorEntry?.offers.TV || []).map((item: OfferItem) => {
+            if (!item.titulo.includes("light") && !item.titulo.includes("premium")) {
+                return { ...item, titulo: offersCopys.tv.cards.tituloPlus } as OfferItem;
+            }
+            return item as OfferItem;
+        });
     }, [userAnswers.internet, configuradorEntry?.offers.TV, configuradorEntry?.offers.TRIPLE_PLAY, offersCopys.tv.cards.titulo, offersCopys.tv.cards.tituloPlus, precioTv]);
 
     useEffect(() => {
-        setTvPlans(builtTvPlans);
-    }, [builtTvPlans]);
-
-    useEffect(() => {
         if (userAnswers.tv?.paquete) {
-            updateTvAnswers(builtTvPlans[0])
+            updateTvAnswers(tvPlans[0])
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userAnswers.internet])
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -76,9 +71,7 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
     function handleSelect(index: number, card: OfferItem) {
         tvUserInteracted.current = true;
 
-        if (selectedIndex !== null && selectedIndex === index) {
-            // deselect
-            tvUserInteracted.current = true;
+        if (selectedIndex === index) {
             setSelectedIndex(null);
             setUserAnswers(prev => {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -90,7 +83,14 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
         }
 
         setSelectedIndex(index);
-        setUserAnswers(prev => ({ ...prev, tv: { ...prev.tv, paquete: card, total: Number(card.precioPaquete) || 0 } }));
+        setUserAnswers(prev => ({
+            ...prev,
+            tv: {
+                ...prev.tv,
+                paquete: card,
+                total: Number(card.precioPaquete) || 0
+            }
+        }));
 
         if (card.titulo.includes('light') || card.titulo.includes('premium')) {
             setDisabled(true);
@@ -109,7 +109,7 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
 
     useEffect(() => {
         if (!preSeleccion.seleccionPaquete) return;
-        if (!tvPlans || tvPlans.length === 0) return;
+        if (!tvPlans.length) return;
         if (userAnswers.tv?.paquete) return;
         if (tvUserInteracted.current) return;
 
@@ -128,12 +128,18 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
 
         if (!matchedOffer) return;
 
-        const index = tvPlans.findIndex(o => o.idPaquete === matchedOffer!.idPaquete);
+        const index = tvPlans.findIndex(o => o.idPaquete === matchedOffer.idPaquete);
         if (index !== -1) setSelectedIndex(index);
 
         queueMicrotask(() => {
-            setUserAnswers(prev => ({ ...prev, tv: { paquete: matchedOffer!, total: Number(matchedOffer!.precioPaquete) || 0 } }));
-        });
+            setUserAnswers(prev => ({
+                ...prev,
+                tv: {
+                    paquete: matchedOffer,
+                    total: Number(matchedOffer!.precioPaquete) || 0
+                }
+            }));
+        })
     }, [preSeleccion.seleccionPaquete, setUserAnswers, tvPlans, userAnswers.tv?.paquete]);
 
     useEffect(() => {
@@ -199,7 +205,7 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
                 {(tvPlans || []).map((card: OfferItem, index) => {
                     const isSelected = selectedIndex === index;
                     return (
-                        <div key={index} className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}>
+                        <div key={card.idPaquete} className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}>
                             <Card isPressable={handleIsPressable(card)} onPress={() => handleSelect(index, card)} isDisabled={!handleIsPressable(card)} classNames={{
                                 base: "flex flex-col rounded-xs shadow-none h-full w-full",
                                 header: "pt-[16px] pb-[8px]",

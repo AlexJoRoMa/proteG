@@ -19,8 +19,10 @@ interface CheckoutContextType {
   paypalIcon: EntrySkeletonType<ResumenIcon>
   copyResumen: {}
   setIsStepValid: (value: boolean) => void
-  checkboxChecked: boolean
-  setCheckboxChecked: (value: boolean) => void
+  conditionCheckboxChecked: boolean
+  setConditionCheckboxChecked: (value: boolean) => void
+  privacyCheckboxChecked: boolean
+  setPrivacyCheckboxChecked: (value: boolean) => void
 
   //states steps
   datosContratacion: Partial<DatosContratacion>,
@@ -79,7 +81,8 @@ export const CheckoutProvider = ({
   const formGetters = useRef<Record<number, FormDataGetter>>({})
   const [stepValidators, setStepValidators] = useState<Record<number, () => Promise<boolean>>>({})
   const [isStepValid, setIsStepValid] = useState(false)
-  const [checkboxChecked, setCheckboxChecked] = useState(false);
+  const [conditionCheckboxChecked, setConditionCheckboxChecked] = useState(false);
+  const [privacyCheckboxChecked, setPrivacyCheckboxChecked] = useState(false);
   const [getCapacity, setGetCapacity] = useState<Record<string, string>[] | null>(null);
   const [paymentReference, setPaymentReference] = useState<Partial<PaymentReference> | undefined>(undefined);
   const [cardRecurrent, setCardRecurrent] = useState<boolean>(false);
@@ -216,8 +219,10 @@ export const CheckoutProvider = ({
     registerStepValidator,
     isStepValid,
     setIsStepValid,
-    checkboxChecked,
-    setCheckboxChecked,
+    conditionCheckboxChecked,
+    setConditionCheckboxChecked,
+    privacyCheckboxChecked,
+    setPrivacyCheckboxChecked,
     datosContratacion,
     setDatosContratacion,
     getCapacity,

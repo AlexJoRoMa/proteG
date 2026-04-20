@@ -397,6 +397,8 @@ export default function ResumenContainer() {
 
             await handler(stepData);
 
+            window.scrollTo({ top:0, behavior: 'smooth'});
+
         } finally {
             isSubmittingRef.current = false;
             setLoading(false)
