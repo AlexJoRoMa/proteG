@@ -1,5 +1,6 @@
 'use client'
 
+import AccordionPlanesExtras from "@/components/molecules/configurador/accordionPlanesExtras";
 import LinkModal from "@/components/atoms/LinkModal";
 import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
 import { CheckPlanesIcon } from "@/constants/IconsConstants";
@@ -213,6 +214,10 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
                         )
                     })
                 }
+            </div>
+
+            <div>
+                {selectedIndex !== null && !userAnswers.tv && <AccordionPlanesExtras />}
             </div>
         </div>
     );

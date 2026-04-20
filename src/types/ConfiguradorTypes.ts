@@ -233,7 +233,11 @@ export interface UserAnswers {
     total?: number,
     internet?: {
         paquete?: OfferItem | null,
-        total?: number
+        total?: number,
+        ott?: {
+            planes: OttProps[],
+            total: number
+        }
     },
     movil?: {
         paquete?: OfferItem | null,

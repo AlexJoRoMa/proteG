@@ -25,6 +25,12 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
             spMovil: userAnswers.internet?.paquete?.spMovil,
             spTV: userAnswers.internet?.paquete?.spTV,
             autoinstalacion: userAnswers.internet?.paquete?.autoinstalacion,
+            ...(userAnswers.internet?.ott?.planes?.length && userAnswers.internet.ott.planes.length > 0 &&
+            {
+                extrasMap: {
+                    ott: userAnswers.internet.ott.planes
+                }
+            })
         });
         return;
     }
@@ -76,6 +82,12 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
             spMovil: userAnswers.internet?.paquete?.spMovil,
             spTV: userAnswers.internet?.paquete?.spTV,
             autoinstalacion: userAnswers.internet?.paquete?.autoinstalacion,
+            ...(userAnswers.internet?.ott?.planes?.length && userAnswers.internet.ott.planes.length > 0 &&
+            {
+                extrasMap: {
+                    ott: userAnswers.internet.ott.planes
+                }
+            }),
             extras: {
                 idPaquete: userAnswers.movil?.paquete?.idPaquete,
                 idExtra: userAnswers.movil?.paquete?.idExtra,
