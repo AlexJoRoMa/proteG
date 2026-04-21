@@ -145,7 +145,6 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
                                     }}>
                                     <CardHeader>
                                         <div className="flex flex-col text-start">
-
                                             <p className={`text-base font-normal leading-[27px] ${card.velocidadMinima === card.velocidadMaxima ? 'invisible' : ''}`}>{`${offersCopys.internet.cards.preVelocidad} ${card.velocidadMinima} ${offersCopys.internet.cards.posVelocidad}`}</p>
                                             <p className="leading-[27px] font-extrabold text-2xl">{`${card.velocidadMaxima} ${offersCopys.internet.cards.unidadVelocidad}`}</p>
                                         </div>

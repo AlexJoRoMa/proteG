@@ -11,7 +11,7 @@ import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export default function PlanesTv({ step, preSeleccion }: StepProps) {
-    const { configuradorEntry, setUserAnswers, setDisabled, userAnswers, copysConfigurador } = useContent();
+    const { configuradorEntry, setUserAnswers, setDisabled, userAnswers, copysConfigurador, isLoading } = useContent();
 
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const tvUserInteracted = useRef(false);
@@ -214,7 +214,7 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
                             }}>
                                 <CardHeader>
                                     <div className="flex flex-col text-start">
-                                        <h1 className="text-2xl font-extrabold leading-[24px]">{card.titulo}</h1>
+                                        <h1 className={`text-2xl font-extrabold leading-[24px] ${isLoading ? 'text-gray-200' : 'text-black-0'}`}>{card.titulo}</h1>
                                     </div>
                                 </CardHeader>
                                 <CardBody>

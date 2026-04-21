@@ -200,6 +200,9 @@ export type DataFields = {
     disabled: boolean,
     setDisabled: React.Dispatch<React.SetStateAction<boolean>>,
     rehydrated: boolean,
+    isLoading:boolean,
+    setIsLoading:  React.Dispatch<React.SetStateAction<boolean>>,
+
 }
 
 export interface Promotion {
