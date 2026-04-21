@@ -22,7 +22,7 @@ const TABS_CONFIG = (getValue: (key: string) => string, globalFlagDomicilio: boo
       key: "paypal",
       title: getValue("pago.paypal.titulo"),
       Component: PagoPayPal,
-      isHidden: true
+      isHidden: false
     }
   ];
 
