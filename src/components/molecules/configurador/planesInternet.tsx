@@ -10,7 +10,7 @@ import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { useEffect, useMemo, useRef } from "react";
 
 export default function PlanesInternet({ step, preSeleccion }: StepProps) {
-    const { configuradorEntry, setUserAnswers, disabled, userAnswers, copysConfigurador, rehydrated } = useContent();
+    const { configuradorEntry, setUserAnswers, disabled, userAnswers, copysConfigurador, rehydrated, isLoading } = useContent();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const plans = configuradorEntry?.offers?.DOBLE_PLAY as OfferItem[] || [];
@@ -145,9 +145,8 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
                                     }}>
                                     <CardHeader>
                                         <div className="flex flex-col text-start">
-                                            <p className={`text-base font-normal leading-[27px] ${card.velocidadMinima === card.velocidadMaxima ? 'invisible' : ''}`}>{`${offersCopys.internet.cards.preVelocidad} ${card.velocidadMinima} ${offersCopys.internet.cards.posVelocidad}`}</p>
-                                            <p className="leading-[27px] font-extrabold text-2xl">{`${card.velocidadMaxima} ${offersCopys.internet.cards.unidadVelocidad}`}</p>
-                                        </div>
+                                            <p className={`text-base font-normal leading-[27px] ${isLoading ? 'text-gray-200' : 'text-black-0'} ${card.velocidadMinima === card.velocidadMaxima ? 'invisible' : ''}`}>{`${offersCopys.internet.cards.preVelocidad} ${card.velocidadMinima} ${offersCopys.internet.cards.posVelocidad}`}</p>
+                                            <p className={`leading-[27px] font-extrabold text-2xl ${isLoading ? 'text-gray-200' : 'text-black-0'}`}>{`${card.velocidadMaxima} ${offersCopys.internet.cards.unidadVelocidad}`}</p></div>
                                     </CardHeader>
                                     <CardBody>
                                         <div className="flex items-stretch">
