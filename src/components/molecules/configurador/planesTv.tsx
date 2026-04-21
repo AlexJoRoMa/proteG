@@ -205,7 +205,7 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
                 {(tvPlans || []).map((card: OfferItem, index) => {
                     const isSelected = selectedIndex === index;
                     return (
-                        <div key={card.idPaquete} className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'border !rounded-md border-gray-150'}`}>
+                        <div key={card.idPaquete} className={`w-auto h-full rounded-sm p-[4px] ${isSelected ? 'bg-conic-custom' : 'bg-white'} border !rounded-md border-gray-150`}>
                             <Card isPressable={handleIsPressable(card)} onPress={() => handleSelect(index, card)} isDisabled={!handleIsPressable(card)} classNames={{
                                 base: "flex flex-col rounded-xs shadow-none h-full w-full",
                                 header: "pt-[16px] pb-[8px]",
