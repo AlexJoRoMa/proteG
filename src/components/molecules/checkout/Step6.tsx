@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
-import { Card, CardBody, Tab, Tabs, Radio, RadioGroup } from '@heroui/react'
+import { Radio, RadioGroup } from '@heroui/react'
 import PagoTecnico from './metodosPago/PagoTecnico';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import PaymentInfoBanner from './metodosPago/PaymentInfoBanner';
@@ -8,7 +8,7 @@ import PagoPayPal from './metodosPago/PagoPayPal';
 import PagoTarjeta from './metodosPago/PagoTarjeta';
 import { useCheckout } from '@/components/providers/CheckoutProvider';
 import { useIzziContent } from '@/components/providers/IzziProvider';
-import { MetodoPago, TabConfigItem } from '@/types/Contratacion';
+import { MetodoPago } from '@/types/Contratacion';
 import { CreditCardIcon, PayPalIcon, ToolboxIcon } from "@/constants/IconsConstants";
 
 const RadioStyles = {
@@ -21,33 +21,6 @@ const boxStyle = 'border border-gray-100 rounded-xl pt-4 pb-4 flex flex-col item
 const topMargin = 'mt-5 w-full px-4'
 const subTitleStyle = 'xsm:text-[16px] xl:text-[20px]'
 
-const TABS_CONFIG = (getValue: (key: string) => string, globalFlagDomicilio: boolean): TabConfigItem[] => {
-  const baseTabs: TabConfigItem[] = [
-    {
-      key: "creditCard",
-      title: getValue("pago.tarjet.titulo"),
-      Component: PagoTarjeta,
-      isHidden: false
-    },
-    {
-      key: "paypal",
-      title: getValue("pago.paypal.titulo"),
-      Component: PagoPayPal,
-      isHidden: true
-    }
-  ];
-
-  if (!globalFlagDomicilio) {
-    baseTabs.push({
-      key: "tecnico",
-      title: getValue("pago.tecnico.titulo"),
-      Component: PagoTecnico,
-      isHidden: false
-    });
-  }
-  return baseTabs;
-};
-
 const Step6 = () => {
 
   const { getValue } = useMicrocopies('contratacion-pago');
@@ -57,6 +30,7 @@ const Step6 = () => {
   const [radioState, setRadioState] = useState<MetodoPago | ''>('');
   
   useEffect(() => {
+    
     if (currentStep === totalSteps) {
       const isValid = radioState !== '';
       setIsStepValid(isValid);
@@ -68,6 +42,7 @@ const Step6 = () => {
         }
       }));
     }
+  
   }, [radioState, currentStep, totalSteps, setDatosContratacion, setIsStepValid])
 
   const handleRadioChange = (value: string) => {
