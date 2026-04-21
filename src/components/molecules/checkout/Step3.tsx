@@ -143,7 +143,9 @@ const Step3 = ({
 
         {radioState === 'Correo Electrónico'   && (
           <div className='bg-gray-50 rounded-lg mt-5 flex items-center gap-3 pl-4 pt-3 pb-4'>
-            <InfoIcon />
+            <div className='flex-shrink-0'>
+              <InfoIcon />
+            </div>
             <p className='text-[16px]'>
               {getValue('verificacion.radio.correo.spam')}
             </p>
