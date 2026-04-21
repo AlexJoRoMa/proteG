@@ -62,7 +62,7 @@ export default function Checkout() {
 
             {/* CheckoutContent separado - solo visible en desktop */}
             {isDesktop && (
-                <div className="hidden xl:block">
+                <div className="hidden min-[1280px]:block">
                     <CheckoutContent />
                 </div>
             )}
