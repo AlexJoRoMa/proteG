@@ -20,10 +20,10 @@ const CheckoutSteps = ({ isDesktop }: CheckoutStepsProps) => {
 
   return (
     <>
-      <div className="px-[var(--spacing-sm)] 4xl:px-[var(--spacing-xl)] 3xl:px-[var(--spacing-lg)] 2xl:px-[var(--spacing-md)] sm:px-[var(--spacing-sm)] xl:px-0 !w-full">
+      <div className="px-[var(--spacing-sm)] 4xl:px-[var(--spacing-xl)] 3xl:px-[var(--spacing-lg)] 2xl:px-[var(--spacing-md)] sm:px-[var(--spacing-sm)] min-[1280px]:px-0 !w-full">
 
         {/* Layout unificado que se adapta con Tailwind */}
-        <div className='flex flex-col xl:flex-row xl:justify-between items-stretch pt-[24px] pb-[15px] border-gradient-fixed-main w-full'>
+        <div className='flex flex-col min-[1280px]:flex-row min-[1280px]:justify-between items-stretch pt-[24px] pb-[15px] border-gradient-fixed-main w-full'>
           {stepsArray.map((stepName, index) => {
             const stepNumber = index + 1
             const isClickable = canGoToStep(stepNumber)
@@ -34,14 +34,14 @@ const CheckoutSteps = ({ isDesktop }: CheckoutStepsProps) => {
               <React.Fragment key={index}>
                 {/* Step - se adapta automáticamente */}
                 <div data-index={index}
-                  className={`flex w-full xl:w-[16.6%] gap-[8px] text-center py-2 xl:py-0 xl:items-center xl:justify-between mb-0 pb-0 xl:flex-col flex-row items-center justify-center xl:!border-hidden 
-                  ${isActive ? "border-none" : "border-b-2 border-b-gray-100 mb-2 xl:mb-0 xl:pb-0 pb-[18px]"}
+                  className={`flex w-full min-[1280px]:w-[16.6%] gap-[8px] text-center py-2 min-[1280px]:py-0 min-[1280px]:items-center min-[1280px]:justify-between mb-0 pb-0 min-[1280px]:flex-col flex-row items-center justify-center min-[1280px]:!border-hidden
+                  ${isActive ? "border-none" : "border-b-2 border-b-gray-100 mb-2 min-[1280px]:mb-0 min-[1280px]:pb-0 pb-[18px]"}
                   ${isComplete ? "border-gradient-fixed " : "border-b-2 border-b-gray-100"}
                   ${isClickable ? 'cursor-pointer hover:opacity-75 transition-opacity' : 'cursor-default'
                     }`}
                   onClick={() => isClickable ? goToStep(stepNumber) : undefined}
                 >
-                  <div className='flex gap-[8px] w-full flex-row xl:flex-col items-center xl:items-center'>
+                  <div className='flex gap-[8px] w-full flex-row min-[1280px]:flex-col items-center min-[1280px]:items-center'>
                     {isComplete ? (
                       <span className='rounded-full w-8 h-8 flex justify-center items-center bg-gray-450'>
                         <CheckStepIcon />
@@ -52,9 +52,9 @@ const CheckoutSteps = ({ isDesktop }: CheckoutStepsProps) => {
                       </span>
                     )}
                     <h4
-                      className={`text-[20px] pl-3 xl:pl-0
+                      className={`text-[20px] pl-3 min-[1280px]:pl-0
                       ${isActive || isComplete ? 'font-semibold text-black-0' : 'font-normal'}
-                      xl:text-[clamp(12px, 1.5vw, 20px)] xl:w-[180px] leading-tight
+                      min-[1280px]:text-[clamp(12px,_1.5vw,_20px)] min-[1280px]:w-[180px] leading-tight
                       ${isActive ? 'text-black-0' : 'text-[#AEAEB5]'}`
                       }
                     >
@@ -66,7 +66,7 @@ const CheckoutSteps = ({ isDesktop }: CheckoutStepsProps) => {
 
                 {/* CheckoutContent - solo en móvil, después del step actual */}
                 {!isDesktop && currentStep === stepNumber && (
-                  <div className={`xl:hidden w-full border-gradient-fixed mb-[8px]`}>
+                  <div className={`min-[1280px]:hidden w-full border-gradient-fixed mb-[8px]`}>
                     <CheckoutContent />
                   </div>
                 )}
@@ -76,7 +76,7 @@ const CheckoutSteps = ({ isDesktop }: CheckoutStepsProps) => {
         </div>
       </div>
 
-      <div className='block xl:hidden'>
+      <div className='block min-[1280px]:hidden'>
         {/* Espacio para posibles futuros elementos laterales */}
         <div className='h-[190px]'>
           <ResumenContainer />
