@@ -28,7 +28,6 @@ export const ConfiguradorProvider = ({
 
     const [userAnswers, setUserAnswers] = useState<UserAnswers>({})
     const [izziSelection, setIzziSelection] = useState<IzziSelection | null>(null);
-    const [infoDrawerContent, setInfoDrawerContent] = useState<string>("");
     const [disabled, setDisabled] = useState<boolean>(false);
     const [rehydrated, setRehydrated] = useState(false);
 
@@ -100,8 +99,6 @@ export const ConfiguradorProvider = ({
         izziSelection,
         setIzziSelection,
         ottsImages,
-        infoDrawerContent,
-        setInfoDrawerContent,
         disabled,
         setDisabled,
         rehydrated,
@@ -114,7 +111,6 @@ export const ConfiguradorProvider = ({
         userAnswers, 
         izziSelection, 
         ottsImages, 
-        infoDrawerContent, 
         disabled, 
         rehydrated
     ]);

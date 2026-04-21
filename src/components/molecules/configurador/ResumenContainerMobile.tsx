@@ -207,7 +207,6 @@ export default function ResumenContainerMobile() {
                                                 )
                                             )
                                         }
-                                        {/* <div className="font-bold">{infoDrawerContent}</div> */}
                                     </div>
                                     <button
                                         className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"

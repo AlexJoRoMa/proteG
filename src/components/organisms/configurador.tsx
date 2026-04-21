@@ -185,7 +185,7 @@ export default async function Configurador() {
                         <div id="resumen-end" className="h-[1px]" />
 
                         {/* Resumen desktop*/}
-                        <div className="hidden xl:block sticky top-[120px]">
+                        <div className="hidden xl:block sticky top-[120px] mb-[24px]">
                             <div className="border rounded-md border-gray-150 w-full px-[16px] pt-[24px] bg-white-0">
                                 <ResumenContainerDesktop />
                             </div>

@@ -193,8 +193,6 @@ export type DataFields = {
     setIzziSelection: React.Dispatch<React.SetStateAction<IzziSelection | null>>,
     resumenIcon: EntrySkeletonType<ResumenIcon>,
     ottsImages: Entry<EntrySkeletonType<OttsImages>>[],
-    infoDrawerContent: string,
-    setInfoDrawerContent: React.Dispatch<React.SetStateAction<string>>,
     disabled: boolean,
     setDisabled: React.Dispatch<React.SetStateAction<boolean>>,
     rehydrated: boolean,
