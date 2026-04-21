@@ -191,8 +191,6 @@ export type DataFields = {
     setUserAnswers: React.Dispatch<React.SetStateAction<UserAnswers>>,
     izziSelection: IzziSelection | null,
     setIzziSelection: React.Dispatch<React.SetStateAction<IzziSelection | null>>,
-    checkedPromotions: boolean,
-    setCheckedPromotions: React.Dispatch<React.SetStateAction<boolean>>,
     resumenIcon: EntrySkeletonType<ResumenIcon>,
     ottsImages: Entry<EntrySkeletonType<OttsImages>>[],
     infoDrawerContent: string,

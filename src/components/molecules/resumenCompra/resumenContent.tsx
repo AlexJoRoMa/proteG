@@ -1,10 +1,10 @@
-import ResumenPaquetes from "./resumenPaquetes";
 import { FormatCurrency, FormatPromotions } from "@/utils/Currency";
 import { ResumenContentProps } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { useEffect, useState } from "react";
-import { Promos } from "@/types/ConfiguradorTypes";
+import { internetComponentFields, Promos, tvComponentFields } from "@/types/ConfiguradorTypes";
 import { mesIds } from "@/constants/ResumenConstants";
+import { CircleCheckGreen, PiggyBank } from "@/constants/IconsConstants";
 
 function calcularPromos(promos: Promos[] | undefined) {
     const maxMeses = mesIds.length;
@@ -75,13 +75,13 @@ function obtenerArray(mesesPromos: { totalPromo: number }[]) {
 export default function ResumenContent({ copys, userSelection }: ResumenContentProps) {
 
     const resumenCopys = copys;
-    const userAnswers = userSelection;
 
-    const { promoData, globalIzziSelection, setPrecioTotal, setPrecioCombinado, checkSwitch, setTotalSinDescuento } = useIzziContent();
-    const { globalCheckedPromotions, setAhorroTotal } = useIzziContent();
+    const { promoData, globalIzziSelection, setPrecioTotal, setPrecioCombinado, checkSwitch, setTotalSinDescuento, checkedPromotions, setAhorroTotal, globalUserAnswers } = useIzziContent();
     const [validateSwitch, setValidateSwitch] = useState(checkSwitch);
     const [priceTotal, setPriceTotal] = useState(0);
 
+    const internet = globalUserAnswers.internet as unknown as internetComponentFields | undefined;
+    const tv = globalUserAnswers.tv as unknown as tvComponentFields | undefined;
 
     useEffect(() => {
         setValidateSwitch(checkSwitch)
@@ -129,7 +129,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
         + Number(userSelection?.tv?.paquete?.precioTachado || userSelection?.tv?.paquete?.precioPaquete || 0)
         + (totalOttPrice || 0);
 
-    const precioTotal = globalCheckedPromotions ?
+    const precioTotal = checkedPromotions ?
         promoData.promos ?
             totalSinDescuento - ahorroCombinado - (Math.abs(Number(totalPromoPrice)) || 0) :
             totalSinDescuento - ahorroCombinado :
@@ -156,122 +156,187 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     }, [validateSwitch, precioTotal])
 
 
-
-
-
-
     return (
-        <>
+        <section className="flex flex-col gap-[32px] pb-[32px] pt-0 xl:pb-0">
 
-            <ResumenPaquetes copys={resumenCopys} userSelection={userAnswers} />
-
-            <>
-                <div className="py-[24px] border-b-1 border-b-gray-150">
-                    <div className="flex justify-between items-center w-full font-normal leading-[24px] text-lg">
-                        <h5>{resumenCopys.total.sinDescuentos}</h5>
-                        <h5 className="font-bold">{FormatCurrency(Number(totalSinDescuento))}</h5>
-                    </div>
-                </div>
-                {
-                    (globalCheckedPromotions && (ahorroCombinado !== 0 || (promoVisible && promoVisible?.length > 0)) || validateSwitch) && (
-                        <div className="flex flex-col gap-[8px] py-[24px] border-b-1 border-b-gray-150">
-                            <h1 className="font-bold text-base leading-[24px] mb-[24px]">{resumenCopys.ahorro.titulo}</h1>
-
-                            <div className="w-full font-normal leading-[24px] text-lg space-y-2">
-                                {(globalCheckedPromotions && (ahorroCombinado !== 0 || (promoVisible && promoVisible?.length > 0))) && (
-                                    <div className="flex justify-between w-full">
-                                        <h5 className="text-left mr-[8px]">{resumenCopys.ahorro.paquete}</h5>
-                                        <h5 className="text-right">-{FormatPromotions(ahorroCombinado)}</h5>
-                                    </div>
-                                )}
-
-
-                                {
-                                    promoVisible?.map((promo, index) => {
-                                        return (
-                                            <div key={index} className="flex justify-between w-full">
-                                                <h5 className="text-left mr-[8px]">{promo.promoName}</h5>
-                                                {/* <h5 className="text-right">-{FormatPromotions(Math.abs(Number(promo.promoPrice)))}</h5> */}
-                                                <h5 className="text-right">{FormatPromotions(promo.promoPrice)}</h5>
-                                            </div>
-                                        )
-                                    })
-                                }
-
-                                {validateSwitch && (
-                                    <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
-                                        <h5>{resumenCopys.ahorro.domicilio}</h5>
-                                        <h5>-{FormatCurrency(Number(50))}</h5>
-                                    </div>
-                                )}
-
-                            </div>
-                        </div>
-                    )}
-
-            </>
-
-            <div className="flex flex-col gap-[32px]">
-
-                <>
-                    <div className="flex justify-between w-full font-bold leading-[32px] xl:leading-[40px] text-2xl xl:text-[32px] pt-[24px]">
-                        <h2>{resumenCopys.total.titulo}</h2>
-                        <h2>
+            <div className="flex flex-col">
+                <div className={`flex justify-between w-full ${checkedPromotions ? "mt-[24px]" : "mt-0 xl:mt-[24px]"}`}>
+                    <h2 className="font-bold text-lg leading-[24px] xl:text-xl xl:leading-[40px]">
+                        {resumenCopys.total.titulo}
+                    </h2>
+                    <div className="flex flex-col items-end">
+                        <h2 className="leading-[40px] text-[32px] font-bold">
                             {
-                                globalCheckedPromotions ? (
+                                checkedPromotions ? (
                                     FormatPromotions(Number(priceTotal))
                                 ) : (
                                     FormatCurrency(Number(priceTotal))
                                 )
                             }
                         </h2>
-                    </div>
-                    <div className={`flex flex-col gap-[8px] ${validateSwitch ? "mb-[24px]" : "mb-0"}`}>
-                        {/* {     
-                            ottPromos &&
-                            ottPromos?.filter(promo => promo.permanente.toLowerCase() === 'no')
-                                .map((promo, index) => (
-                                    <div key={index} className="flex justify-between w-full font-normal leading-[24px] text-lg">
-                                        <h5>Después de {promo.meses} meses pagarás</h5>
-                                        <h5>{FormatCurrency(precioTotal + (totalAfterPromos + Math.abs(Number(promo.promoPrice))))}</h5>
-                                    </div>
-                                ))
-                        }
-                        */}
                         {
-                            (descuentoMeses.length > 0) &&
-                            <>
-                                {
-                                    descuentoMeses.map((item) => {
-                                        const precioDespues = validateSwitch ? totalSinDescuento - Number(ahorroCombinado) + item.totalPromo - 50 : totalSinDescuento - Number(ahorroCombinado) + item.totalPromo;
-                                        const copyMes = resumenCopys.ahorro.meses[item.mesId];
-
-                                        return (
-                                            <div key={item.mesNumero} className="flex justify-between w-full font-normal leading-[24px] text-lg space-y-2">
-                                                <h5>{copyMes}</h5>
-                                                <h5>{FormatPromotions(precioDespues)}</h5>
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </>
+                            checkedPromotions && (
+                                <h1 className="font-normal text-sm leading-[16px] text-gray-200">
+                                    {resumenCopys.total.primerMes}
+                                </h1>
+                            )
                         }
                     </div>
+                </div>
 
-                    {!validateSwitch && (
-                        <div className="flex flex-col gap-[8px] mb-[32px]">
-                            <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
-                                <h5>{resumenCopys.ahorro.domicilio}</h5>
-                                <h5>-{FormatCurrency(Number(50))}</h5>
+                {
+                    checkedPromotions && (
+
+                        <div className="flex flex-col gap-[20px]">
+
+                            <div className="flex justify-between items-center w-full mt-[12px]">
+                                <div className="flex gap-[8px] items-baseline">
+                                    <h2 className="font-bold text-lg leading-[24px]">
+                                        {resumenCopys.total.sinDescuentos}
+                                    </h2>
+                                    <p className="font-normal text-lg leading-[24px] line-through text-gray-200">
+                                        {FormatPromotions(Number(totalSinDescuento))}
+                                    </p>
+                                </div>
+
+                                <div className="flex gap-[8px] rounded-md bg-yellow-100 py-[8px] px-[12px] font-bold text-lg leading-[24px]">
+                                    <h2>
+                                        {resumenCopys.ahorro.titulo}
+                                    </h2>
+                                    <p>
+                                        {
+                                            FormatPromotions(Number(totalSinDescuento - priceTotal))
+                                        }
+                                    </p>
+                                </div>
                             </div>
-                            <h5 className="w-full font-normal leading-[24px] text-base text-gray-250">
-                                {resumenCopys.ahorro.infoAdicional}
-                            </h5>
-                        </div>
-                    )}
 
-                </>
-            </div >
-        </>
+                            {
+                                (checkedPromotions && (ahorroCombinado !== 0 || (promoVisible && promoVisible?.length > 0)) || validateSwitch) && (
+                                    <div className="flex flex-col gap-[20px] py-[16px] px-[12px] rounded-md border-1 border-green-700">
+
+                                        <div className="w-full font-bold leading-[24px] text-base space-y-5">
+                                            {
+                                                (checkedPromotions && (ahorroCombinado !== 0 || (promoVisible && promoVisible?.length > 0))) && (
+                                                    <div className="flex flex-row justify-between w-full">
+                                                        <div className="flex gap-[4px]">
+                                                            <div className="w-[24px] h-[24px]">
+                                                                <CircleCheckGreen />
+                                                            </div>
+                                                            {/* <h5 className="text-left mr-[8px]">{resumenCopys.ahorro.paquete}</h5> */}
+                                                            <h5>{resumenCopys.ahorro.paquete}</h5>
+                                                        </div>
+                                                        <h5 className="text-right text-green-700">-{FormatPromotions(ahorroCombinado)}</h5>
+                                                    </div>
+                                                )
+                                            }
+
+                                            {
+                                                promoVisible?.map((promo, index) => {
+                                                    return (
+                                                        <div key={index} className="flex justify-between w-full">
+                                                            <div className="flex gap-[4px]">
+                                                                <div className="w-[24px] h-[24px]">
+                                                                    <CircleCheckGreen />
+                                                                </div>
+                                                                <h5 className="text-left mr-[8px]">{promo.promoName}</h5>
+                                                            </div>
+                                                            {/* <h5 className="text-right">-{FormatPromotions(Math.abs(Number(promo.promoPrice)))}</h5> */}
+                                                            <h5 className="text-right text-green-700">{FormatPromotions(promo.promoPrice)}</h5>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+
+                                            {
+                                                validateSwitch &&
+                                                (
+                                                    <div className="flex justify-between w-full">
+                                                        <div className="flex gap-[4px]">
+                                                            <div className="w-[24px] h-[24px]">
+                                                                <CircleCheckGreen />
+                                                            </div>
+                                                            <h5 className="text-left mr-[8px]">
+                                                                {resumenCopys.ahorro.domiciliacion.descuento}
+                                                            </h5>
+                                                        </div>
+
+                                                        <h5 className="text-right text-green-700">-{FormatPromotions(Number(50))}</h5>
+                                                    </div>
+                                                )
+                                            }
+                                        </div>
+                                    </div>
+                                )
+                            }
+                        </div>
+                    )
+                }
+            </div>
+
+            {
+                !checkedPromotions && ((internet && tv) ?
+                    (
+                        <div className="flex gap-[4px] py-[16px] px-[12px] rounded-md border-1 border-green-700">
+                            <h1 className="font-bold text-base leading-[24px]">
+                                {resumenCopys.informacion.promociones}
+                            </h1>
+                            <p className="font-bold text-base leading-[24px] text-green-700">
+                                {FormatCurrency(ahorroCombinado)}
+                            </p>
+                        </div>
+                    ) :
+                    (
+                        <div className="py-[16px] px-[12px] rounded-md border-1 border-green-700">
+                            <h1 className="font-bold text-base leading-[24px]">
+                                {resumenCopys.informacion.combinaciones}
+                            </h1>
+                        </div>
+                    )
+                )
+            }
+
+
+            {
+                (descuentoMeses.length > 0 && checkedPromotions) &&
+                <div className="flex flex-col py-[16px] px-[12px] rounded-md gap-[20px] bg-gray-50">
+                    <h1 className="font-bold text-base xl:text-lg leading-[24px]">
+                        {resumenCopys.ahorro.proximosPagos}
+                    </h1>
+                    {
+                        descuentoMeses.map((item) => {
+                            const precioDespues = validateSwitch ? totalSinDescuento - Number(ahorroCombinado) + item.totalPromo - 50 : totalSinDescuento - Number(ahorroCombinado) + item.totalPromo;
+                            const copyMes = resumenCopys.ahorro.meses[item.mesId];
+
+                            return (
+                                <div key={item.mesNumero} className="flex justify-between w-full font-normal leading-[24px] text-base space-y-2">
+                                    <h5>{copyMes}</h5>
+                                    <h5>{FormatPromotions(precioDespues)}</h5>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            }
+
+            {
+                (checkedPromotions && !validateSwitch) && (
+                    <div className="flex flex-row gap-[8px] py-[12px]">
+                        <div className="w-[32px] h-[32px]">
+                            <PiggyBank />
+                        </div>
+                        <div className="text-base xl:text-lg leading-[24px]">
+                            <h1 className="font-bold">
+                                {resumenCopys.ahorro.domiciliacion.titulo}
+                            </h1>
+                            <p>
+                                {resumenCopys.ahorro.domiciliacion.subtitulo}
+                            </p>
+                        </div>
+                    </div>
+                )
+            }
+
+        </section>
     )
 }

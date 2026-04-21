@@ -28,12 +28,11 @@ export const ConfiguradorProvider = ({
 
     const [userAnswers, setUserAnswers] = useState<UserAnswers>({})
     const [izziSelection, setIzziSelection] = useState<IzziSelection | null>(null);
-    const [checkedPromotions, setCheckedPromotions] = useState<boolean>(false);
     const [infoDrawerContent, setInfoDrawerContent] = useState<string>("");
     const [disabled, setDisabled] = useState<boolean>(false);
     const [rehydrated, setRehydrated] = useState(false);
 
-    const { setGlobalUserAnswers, setGlobalIzziSelection, globalUserAnswers, setGlobalCheckedPromotions, setGlobalFlagDomicilio, setCoberturaData, setFormattedAddress } = useIzziContent();
+    const { setGlobalUserAnswers, setGlobalIzziSelection, globalUserAnswers, setGlobalFlagDomicilio, setCoberturaData, setFormattedAddress } = useIzziContent();
 
     // Sincronizar datos de cobertura desde las cookies al IzziProvider
     useEffect(() => {
@@ -71,7 +70,6 @@ export const ConfiguradorProvider = ({
 
     useEffect(() => setGlobalUserAnswers(userAnswers), [userAnswers, setGlobalUserAnswers]);
     useEffect(() => setGlobalIzziSelection(izziSelection), [izziSelection, setGlobalIzziSelection]);
-    useEffect(() => setGlobalCheckedPromotions(checkedPromotions), [checkedPromotions, setGlobalCheckedPromotions]);
     useEffect(() => {
         if (!!userAnswers.internet) {
             setGlobalFlagDomicilio(false);
@@ -101,8 +99,6 @@ export const ConfiguradorProvider = ({
         setUserAnswers,
         izziSelection,
         setIzziSelection,
-        checkedPromotions,
-        setCheckedPromotions,
         ottsImages,
         infoDrawerContent,
         setInfoDrawerContent,
@@ -117,7 +113,6 @@ export const ConfiguradorProvider = ({
         cobertura, 
         userAnswers, 
         izziSelection, 
-        checkedPromotions, 
         ottsImages, 
         infoDrawerContent, 
         disabled, 
