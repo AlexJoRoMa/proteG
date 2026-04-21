@@ -176,17 +176,18 @@ export default function ResumenContainer() {
             return;
         }
 
+        setModalName("modal-generico");
+        setModalLoading(true);
+
         // Flujo específico para pago con técnico: reintentos + modal
         if (metodoPago === "tecnico") {
-            const success = await runWithModal(
-                () => runSubmitCapacityWithRetries(),
-                "modal-generico"
-            );
+            const success = await runSubmitCapacityWithRetries();
 
             if (success) {
                 router.push("/thank-you");
             } else {
                 console.error("SubmitCapacity failed after 3 attempts for pago tecnico");
+                setModalLoading(false);
                 router.push("/error");
             }
 
@@ -198,6 +199,8 @@ export default function ResumenContainer() {
 
         if (submitResponse) {
             router.push("/thank-you");
+        } else {
+            setModalLoading(false);
         }
     }
 
