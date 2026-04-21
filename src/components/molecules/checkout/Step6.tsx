@@ -54,28 +54,25 @@ const Step6 = () => {
   const { globalFlagDomicilio } = useIzziContent();
   const { setDatosContratacion, currentStep, setIsStepValid, totalSteps } = useCheckout();
 
-  const [selectedTab, setSelectedTab] = useState<MetodoPago>("creditCard");
-  const tabsConfig = TABS_CONFIG(getValue, globalFlagDomicilio);
-
   const [radioState, setRadioState] = useState<MetodoPago | ''>('');
-
+  
   useEffect(() => {
     if (currentStep === totalSteps) {
-      setIsStepValid(true);
+      const isValid = radioState !== '';
+      setIsStepValid(isValid);
       setDatosContratacion((prev) => ({
         ...prev,
         Pago: {
           ...prev.Pago,
-          metodoPago: selectedTab,
+          metodoPago: radioState as MetodoPago,
         }
       }));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStep]);
+  }, [radioState, currentStep, totalSteps, setDatosContratacion, setIsStepValid])
 
-  function handleTabChange(key: React.Key) {
-    const metodo = key as MetodoPago;
-    setSelectedTab(metodo);
+  const handleRadioChange = (value: string) => {
+    const metodo = value as MetodoPago
+    setRadioState(metodo)
 
     setDatosContratacion((prev) => ({
       ...prev,
@@ -84,7 +81,7 @@ const Step6 = () => {
         metodoPago: metodo,
       }
     }));
-  };
+  }
 
   return (
     <>
@@ -97,7 +94,7 @@ const Step6 = () => {
       wrapper: "flex flex-col w-full !gap-6",
       base: "h-full"
     }}
-    onValueChange={(val) => setRadioState(val as MetodoPago)}
+    onValueChange={handleRadioChange}
     >
 
       <p className={subTitleStyle}>{getValue('pago.tipo.titulo.linea')}</p>
@@ -137,24 +134,27 @@ const Step6 = () => {
       </div>
 
 
-      
-      <p className={subTitleStyle}>{getValue('pago.tipo.titulo.efectivo')}</p>
-      <div className={boxStyle}>
-        <div className='flex  gap-3 justify-between pr-4  w-full'>
-          <Radio
-            value='tecnico'
-            classNames={RadioStyles}
-          >
-            <p>{getValue('pago.tecnico.titulo')}</p>
-          </Radio>
-          <ToolboxIcon/>
-        </div>
-        {radioState === 'tecnico' && (
-          <div className={topMargin}>
-            <PagoTecnico/>
+      {!globalFlagDomicilio && (
+        <>
+          <p className={subTitleStyle}>{getValue('pago.tipo.titulo.efectivo')}</p>
+          <div className={boxStyle}>
+            <div className='flex  gap-3 justify-between pr-4  w-full'>
+              <Radio
+              value='tecnico'
+              classNames={RadioStyles}
+              >
+                <p>{getValue('pago.tecnico.titulo')}</p>
+              </Radio>
+              <ToolboxIcon/>
+            </div>
+            {radioState === 'tecnico' && (
+              <div className={topMargin}>
+                <PagoTecnico/>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
 
 
     </RadioGroup>
