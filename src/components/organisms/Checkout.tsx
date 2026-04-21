@@ -1,7 +1,7 @@
 'use client'
 
-import CheckoutContent from '@/components/layouts/checkout/CheckoutContent'
-import CheckoutSteps from '@/components/layouts/checkout/CheckoutSteps'
+import CheckoutDesktopShell from '@/components/organisms/CheckoutDesktopShell'
+import CheckoutMobileShell from '@/components/organisms/CheckoutMobileShell'
 import { useIzziContent } from '../providers/IzziProvider'
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -10,29 +10,10 @@ export default function Checkout() {
     const { formattedAddress, coberturaData, globalIzziSelection } = useIzziContent();
     const router = useRouter();
     const [isHydrated, setIsHydrated] = useState(false);
-    const [isDesktop, setIsDesktop] = useState(false);
 
     useEffect(() => {
         // Marcar como hidratado después de mount
         setIsHydrated(true);
-    }, []);
-
-    useEffect(() => {
-        const mediaQuery = window.matchMedia('(min-width: 1280px)');
-
-        const handleViewportChange = (event: MediaQueryListEvent) => {
-            setIsDesktop(event.matches);
-        };
-
-        setIsDesktop(mediaQuery.matches);
-
-        if (typeof mediaQuery.addEventListener === 'function') {
-            mediaQuery.addEventListener('change', handleViewportChange);
-            return () => mediaQuery.removeEventListener('change', handleViewportChange);
-        }
-
-        mediaQuery.addListener(handleViewportChange);
-        return () => mediaQuery.removeListener(handleViewportChange);
     }, []);
 
     useEffect(() => {
@@ -57,16 +38,8 @@ export default function Checkout() {
 
     return (
         <>
-            {/* CheckoutSteps maneja móvil + desktop steps, incluye CheckoutContent en móvil */}
-            <CheckoutSteps isDesktop={isDesktop} />
-
-            {/* CheckoutContent separado - solo visible en desktop */}
-            {isDesktop && (
-                <div className="hidden xl:block">
-                    <CheckoutContent />
-                </div>
-            )}
-
+            <CheckoutMobileShell />
+            <CheckoutDesktopShell />
         </>
     )
 }
