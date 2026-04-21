@@ -28,6 +28,7 @@ interface ResumenContainerProps {
 }
 
 export default function ResumenContainer({ variant }: ResumenContainerProps) {
+    const ATTACH_STATUS_SETTLE_DELAY_MS = 1200;
     const [loading, setLoading] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
     const [modalName, setModalName] = useState<string>("modal-generico");
@@ -140,8 +141,13 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         };
 
         try {
-            // AttachFiles
-            await showModaluntilAction(async () => await runAttachFiles(), "modal-documentos")
+            const attachCompleted = await runWithModal(
+                () => runAttachFiles(),
+                "modal-documentos"
+            );
+            if (!attachCompleted) {
+                return;
+            }
 
             if (!globalFlagDomicilio) {
                 // GetCapacity() 
@@ -211,9 +217,48 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         // logica adicional
     });
 
-    function runAttachFiles() {
-        runAttachIne();
-        runAttachComprobante();
+    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const refreshCurrentProcessStatus = async () => {
+        const currentProcessId = izziEnrrollRef.current;
+        if (!currentProcessId) {
+            return null;
+        }
+
+        const updatedStatus = await GetProcessStatus(currentProcessId);
+        if (updatedStatus) {
+            setProcessStatus(updatedStatus);
+            processStatusRef.current = updatedStatus;
+        }
+
+        return updatedStatus;
+    };
+
+    const getRequiredAttachInfo = (documentKey: "ine" | "comprobante") => {
+        const attachInfo = datosContratacionRef.current?.DocumentosTitular?.[documentKey];
+        const currentStatus = processStatusRef.current;
+
+        if (!currentStatus?.accountId || !currentStatus?.accountNumber) {
+            throw new Error(`No hay cuenta activa para adjuntar ${documentKey}.`);
+        }
+
+        if (!attachInfo?.fileName || !attachInfo?.fileExtension || !attachInfo?.data) {
+            throw new Error(`El payload de ${documentKey} no está listo para enviarse.`);
+        }
+
+        return attachInfo;
+    };
+
+    async function runAttachFiles(): Promise<boolean> {
+        await runAttachIne(true);
+        await sleep(ATTACH_STATUS_SETTLE_DELAY_MS);
+        await refreshCurrentProcessStatus();
+
+        await runAttachComprobante(true);
+        await sleep(ATTACH_STATUS_SETTLE_DELAY_MS);
+        await refreshCurrentProcessStatus();
+
+        return true;
     }
 
     const showModaluntilAction = async (
@@ -245,10 +290,10 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         }
     };
 
-    const runWithModal = async (
-        action: () => Promise<boolean>,
+    const runWithModal = async <T,>(
+        action: () => Promise<T>,
         modalKey: string
-    ): Promise<boolean> => {
+    ): Promise<T> => {
         setModalName(modalKey);
         setModalLoading(true);
 
@@ -277,17 +322,14 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
     const { trigger: runAttachIne, isLoading: loadingAttachIne } = useControlledAction({
         action: async () => {
-            const attachInfo = datosContratacionRef.current?.DocumentosTitular && datosContratacionRef.current?.DocumentosTitular.ine;
+            const attachInfo = getRequiredAttachInfo("ine");
 
             const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
 
             // Después de attachFiles, consultar processStatus una vez para actualizar waitingForAction
-            if (izziEnroll) {
-                const updatedStatus = await GetProcessStatus(izziEnroll);
-                if (updatedStatus) {
-                    setProcessStatus(updatedStatus);
-                }
+            if (data?.error || data?.code) {
+                throw new Error("Error adjuntando INE.");
             }
 
             return data;
@@ -299,17 +341,14 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
     const { trigger: runAttachComprobante, isLoading: loadingAttachComprobante } = useControlledAction({
         action: async () => {
-            const attachInfo = datosContratacionRef.current?.DocumentosTitular && datosContratacionRef.current?.DocumentosTitular.comprobante;
+            const attachInfo = getRequiredAttachInfo("comprobante");
 
             const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
 
             // Después de attachFiles, consultar processStatus una vez para actualizar waitingForAction
-            if (izziEnroll) {
-                const updatedStatus = await GetProcessStatus(izziEnroll);
-                if (updatedStatus) {
-                    setProcessStatus(updatedStatus);
-                }
+            if (data?.error || data?.code) {
+                throw new Error("Error adjuntando comprobante.");
             }
 
             return data;
