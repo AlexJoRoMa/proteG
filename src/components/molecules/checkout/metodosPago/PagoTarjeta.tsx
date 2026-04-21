@@ -7,7 +7,7 @@ import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { PaymentLiga } from "@/types/Contratacion";
-import { LoaderIcon, CreditCardIcon, PayPalIcon, ToolboxIcon } from "@/constants/IconsConstants";
+import { LoaderIcon, PiggyBank } from "@/constants/IconsConstants";
 
 export default function PagoTarjeta() {
 
@@ -64,9 +64,9 @@ export default function PagoTarjeta() {
 
     return (
         <section className="w-full flex flex-col items-center">
-            <div className="w-[97%] bg-gray-50 mx-3">
+            <div className="w-full bg-gray-50 mx-3">
             <div className='flex flex-row w-[96%] justify-between items-start bg-white rounded-xl border border-gray-100 p-3 mt-6 mx-3'>
-                <h1 className='flex flex-1 items-center font-normal text-[18px] leading-[24px]'>
+                <h1 className='flex flex-1 items-center font-normal xsm:text-[16px] xl:text-[18px] leading-[24px]'>
                     <span className="flex items-center gap-1 flex-wrap">
                         <PiggyBank />
                         <b>{getValue('pago.pagoRecurrente.titulo.negrillas')}</b>
@@ -87,7 +87,7 @@ export default function PagoTarjeta() {
                     }}
                 />
             </div>
-            <div className="mt-4 w-full text-[16px] leading-[24px] mb-5 pl-7">
+            <div className="mt-4 w-full xsm:text-[12px] xl:text-[16px] leading-[24px] mb-5 pl-7">
                 <p>
                     {getValue('pago.pagoRecurrente.subTitulo')}{' '}
                     <a
