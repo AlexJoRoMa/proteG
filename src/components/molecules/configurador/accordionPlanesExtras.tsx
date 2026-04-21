@@ -40,7 +40,7 @@ export default function AccordionPlanesExtras() {
         coverage: content.configuradorEntry?.coverageType
     } as unknown as PackageInfo;
 
-    const shouldFetch = Boolean(content.userAnswers.tv);
+    const shouldFetch = Boolean(content.userAnswers.tv || content.userAnswers.internet);
 
     const { data: ottsData, error: errorOtts, isLoading: loadingOtts } = useSWR(
         shouldFetch ? ['planes-extras', packageInfo] : null,
@@ -115,11 +115,14 @@ export default function AccordionPlanesExtras() {
     }
 
     useEffect(() => {
-        const ottsPlanes = content.userAnswers.tv?.ott?.planes;
+        const hasTv = Boolean(content.userAnswers.tv);
+        const ottsPlanes = hasTv
+            ? content.userAnswers.tv?.ott?.planes
+            : content.userAnswers.internet?.ott?.planes;
         if (ottsPlanes && ottsPlanes.length > 0) {
             setSelectedCard(ottsPlanes);
         }
-    }, [content.userAnswers.tv?.ott?.planes]);
+    }, [content.userAnswers.tv?.ott?.planes, content.userAnswers.internet?.ott?.planes, content.userAnswers.tv]);
 
     useEffect(() => {
         if (!planesExtras || planesExtras.length === 0) return;
@@ -154,7 +157,10 @@ export default function AccordionPlanesExtras() {
         if (!selectedCard) return;
 
         content.setUserAnswers((prev) => {
-            const prevOTT = prev.tv?.ott?.planes ?? [];
+            const hasTv = Boolean(prev.tv);
+            const prevOTT = hasTv
+                ? prev.tv?.ott?.planes ?? []
+                : prev.internet?.ott?.planes ?? [];
             const prevIds = prevOTT.map((plan) => plan.idExtra).join(",");
             const newIds = selectedCard.map((plan) => plan.idExtra).join(",");
 
@@ -162,16 +168,23 @@ export default function AccordionPlanesExtras() {
 
             const total = selectedCard.reduce((acc, item) => acc + Number(item.costo), 0);
 
-            return {
-                ...prev,
-                tv: {
-                    ...prev.tv,
-                    ott: {
-                        planes: selectedCard,
-                        total
+            if (hasTv) {
+                return {
+                    ...prev,
+                    tv: {
+                        ...prev.tv,
+                        ott: { planes: selectedCard, total }
                     }
-                }
-            };
+                };
+            } else {
+                return {
+                    ...prev,
+                    internet: {
+                        ...prev.internet,
+                        ott: { planes: selectedCard, total }
+                    }
+                };
+            }
         });
     }, [content, selectedCard]);
 
@@ -210,7 +223,7 @@ export default function AccordionPlanesExtras() {
                     </div>
                 )}
 
-                {planesExtras && planesExtras.length > 0 && (
+                {!loadingOtts && planesExtras && planesExtras.length > 0 && (
                     <div className="grid grid-cols-1 2xl:grid-cols-2 gap-[16px] 2xl:gap-[24px] auto-rows-fr">
 
                         {planesExtras && planesExtras.map((ott: OttProps, index: Key) => {

@@ -1,8 +1,8 @@
 'use client'
 
 import LinkModal from "@/components/atoms/LinkModal";
-import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
 import AccordionPlanesExtras from "@/components/molecules/configurador/accordionPlanesExtras";
+import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
 import { CheckPlanesIcon } from "@/constants/IconsConstants";
 import { OfferItem, OffersCopys, StepProps } from "@/types/ConfiguradorTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
