@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import { useCheckout } from "@/components/providers/CheckoutProvider"
+import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useControlledAction } from "@/hooks/checkout/useControlledAction";
 import { useGlobalProcessStatus } from "@/hooks/checkout/useGlobalProcessStatus";
 import { DatosContratacion } from "@/types/Contratacion";
@@ -22,6 +22,12 @@ import { ResumenData } from "@/types/ResumenCompra";
 import ResumenContent from "../resumenCompra/resumenContent";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { FormatCurrency } from "@/utils/Currency";
+import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
+import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
+import {
+    getCheckoutStepTrackingMeta,
+    type CheckoutStepMetaSerialized,
+} from "@/utils/checkoutStepTracking";
 
 interface ResumenContainerProps {
     variant: 'mobile' | 'desktop';
@@ -63,6 +69,12 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const processStatusRef = useRef(processStatus);
     const stepStatusRef = useRef<boolean | null>(null);
     const isSubmittingRef = useRef(false);
+    /** Dedupe por código de paso fijo (10–13, 19, 20), no por índice UI. */
+    const trackedStepsRef = useRef<Set<number>>(new Set());
+    const addShippingInfoTrackedRef = useRef(false);
+    const addPaymentInfoTrackedRef = useRef(false);
+
+    const CHECKOUT_SESSION_STORAGE_KEY = 'izzi-checkout-session-id';
 
     useEffect(() => {
         datosContratacionRef.current = datosContratacion;
@@ -95,7 +107,47 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             ...prev,
             DatosPersonales: stepData
         }));
-        nextStep()
+
+        if (!addShippingInfoTrackedRef.current && globalIzziSelection && globalIzziSelection.idPaquete && precioTotal) {
+            const { buildEcommerceLineItems, normalizeEcommerceValue, pushEcommerceEvent } = izziDataLayerHelpers;
+            const ecommerceValue = normalizeEcommerceValue(precioTotal);
+
+            const items = buildEcommerceLineItems(globalIzziSelection, {
+                precioTotal: ecommerceValue,
+                mainListId: "checkout",
+                mainListName: "Checkout - plan principal",
+                extrasListId: "checkout",
+                extrasListName: "Checkout - extras",
+            });
+
+            let checkoutSessionId: string | undefined;
+            if (typeof window !== "undefined") {
+                const existing = sessionStorage.getItem(CHECKOUT_SESSION_STORAGE_KEY);
+                if (existing) {
+                    checkoutSessionId = existing;
+                }
+            }
+
+            const additionalParams: Record<string, unknown> = {};
+            if (checkoutSessionId) {
+                additionalParams.checkout_session_id = checkoutSessionId;
+            }
+
+            pushEcommerceEvent(
+                EVENTS.ADD_SHIPPING_INFO,
+                {
+                    currency: CURRENCY,
+                    value: ecommerceValue,
+                    shipping_tier: "standard_installation",
+                    items,
+                },
+                Object.keys(additionalParams).length ? additionalParams : undefined
+            );
+
+            addShippingInfoTrackedRef.current = true;
+        }
+
+        nextStep();
     }
 
     //Step 3
@@ -183,6 +235,60 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
         if (!response) {
             return;
+        }
+
+        if (
+            !addPaymentInfoTrackedRef.current &&
+            metodoPago &&
+            globalIzziSelection &&
+            globalIzziSelection.idPaquete &&
+            precioTotal
+        ) {
+            const { buildEcommerceLineItems, normalizeEcommerceValue, pushEcommerceEvent } = izziDataLayerHelpers;
+            const ecommerceValue = normalizeEcommerceValue(precioTotal);
+
+            const items = buildEcommerceLineItems(globalIzziSelection, {
+                precioTotal: ecommerceValue,
+                mainListId: "checkout",
+                mainListName: "Checkout - plan principal",
+                extrasListId: "checkout",
+                extrasListName: "Checkout - extras",
+            });
+
+            let checkoutSessionId: string | undefined;
+            if (typeof window !== "undefined") {
+                const existing = sessionStorage.getItem(CHECKOUT_SESSION_STORAGE_KEY);
+                if (existing) {
+                    checkoutSessionId = existing;
+                }
+            }
+
+            let paymentType: string | undefined;
+            if (metodoPago === "creditCard") {
+                paymentType = "credit_card";
+            } else if (metodoPago === "paypal") {
+                paymentType = "bank_transfer";
+            } else if (metodoPago === "tecnico") {
+                paymentType = "oxxo";
+            }
+
+            const additionalParams: Record<string, unknown> = {};
+            if (checkoutSessionId) {
+                additionalParams.checkout_session_id = checkoutSessionId;
+            }
+
+            pushEcommerceEvent(
+                EVENTS.ADD_PAYMENT_INFO,
+                {
+                    currency: CURRENCY,
+                    value: ecommerceValue,
+                    payment_type: paymentType,
+                    items,
+                },
+                Object.keys(additionalParams).length ? additionalParams : undefined
+            );
+
+            addPaymentInfoTrackedRef.current = true;
         }
 
         // Flujo específico para pago con técnico: reintentos + modal
@@ -419,6 +525,94 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     };
 
     const steps = globalFlagDomicilio ? [step1, step2, step3, step4, step6] : [step1, step2, step3, step4, step5, step6];
+
+    useEffect(() => {
+        if (!globalIzziSelection || !globalIzziSelection.idPaquete) return;
+        if (!precioTotal) return;
+
+        const { buildEcommerceLineItems, normalizeEcommerceValue, normalizeUserData, pushEcommerceEvent } =
+            izziDataLayerHelpers;
+        const ecommerceValue = normalizeEcommerceValue(precioTotal);
+
+        const items = buildEcommerceLineItems(globalIzziSelection, {
+            precioTotal: ecommerceValue,
+            mainListId: "checkout",
+            mainListName: "Checkout - plan principal",
+            extrasListId: "checkout",
+            extrasListName: "Checkout - extras",
+        });
+
+        const stepMeta = getCheckoutStepTrackingMeta(currentStep, globalFlagDomicilio);
+        if (!stepMeta) return;
+
+        if (typeof window !== "undefined") {
+            sessionStorage.setItem("izzi-checkout-current-step", String(currentStep));
+            const serialized: CheckoutStepMetaSerialized = {
+                uiStep: stepMeta.uiStep,
+                flowStep: stepMeta.flowStep,
+                label: stepMeta.label,
+                analyticsStepName: stepMeta.analyticsStepName,
+            };
+            sessionStorage.setItem("izzi-checkout-step-meta", JSON.stringify(serialized));
+        }
+
+        if (!trackedStepsRef.current.has(stepMeta.flowStep)) {
+            const extraParams: Record<string, unknown> = {
+                /** Código fijo de paso (10–13, 19, 20). Pago = siempre 20 aunque el índice UI sea 5 o 6. */
+                checkout_step: stepMeta.flowStep,
+                checkout_step_ui: stepMeta.uiStep,
+                checkout_step_label: stepMeta.label,
+                checkout_step_name: stepMeta.analyticsStepName,
+            };
+
+            let checkoutSessionId: string | undefined;
+            if (typeof window !== "undefined") {
+                const existing = sessionStorage.getItem(CHECKOUT_SESSION_STORAGE_KEY);
+                if (existing) {
+                    checkoutSessionId = existing;
+                }
+            }
+
+            if (checkoutSessionId) {
+                extraParams.checkout_session_id = checkoutSessionId;
+            }
+
+            const datosPersonales = datosContratacion?.DatosPersonales?.personal;
+
+            if (datosPersonales) {
+                const userData = normalizeUserData({
+                    email: datosPersonales.email,
+                    phone: datosPersonales.phone,
+                    firstName: datosPersonales.firstName,
+                    lastName: datosPersonales.firstLastName,
+                    street: coberturaData.address,
+                    city: coberturaData.municipio,
+                    state: coberturaData.estado,
+                    postalCode: coberturaData.zipCode,
+                });
+
+                extraParams.user_data = userData;
+            }
+
+            if (currentStep === 1) {
+                extraParams.coverage_verified = true;
+                extraParams.coverage_type = "fiber";
+                extraParams.coverage_region = coberturaData?.municipio || null;
+            }
+
+            pushEcommerceEvent(
+                EVENTS.CHECKOUT_PROGRESS,
+                {
+                    currency: CURRENCY,
+                    value: ecommerceValue,
+                    items,
+                },
+                extraParams
+            );
+
+            trackedStepsRef.current.add(stepMeta.flowStep);
+        }
+    }, [currentStep, globalFlagDomicilio, globalIzziSelection, precioTotal, datosContratacion, coberturaData]);
 
     const handleContinue = async () => {
         if (isSubmittingRef.current) return;

@@ -50,7 +50,12 @@ export const IzziProvider = ({
         setGlobalUserAnswers({});
         setGlobalFlagDomicilio(false);
         setCheckSwitch(false);
-    }, [])
+
+      
+   
+        sessionStorage.removeItem("izzi-checkout-current-step");
+        sessionStorage.removeItem("izzi-checkout-step-meta");
+    }, []);
 
 
     return (
