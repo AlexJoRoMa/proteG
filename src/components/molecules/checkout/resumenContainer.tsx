@@ -29,8 +29,12 @@ import {
     type CheckoutStepMetaSerialized,
 } from "@/utils/checkoutStepTracking";
 
-export default function ResumenContainer() {
+interface ResumenContainerProps {
+    variant: 'mobile' | 'desktop';
+}
 
+export default function ResumenContainer({ variant }: ResumenContainerProps) {
+    const ATTACH_STATUS_SETTLE_DELAY_MS = 1200;
     const [loading, setLoading] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
     const [modalName, setModalName] = useState<string>("modal-generico");
@@ -189,8 +193,13 @@ export default function ResumenContainer() {
         };
 
         try {
-            // AttachFiles
-            await showModaluntilAction(async () => await runAttachFiles(), "modal-documentos")
+            const attachCompleted = await runWithModal(
+                () => runAttachFiles(),
+                "modal-documentos"
+            );
+            if (!attachCompleted) {
+                return;
+            }
 
             if (!globalFlagDomicilio) {
                 // GetCapacity() 
@@ -314,9 +323,48 @@ export default function ResumenContainer() {
         // logica adicional
     });
 
-    function runAttachFiles() {
-        runAttachIne();
-        runAttachComprobante();
+    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const refreshCurrentProcessStatus = async () => {
+        const currentProcessId = izziEnrrollRef.current;
+        if (!currentProcessId) {
+            return null;
+        }
+
+        const updatedStatus = await GetProcessStatus(currentProcessId);
+        if (updatedStatus) {
+            setProcessStatus(updatedStatus);
+            processStatusRef.current = updatedStatus;
+        }
+
+        return updatedStatus;
+    };
+
+    const getRequiredAttachInfo = (documentKey: "ine" | "comprobante") => {
+        const attachInfo = datosContratacionRef.current?.DocumentosTitular?.[documentKey];
+        const currentStatus = processStatusRef.current;
+
+        if (!currentStatus?.accountId || !currentStatus?.accountNumber) {
+            throw new Error(`No hay cuenta activa para adjuntar ${documentKey}.`);
+        }
+
+        if (!attachInfo?.fileName || !attachInfo?.fileExtension || !attachInfo?.data) {
+            throw new Error(`El payload de ${documentKey} no está listo para enviarse.`);
+        }
+
+        return attachInfo;
+    };
+
+    async function runAttachFiles(): Promise<boolean> {
+        await runAttachIne(true);
+        await sleep(ATTACH_STATUS_SETTLE_DELAY_MS);
+        await refreshCurrentProcessStatus();
+
+        await runAttachComprobante(true);
+        await sleep(ATTACH_STATUS_SETTLE_DELAY_MS);
+        await refreshCurrentProcessStatus();
+
+        return true;
     }
 
     const showModaluntilAction = async (
@@ -348,10 +396,10 @@ export default function ResumenContainer() {
         }
     };
 
-    const runWithModal = async (
-        action: () => Promise<boolean>,
+    const runWithModal = async <T,>(
+        action: () => Promise<T>,
         modalKey: string
-    ): Promise<boolean> => {
+    ): Promise<T> => {
         setModalName(modalKey);
         setModalLoading(true);
 
@@ -380,19 +428,16 @@ export default function ResumenContainer() {
 
     const { trigger: runAttachIne, isLoading: loadingAttachIne } = useControlledAction({
         action: async () => {
-            const attachInfo = datosContratacionRef.current?.DocumentosTitular && datosContratacionRef.current?.DocumentosTitular.ine;
+            const attachInfo = getRequiredAttachInfo("ine");
 
             const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
-            
+
             // Después de attachFiles, consultar processStatus una vez para actualizar waitingForAction
-            if (izziEnroll) {
-                const updatedStatus = await GetProcessStatus(izziEnroll);
-                if (updatedStatus) {
-                    setProcessStatus(updatedStatus);
-                }
+            if (data?.error || data?.code) {
+                throw new Error("Error adjuntando INE.");
             }
-            
+
             return data;
         },
         resetKey: `step-4-attachFileIne`,
@@ -402,19 +447,16 @@ export default function ResumenContainer() {
 
     const { trigger: runAttachComprobante, isLoading: loadingAttachComprobante } = useControlledAction({
         action: async () => {
-            const attachInfo = datosContratacionRef.current?.DocumentosTitular && datosContratacionRef.current?.DocumentosTitular.comprobante;
+            const attachInfo = getRequiredAttachInfo("comprobante");
 
             const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
-            
+
             // Después de attachFiles, consultar processStatus una vez para actualizar waitingForAction
-            if (izziEnroll) {
-                const updatedStatus = await GetProcessStatus(izziEnroll);
-                if (updatedStatus) {
-                    setProcessStatus(updatedStatus);
-                }
+            if (data?.error || data?.code) {
+                throw new Error("Error adjuntando comprobante.");
             }
-            
+
             return data;
         },
         resetKey: `step-4-attachFileComprobante`,
@@ -591,7 +633,7 @@ export default function ResumenContainer() {
 
             await handler(stepData);
 
-            window.scrollTo({ top:0, behavior: 'smooth'});
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
         } finally {
             isSubmittingRef.current = false;
@@ -599,8 +641,7 @@ export default function ResumenContainer() {
         }
     }
 
-    // Botón Continuar
-    const ContinueButton = (
+    const renderContinueButton = () => (
         <Button
             disabled={isDisabled}
             className='py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50'
@@ -610,88 +651,90 @@ export default function ResumenContainer() {
         </Button>
     );
 
+    const resumenDetailContent = (
+        <>
+            <h1 className="font-bold leading-[24px] text-xl mb-[32px]">{resumenCopys.titulo}</h1>
+            <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
+        </>
+    );
+
     return (
         <>
-            {/* Desktop */}
-            <div className="fixed xl:static bottom-0 left-0 z-40 xl:border xl:rounded-md xl:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 xl:bg-white-0 shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)] xl:shadow-none">
-                {/* Header Mobile */}
-                <div className="block xl:hidden">
-                    <div className="flex justify-between mb-[16px]">
-                        <div className="flex flex-col gap-[8px]">
-                            <div className="flex gap-[4px] font-normal text-base leading-[24px] text-gray-500 items-baseline">
-                                <h3 className="font-extrabold text-[32px] leading-[32px] text-black-0">
-                                    {FormatCurrency(Number(precioTotal))}
-                                </h3>
-                                <h5>{resumenCopys.infoDrawer.plazo}</h5>
-                                <p>|</p>
-                                <h5 className="font-bold">{infoPaquetes}</h5>
-
+            {variant === 'mobile' ? (
+                <>
+                    <div className="fixed bottom-0 left-0 z-40 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)]">
+                        <div className="flex justify-between mb-[16px]">
+                            <div className="flex flex-col gap-[8px]">
+                                <div className="flex gap-[4px] font-normal text-base leading-[24px] text-gray-500 items-baseline">
+                                    <h3 className="font-extrabold text-[32px] leading-[32px] text-black-0">
+                                        {FormatCurrency(Number(precioTotal))}
+                                    </h3>
+                                    <h5>{resumenCopys.infoDrawer.plazo}</h5>
+                                    <p>|</p>
+                                    <h5 className="font-bold">{infoPaquetes}</h5>
+                                </div>
+                                <div className="font-bold">{`¡Te ahorras ${FormatCurrency(Number(precioCombinado))} al combinar!`}</div>
                             </div>
-                            <div className="font-bold">{`¡Te ahorras ${FormatCurrency(Number(precioCombinado))} al combinar!`}</div>
 
+                            <button
+                                className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
+                                onClick={onOpen}
+                            >
+                                <ArrowUpIcon />
+                            </button>
                         </div>
-                        <button
-                            className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
-                            onClick={onOpen}
-                        >
-                            <ArrowUpIcon />
-                        </button>
+
+                        {renderContinueButton()}
+                    </div>
+
+                    <Drawer
+                        isOpen={isOpen}
+                        onOpenChange={onOpenChange}
+                        size="full"
+                        placement="bottom"
+                        hideCloseButton
+                        classNames={{
+                            header: "px-[16px] py-[24px]",
+                            body: "px-[16px] py-0 gap-0",
+                            footer: "w-full px-[16px] pt-[32px] bottom-0 z-50"
+                        }}
+                    >
+                        <DrawerContent>
+                            {(onClose) => (
+                                <>
+                                    <DrawerHeader className="flex flex-row justify-between items-center">
+                                        <h3 className="font-bold text-xl leading-[24px] text-[#11181C]">{resumenCopys.titulo}</h3>
+                                        <button
+                                            className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
+                                            onClick={onClose}
+                                        >
+                                            <ArrowDownIcon />
+                                        </button>
+                                    </DrawerHeader>
+
+                                    <DrawerBody>
+                                        <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
+                                    </DrawerBody>
+
+                                    <DrawerFooter>
+                                        {renderContinueButton()}
+                                    </DrawerFooter>
+                                </>
+                            )}
+                        </DrawerContent>
+                    </Drawer>
+                </>
+            ) : (
+                <div className="border rounded-md border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-white-0">
+                    {resumenDetailContent}
+
+                    <div className="pt-[32px] border-t-1 border-t-gray-150 z-50">
+                        {renderContinueButton()}
                     </div>
                 </div>
+            )}
 
-                {/* Desktop Resumen */}
-                <div className="hidden xl:block">
-                    <h1 className="font-bold leading-[24px] text-xl mb-[32px]">{resumenCopys.titulo}</h1>
-
-                    <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
-
-                </div>
-
-                <div className="xl:pt-[32px] xl:border-t-1 xl:border-t-gray-150 z-50">
-                    {ContinueButton}
-                </div>
-                <ModalContratacion isOpen={modalLoading} name={modalName} />
-            </div>
-
-            {/* Drawer Mobile */}
-            <Drawer
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
-                size="full"
-                placement="bottom"
-                hideCloseButton
-                classNames={{
-                    header: "px-[16px] py-[24px]",
-                    body: "px-[16px] py-0 gap-0",
-                    footer: "w-full px-[16px] pt-[32px] bottom-0 z-50"
-                }}
-            >
-                <DrawerContent>
-                    {(onClose) => (
-                        <>
-                            <DrawerHeader
-                                className="flex flex-row justify-between items-center"
-                            >
-                                <h3 className="font-bold text-xl leading-[24px] text-[#11181C]">{resumenCopys.titulo}</h3>
-                                <button
-                                    className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
-                                    onClick={onClose}
-                                >
-                                    <ArrowDownIcon />
-                                </button>
-                            </DrawerHeader>
-
-                            <DrawerBody>
-                                <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
-                            </DrawerBody>
-
-                            <DrawerFooter>
-                                {ContinueButton}
-                            </DrawerFooter>
-                        </>
-                    )}
-                </DrawerContent>
-            </Drawer>
+            <ModalContratacion isOpen={modalLoading} name={modalName} />
         </>
     )
 }
