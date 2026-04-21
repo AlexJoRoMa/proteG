@@ -312,7 +312,11 @@ export type OttProps = {
 
 export type internetComponentFields = {
     paquete: OfferItem,
-    total: number
+    total: number,
+    ott?: {
+        planes: OttProps[],
+        total: number
+    }
 }
 
 export type tvComponentFields = {
