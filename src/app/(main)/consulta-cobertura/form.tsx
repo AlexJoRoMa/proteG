@@ -12,6 +12,11 @@ import { useIzziContent } from '@/components/providers/IzziProvider';
 import { getOfertas } from '@/services/izzi/configurador';
 import TeAyudamosModalComponentConfig from '../../../components/layouts/modals/TeAyudamosModalComponentConfigurador';
 
+
+import izziDataLayerHelpers from '@/utils/izzi-data-layer-helpers';
+import { EVENTS, CURRENCY } from '@/lib/tracking/constants';
+
+
 const FALLBACKS: Record<string, string> = {
   'cobertura.form.direccion.label': 'Dirección',
   'cobertura.form.codigo.label': 'Código postal',
@@ -38,6 +43,7 @@ const FALLBACKS: Record<string, string> = {
 };
 
 let descriptionText = '';
+const COVERAGE_LOG_PREFIX = '[Cobertura][API]';
 
 const inputStyles = (isAddressSelected?: boolean) => ({
   label: "text-black/50",
@@ -83,6 +89,15 @@ const inputDisableStyles = {
   ]
 }
 
+interface AddressParts {
+  street: string,
+  streetNumber: string,
+  aptNumber: string,
+  neighborhood: string,
+  postalCode: string,
+  locality: string,
+  state: string,
+}
 interface GooglePlacesInputProps {
   value: string;
   onValueChange: (value: string) => void;
@@ -91,7 +106,6 @@ interface GooglePlacesInputProps {
   placeholder: string;
   errorMessage?: string;
   description?: boolean;
-  addressValid?: boolean;
   onBlur: () => void;
   addressSelected?: boolean;
   clear: () => React.ReactNode;
@@ -106,7 +120,6 @@ const GooglePlacesInput = ({
   placeholder,
   errorMessage,
   description,
-  addressValid,
   onBlur,
   addressSelected,
   clear,
@@ -116,6 +129,7 @@ const GooglePlacesInput = ({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const places = useMapsLibrary('places');
+  const isInvalid = !addressSelected && value.trim() !== '';
 
   useEffect(() => {
     if (!places || autocompleteRef.current) return;
@@ -155,12 +169,12 @@ const GooglePlacesInput = ({
         labelPlacement='outside'
         value={value}
         onValueChange={onValueChange}
-        errorMessage={addressValid ? errorMessage : null}
+        errorMessage={isInvalid ? errorMessage : null}
         autoComplete='off'
         name={'address'}
         type='text'
         classNames={inputStyles(addressSelected)}
-        isInvalid={addressValid}
+        isInvalid={isInvalid}
         onBlur={onBlur}
         endContent={description && clear()}
         onFocus={onFocus}
@@ -175,6 +189,7 @@ export default function CoberturaForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasResponse, setHasResponse] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState<boolean>(false);
+ /*  const [coloniaError, setColoniaError] = useState<boolean>(false); */
   const [hasAddress, setHasAddress] = useState<string>('');
   const { getValue } = useMicrocopies('cobertura');
   const getText = (key: string) => getValue(key) || FALLBACKS[key] || key;
@@ -204,12 +219,13 @@ export default function CoberturaForm() {
   } = useContent();
   descriptionText = getText('cobertura.descripcion.direccion');
 
-  const isFieldDisabled = isSearching || !addressSelected;
-  const isInvalidAddress = !addressSelected && street.trim() !== '' && !isSearching;
+  const showFields = (addressSelected || hasAddress !== '') && street.trim() !== '';
+  const isFieldDisabled = !addressSelected;
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const { setGlobalFlag, setFormattedAddress, setCoberturaData, setAddressFielSelected, setStreetDireccion } = useIzziContent();
+  const { setGlobalFlag, setFormattedAddress, setCoberturaData, 
+    setAddressFielSelected, setStreetDireccion, setColoniaError, coloniaError } = useIzziContent();
 
   const modalData = {
     title: getValue2('stickyModal.title'),
@@ -271,8 +287,10 @@ export default function CoberturaForm() {
     }
 
     try {
+      console.log(`${COVERAGE_LOG_PREFIX} getOfertas.request`, coveraData);
 
       const response = await getOfertas(coveraData)
+      console.log(`${COVERAGE_LOG_PREFIX} getOfertas.response`, response);
 
       if (response.message === 'Address is in a WIZZ coverage area') {
 
@@ -288,9 +306,51 @@ export default function CoberturaForm() {
       setCoberturaData(coveraData);
       setIsLoading(false);
 
+        const { generateLeadId, generateCoverageSessionId, normalizeUserData, pushEcommerceEvent } = izziDataLayerHelpers;
+
+        const leadId = generateLeadId();
+        const sessionId = generateCoverageSessionId();
+      
+        
+
+        const userData = normalizeUserData({
+            street: coveraData.address,
+            city: locality,
+            state,
+            postalCode: postalCode,
+        });
+
+        pushEcommerceEvent(
+            EVENTS.COVERAGE_COMPLETE,
+            {
+                value: 0,
+                currency: CURRENCY,
+            },
+            {
+                session_id: sessionId,
+                lead_id: leadId,
+                coverage_timestamp: new Date().toISOString(),
+                coverage_available: true,
+                coverage_type: 'fiber',
+                coverage_region: locality,
+                lead_data: {
+                    phone: userData.phone_number,
+                    address: {
+                        street: coveraData.address,
+                        colony: neighborhood,
+                        city: locality,
+                        state,
+                        postal_code: postalCode,
+                    },
+                },
+                user_data: userData,
+            }
+        );
+
       await createCookie(coveraData);
 
     } catch (error) {
+      console.error(`${COVERAGE_LOG_PREFIX} getOfertas.error`, error);
       console.error("Error validacion Wizz ", error)
       setIsLoading(false);
     }
@@ -325,8 +385,40 @@ export default function CoberturaForm() {
     alert("Sorry, no position available.");
   }
 
+  const formatFullAddress = (data: AddressParts) => {
+    const {street, streetNumber, aptNumber, neighborhood, postalCode, locality, state} = data;
+     const parts = [
+      street,
+      streetNumber ? `#${streetNumber}` : null,
+      aptNumber ? `Int.${aptNumber}` : null,
+      neighborhood ? `Col. ${neighborhood}` : null,
+      postalCode ? `C.P .${postalCode}` : null,
+      locality ? locality : null,
+      state ? state : null,
+     ];
+
+     return parts.filter(Boolean).join(', ');
+  }
+
+  useEffect(() => {
+    const bannerAddress = formatFullAddress({
+      street,
+      streetNumber,
+      aptNumber,
+      neighborhood,
+      postalCode,
+      locality,
+      state,
+    })
+
+    setStreetDireccion(bannerAddress);
+  }, [street, streetNumber, aptNumber, neighborhood, postalCode, locality, state, setStreetDireccion])
+
   function mapAddressFields(data: GeocodeType) {
     const components = data?.results?.[0]?.address_components ?? [];
+
+    setNeighborhood('')
+    setColoniaError(false)
 
     //Se busca si existe un array con administrative_area_level_3
     const getAreaLevel = data?.results?.find(result =>
@@ -341,6 +433,7 @@ export default function CoberturaForm() {
 
     let valueLocality = '';
     let valueArealvl3 = '';
+    let coloniaExist = false;
 
     for (const item of allComponents) {
       const value = item.long_name;
@@ -352,7 +445,6 @@ export default function CoberturaForm() {
             break;
           case 'route':
             setStreet(value);
-            setStreetDireccion(value);
             break;
           case 'street_number':
             setStreetNumber(value);
@@ -361,6 +453,7 @@ export default function CoberturaForm() {
           case 'sublocality':
           case 'sublocality_level_1':
             setNeighborhood(value);
+            coloniaExist = true;
             break;
           case 'locality':
             valueLocality = value;
@@ -381,6 +474,10 @@ export default function CoberturaForm() {
       setLocality(valueArealvl3);
     } else if (valueLocality) {
       setLocality(valueLocality);
+    }
+
+    if(!coloniaExist) {
+      setColoniaError(true)
     }
 
   }
@@ -442,11 +539,13 @@ export default function CoberturaForm() {
 
     if (isEmpty && wasNotEmpty) {
       resetForm();
+      setAddressFielSelected(false);
       return;
     }
 
     if(change !== hasAddress){
       setAddress(false)
+      setAddressFielSelected(false)
     }
     setStreet(change)
   }
@@ -494,23 +593,23 @@ export default function CoberturaForm() {
         </div>
       }
       <Form className="w-full max-w-[95%]" onSubmit={onSubmit}>
-
         <GooglePlacesInput
           value={street}
           onValueChange={(e) => handleDirectionChange(e)}
           onPlaceSelect={handleGoogglePlace}
           label={getText('cobertura.form.direccion.label')}
           placeholder={getText('cobertura.form.direccion.placeholder')}
-          errorMessage={getText('cobertura.form.direccion.error')}
+          errorMessage={ getText('cobertura.form.direccion.error')}
           description={addressSelected}
-          addressValid={isInvalidAddress}
           onBlur={() => setTimeout(() =>setIsSearching(false), 300)}
           addressSelected={addressSelected}
           clear={clearForm}
           onFocus={()=>setIsSearching(true)}
         />
-        <div className='flex col-2 w-full gap-4'>
-          {addressSelected ?
+
+        {showFields && (
+          <>
+          <div className='flex col-2 w-full gap-4'>
             <Input
               isReadOnly={isFieldDisabled}
               isRequired
@@ -524,8 +623,6 @@ export default function CoberturaForm() {
               onValueChange={setStreetNumber}
               classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
             />
-            : <></>}
-          {addressSelected ?
             <Input
               isReadOnly={isFieldDisabled}
               label={getText('cobertura.form.numInterno.label')}
@@ -538,9 +635,7 @@ export default function CoberturaForm() {
               classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
               className='max-w-[95%]'
             />
-            : <></>}
         </div>
-        {addressSelected ?
           <Input
             isReadOnly
             isRequired
@@ -555,12 +650,10 @@ export default function CoberturaForm() {
             classNames={inputDisableStyles}
             maxLength={5}
           />
-          : <></>
-        }
-        {addressSelected ?
           <Input
             isReadOnly={isFieldDisabled}
             isRequired
+            isInvalid={coloniaError}
             label={getText('cobertura.form.colonia.label')}
             placeholder={getText('cobertura.form.colonia.placeholder')}
             errorMessage={getText('cobertura.form.colonia.error')}
@@ -568,11 +661,12 @@ export default function CoberturaForm() {
             name="neighborhood"
             type="text"
             value={neighborhood}
-            onValueChange={setNeighborhood}
+            onValueChange={(val) =>{
+              setNeighborhood(val);
+              setColoniaError(val.trim() === '')
+            }}
             classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
           />
-          : <></>}
-        {addressSelected ?
           <Input
             isReadOnly
             label={getText('cobertura.form.municipio.label')}
@@ -585,8 +679,6 @@ export default function CoberturaForm() {
             onValueChange={setLocality}
             classNames={inputDisableStyles}
           />
-          : <></>}
-        {addressSelected ?
           <Input
             isReadOnly
             isRequired
@@ -601,7 +693,9 @@ export default function CoberturaForm() {
             onValueChange={setState}
             classNames={inputDisableStyles}
           />
-          : <></>}
+          </>
+        )}
+        
 
         <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-5'>
           <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
@@ -609,7 +703,7 @@ export default function CoberturaForm() {
           </Button>
           <Button
             className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} 
-            isDisabled={!addressSelected || isSearching || hasResponse || isLoading} type="submit">
+            isDisabled={!addressSelected || isSearching || hasResponse || coloniaError || isLoading} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
         </div>

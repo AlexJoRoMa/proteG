@@ -51,6 +51,8 @@ export type DataFields = {
     setAddressFielSelected: React.Dispatch<React.SetStateAction<boolean>>,
     streetDireccion: string
     setStreetDireccion: React.Dispatch<React.SetStateAction<string>>,
+    coloniaError: boolean,
+    setColoniaError: React.Dispatch<React.SetStateAction<boolean>>,,
     checkedPromotions: boolean,
     setCheckedPromotions: React.Dispatch<React.SetStateAction<boolean>>,
 }
