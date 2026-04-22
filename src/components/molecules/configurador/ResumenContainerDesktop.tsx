@@ -10,6 +10,7 @@ import BannerPromocionesResumen from "@/components/atoms/BannerPromocionesResume
 import DetalleResumen from "../resumenCompra/detalleResumen";
 import BotonContratarConfigurador from "./botonContratarConfigurador";
 import { internetComponentFields, movilComponentFields, tvComponentFields } from "@/types/ConfiguradorTypes";
+import BannerDomiciliacion from "@/components/atoms/bannerDomiciliacion";
 
 function hasData(obj: unknown): boolean {
     return !!obj && typeof obj === "object" && Object.keys(obj as object).length > 0;
@@ -20,7 +21,7 @@ export default function ResumenContainerDesktop() {
     const { copysResumen, userAnswers } = useContent();
     const resumenCopys = copysResumen as ResumenData;
     const [loading, setLoading] = useState<boolean>(false);
-    const { checkedPromotions } = useIzziContent();
+    const { checkedPromotions, checkSwitch } = useIzziContent();
 
     const internet = userAnswers.internet as unknown as internetComponentFields | undefined;
     const tv = userAnswers.tv as unknown as tvComponentFields | undefined;
@@ -68,6 +69,15 @@ export default function ResumenContainerDesktop() {
                             copys={resumenCopys}
                             userSelection={userAnswers}
                         />
+
+                        {
+                            (checkedPromotions && !checkSwitch) && (
+                                <div className="mt-[24px]">
+                                    <BannerDomiciliacion copys={resumenCopys} />
+                                </div>
+                            )
+                        }
+
 
                         <div className="py-[32px] hidden xl:block">
                             <BotonContratarConfigurador
