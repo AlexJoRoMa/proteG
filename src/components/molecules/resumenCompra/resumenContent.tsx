@@ -4,7 +4,7 @@ import { useIzziContent } from "@/components/providers/IzziProvider";
 import { useEffect, useState } from "react";
 import { internetComponentFields, Promos, tvComponentFields } from "@/types/ConfiguradorTypes";
 import { mesIds } from "@/constants/ResumenConstants";
-import { CircleCheckGreen, PiggyBank } from "@/constants/IconsConstants";
+import { CircleCheckGreen } from "@/constants/IconsConstants";
 
 function calcularPromos(promos: Promos[] | undefined) {
     const maxMeses = mesIds.length;
@@ -157,7 +157,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
 
 
     return (
-        <section className="flex flex-col gap-[32px] pb-[32px] pt-0 xl:pb-0">
+        <section className="flex flex-col gap-[32px] pb-[20px] pt-0 xl:pb-0">
 
             <div className="flex flex-col">
                 <div className={`flex justify-between w-full ${checkedPromotions ? "mt-[24px]" : "mt-0 xl:mt-[24px]"}`}>
@@ -317,24 +317,6 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                         })
                     }
                 </div>
-            }
-
-            {
-                (checkedPromotions && !validateSwitch) && (
-                    <div className="flex flex-row gap-[8px] py-[12px]">
-                        <div className="w-[32px] h-[32px]">
-                            <PiggyBank />
-                        </div>
-                        <div className="text-base xl:text-lg leading-[24px]">
-                            <h1 className="font-bold">
-                                {resumenCopys.ahorro.domiciliacion.titulo}
-                            </h1>
-                            <p>
-                                {resumenCopys.ahorro.domiciliacion.subtitulo}
-                            </p>
-                        </div>
-                    </div>
-                )
             }
 
         </section>
