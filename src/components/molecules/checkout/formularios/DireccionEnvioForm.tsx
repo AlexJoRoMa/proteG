@@ -35,7 +35,6 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
     const [street2Touched, setStreet2Touched] = useState(false);
     const [referenceTouched, setReferenceTouched] = useState(false);
 
-    // 👇 Carga desde localStorage al montar
     useEffect(() => {
         const localData: DireccionData = getLocalPropertyByKey('PersistentDireccionData')
         if (!localData) return
