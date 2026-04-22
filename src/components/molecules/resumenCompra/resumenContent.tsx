@@ -67,12 +67,16 @@ function obtenerArray(mesesPromos: { totalPromo: number }[]) {
     const tope = primerMesCero ?? ultimoMes;
     const relevantes = mesesPromos.slice(0, tope);
     const resultado: { mesNumero: number; mesId: string; totalPromo: number; }[] = [];
-    let ultimoValor: number | null = null;
+
+    if (relevantes.length === 0) return resultado;
+
+    let ultimoValor = relevantes[0].totalPromo;
 
     relevantes.forEach((mes, index) => {
+        if (index === 0) return;
         const valorActual = mes.totalPromo;
 
-        if (index !== 0 && valorActual !== ultimoValor) {
+        if (valorActual !== ultimoValor) {
             resultado.push({
                 mesNumero: index + 1,
                 mesId: mesIds[index],
