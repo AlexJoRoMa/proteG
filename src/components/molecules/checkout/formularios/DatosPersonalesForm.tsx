@@ -46,8 +46,6 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
         passport: '',
     };
 
-    // const [curp, setCurp] = useState(datosPersonales?.curp ?? "");
-    // const [passport, setPassport] = useState(datosPersonales?.passport ?? "");
     const [passportValid, setPassportValid] = useState<boolean>(true);
     const [curpValid, setCurpValid] = useState<boolean>(true);
     
