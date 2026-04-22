@@ -5,7 +5,7 @@ import DetalleResumen from "../resumenCompra/detalleResumen";
 import BannerPromocionesResumen from "@/components/atoms/BannerPromocionesResumen";
 import BannerDomiciliacion from "@/components/atoms/bannerDomiciliacion";
 
-export default function ResumenDesktop({ resumenCopys, children }: { resumenCopys: ResumenData, children: React.ReactNode }) {
+export default function ResumenDesktop({ resumenCopys, children }: { resumenCopys: ResumenData, children: () => React.ReactNode }) {
 
     const { globalUserAnswers, checkSwitch, checkedPromotions } = useIzziContent();
 
@@ -34,7 +34,7 @@ export default function ResumenDesktop({ resumenCopys, children }: { resumenCopy
                 )
             }
             <div className="py-[32px] z-50">
-                {children}
+                {children()}
             </div>
 
             <DetalleResumen

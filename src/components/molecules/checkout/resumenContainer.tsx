@@ -653,40 +653,29 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         </Button>
     );
 
-    const resumenDetailContent = (
-        <>
-            <h1 className="font-bold leading-[24px] text-xl mb-[32px]">{resumenCopys.titulo}</h1>
-            <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
-        </>
-    );
-
     return (
         <>
-            <div className="fixed xl:static bottom-0 left-0 z-40 xl:border xl:rounded-md xl:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 xl:bg-white-0 shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)] xl:shadow-none">
+            {
+                variant === 'mobile' ? (
+                    <div className="fixed bottom-0 left-0 z-40 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)]">
+                        <ResumenMobile
+                            resumenCopys={resumenCopys}
+                        >
+                            {renderContinueButton}
+                        </ResumenMobile>
+                    </div>
+                ) : (
+                    <div className="border rounded-md border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-white-0">
+                        <ResumenDesktop
+                            resumenCopys={resumenCopys}
+                        >
+                            {renderContinueButton}
+                        </ResumenDesktop>
+                    </div>
+                )
+            }
 
-                {/* Header Mobile */}
-
-                <div className="block xl:hidden">
-                    <ResumenMobile
-                        resumenCopys={resumenCopys}
-                    >
-                        {ContinueButton}
-                    </ResumenMobile>
-                </div>
-
-                {/* Desktop Resumen */}
-
-                <div className="hidden xl:block">
-                    <ResumenDesktop
-                        resumenCopys={resumenCopys}
-                    >
-                        {ContinueButton}
-                    </ResumenDesktop>
-                </div>
-
-                <ModalContratacion isOpen={modalLoading} name={modalName} />
-            </div>
-
+            <ModalContratacion isOpen={modalLoading} name={modalName} />
         </>
     )
 }
