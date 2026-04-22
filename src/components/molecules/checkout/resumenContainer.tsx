@@ -16,18 +16,17 @@ import { useEffect, useRef, useState } from "react";
 import { GetSubmitCapacity } from "@/utils/GetSubmitCapacity";
 import { useRouter } from "next/navigation";
 import ModalContratacion from "./modals/ModalContratacion";
-import { Button, Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, useDisclosure } from "@heroui/react";
-import { ArrowDownIcon, ArrowUpIcon } from "@/constants/IconsConstants";
+import { Button } from "@heroui/react";
 import { ResumenData } from "@/types/ResumenCompra";
-import ResumenContent from "../resumenCompra/resumenContent";
 import { useIzziContent } from "@/components/providers/IzziProvider";
-import { FormatCurrency } from "@/utils/Currency";
 import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
 import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
 import {
     getCheckoutStepTrackingMeta,
     type CheckoutStepMetaSerialized,
 } from "@/utils/checkoutStepTracking";
+import ResumenDesktop from "./resumenDesktop";
+import ResumenMobile from "./resumenMobile";
 
 export default function ResumenContainer() {
 
@@ -35,7 +34,6 @@ export default function ResumenContainer() {
     const [modalLoading, setModalLoading] = useState(false);
     const [modalName, setModalName] = useState<string>("modal-generico");
     const router = useRouter();
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const { globalUserAnswers, coberturaData, offnetIzzi, offnetSky, globalIzziSelection, precioTotal, infoPaquetes, precioCombinado, globalFlagDomicilio, checkSwitch } = useIzziContent();
     const {
         nextStep,
@@ -384,7 +382,7 @@ export default function ResumenContainer() {
 
             const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
-            
+
             // Después de attachFiles, consultar processStatus una vez para actualizar waitingForAction
             if (izziEnroll) {
                 const updatedStatus = await GetProcessStatus(izziEnroll);
@@ -392,7 +390,7 @@ export default function ResumenContainer() {
                     setProcessStatus(updatedStatus);
                 }
             }
-            
+
             return data;
         },
         resetKey: `step-4-attachFileIne`,
@@ -406,7 +404,7 @@ export default function ResumenContainer() {
 
             const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
-            
+
             // Después de attachFiles, consultar processStatus una vez para actualizar waitingForAction
             if (izziEnroll) {
                 const updatedStatus = await GetProcessStatus(izziEnroll);
@@ -414,7 +412,7 @@ export default function ResumenContainer() {
                     setProcessStatus(updatedStatus);
                 }
             }
-            
+
             return data;
         },
         resetKey: `step-4-attachFileComprobante`,
@@ -591,7 +589,7 @@ export default function ResumenContainer() {
 
             await handler(stepData);
 
-            window.scrollTo({ top:0, behavior: 'smooth'});
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
         } finally {
             isSubmittingRef.current = false;
@@ -612,86 +610,31 @@ export default function ResumenContainer() {
 
     return (
         <>
-            {/* Desktop */}
             <div className="fixed xl:static bottom-0 left-0 z-40 xl:border xl:rounded-md xl:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 xl:bg-white-0 shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)] xl:shadow-none">
+
                 {/* Header Mobile */}
+
                 <div className="block xl:hidden">
-                    <div className="flex justify-between mb-[16px]">
-                        <div className="flex flex-col gap-[8px]">
-                            <div className="flex gap-[4px] font-normal text-base leading-[24px] text-gray-500 items-baseline">
-                                <h3 className="font-extrabold text-[32px] leading-[32px] text-black-0">
-                                    {FormatCurrency(Number(precioTotal))}
-                                </h3>
-                                <h5>{resumenCopys.infoDrawer.plazo}</h5>
-                                <p>|</p>
-                                <h5 className="font-bold">{infoPaquetes}</h5>
-
-                            </div>
-                            <div className="font-bold">{`¡Te ahorras ${FormatCurrency(Number(precioCombinado))} al combinar!`}</div>
-
-                        </div>
-                        <button
-                            className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
-                            onClick={onOpen}
-                        >
-                            <ArrowUpIcon />
-                        </button>
-                    </div>
+                    <ResumenMobile
+                        resumenCopys={resumenCopys}
+                    >
+                        {ContinueButton}
+                    </ResumenMobile>
                 </div>
 
                 {/* Desktop Resumen */}
+
                 <div className="hidden xl:block">
-                    <h1 className="font-bold leading-[24px] text-xl mb-[32px]">{resumenCopys.titulo}</h1>
-
-                    <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
-
+                    <ResumenDesktop
+                        resumenCopys={resumenCopys}
+                    >
+                        {ContinueButton}
+                    </ResumenDesktop>
                 </div>
 
-                <div className="xl:pt-[32px] xl:border-t-1 xl:border-t-gray-150 z-50">
-                    {ContinueButton}
-                </div>
                 <ModalContratacion isOpen={modalLoading} name={modalName} />
             </div>
 
-            {/* Drawer Mobile */}
-            <Drawer
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
-                size="full"
-                placement="bottom"
-                hideCloseButton
-                classNames={{
-                    header: "px-[16px] py-[24px]",
-                    body: "px-[16px] py-0 gap-0",
-                    footer: "w-full px-[16px] pt-[32px] bottom-0 z-50"
-                }}
-            >
-                <DrawerContent>
-                    {(onClose) => (
-                        <>
-                            <DrawerHeader
-                                className="flex flex-row justify-between items-center"
-                            >
-                                <h3 className="font-bold text-xl leading-[24px] text-[#11181C]">{resumenCopys.titulo}</h3>
-                                <button
-                                    className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
-                                    onClick={onClose}
-                                >
-                                    <ArrowDownIcon />
-                                </button>
-                            </DrawerHeader>
-
-                            <DrawerBody>
-                                <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
-                            </DrawerBody>
-
-                            <DrawerFooter>
-                                {ContinueButton}
-                            </DrawerFooter>
-                        </>
-                    )}
-                </DrawerContent>
-            </Drawer>
         </>
     )
 }
