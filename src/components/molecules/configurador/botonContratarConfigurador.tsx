@@ -5,16 +5,33 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { ResumenData } from "@/types/ResumenCompra";
+import { internetComponentFields, movilComponentFields, tvComponentFields } from "@/types/ConfiguradorTypes";
+import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
+import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
 
-export default function BotonContratarConfigurador({loading, setLoading}: {loading: boolean, setLoading: (value:boolean) => void}) {
-    const { configuradorEntry, izziSelection, copysResumen } = useContent();
-    const { checkedPromotions, setCheckedPromotions, coberturaData, setRpt, setOffnetIzzi, setOffnetSky, setPromoData, } = useIzziContent();
+function hasData(obj: unknown): boolean {
+    return !!obj && typeof obj === "object" && Object.keys(obj as object).length > 0;
+}
+
+export default function BotonContratarConfigurador({ loading, setLoading }: { loading: boolean, setLoading: (value: boolean) => void }) {
+    const { configuradorEntry, izziSelection, copysResumen, userAnswers } = useContent();
+    const { checkedPromotions, setCheckedPromotions, coberturaData, setRpt, setOffnetIzzi, setOffnetSky, setPromoData, globalIzziSelection, precioTotal } = useIzziContent();
     const router = useRouter();
 
     const [promoError, setPromoError] = useState(false);
     const [validComboCategories, setValidComboCategories] = useState<Set<string>>(new Set());
 
     const resumenCopys = copysResumen as ResumenData;
+
+    const internet = userAnswers.internet as unknown as internetComponentFields | undefined;
+    const tv = userAnswers.tv as unknown as tvComponentFields | undefined;
+    const movil = userAnswers.movil as unknown as movilComponentFields | undefined;
+
+    const hasInternet = hasData(internet);
+    const hasTv = hasData(tv);
+    const hasMovil = hasData(movil);
+    const hasAnyMainProduct = hasInternet || hasTv || hasMovil;
+
 
     useEffect(() => {
         // Cargar las categorías válidas de combo desde Contentful
@@ -26,6 +43,10 @@ export default function BotonContratarConfigurador({loading, setLoading}: {loadi
     }, []);
 
     const handleClick = async () => {
+        if (!hasAnyMainProduct) {
+            return;
+        }
+
         setLoading(true);
         const extrasBody = [];
 
@@ -87,6 +108,31 @@ export default function BotonContratarConfigurador({loading, setLoading}: {loadi
     };
 
     function handleContratar() {
+        if (!hasAnyMainProduct) {
+            return;
+        }
+        if (globalIzziSelection && globalIzziSelection.idPaquete && precioTotal) {
+            const { buildEcommerceLineItems, normalizeEcommerceValue, pushEcommerceEvent } = izziDataLayerHelpers;
+            const ecommerceValue = normalizeEcommerceValue(precioTotal);
+
+            const items = buildEcommerceLineItems(globalIzziSelection, {
+                precioTotal: ecommerceValue,
+                mainListId: "configurador",
+                mainListName: "Configurador - plan principal",
+                extrasListId: "configurador",
+                extrasListName: "Configurador - extras",
+            });
+
+            pushEcommerceEvent(
+                EVENTS.ADD_TO_CART,
+                {
+                    currency: CURRENCY,
+                    value: ecommerceValue,
+                    items,
+                }
+            );
+        }
+
         setLoading(true);
         router.push(`${resumenCopys.boton.contratar.url}`)
     }

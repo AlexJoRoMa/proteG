@@ -9,7 +9,11 @@ import { LoaderIcon } from "@/constants/IconsConstants";
 import BannerPromocionesResumen from "@/components/atoms/BannerPromocionesResumen";
 import DetalleResumen from "../resumenCompra/detalleResumen";
 import BotonContratarConfigurador from "./botonContratarConfigurador";
-// import ModalFechaInvalida from "../checkout/modals/ModalFechaInvalida";
+import { internetComponentFields, movilComponentFields, tvComponentFields } from "@/types/ConfiguradorTypes";
+
+function hasData(obj: unknown): boolean {
+    return !!obj && typeof obj === "object" && Object.keys(obj as object).length > 0;
+}
 
 export default function ResumenContainerDesktop() {
 
@@ -18,13 +22,20 @@ export default function ResumenContainerDesktop() {
     const [loading, setLoading] = useState<boolean>(false);
     const { checkedPromotions } = useIzziContent();
 
-    const newSelection = (userAnswers && userAnswers !== null && Object.keys(userAnswers).length > 0)
+    const internet = userAnswers.internet as unknown as internetComponentFields | undefined;
+    const tv = userAnswers.tv as unknown as tvComponentFields | undefined;
+    const movil = userAnswers.movil as unknown as movilComponentFields | undefined;
+
+    const hasInternet = hasData(internet);
+    const hasTv = hasData(tv);
+    const hasMovil = hasData(movil);
+    const hasAnyMainProduct = hasInternet || hasTv || hasMovil;
 
 
     return (
         <>
             {
-                !newSelection ?
+                !hasAnyMainProduct ?
                     <button
                         className="mb-[32px] py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
                         disabled
