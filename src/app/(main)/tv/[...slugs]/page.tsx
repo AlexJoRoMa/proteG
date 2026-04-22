@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import ButtonFixed from "@/components/atoms/ButtonSticky";
 import {SeoFieldSkeleton, DynamicPageProps} from "@/types/SEOTypes";
 import SEOHead from '@/components/atoms/SEOHead';
+import PageDataTracker from '@/components/tracking/PageDataTracker';
 
 export default async function DynamicPage({ params }: DynamicPageProps) {
   const {slugs} = await params; //Sugerencia de NextJS para obtener los parametros de la ruta
@@ -28,6 +29,11 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
     {seo && <SEOHead seo={seo} slug={fullPath} />}
 
     <main>
+      <PageDataTracker
+        pageType="category"
+        pageName="Planes TV"
+        category="tv"
+      />
       {components[0]?.fields.components &&
       Array.isArray(components[0].fields.components) &&
       components[0].fields.components.length > 0 ? (

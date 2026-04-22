@@ -1,6 +1,8 @@
 import { CheckPlanesIcon, DropIcon, LoaderIcon } from "@/constants/IconsConstants";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
-import { OttProps, OttsImages, PackageInfo } from "@/types/ConfiguradorTypes";
+import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
+import type { IzziSelection, OttProps, OttsImages, PackageInfo } from "@/types/ConfiguradorTypes";
+import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
 import { PlanesTypes } from "@/types/PlanesExtrasTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
@@ -9,6 +11,70 @@ import { EntrySkeletonType } from "contentful";
 import Image from "next/image";
 import { Key, useEffect, useState } from "react";
 import useSWR from "swr";
+
+function computeNextOttSelection(
+    prev: OttProps[],
+    card: OttProps,
+    planesExtras: OttProps[] | null
+): { next: OttProps[]; didAdd: boolean } {
+    const cardSelected = prev.some((item) => item.idExtra === card.idExtra);
+
+    if (cardSelected) {
+        let newSelect = prev.filter((item) => item.idExtra !== card.idExtra);
+        if (card.titulo.toLowerCase() === 'vix premium') {
+            newSelect = newSelect.filter((item) => item.titulo.toLowerCase() !== 'vix premium mundial');
+        }
+        return { next: newSelect, didAdd: false };
+    }
+
+    let newSelection = prev.filter((item) => {
+        const isVixCombo =
+            card.titulo.toLowerCase().includes('vix') && item.titulo.toLowerCase().includes('vix');
+        if (isVixCombo) return true;
+        return item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra;
+    });
+
+    if (card.titulo.toLowerCase() === 'vix premium mundial') {
+        const hasVixPremium = planesExtras?.find((plan) => plan.titulo.toLowerCase() === 'vix premium');
+        const noSelectedVix = newSelection.filter((item) => !item.titulo.toLowerCase().includes('vix'));
+        if (hasVixPremium) {
+            return { next: [...noSelectedVix, hasVixPremium, card], didAdd: true };
+        }
+        newSelection = [...noSelectedVix, card];
+    }
+
+    if (card.titulo.toLowerCase() === 'vix premium') {
+        newSelection = newSelection.filter((item) => item.titulo.toLowerCase() !== 'vix premium mundial');
+    }
+    return { next: [...newSelection, card], didAdd: true };
+}
+
+function trackStreamingExtrasSelectItem(base: IzziSelection, ottPlanes: OttProps[]) {
+    if (typeof window === 'undefined') return;
+
+    const synthetic: IzziSelection = {
+        ...base,
+        extrasMap: ottPlanes.length ? { ott: ottPlanes } : undefined,
+    };
+    const bundleBase = Number(base.precioPaquete) || 0;
+    const sumOtt = ottPlanes.reduce((acc, o) => acc + (Number(o.costo) || 0), 0);
+    const movilPrice = base.extras ? Number(base.extras.precioPaquete) || 0 : 0;
+    const value = izziDataLayerHelpers.normalizeEcommerceValue(bundleBase + sumOtt + movilPrice);
+
+    const items = izziDataLayerHelpers.buildEcommerceLineItems(synthetic, {
+        precioTotal: value,
+        mainListId: 'configurador',
+        mainListName: 'Configurador - plan principal',
+        extrasListId: 'configurador_tv_extras',
+        extrasListName: 'Configurador - streaming extras',
+    });
+
+    izziDataLayerHelpers.pushEcommerceEvent(EVENTS.SELECT_ITEM, {
+        currency: CURRENCY,
+        value,
+        items,
+    });
+}
 
 const fetchGetPackageInfo = async ([, data]: [string, PackageInfo]) => {
     const res = await fetch('/api/configurador/planes-extras', {
@@ -68,50 +134,20 @@ export default function AccordionPlanesExtras() {
     }
 
     function handleSelect(card: OttProps) {
+        let trackPair: { base: IzziSelection; ott: OttProps[] } | null = null;
 
         setSelectedCard((prev) => {
-            const cardSelected = prev.some(item => item.idExtra === card.idExtra);
-
-            //---Deseleccionar
-            if (cardSelected) {
-                let newSelect = prev.filter(item => item.idExtra !== card.idExtra);
-
-                //CASO VIX MUNDIAL
-                if (card.titulo.toLowerCase() === 'vix premium') {
-                    newSelect = newSelect.filter(item => item.titulo.toLowerCase() !== 'vix premium mundial')
-                }
-
-                return newSelect;
+            const { next, didAdd } = computeNextOttSelection(prev, card, planesExtras);
+            if (didAdd && content.izziSelection?.idPaquete) {
+                trackPair = { base: content.izziSelection, ott: next };
             }
-
-
-            let newSelection = prev.filter(item => {
-                const isVixCombo = (card.titulo.toLowerCase().includes('vix') && item.titulo.toLowerCase().includes('vix'));
-                if (isVixCombo) return true;
-                return item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra;
-            }
-            );
-
-            //CASO VIX SLECCION
-            if (card.titulo.toLowerCase() === 'vix premium mundial') {
-
-                const hasVixPremium = planesExtras?.find(plan => plan.titulo.toLowerCase() === 'vix premium');
-
-                const noSelectedVix = newSelection.filter(item => !item.titulo.toLowerCase().includes('vix'));
-
-                if (hasVixPremium) {
-                    return newSelection = [...noSelectedVix, hasVixPremium, card];
-                } else {
-                    newSelection = [...noSelectedVix, card];
-                }
-            }
-
-            if (card.titulo.toLowerCase() === 'vix premium') {
-                newSelection = newSelection.filter(item => item.titulo.toLowerCase() !== 'vix premium mundial');
-            }
-            return [...newSelection, card];
+            return next;
         });
 
+        if (trackPair) {
+            const { base, ott } = trackPair;
+            queueMicrotask(() => trackStreamingExtrasSelectItem(base, ott));
+        }
     }
 
     useEffect(() => {

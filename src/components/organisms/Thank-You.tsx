@@ -12,6 +12,9 @@ import ResumenContent from "../molecules/resumenCompra/resumenContent";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { ResumenData } from "@/types/ResumenCompra";
 import { redirect } from "next/navigation";
+import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
+import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
+import { pushToDataLayer } from "@/utils/gtm";
 
 type Shift = {
     day: number | string,
@@ -23,10 +26,11 @@ type Shift = {
 
 export default function ThankYou() {
 
-    const { globalUserAnswers, globalDatosContratacion, globalIzziSelection, globalProcessStatus, clearCheckoutFlow, globalFlagDomicilio, totalSinDescuento } = useIzziContent();
+    const { globalUserAnswers, globalDatosContratacion, globalIzziSelection, globalProcessStatus, clearCheckoutFlow, globalFlagDomicilio, totalSinDescuento, precioTotal, coberturaData } = useIzziContent();
     const { icon, copys, copyResumen } = useThankYou();
 
     const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
+    const [purchaseTracked, setPurchaseTracked] = useState(false);
 
     const copy = copys as ThankyouCopys;
     const resumenCopys = copyResumen as ResumenData;
@@ -41,6 +45,89 @@ export default function ThankYou() {
             redirect('/consulta-cobertura');
         }
     }, [globalDatosContratacion.Pago?.metodoPago, globalProcessStatus.accountNumber]);
+
+    useEffect(() => {
+        pushToDataLayer(EVENTS.PAGE_DATA, {
+            page_type: 'confirmation',
+            page_name: 'thank_you',
+        });
+    }, []);
+
+    useEffect(() => {
+        if (purchaseTracked) return;
+        if (typeof window !== 'undefined' && sessionStorage.getItem('izzi-purchase-tracked')) return;
+        if (!globalProcessStatus.orderNumber) return;
+        if (!globalIzziSelection || !globalIzziSelection.idPaquete) return;
+
+        const { buildEcommerceLineItems, normalizeEcommerceValue, normalizeUserData, pushEcommerceEvent } =
+            izziDataLayerHelpers;
+
+        const rawValue =
+            precioTotal ||
+            (globalIzziSelection.precioPaquete ? parseFloat(globalIzziSelection.precioPaquete) || 0 : 0) ||
+            totalSinDescuento ||
+            0;
+        const value = normalizeEcommerceValue(rawValue);
+
+        const items = buildEcommerceLineItems(globalIzziSelection, {
+            precioTotal: value,
+            mainListId: "checkout",
+            mainListName: "Checkout - plan principal",
+            extrasListId: "checkout",
+            extrasListName: "Checkout - extras",
+        });
+
+        const datosPersonales = globalDatosContratacion.DatosPersonales?.personal;
+
+        const userData = datosPersonales
+            ? normalizeUserData({
+                email: datosPersonales.email,
+                phone: datosPersonales.phone,
+                firstName: datosPersonales.firstName,
+                lastName: datosPersonales.firstLastName,
+                street: coberturaData.address,
+                city: coberturaData.municipio,
+                state: coberturaData.estado,
+                postalCode: coberturaData.zipCode,
+            })
+            : undefined;
+
+        let checkoutSessionId: string | undefined;
+        if (typeof window !== "undefined") {
+            const existing = sessionStorage.getItem("izzi-checkout-session-id");
+            if (existing) {
+                checkoutSessionId = existing;
+            }
+        }
+
+        const additionalParams: Record<string, unknown> = {
+            account_number: globalProcessStatus.accountNumber ? String(globalProcessStatus.accountNumber) : undefined,
+            user_data: userData,
+        };
+
+        if (checkoutSessionId) {
+            additionalParams.checkout_session_id = checkoutSessionId;
+        }
+
+        pushEcommerceEvent(
+            EVENTS.PURCHASE,
+            {
+                currency: CURRENCY,
+                value,
+                transaction_id: String(globalProcessStatus.orderNumber),
+                items,
+            },
+            additionalParams
+        );
+
+        setPurchaseTracked(true);
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem('izzi-purchase-tracked', '1');
+            // Limpiar claves de checkout al finalizar el flujo para evitar contaminación
+            sessionStorage.removeItem('izzi-checkout-session-id');
+            sessionStorage.removeItem('izzi-checkout-current-step');
+        }
+    }, [purchaseTracked, globalProcessStatus.orderNumber, globalProcessStatus.accountNumber, globalIzziSelection, globalDatosContratacion, coberturaData, precioTotal, totalSinDescuento]);
 
     useEffect(() => {
         const horario = globalDatosContratacion.Instalacion;
