@@ -40,6 +40,8 @@ const Step2 = () => {
     setCfdi,
     regimen,
     setRegimen,
+    rfc,
+    setRfc,
     setIsPersonalValid,
     setIsEnvioValid,
     setIsFacturacionValid,
@@ -62,15 +64,17 @@ const Step2 = () => {
     if (!necesitaFacturar) {
       setFacturarOtraDireccion(false);
     }
-    console.log(necesitaFacturar)
   }, [necesitaFacturar, setFacturarOtraDireccion])
-
+    const getLocalBillingData = () => {
+        if (typeof window === 'undefined') return null
+        return JSON.parse(localStorage.getItem('PersistentBillingData') as string)
+    }
   useEffect(()=>{
-    if (necesitaFacturar) {
-      console.log('Si necesito facurar y al iniciar')
+    const isStored = !!getLocalBillingData()
+    if (isStored) {
+      setNecesitaFacturar(true)
     }
   },[])
-
 
   return (
     <div className='step2-container'>
@@ -166,6 +170,8 @@ const Step2 = () => {
               setCfdi={setCfdi}
               regimen={regimen}
               setRegimen={setRegimen}
+              rfc={rfc}
+              setRfc={setRfc}
               setIsValid={setIsFacturacionValid}
             />
 
