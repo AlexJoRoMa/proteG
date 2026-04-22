@@ -89,6 +89,10 @@ export function useStep5Form() {
         validateStep5();
     }, [selectedCapacityItem, validateStep5]);
 
+    useEffect(() => {
+        localStorage.removeItem('PersistentPersonalData');
+    }, [])
+
     //al seleccionar fecha
     const handleDateChange = (date: DateValue) => {
         const iso = `${date.year}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
