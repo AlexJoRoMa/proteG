@@ -74,7 +74,7 @@ export default function ResumenContainerConfigurador() {
                         "extras": extrasBody,
                         "product": izziSelection?.idPaquete
                     },
-                    "offnet": configuradorEntry?.offnetIzzi && configuradorEntry?.offnetSky
+                    "offnet": configuradorEntry?.offnetIzzi || configuradorEntry?.offnetSky
                 }
                 ),
             });
