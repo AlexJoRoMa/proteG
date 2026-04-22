@@ -62,7 +62,14 @@ const Step2 = () => {
     if (!necesitaFacturar) {
       setFacturarOtraDireccion(false);
     }
+    console.log(necesitaFacturar)
   }, [necesitaFacturar, setFacturarOtraDireccion])
+
+  useEffect(()=>{
+    if (necesitaFacturar) {
+      console.log('Si necesito facurar y al iniciar')
+    }
+  },[])
 
 
   return (

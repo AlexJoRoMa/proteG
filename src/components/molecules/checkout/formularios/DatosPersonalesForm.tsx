@@ -14,6 +14,17 @@ interface Props {
     esExtrangero: boolean
     setIsValid: (valid: boolean) => void
 }
+type PersonalData={
+    firstName: string;
+    secondName: string;
+    firstLastName: string;
+    secondLastName: string;
+    phone: string;
+    aditionalTel: string;
+    email: string;
+    curp?: string;
+    passport?: string;
+}
 
 export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsValid }) => {
     const { datosContratacion } = useCheckout();
@@ -21,20 +32,64 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
 
     const personal: Partial<DatosContratacion> = datosContratacion ?? {};
     const datosPersonales = personal.DatosPersonales?.personal;
+    
+    const getLocalPropertyByKey = (propertyName: string)=> JSON.parse(localStorage.getItem(propertyName) as string)??null;
+    let personalDataFromLocal: PersonalData={
+        firstName: '',
+        secondName: '',
+        firstLastName: '',
+        secondLastName: '',
+        phone: '',
+        aditionalTel: '',
+        email: '',
+        curp: '',
+        passport: '',
+    };
 
-    const [curp, setCurp] = useState(datosPersonales?.curp ?? "");
-    const [passport, setPassport] = useState(datosPersonales?.passport ?? "");
     const [passportValid, setPassportValid] = useState<boolean>(true);
     const [curpValid, setCurpValid] = useState<boolean>(true);
     
     // Estados para validación individual de campos
-    const [firstName, setFirstName] = useState(datosPersonales?.firstName ?? "");
-    const [secondName, setSecondName] = useState(datosPersonales?.secondName ?? "");
-    const [firstLastName, setFirstLastName] = useState(datosPersonales?.firstLastName ?? "");
-    const [secondLastName, setSecondLastName] = useState(datosPersonales?.secondLastName ?? "");
-    const [phone, setPhone] = useState(datosPersonales?.phone ?? "");
-    const [aditionalTel, setAditionalTel] = useState(datosPersonales?.aditionalTel ?? "");
-    const [email, setEmail] = useState(datosPersonales?.email ?? "");
+    const getLocalPersonalData = () => {
+        if (typeof window === 'undefined') return null
+        return JSON.parse(localStorage.getItem('PersistentPersonalData') ?? 'null')
+    }
+    const [curp, setCurp] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.curp ?? datosPersonales?.curp ?? ""
+    })
+    const [passport, setPassport] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.passport ?? datosPersonales?.passport ?? ""
+    })
+    const [firstName, setFirstName] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.firstName ?? datosPersonales?.firstName ?? ""
+    })
+    const [secondName, setSecondName] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.secondName ?? datosPersonales?.secondName ?? ""
+    })
+    const [firstLastName, setFirstLastName] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.firstLastName ?? datosPersonales?.firstLastName ?? ""
+    })
+    const [secondLastName, setSecondLastName] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.secondLastName ?? datosPersonales?.secondLastName ?? ""
+    })
+    const [phone, setPhone] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.phone ?? datosPersonales?.phone ?? ""
+    })
+    const [aditionalTel, setAditionalTel] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.aditionalTel ?? datosPersonales?.aditionalTel ?? ""
+    })
+    const [email, setEmail] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.email ?? datosPersonales?.email ?? ""
+    })
 
     // Estados para controlar si los campos han sido tocados
     const [firstNameTouched, setFirstNameTouched] = useState(false);
@@ -44,12 +99,46 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
     const [emailTouched, setEmailTouched] = useState(false);
     const [curpPassportTouched, setCurpPassportTouched] = useState(false);
 
+    const writePersonalInfoToLocal=()=> {
+        const persistentPersonalData = {
+            "firstName": firstName??"",
+            "secondName": secondName??"",
+            "firstLastName": firstLastName??"",
+            "secondLastName": secondLastName??"",
+            "phone": phone??"",
+            "aditionalTel": aditionalTel??"",
+            "email": email??"",
+            "curp": curp??"",
+            "isForeign": esExtrangero ? passport:""
+        }
+        localStorage.setItem('PersistentPersonalData', JSON.stringify(persistentPersonalData))
+    }
+
+    const updateDataStateOnLoad = ()=>{
+        setFirstName(personalDataFromLocal.firstName)
+        setSecondName(personalDataFromLocal.secondName)
+        setFirstLastName(personalDataFromLocal.firstLastName)
+        setSecondLastName(personalDataFromLocal.secondLastName)
+        setPhone(personalDataFromLocal.phone)
+        setAditionalTel(personalDataFromLocal.aditionalTel ?? "")
+        setEmail(personalDataFromLocal.email)
+        setCurp(personalDataFromLocal.curp ?? "")
+        setPassport(personalDataFromLocal.passport ?? "")
+    }
+
+    useEffect(()=>{
+        personalDataFromLocal = getLocalPropertyByKey('PersistentPersonalData')
+        if (personalDataFromLocal != null) {
+            updateDataStateOnLoad()
+        }
+    },[])
+
     useEffect(() => {
         if (esExtrangero) {
-            setPassport(datosPersonales?.passport ?? "");
+            setPassport(personalDataFromLocal?.passport ?? datosPersonales?.passport ?? "");
             setCurp("");
         } else {
-            setCurp(datosPersonales?.curp ?? "");
+            setCurp(personalDataFromLocal?.curp ?? datosPersonales?.curp ?? "");
             setPassport("");
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,6 +155,11 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
             (esExtrangero ? (passport.trim() !== '' && passportValid) : (curp.trim() !== '' && curpValid));
 
         setIsValid(isFormValid);
+
+        if (isFormValid){
+            writePersonalInfoToLocal()
+        }
+
     }, [firstName, firstLastName, secondLastName, phone, email, curp, passport, curpValid, passportValid, esExtrangero, setIsValid]);
 
     return (
@@ -265,11 +359,11 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                             onChange={(e) => {
                                 const value = e.target.value;
                                 const clean = value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g, '');
-                                setCurp(clean);
-                                setCurpPassportTouched(true);
-
                                 const { isValid } = validateCurp(clean);
                                 setCurpValid(isValid);
+                                
+                                setCurp(clean);
+                                setCurpPassportTouched(true);
                             }}
                             placeholder={getValue('datosPersonales.placeholder.curp')}
                             errorMessage={getValue('datosPersonales.error.curp')}

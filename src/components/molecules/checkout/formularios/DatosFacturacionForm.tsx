@@ -55,8 +55,10 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
             rfc.length >= 12 && 
             cfdi.trim() !== '' && 
             regimen.trim() !== '';
-
         setIsValid(isFormValid);
+        if (isFormValid) {
+            // localStorage
+        }
     }, [rfc, cfdi, regimen, setIsValid]);
 
     return (
