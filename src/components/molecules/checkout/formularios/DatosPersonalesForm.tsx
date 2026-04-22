@@ -46,19 +46,52 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
         passport: '',
     };
 
-    const [curp, setCurp] = useState(datosPersonales?.curp ?? "");
-    const [passport, setPassport] = useState(datosPersonales?.passport ?? "");
+    // const [curp, setCurp] = useState(datosPersonales?.curp ?? "");
+    // const [passport, setPassport] = useState(datosPersonales?.passport ?? "");
     const [passportValid, setPassportValid] = useState<boolean>(true);
     const [curpValid, setCurpValid] = useState<boolean>(true);
     
     // Estados para validación individual de campos
-    const [firstName, setFirstName] = useState(datosPersonales?.firstName ?? "");
-    const [secondName, setSecondName] = useState(datosPersonales?.secondName ?? "");
-    const [firstLastName, setFirstLastName] = useState(datosPersonales?.firstLastName ?? "");
-    const [secondLastName, setSecondLastName] = useState(datosPersonales?.secondLastName ?? "");
-    const [phone, setPhone] = useState(datosPersonales?.phone ?? "");
-    const [aditionalTel, setAditionalTel] = useState(datosPersonales?.aditionalTel ?? "");
-    const [email, setEmail] = useState(datosPersonales?.email ?? "");
+    const getLocalPersonalData = () => {
+        if (typeof window === 'undefined') return null
+        return JSON.parse(localStorage.getItem('PersistentPersonalData') ?? 'null')
+    }
+    const [curp, setCurp] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.curp ?? datosPersonales?.curp ?? ""
+    })
+    const [passport, setPassport] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.passport ?? datosPersonales?.passport ?? ""
+    })
+    const [firstName, setFirstName] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.firstName ?? datosPersonales?.firstName ?? ""
+    })
+    const [secondName, setSecondName] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.secondName ?? datosPersonales?.secondName ?? ""
+    })
+    const [firstLastName, setFirstLastName] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.firstLastName ?? datosPersonales?.firstLastName ?? ""
+    })
+    const [secondLastName, setSecondLastName] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.secondLastName ?? datosPersonales?.secondLastName ?? ""
+    })
+    const [phone, setPhone] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.phone ?? datosPersonales?.phone ?? ""
+    })
+    const [aditionalTel, setAditionalTel] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.aditionalTel ?? datosPersonales?.aditionalTel ?? ""
+    })
+    const [email, setEmail] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.email ?? datosPersonales?.email ?? ""
+    })
 
     // Estados para controlar si los campos han sido tocados
     const [firstNameTouched, setFirstNameTouched] = useState(false);

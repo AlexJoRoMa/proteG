@@ -91,6 +91,7 @@ export function useStep5Form() {
 
     useEffect(() => {
         localStorage.removeItem('PersistentPersonalData');
+        localStorage.removeItem('PersistentDireccionData');
     }, [])
 
     //al seleccionar fecha

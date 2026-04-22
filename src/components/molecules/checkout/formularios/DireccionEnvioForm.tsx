@@ -27,9 +27,42 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
 
     const getLocalPropertyByKey = (propertyName: string) => JSON.parse(localStorage.getItem(propertyName) as string) ?? null;
 
-    const [street, setStreet] = useState(datosEnvio?.street ?? "");
-    const [street2, setStreet2] = useState(datosEnvio?.street2 ?? "");
-    const [reference, setReference] = useState(datosEnvio?.reference ?? "");
+    // const [street, setStreet] = useState(datosEnvio?.street ?? "");
+    // const [street2, setStreet2] = useState(datosEnvio?.street2 ?? "");
+    // const [reference, setReference] = useState(datosEnvio?.reference ?? "");
+
+    // Nueva inicializacion de informacion persistente
+     const getLocalPersonalData = () => {
+        if (typeof window === 'undefined') return null
+        return JSON.parse(localStorage.getItem('PersistentPersonalData') ?? 'null')
+    }
+    const [street, setStreet] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.street ?? datosEnvio?.street ?? ""
+    })
+    const [street2, setStreet2] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.street2 ?? datosEnvio?.street2 ?? ""
+    })
+    const [reference, setReference] = useState(() => {
+        const local = getLocalPersonalData()
+        return local?.reference ?? datosEnvio?.reference ?? ""
+    })
+    // const [street, setStreet] = useState(() => {
+    //     if (typeof window === 'undefined') return datosEnvio?.street ?? ""
+    //     const local = JSON.parse(localStorage.getItem('PersistentDireccionData') ?? 'null')
+    //     return local?.street ?? datosEnvio?.street ?? ""
+    // })
+    // const [street2, setStreet2] = useState(() => {
+    //     if (typeof window === 'undefined') return datosEnvio?.street2 ?? ""
+    //     const local = JSON.parse(localStorage.getItem('PersistentDireccionData') ?? 'null')
+    //     return local?.street2 ?? datosEnvio?.street2 ?? ""
+    // })
+    // const [reference, setReference] = useState(() => {
+    //     if (typeof window === 'undefined') return datosEnvio?.reference ?? ""
+    //     const local = JSON.parse(localStorage.getItem('PersistentDireccionData') ?? 'null')
+    //     return local?.reference ?? datosEnvio?.reference ?? ""
+    // })
 
     const [streetTouched, setStreetTouched] = useState(false);
     const [street2Touched, setStreet2Touched] = useState(false);
