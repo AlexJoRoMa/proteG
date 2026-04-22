@@ -11,7 +11,7 @@ import { Card, CardBody, CardFooter, CardHeader, Tab, Tabs } from "@heroui/react
 import { useEffect, useMemo, useState } from "react";
 
 export default function PlanesMovil({ step, preSeleccion }: StepProps) {
-    const { configuradorEntry, setUserAnswers, userAnswers, copysConfigurador } = useContent();
+    const { configuradorEntry, setUserAnswers, userAnswers, copysConfigurador, isLoading } = useContent();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const plans = configuradorEntry?.offers.MOVIL as unknown as OfferItem[] || [];
     const offersCopys = copysConfigurador as unknown as OffersCopys;
@@ -191,7 +191,7 @@ export default function PlanesMovil({ step, preSeleccion }: StepProps) {
                                         }}>
                                         <CardHeader>
                                             <div className="flex flex-col text-start">
-                                                <h1 className="text-2xl font-extrabold leading-[27px]">{card.titulo}</h1>
+                                                <h1 className={`text-2xl font-extrabold leading-[27px] ${isLoading ? 'text-gray-200' : 'text-black-0'}`}>{card.titulo}</h1>
                                             </div>
                                         </CardHeader>
                                         <CardBody />

@@ -143,13 +143,6 @@ export default function AccordionPlanesExtras() {
 
             if (prevIds === newIds) return prev;
             return newSelect;
-            /* 
-            const validIds = new Set(planesExtras.map(plan => plan.idExtra));
-            const filtrados = prev.filter(item => validIds.has(item.idExtra));
-
-            if (filtrados.length === prev.length) return prev;
-
-            return filtrados; */
         });
     }, [planesExtras]);
 
@@ -258,6 +251,7 @@ export default function AccordionPlanesExtras() {
 
                                             return (
                                                 <Image
+                                                    style={{filter: `blur(${content.isLoading?"3":"0"}px)`}}
                                                     src={`https:${setIcon.fields.ottImage.fields.image.fields.file.url}`}
                                                     alt={setIcon.fields.ottImage.fields.altText || ott.titulo || "Ícono del servicio extra"}
                                                     width={96}
@@ -265,41 +259,14 @@ export default function AccordionPlanesExtras() {
                                                 />
                                             )
                                         })()}
-                                        {/* {ottsImages.map((icon, index) => (
-                                            <div key={index}>
-                                                {
-                                                    ott.titulo.includes(icon.fields.type) &&
-                                                    <Image
-                                                        src={`https:${icon.fields.ottImage.fields.image.fields.file.url}`}
-                                                        alt={icon.fields.ottImage.fields.altText}
-                                                        width={96}
-                                                        height={46}
-                                                    />
-                                                }
-                                            </div>
-                                        ))
-                                        } */}
                                     </CardHeader>
                                     <CardBody>
                                         <div className="flex flex-col gap-[4px] text-xs md:text-sm leading-[16px] text-start justify-start">
                                             <h3 className="font-bold">{ott.titulo}</h3>
-                                            {/* <p className="font-normal">{ott.descripcion}</p> */}
                                         </div>
                                     </CardBody>
                                     <CardFooter>
                                         <div className="flex flex-row gap-[8px] items-center justify-end pr-[4px]">
-                                            {/* {ott.promo && <span
-                                            className="
-                                                absolute top-0 right-0
-                                                w-5 h-5
-                                                bg-(--color--turquoise-450)
-                                                rounded-bl-md
-                                                flex items-center justify-center
-                                                text-white text-sm
-                                                shadow-md">
-                                            %
-                                        </span>
-                                        } */}
                                             <div className="flex flex-col gap-[4px]">
                                                 <h3 className="font-bold text-base leading-[24px]">{`+${FormatCurrency(ott.costo)}`}</h3>
                                                 <p className="font-normal text-sm leading-[16px]">{duration}</p>
