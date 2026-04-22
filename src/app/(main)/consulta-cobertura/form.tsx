@@ -200,6 +200,7 @@ export default function CoberturaForm() {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [nameError, setNameError] = useState<boolean>(false);
   const [numExtError, setNumExtError] = useState<boolean>(false);
+  const [phoneError, setPhoneError] = useState<boolean>(false);
   const [hasAddress, setHasAddress] = useState<string>('');
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const { getValue } = useMicrocopies('cobertura');
@@ -240,7 +241,7 @@ export default function CoberturaForm() {
   const showFields = (addressSelected || hasAddress !== '') && street.trim() !== '';
   const isFieldDisabled = !addressSelected;
   const isPhovalid = phone.length === 10;
-  const isNameValid = name.trim().length >3;
+  const isNameValid = name.trim().length >2;
   const isPrivacyCheck = isSelected;
   const isColoniaValid = coloniaError || neighborhood.trim() === '';
   const isNumExtValid = streetNumber.trim().length > 0;
@@ -750,7 +751,7 @@ export default function CoberturaForm() {
             onKeyDown={handleCharPress}
             onValueChange={(val) =>{
               setName(val);
-              const validLenght = val.trim().length >3
+              const validLenght = val.trim().length >2
               setNameError(!validLenght)
             }}
             maxLength={100}
@@ -759,6 +760,7 @@ export default function CoberturaForm() {
           />
           <Input
             isRequired
+            isInvalid={phoneError}
             label={getText('cobertura.form.telefono.label')}
             placeholder={getText('cobertura.form.telefono.placeholder')}
             errorMessage={getText('cobertura.form.telefono.error')}
@@ -767,7 +769,10 @@ export default function CoberturaForm() {
             type="text"
             value={phone}
             onKeyDown={handleKeyPress}
-            onValueChange={setPhone}
+            onValueChange={(val) =>{
+              setPhone(val);
+              setPhoneError(val.length !== 10)
+            }}
             maxLength={10}
             minLength={10}
             classNames={inputStyles(true)}
