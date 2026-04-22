@@ -60,10 +60,6 @@ const Step6 = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep]);
 
-  useEffect(() => {
-    localStorage.removeItem('PersistentPersonalData');
-  }, [])
-
   function handleTabChange(key: React.Key) {
     const metodo = key as MetodoPago;
     setSelectedTab(metodo);
