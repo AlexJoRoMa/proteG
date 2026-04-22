@@ -198,8 +198,7 @@ export default function CoberturaForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasResponse, setHasResponse] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState<boolean>(false);
-  const [blockNamePhone, setBlockNamePhone] = useState<boolean>(true);
- /*  const [coloniaError, setColoniaError] = useState<boolean>(false); */
+  const [nameError, setNameError] = useState<boolean>(false);
   const [hasAddress, setHasAddress] = useState<string>('');
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const { getValue } = useMicrocopies('cobertura');
@@ -232,19 +231,26 @@ export default function CoberturaForm() {
     setMode,
     resetCobertura
   } = useContent();
+  
+  const { setGlobalFlag, setFormattedAddress, setCoberturaData, 
+    setAddressFielSelected, setStreetDireccion, setColoniaError, coloniaError } = useIzziContent();
   descriptionText = getText('cobertura.descripcion.direccion');
 
   const showFields = (addressSelected || hasAddress !== '') && street.trim() !== '';
   const isFieldDisabled = !addressSelected;
+  const isPhovalid = phone.length === 10;
+  const isNameValid = name.trim().length > 0;
+  const isPrivacyCheck = isSelected;
+  const isColoniaValid = coloniaError || neighborhood.trim() === '';
 
-  const btnDisable = !addressSelected || isSearching || hasResponse || isLoading || blockNamePhone;
+  const isUserCheck = !isPhovalid || !isNameValid || !isPrivacyCheck || isColoniaValid;
+  const isFieldsCheck = !addressSelected || isSearching || hasResponse || isLoading;
 
-  console.log('🦧 btnDisable ', btnDisable)
+  const btnDisable = isUserCheck || isFieldsCheck ;
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const { setGlobalFlag, setFormattedAddress, setCoberturaData, 
-    setAddressFielSelected, setStreetDireccion, setColoniaError, coloniaError } = useIzziContent();
+  
 
   const modalData = {
     title: getValue2('stickyModal.title'),
@@ -599,10 +605,6 @@ export default function CoberturaForm() {
     )
   }
 
-  useEffect(() => {
-    if(phone.length > 9 && name !== '') setBlockNamePhone(false)
-  }, [phone, name])
-
   return (
     <>
       <Modal
@@ -731,6 +733,7 @@ export default function CoberturaForm() {
           />
           <Input
             isRequired
+            isInvalid={nameError}
             label={getText('cobertura.form.nombre.label')}
             placeholder={getText('cobertura.form.nombre.placeholder')}
             errorMessage={getText('cobertura.form.nombre.error')}
@@ -739,7 +742,10 @@ export default function CoberturaForm() {
             type="text"
             value={name}
             onKeyDown={handleCharPress}
-            onValueChange={setName}
+            onValueChange={(val) =>{
+              setName(val);
+              setNameError(val.trim() === '')
+            }}
             maxLength={100}
             minLength={3}
             classNames={inputStyles(true)}
