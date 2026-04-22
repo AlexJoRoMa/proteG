@@ -199,6 +199,7 @@ export default function CoberturaForm() {
   const [hasResponse, setHasResponse] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [nameError, setNameError] = useState<boolean>(false);
+  const [numExtError, setNumExtError] = useState<boolean>(false);
   const [hasAddress, setHasAddress] = useState<string>('');
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const { getValue } = useMicrocopies('cobertura');
@@ -239,11 +240,12 @@ export default function CoberturaForm() {
   const showFields = (addressSelected || hasAddress !== '') && street.trim() !== '';
   const isFieldDisabled = !addressSelected;
   const isPhovalid = phone.length === 10;
-  const isNameValid = name.trim().length > 0;
+  const isNameValid = name.trim().length >3;
   const isPrivacyCheck = isSelected;
   const isColoniaValid = coloniaError || neighborhood.trim() === '';
+  const isNumExtValid = streetNumber.trim().length > 0;
 
-  const isUserCheck = !isPhovalid || !isNameValid || !isPrivacyCheck || isColoniaValid;
+  const isUserCheck = !isPhovalid || !isNameValid || !isPrivacyCheck || isColoniaValid || !isNumExtValid;
   const isFieldsCheck = !addressSelected || isSearching || hasResponse || isLoading;
 
   const btnDisable = isUserCheck || isFieldsCheck ;
@@ -651,6 +653,7 @@ export default function CoberturaForm() {
             <Input
               isReadOnly={isFieldDisabled}
               isRequired
+              isInvalid={numExtError}
               label={getText('cobertura.form.numExterno.label')}
               placeholder={getText('cobertura.form.numExterno.placeholder')}
               errorMessage={getText('cobertura.form.numExterno.error')}
@@ -658,7 +661,10 @@ export default function CoberturaForm() {
               name="extNumber"
               type="text"
               value={streetNumber}
-              onValueChange={setStreetNumber}
+              onValueChange={(val) =>{
+                setStreetNumber(val);
+                setNumExtError(val.trim() === '')
+              }}
               classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
             />
             <Input
@@ -744,7 +750,8 @@ export default function CoberturaForm() {
             onKeyDown={handleCharPress}
             onValueChange={(val) =>{
               setName(val);
-              setNameError(val.trim() === '')
+              const validLenght = val.trim().length >3
+              setNameError(!validLenght)
             }}
             maxLength={100}
             minLength={3}
