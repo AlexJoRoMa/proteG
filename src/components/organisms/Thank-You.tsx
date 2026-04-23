@@ -35,6 +35,12 @@ export default function ThankYou() {
     const copy = copys as ThankyouCopys;
     const resumenCopys = copyResumen as ResumenData;
 
+    useEffect(()=>{
+        
+        localStorage.removeItem('PersistentBillingData')
+        localStorage.removeItem('PersistentAdditionalAddressData')
+    },[])
+
     useEffect(() => {
         localStorage.removeItem('PersistentPersonalData');
         localStorage.removeItem('PersistentDireccionData');

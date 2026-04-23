@@ -19,6 +19,8 @@ export const useStep2Form = () => {
     const [necesitaFacturar, setNecesitaFacturar] = useState(datosContratacion?.DatosPersonales?.meta?.necesitaFacturar ?? false);
     const [esExtranjero, setEsExtranjero] = useState(datosContratacion?.DatosPersonales?.meta?.esExtranjero ?? false);
 
+    //Estado para normalizacion del origen de la informacion
+    const [rfc, setRfc] = useState(datosContratacion.DatosPersonales?.facturacion?.rfc ?? '')
     // Estados para los Selects de HeroUI
     const [cfdi, setCfdi] = useState(datosContratacion?.DatosPersonales?.meta?.cfdi ?? '');
     const [regimen, setRegimen] = useState(datosContratacion?.DatosPersonales?.meta?.regimen ?? '');
@@ -89,6 +91,9 @@ export const useStep2Form = () => {
         setCfdi,
         regimen,
         setRegimen,
+        rfc,
+        setRfc,
+        isDireccionFacturacionValid,
         // Estados de validación
         setIsPersonalValid,
         setIsEnvioValid,

@@ -122,18 +122,15 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
         setPhone(personalDataFromLocal.phone)
         setAditionalTel(personalDataFromLocal.aditionalTel ?? "")
         setEmail(personalDataFromLocal.email)
-        setCurp(personalDataFromLocal.curp ?? "kkk")
+        setCurp(personalDataFromLocal.curp ?? "")
         setPassport(personalDataFromLocal.passport ?? "")
-
     }
 
     useEffect(()=>{
         personalDataFromLocal = getLocalPropertyByKey('PersistentPersonalData')
         if (personalDataFromLocal != null) {
             updateDataStateOnLoad()
-        } 
-            
-
+        }
     },[])
 
     useEffect(() => {
