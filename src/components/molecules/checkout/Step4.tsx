@@ -5,6 +5,9 @@ import { DeleteIcon, UploadICon } from '@/constants/IconsConstants';
 import { useStep4Form } from '@/hooks/checkout/useStep4Form';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 
+const descriptionStyle = 'mt-2 w-full text-black text-[16px] animate-appearance-in';
+const barTextStyle = 'flex items-center justify-between gap-3';
+
 const Step4 = () => {
 
   const { DocumentosTitularRef, ineFile, comprobanteFile, isPreparingFiles, setIneFile, setComprobanteFile, invalidateStep } = useStep4Form();
@@ -17,6 +20,7 @@ const Step4 = () => {
   const [errorComprobante, setErrorComprobante] = useState<string | null>(null);
   const [errorIne, setErrorIne] = useState<string | null>(null);
   const [progressIne, setProgressIne] = useState(0);
+  const isIneLoad = !!ineFile && progressIne < 100;
 
   useEffect(() => {
     if(ineFile) {
@@ -110,7 +114,7 @@ const Step4 = () => {
           accept='.jpg, .jpeg, .png, .pdf'
           radius='sm'
           classNames={{
-            base: 'data-[hover=true]:!cursor-pointer',
+            base: `${isIneLoad ? 'pointer-events-none' : 'data-[hover=true]:!cursor-pointer'}`,
             label: 'font-bold text-lg leading-[24px] text-[#11181C] mt-[25px] px-[24px] cursor-pointer',
             mainWrapper: 'mb-[16px] pointer',
             input: "cursor-pointer file:!hidden text-indent-[-9999px] text-transparent h-full",
@@ -129,8 +133,8 @@ const Step4 = () => {
           onChange={handleFileChange(setIneFile, setErrorIne)}
           description={
             ineFile && progressIne < 100 && (
-              <div className='mt-2 w-full text-black text-[16px] animate-appearance-in'>
-                <div className='flex items-center justify-between gap-3'>
+              <div className={descriptionStyle}>
+                <div className={barTextStyle}>
                   <Progress
                   size="md"
                   value={progressIne}
