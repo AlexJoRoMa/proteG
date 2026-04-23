@@ -1,6 +1,6 @@
 
-import React, { useRef, useState } from 'react';
-import { Form, Input } from '@heroui/react'
+import React, { useEffect, useRef, useState } from 'react';
+import { Form, Input, Progress  } from '@heroui/react'
 import { DeleteIcon, UploadICon } from '@/constants/IconsConstants';
 import { useStep4Form } from '@/hooks/checkout/useStep4Form';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
@@ -16,6 +16,18 @@ const Step4 = () => {
 
   const [errorComprobante, setErrorComprobante] = useState<string | null>(null);
   const [errorIne, setErrorIne] = useState<string | null>(null);
+  const [progressIne, setProgressIne] = useState(0);
+
+  useEffect(() => {
+    if(ineFile) {
+      const timer = setInterval(() => {
+        setProgressIne((prev) => (prev >= 100 ? 100 : prev + 10));
+      }, 300);
+      return ()=> clearInterval(timer);
+    } else {
+      setProgressIne(0);
+    }
+  }, [ineFile])
 
   const handleFileChange =
     (
@@ -66,7 +78,7 @@ const Step4 = () => {
 
   const borderClass = (hasFile: boolean, hasError: boolean) =>
     hasError ? "!p-1 border-dashed border-red-700" :
-      hasFile ? "bg-conic-custom !p-1 group-data-[hover=true]:!border-0 group-data-[focus=true]:!border-0" :
+      hasFile && progressIne === 100 ? "bg-conic-custom !p-1 group-data-[hover=true]:!border-0 group-data-[focus=true]:!border-0" :
         "!p-1 border-dashed border-gray-200";
 
   return (
@@ -108,13 +120,31 @@ const Step4 = () => {
           required
           className='w-full'
           endContent={
-            ineFile ? (
+            ineFile && progressIne ===100 ? (
               <div onClick={() => clearFile(ineInputRef, setIneFile, setErrorIne)}><DeleteIcon /></div>
             ) : (
               <UploadICon />
             )
           }
           onChange={handleFileChange(setIneFile, setErrorIne)}
+          description={
+            ineFile && progressIne < 100 && (
+              <div className='mt-2 w-full text-black text-[16px] animate-appearance-in'>
+                <div className='flex items-center justify-between gap-3'>
+                  <Progress
+                  size="md"
+                  value={progressIne}
+                  classNames={{indicator: "bg-black"}}
+                  /><span>{progressIne}%</span>
+                </div>
+                <div className='mt-2'>
+                  <span>Subiendo documento...</span>
+                  <span>({progressIne})s restantes</span>
+                </div>
+              </div>
+            )
+          }
+          
         />
         {errorIne && (
           <p className='mt-[12px] text-red-700 text-xs md:text-sm'>{errorIne}</p>

@@ -643,7 +643,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
     const renderContinueButton = () => (
         <Button
-            disabled={isDisabled}
+            /* disabled={isDisabled} */
             className='py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50'
             onPress={handleContinue}
         >
