@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import {SeoFieldSkeleton} from "@/types/SEOTypes";
 import SEOHead from '@/components/atoms/SEOHead';
 import { setTelNumber } from '@/services/izzi/getTelNumbers';
-import { setFullPath } from "@/services/izzi/getURL";
+import { setFullPath, setLandingSlug } from "@/services/izzi/getURL";
 import UrlPersister from "@/utils/utmTrack";
 import { Suspense } from "react";
 import PageDataTracker from '@/components/tracking/PageDataTracker';
@@ -297,6 +297,7 @@ export default async function LandingPage({ params}: DynamicPageProps) {
     /* valores para enviar valor de fullpath, no borrar */
     setTelNumber(fullPath)
     setFullPath(fullPath)
+    setLandingSlug(contentfulSlug as string)
 
 
     

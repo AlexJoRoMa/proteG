@@ -1,5 +1,5 @@
-'use client'
-import React from 'react';
+"use client";
+import React, { useEffect } from "react";
 import {
     Navbar,
     NavbarBrand,
@@ -16,11 +16,15 @@ import { IzziNavbar, HeaderComponentProps } from "@/types/headerTypes";
 import ButtonModal from '../atoms/ButtonModal';
 import TeLlamamosModalComponent from '../layouts/modals/TeLlamamosModalComponent';
 import TeAyudamosModalComponent from '../layouts/modals/TeAyudamosModalComponent';
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
+import { NONLANDINGPATHS } from "@/constants/header";
 
-export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
-    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-    const pathname = usePathname();
+export default function IzziHeaderContent({
+  navbarData,
+}: HeaderComponentProps) {
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const pathname = usePathname();
+  const [isLandingPageHeader, setIsLandingPageHeader] = React.useState(false);
     
     // Función helper para renderizar el modal correcto basado en typeModal
     const renderModalComponent = (typeModal?: 'TeLlamamos' | 'TeAyudamos') => {
@@ -51,9 +55,15 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
     const mobileNavbarButton = navbarContent?.filter((data) => data.fields.internalName == "MobileAccountButton");
     const mobileCoberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaMobile");
     const coberturaCopy = navbarContent?.filter((data) => data.fields.internalName == "CoberturaDesktop");
+    const navBarLandingNoOptions = navbarContent?.filter(
+      (data) => data.fields.internalName == "Navbar Landing  noOpciones",
+    );
 
+  useEffect(() => {
+    setIsLandingPageHeader(() => !NONLANDINGPATHS.includes(pathname));
+  }, [pathname]);
 
-    // Normaliza URLs para que sean absolutas (agrega '/' si falta)
+  // Normaliza URLs para que sean absolutas (agrega '/' si falta)
     const normalizeUrl = (url: string) => url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
 
     const isLinkActive = (href: string) => {
@@ -130,22 +140,23 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
           </Link>
           </NavbarBrand>
       </NavbarContent>
-      <NavbarContent className="hidden xl:flex gap-[32px] min-[1024px]:gap-[16px] min-[1095]:gap-[24px] min-[1150px]:gap-[32px]" justify="start">
-        {navbar[0].fields?.navigation?.map((link, index) => {    
-          const href = normalizeUrl(link.fields.navigationUrl);
-          const isActive = isLinkActive(href);
-
-          return(
-        <NavbarItem key={`${link}-${index}`} isActive={isActive}>
-            <Link className={`xl:text-wrap 2xl:text-nowrap ${isActive ? 'font-bold text-black' : 'text-foreground'}`} color="foreground" href={normalizeUrl(link.fields.navigationUrl)}>
-            {link.fields.navigationTitle}
-            </Link>
-        </NavbarItem>
-        )
-      
-      })}
-      </NavbarContent>
-      <NavbarContent justify="end" className="!grow-0">
+      {
+        !isLandingPageHeader ? (
+          <>
+            <NavbarContent className="hidden xl:flex gap-[32px] min-[1024px]:gap-[16px] min-[1095]:gap-[24px] min-[1150px]:gap-[32px]" justify="start">
+              {navbar[0].fields?.navigation?.map((link, index) => {
+                const href = normalizeUrl(link.fields.navigationUrl);
+                const isActive = isLinkActive(href);
+                return (
+                  <NavbarItem key={`${link}-${index}`} isActive={isActive}>
+                    <Link className={`xl:text-wrap 2xl:text-nowrap ${isActive ? "font-bold text-black" : "text-foreground"}`} color="foreground" href={normalizeUrl(link.fields.navigationUrl)}>
+                      {link.fields.navigationTitle}
+                    </Link>
+                  </NavbarItem>
+                );
+              })}
+            </NavbarContent>
+            <NavbarContent justify="end" className="!grow-0">
         {navbarButtons[0].fields?.navigation?.map((link, index) => (    
             <NavbarItem key={`${link}-${index}`} className="hidden xl:flex ">
               {
@@ -179,8 +190,12 @@ export default function IzziHeaderContent({navbarData}: HeaderComponentProps) {
             <Image src={`https:${mobileNavbarButton[0].fields?.brandLogo?.fields?.file?.url}`} alt={link.fields.navigationTitle} width={32} height={32} priority ></Image>
           </Button>
         </NavbarItem>
-        ))}
-      </NavbarContent>
+          ))}
+          </NavbarContent>
+        </>
+      ) : (
+        <NavbarContent className="hidden xl:flex gap-[32px] min-[1024px]:gap-[16px] min-[1095]:gap-[24px] min-[1150px]:gap-[32px]" justify="start" />
+      )}
       <NavbarMenu className="bg-white-0 mt-[26px] gap-[26px]">
         {navbar[0].fields?.navigation?.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
