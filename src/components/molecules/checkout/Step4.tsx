@@ -7,7 +7,7 @@ import { useMicrocopies } from '@/hooks/useMicrocopies';
 
 const Step4 = () => {
 
-  const { DocumentosTitularRef, ineFile, comprobanteFile, setIneFile, setComprobanteFile, invalidateStep } = useStep4Form();
+  const { DocumentosTitularRef, ineFile, comprobanteFile, isPreparingFiles, setIneFile, setComprobanteFile, invalidateStep } = useStep4Form();
 
   const { getValue } = useMicrocopies('contratacion-documentosTitular');
 
@@ -157,6 +157,12 @@ const Step4 = () => {
 
         {errorComprobante && (
           <p className='mt-[12px] text-red-700 text-xs md:text-sm'>{errorComprobante}</p>
+        )}
+
+        {isPreparingFiles && (
+          <p className='mt-[12px] text-gray-500 text-xs md:text-sm'>
+            Estamos preparando tus archivos para enviarlos. Esto puede tardar unos segundos.
+          </p>
         )}
 
 
