@@ -91,7 +91,7 @@ const Step6 = () => {
       </div>
       
 
-      <div className={boxStyle}>
+      {/* <div className={boxStyle}>
         <div className='flex  gap-3 justify-between pr-4  w-full'>
           <Radio
             value='paypal'
@@ -106,7 +106,7 @@ const Step6 = () => {
             <PagoPayPal/>
           </div>
         )}
-      </div>
+      </div> */}
 
 
       {!globalFlagDomicilio && (
