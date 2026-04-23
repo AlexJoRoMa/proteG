@@ -4,13 +4,17 @@ import { Form, Input, Progress  } from '@heroui/react'
 import { DeleteIcon, UploadICon } from '@/constants/IconsConstants';
 import { useStep4Form } from '@/hooks/checkout/useStep4Form';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
+import { progress } from 'framer-motion';
 
 const descriptionStyle = 'mt-2 w-full text-black text-[16px] animate-appearance-in';
 const barTextStyle = 'flex items-center justify-between gap-3';
 
 const Step4 = () => {
 
-  const { DocumentosTitularRef, ineFile, comprobanteFile, isPreparingFiles, setIneFile, setComprobanteFile, invalidateStep } = useStep4Form();
+  const [progressCFile, setProgressCFile] = useState(0);
+  const [progressIne, setProgressIne] = useState(0);
+
+  const { DocumentosTitularRef, ineFile, comprobanteFile, isPreparingFiles, setIneFile, setComprobanteFile, invalidateStep } = useStep4Form(progressIne, progressCFile);
 
   const { getValue } = useMicrocopies('contratacion-documentosTitular');
 
@@ -19,8 +23,9 @@ const Step4 = () => {
 
   const [errorComprobante, setErrorComprobante] = useState<string | null>(null);
   const [errorIne, setErrorIne] = useState<string | null>(null);
-  const [progressIne, setProgressIne] = useState(0);
+
   const isIneLoad = !!ineFile && progressIne < 100;
+  const isCFileLoad = !!comprobanteFile && progressCFile < 100;
 
   useEffect(() => {
     if(ineFile) {
@@ -31,12 +36,29 @@ const Step4 = () => {
     } else {
       setProgressIne(0);
     }
+
   }, [ineFile])
+
+  useEffect(() => {
+
+    if(comprobanteFile) {
+      const timer = setInterval(() => {
+        setProgressCFile((prev) => (prev >= 100 ? 100 : prev + 10));
+      }, 300);
+      return ()=> clearInterval(timer);
+    } else {
+      setProgressCFile(0);
+    }
+
+  }, [comprobanteFile])
+
+  const getSeconds = (progress: number) => Math.ceil(((100-progress) * 3) / 33.33)
 
   const handleFileChange =
     (
       setter: (f: File | null) => void,
-      setError: (e: string | null) => void
+      setError: (e: string | null) => void,
+      resetProgress : (n: number) => void
     ) =>
       (e: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -44,6 +66,7 @@ const Step4 = () => {
         if (!file) {
           setter(null);
           setError(null);
+          resetProgress(0)
           invalidateStep();
           return;
         }
@@ -65,6 +88,7 @@ const Step4 = () => {
           return;
         }
 
+        resetProgress(0)
         setError(null);
         setter(file);
       };
@@ -72,17 +96,19 @@ const Step4 = () => {
   const clearFile = (
     ref: React.RefObject<HTMLInputElement | null>,
     setter: (f: File | null) => void,
-    setError: (e: string | null) => void
+    setError: (e: string | null) => void,
+    resetProgress: (n: number) => void
   ) => {
     if (ref.current) ref.current.value = "";
     setter(null);
     setError(null);
     invalidateStep();
+    resetProgress(0)
   };
 
-  const borderClass = (hasFile: boolean, hasError: boolean) =>
+  const borderClass = (hasFile: boolean, hasError: boolean, progress: number) =>
     hasError ? "!p-1 border-dashed border-red-700" :
-      hasFile && progressIne === 100 ? "bg-conic-custom !p-1 group-data-[hover=true]:!border-0 group-data-[focus=true]:!border-0" :
+      hasFile && progress === 100 ? "bg-conic-custom !p-1 group-data-[hover=true]:!border-0 group-data-[focus=true]:!border-0" :
         "!p-1 border-dashed border-gray-200";
 
   return (
@@ -118,19 +144,19 @@ const Step4 = () => {
             label: 'font-bold text-lg leading-[24px] text-[#11181C] mt-[25px] px-[24px] cursor-pointer',
             mainWrapper: 'mb-[16px] pointer',
             input: "cursor-pointer file:!hidden text-indent-[-9999px] text-transparent h-full",
-            inputWrapper: `cursor-pointer rounded-xl shadow-none h-[78px] ${borderClass(!!ineFile, !!errorIne)}`,
+            inputWrapper: `cursor-pointer rounded-xl shadow-none h-[78px] ${borderClass(!!ineFile, !!errorIne, progressIne)}`,
             innerWrapper: "!items-center cursor-pointer bg-white-0 rounded-md px-[24px] !border-0 group-data-[focus=true]:border-0",
           }}
           required
           className='w-full'
           endContent={
             ineFile && progressIne ===100 ? (
-              <div onClick={() => clearFile(ineInputRef, setIneFile, setErrorIne)}><DeleteIcon /></div>
+              <div onClick={() => clearFile(ineInputRef, setIneFile, setErrorIne, setProgressIne)}><DeleteIcon /></div>
             ) : (
               <UploadICon />
             )
           }
-          onChange={handleFileChange(setIneFile, setErrorIne)}
+          onChange={handleFileChange(setIneFile, setErrorIne, setProgressIne)}
           description={
             ineFile && progressIne < 100 && (
               <div className={descriptionStyle}>
@@ -139,11 +165,11 @@ const Step4 = () => {
                   size="md"
                   value={progressIne}
                   classNames={{indicator: "bg-black"}}
-                  /><span>{progressIne}%</span>
+                  /><span>{Math.round(progressIne)}%</span>
                 </div>
                 <div className='mt-2'>
                   <span>Subiendo documento...</span>
-                  <span>({progressIne})s restantes</span>
+                  <span>({getSeconds(progressIne)})s restantes</span>
                 </div>
               </div>
             )
@@ -170,23 +196,40 @@ const Step4 = () => {
           radius='sm'
           accept='.jpg, .jpeg, .png, .pdf'
           classNames={{
-            base: 'data-[hover=true]:!cursor-pointer',
+            base: `${isCFileLoad ? 'pointer-events-none' : 'data-[hover=true]:!cursor-pointer'}`,
             label: 'font-bold text-lg leading-[24px] text-[#11181C] mt-[25px] px-[24px] cursor-pointer',
             mainWrapper: 'mb-[16px] pointer',
             input: "cursor-pointer file:!hidden text-indent-[-9999px] text-transparent",
-            inputWrapper: `cursor-pointer rounded-xl shadow-none h-[78px] ${borderClass(!!comprobanteFile, !!errorComprobante)}`,
+            inputWrapper: `cursor-pointer rounded-xl shadow-none h-[78px] ${borderClass(!!comprobanteFile, !!errorComprobante, progressCFile)}`,
             innerWrapper: "!items-center cursor-pointer bg-white-0 rounded-md px-[24px] !border-0 group-data-[focus=true]:border-0 group-data-[hover=true]:!border-0",
           }}
           required
           className='w-full'
           endContent={
-            comprobanteFile ? (
-              <div onClick={() => clearFile(comprobanteInputRef, setComprobanteFile, setErrorComprobante)}><DeleteIcon /></div>
+            comprobanteFile && progressCFile ===100 ? (
+              <div onClick={() => clearFile(comprobanteInputRef, setComprobanteFile, setErrorComprobante, setProgressCFile)}><DeleteIcon /></div>
             ) : (
               <UploadICon />
             )
           }
-          onChange={handleFileChange(setComprobanteFile, setErrorComprobante)}
+          onChange={handleFileChange(setComprobanteFile, setErrorComprobante, setProgressCFile)}
+          description={
+            comprobanteFile && progressCFile < 100 && (
+              <div className={descriptionStyle}>
+                <div className={barTextStyle}>
+                  <Progress
+                  size="md"
+                  value={progressCFile}
+                  classNames={{indicator: "bg-black"}}
+                  /><span>{Math.round(progressCFile)}%</span>
+                </div>
+                <div className='mt-2'>
+                  <span>Subiendo documento...</span>
+                  <span>({getSeconds(progressCFile)})s restantes</span>
+                </div>
+              </div>
+            )
+          }
         />
 
         {errorComprobante && (
