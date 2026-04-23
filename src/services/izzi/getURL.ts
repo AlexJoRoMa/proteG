@@ -1,5 +1,6 @@
 
 let currentFullPath: string | null = null;
+let currentLandingSlug: string | null = null;
 
 export function setFullPath(path: string) {
     currentFullPath = path;
@@ -7,6 +8,14 @@ export function setFullPath(path: string) {
 
 export function getFullPath(){
     return currentFullPath;
+}
+
+export function setLandingSlug(slug: string) {
+    currentLandingSlug = slug;
+}
+
+export function getLandingSlug() {
+    return currentLandingSlug;
 }
 
 export function getTrackingBase(){
