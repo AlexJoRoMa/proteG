@@ -53,7 +53,6 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
         cfdi:'',
         regimen:''
     };
-
     const writeBillingInfoToLocal=()=> {
         const persistentBillingData = {
             rfc,

@@ -31,6 +31,12 @@ export default function ThankYou() {
     const copy = copys as ThankyouCopys;
     const resumenCopys = copyResumen as ResumenData;
 
+    useEffect(()=>{
+        
+        localStorage.removeItem('PersistentBillingData')
+        localStorage.removeItem('PersistentAdditionalAddressData')
+    },[])
+
     useEffect(() => {
         if (!globalProcessStatus.accountNumber || !globalDatosContratacion.Pago?.metodoPago) {
             redirect('/consulta-cobertura');

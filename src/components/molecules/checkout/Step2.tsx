@@ -42,6 +42,7 @@ const Step2 = () => {
     setRegimen,
     rfc,
     setRfc,
+    isDireccionFacturacionValid,
     setIsPersonalValid,
     setIsEnvioValid,
     setIsFacturacionValid,
@@ -65,14 +66,22 @@ const Step2 = () => {
       setFacturarOtraDireccion(false);
     }
   }, [necesitaFacturar, setFacturarOtraDireccion])
-    const getLocalBillingData = () => {
-        if (typeof window === 'undefined') return null
-        return JSON.parse(localStorage.getItem('PersistentBillingData') as string)
-    }
+
+  const getLocalBillingData = () => {
+      if (typeof window === 'undefined') return null
+      return JSON.parse(localStorage.getItem('PersistentBillingData') as string)
+  }
+  const getLocalAdditionalAddressData = () => {
+      if (typeof window === 'undefined') return null
+      return JSON.parse(localStorage.getItem('PersistentAdditionalAddressData') as string)
+  }
+
   useEffect(()=>{
-    const isStored = !!getLocalBillingData()
-    if (isStored) {
-      setNecesitaFacturar(true)
+    if (!!getLocalBillingData()) {
+      setNecesitaFacturar(!necesitaFacturar)
+    }
+    if(!!getLocalAdditionalAddressData()){
+      setFacturarOtraDireccion(!facturarOtraDireccion)
     }
   },[])
 
@@ -190,7 +199,7 @@ const Step2 = () => {
 
             {
               facturarOtraDireccion && (
-                <DireccionFacturacionForm formRef={DireccionFacturacionRef} setIsValid={setIsDireccionFacturacionValid} />
+                <DireccionFacturacionForm formRef={DireccionFacturacionRef} setIsValid={setIsDireccionFacturacionValid} isAddressValid={isDireccionFacturacionValid} />
               )
             }
           </>

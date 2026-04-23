@@ -93,6 +93,7 @@ export const useStep2Form = () => {
         setRegimen,
         rfc,
         setRfc,
+        isDireccionFacturacionValid,
         // Estados de validación
         setIsPersonalValid,
         setIsEnvioValid,
