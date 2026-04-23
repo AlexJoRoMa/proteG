@@ -87,7 +87,7 @@ export default function BotonContratarConfigurador({ loading, setLoading }: { lo
                         "extras": extrasBody,
                         "product": izziSelection?.idPaquete
                     },
-                    "offnet": configuradorEntry?.offnetIzzi && configuradorEntry?.offnetSky
+                    "offnet": configuradorEntry?.offnetIzzi || configuradorEntry?.offnetSky
                 }
                 ),
             });
