@@ -15,10 +15,9 @@ import { getOttCategoriesFromContentful, isComboCategory } from "@/utils/OttCate
 
 export default function ResumenContainerConfigurador() {
 
-    const { copysResumen, checkedPromotions, setCheckedPromotions, resumenIcon, userAnswers, configuradorEntry, izziSelection } = useContent();
+    const { copysResumen, checkedPromotions, setCheckedPromotions, resumenIcon, userAnswers, configuradorEntry, izziSelection, isLoading, setIsLoading } = useContent();
     const { setPromoData } = useIzziContent();
     const resumenCopys = copysResumen as ResumenData;
-    const [loading, setLoading] = useState<boolean>(false);
     const [promoError, setPromoError] = useState(false);
     const [validComboCategories, setValidComboCategories] = useState<Set<string>>(new Set());
     const { coberturaData, setRpt, setOffnetIzzi, setOffnetSky, ahorroTotal } = useIzziContent();
@@ -34,7 +33,7 @@ export default function ResumenContainerConfigurador() {
     }, []);
 
     const handleClick = async () => {
-        setLoading(true);
+        setIsLoading(true);
         const extrasBody = [];
 
 
@@ -89,19 +88,19 @@ export default function ResumenContainerConfigurador() {
             setPromoError(true);
             console.error("Error al obtener el token:", error);
         } finally {
-            setLoading(false);
+            setIsLoading(false);
             setCheckedPromotions(true);
         }
     };
 
     function handleContratar() {
-        setLoading(true);
+        setIsLoading(true);
         router.push(`${resumenCopys.boton.contratar.url}`)
     }
 
     return (
         <>
-        {loading &&
+        {isLoading &&
             
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70">
                 <div className="w-[104px] h-[104px]">
@@ -141,26 +140,19 @@ export default function ResumenContainerConfigurador() {
                     <Button
                         className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
                         onPress={handleClick}
-                        isDisabled={loading}
+                        isDisabled={isLoading}
                     >
                         {resumenCopys.boton.comprobarPromociones}
                     </Button>
                     :
-                    // <button
-                    //     disabled={loading}
-                    //     className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                    // >
-                    //     {resumenCopys.boton.contratar.titulo}
-                    // </button>
                     <Button
                         className={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"}
                         onPress={handleContratar}
-                        isDisabled={loading && promoError}
+                        isDisabled={isLoading && promoError}
                     >
                         {resumenCopys.boton.contratar.titulo}
                     </Button>
                 }
-                {/* <ModalFechaInvalida isOpen={promoError} /> */}
             </div>
 
         </>

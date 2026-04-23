@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import { useCheckout } from "@/components/providers/CheckoutProvider"
+import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useControlledAction } from "@/hooks/checkout/useControlledAction";
 import { useGlobalProcessStatus } from "@/hooks/checkout/useGlobalProcessStatus";
 import { DatosContratacion } from "@/types/Contratacion";
@@ -22,9 +22,19 @@ import { ResumenData } from "@/types/ResumenCompra";
 import ResumenContent from "../resumenCompra/resumenContent";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { FormatCurrency } from "@/utils/Currency";
+import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
+import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
+import {
+    getCheckoutStepTrackingMeta,
+    type CheckoutStepMetaSerialized,
+} from "@/utils/checkoutStepTracking";
 
-export default function ResumenContainer() {
+interface ResumenContainerProps {
+    variant: 'mobile' | 'desktop';
+}
 
+export default function ResumenContainer({ variant }: ResumenContainerProps) {
+    const ATTACH_STATUS_SETTLE_DELAY_MS = 1200;
     const [loading, setLoading] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
     const [modalName, setModalName] = useState<string>("modal-generico");
@@ -59,6 +69,12 @@ export default function ResumenContainer() {
     const processStatusRef = useRef(processStatus);
     const stepStatusRef = useRef<boolean | null>(null);
     const isSubmittingRef = useRef(false);
+    /** Dedupe por código de paso fijo (10–13, 19, 20), no por índice UI. */
+    const trackedStepsRef = useRef<Set<number>>(new Set());
+    const addShippingInfoTrackedRef = useRef(false);
+    const addPaymentInfoTrackedRef = useRef(false);
+
+    const CHECKOUT_SESSION_STORAGE_KEY = 'izzi-checkout-session-id';
 
     useEffect(() => {
         datosContratacionRef.current = datosContratacion;
@@ -91,7 +107,47 @@ export default function ResumenContainer() {
             ...prev,
             DatosPersonales: stepData
         }));
-        nextStep()
+
+        if (!addShippingInfoTrackedRef.current && globalIzziSelection && globalIzziSelection.idPaquete && precioTotal) {
+            const { buildEcommerceLineItems, normalizeEcommerceValue, pushEcommerceEvent } = izziDataLayerHelpers;
+            const ecommerceValue = normalizeEcommerceValue(precioTotal);
+
+            const items = buildEcommerceLineItems(globalIzziSelection, {
+                precioTotal: ecommerceValue,
+                mainListId: "checkout",
+                mainListName: "Checkout - plan principal",
+                extrasListId: "checkout",
+                extrasListName: "Checkout - extras",
+            });
+
+            let checkoutSessionId: string | undefined;
+            if (typeof window !== "undefined") {
+                const existing = sessionStorage.getItem(CHECKOUT_SESSION_STORAGE_KEY);
+                if (existing) {
+                    checkoutSessionId = existing;
+                }
+            }
+
+            const additionalParams: Record<string, unknown> = {};
+            if (checkoutSessionId) {
+                additionalParams.checkout_session_id = checkoutSessionId;
+            }
+
+            pushEcommerceEvent(
+                EVENTS.ADD_SHIPPING_INFO,
+                {
+                    currency: CURRENCY,
+                    value: ecommerceValue,
+                    shipping_tier: "standard_installation",
+                    items,
+                },
+                Object.keys(additionalParams).length ? additionalParams : undefined
+            );
+
+            addShippingInfoTrackedRef.current = true;
+        }
+
+        nextStep();
     }
 
     //Step 3
@@ -137,8 +193,13 @@ export default function ResumenContainer() {
         };
 
         try {
-            // AttachFiles
-            await showModaluntilAction(async () => await runAttachFiles(), "modal-documentos")
+            const attachCompleted = await runWithModal(
+                () => runAttachFiles(),
+                "modal-documentos"
+            );
+            if (!attachCompleted) {
+                return;
+            }
 
             if (!globalFlagDomicilio) {
                 // GetCapacity() 
@@ -176,17 +237,69 @@ export default function ResumenContainer() {
             return;
         }
 
+        if (
+            !addPaymentInfoTrackedRef.current &&
+            metodoPago &&
+            globalIzziSelection &&
+            globalIzziSelection.idPaquete &&
+            precioTotal
+        ) {
+            const { buildEcommerceLineItems, normalizeEcommerceValue, pushEcommerceEvent } = izziDataLayerHelpers;
+            const ecommerceValue = normalizeEcommerceValue(precioTotal);
+
+            const items = buildEcommerceLineItems(globalIzziSelection, {
+                precioTotal: ecommerceValue,
+                mainListId: "checkout",
+                mainListName: "Checkout - plan principal",
+                extrasListId: "checkout",
+                extrasListName: "Checkout - extras",
+            });
+
+            let checkoutSessionId: string | undefined;
+            if (typeof window !== "undefined") {
+                const existing = sessionStorage.getItem(CHECKOUT_SESSION_STORAGE_KEY);
+                if (existing) {
+                    checkoutSessionId = existing;
+                }
+            }
+
+            let paymentType: string | undefined;
+            if (metodoPago === "creditCard") {
+                paymentType = "credit_card";
+            } else if (metodoPago === "paypal") {
+                paymentType = "bank_transfer";
+            } else if (metodoPago === "tecnico") {
+                paymentType = "oxxo";
+            }
+
+            const additionalParams: Record<string, unknown> = {};
+            if (checkoutSessionId) {
+                additionalParams.checkout_session_id = checkoutSessionId;
+            }
+
+            pushEcommerceEvent(
+                EVENTS.ADD_PAYMENT_INFO,
+                {
+                    currency: CURRENCY,
+                    value: ecommerceValue,
+                    payment_type: paymentType,
+                    items,
+                },
+                Object.keys(additionalParams).length ? additionalParams : undefined
+            );
+
+            addPaymentInfoTrackedRef.current = true;
+        }
+
         // Flujo específico para pago con técnico: reintentos + modal
         if (metodoPago === "tecnico") {
-            const success = await runWithModal(
-                () => runSubmitCapacityWithRetries(),
-                "modal-generico"
-            );
+            const success = await runSubmitCapacityWithRetries();
 
             if (success) {
                 router.push("/thank-you");
             } else {
                 console.error("SubmitCapacity failed after 3 attempts for pago tecnico");
+                setModalLoading(false);
                 router.push("/error");
             }
 
@@ -198,6 +311,8 @@ export default function ResumenContainer() {
 
         if (submitResponse) {
             router.push("/thank-you");
+        } else {
+            setModalLoading(false);
         }
     }
 
@@ -208,9 +323,48 @@ export default function ResumenContainer() {
         // logica adicional
     });
 
-    function runAttachFiles() {
-        runAttachIne();
-        runAttachComprobante();
+    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const refreshCurrentProcessStatus = async () => {
+        const currentProcessId = izziEnrrollRef.current;
+        if (!currentProcessId) {
+            return null;
+        }
+
+        const updatedStatus = await GetProcessStatus(currentProcessId);
+        if (updatedStatus) {
+            setProcessStatus(updatedStatus);
+            processStatusRef.current = updatedStatus;
+        }
+
+        return updatedStatus;
+    };
+
+    const getRequiredAttachInfo = (documentKey: "ine" | "comprobante") => {
+        const attachInfo = datosContratacionRef.current?.DocumentosTitular?.[documentKey];
+        const currentStatus = processStatusRef.current;
+
+        if (!currentStatus?.accountId || !currentStatus?.accountNumber) {
+            throw new Error(`No hay cuenta activa para adjuntar ${documentKey}.`);
+        }
+
+        if (!attachInfo?.fileName || !attachInfo?.fileExtension || !attachInfo?.data) {
+            throw new Error(`El payload de ${documentKey} no está listo para enviarse.`);
+        }
+
+        return attachInfo;
+    };
+
+    async function runAttachFiles(): Promise<boolean> {
+        await runAttachIne(true);
+        await sleep(ATTACH_STATUS_SETTLE_DELAY_MS);
+        await refreshCurrentProcessStatus();
+
+        await runAttachComprobante(true);
+        await sleep(ATTACH_STATUS_SETTLE_DELAY_MS);
+        await refreshCurrentProcessStatus();
+
+        return true;
     }
 
     const showModaluntilAction = async (
@@ -242,10 +396,10 @@ export default function ResumenContainer() {
         }
     };
 
-    const runWithModal = async (
-        action: () => Promise<boolean>,
+    const runWithModal = async <T,>(
+        action: () => Promise<T>,
         modalKey: string
-    ): Promise<boolean> => {
+    ): Promise<T> => {
         setModalName(modalKey);
         setModalLoading(true);
 
@@ -274,19 +428,16 @@ export default function ResumenContainer() {
 
     const { trigger: runAttachIne, isLoading: loadingAttachIne } = useControlledAction({
         action: async () => {
-            const attachInfo = datosContratacionRef.current?.DocumentosTitular && datosContratacionRef.current?.DocumentosTitular.ine;
+            const attachInfo = getRequiredAttachInfo("ine");
 
             const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
-            
+
             // Después de attachFiles, consultar processStatus una vez para actualizar waitingForAction
-            if (izziEnroll) {
-                const updatedStatus = await GetProcessStatus(izziEnroll);
-                if (updatedStatus) {
-                    setProcessStatus(updatedStatus);
-                }
+            if (data?.error || data?.code) {
+                throw new Error("Error adjuntando INE.");
             }
-            
+
             return data;
         },
         resetKey: `step-4-attachFileIne`,
@@ -296,19 +447,16 @@ export default function ResumenContainer() {
 
     const { trigger: runAttachComprobante, isLoading: loadingAttachComprobante } = useControlledAction({
         action: async () => {
-            const attachInfo = datosContratacionRef.current?.DocumentosTitular && datosContratacionRef.current?.DocumentosTitular.comprobante;
+            const attachInfo = getRequiredAttachInfo("comprobante");
 
             const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
-            
+
             // Después de attachFiles, consultar processStatus una vez para actualizar waitingForAction
-            if (izziEnroll) {
-                const updatedStatus = await GetProcessStatus(izziEnroll);
-                if (updatedStatus) {
-                    setProcessStatus(updatedStatus);
-                }
+            if (data?.error || data?.code) {
+                throw new Error("Error adjuntando comprobante.");
             }
-            
+
             return data;
         },
         resetKey: `step-4-attachFileComprobante`,
@@ -378,6 +526,94 @@ export default function ResumenContainer() {
 
     const steps = globalFlagDomicilio ? [step1, step2, step3, step4, step6] : [step1, step2, step3, step4, step5, step6];
 
+    useEffect(() => {
+        if (!globalIzziSelection || !globalIzziSelection.idPaquete) return;
+        if (!precioTotal) return;
+
+        const { buildEcommerceLineItems, normalizeEcommerceValue, normalizeUserData, pushEcommerceEvent } =
+            izziDataLayerHelpers;
+        const ecommerceValue = normalizeEcommerceValue(precioTotal);
+
+        const items = buildEcommerceLineItems(globalIzziSelection, {
+            precioTotal: ecommerceValue,
+            mainListId: "checkout",
+            mainListName: "Checkout - plan principal",
+            extrasListId: "checkout",
+            extrasListName: "Checkout - extras",
+        });
+
+        const stepMeta = getCheckoutStepTrackingMeta(currentStep, globalFlagDomicilio);
+        if (!stepMeta) return;
+
+        if (typeof window !== "undefined") {
+            sessionStorage.setItem("izzi-checkout-current-step", String(currentStep));
+            const serialized: CheckoutStepMetaSerialized = {
+                uiStep: stepMeta.uiStep,
+                flowStep: stepMeta.flowStep,
+                label: stepMeta.label,
+                analyticsStepName: stepMeta.analyticsStepName,
+            };
+            sessionStorage.setItem("izzi-checkout-step-meta", JSON.stringify(serialized));
+        }
+
+        if (!trackedStepsRef.current.has(stepMeta.flowStep)) {
+            const extraParams: Record<string, unknown> = {
+                /** Código fijo de paso (10–13, 19, 20). Pago = siempre 20 aunque el índice UI sea 5 o 6. */
+                checkout_step: stepMeta.flowStep,
+                checkout_step_ui: stepMeta.uiStep,
+                checkout_step_label: stepMeta.label,
+                checkout_step_name: stepMeta.analyticsStepName,
+            };
+
+            let checkoutSessionId: string | undefined;
+            if (typeof window !== "undefined") {
+                const existing = sessionStorage.getItem(CHECKOUT_SESSION_STORAGE_KEY);
+                if (existing) {
+                    checkoutSessionId = existing;
+                }
+            }
+
+            if (checkoutSessionId) {
+                extraParams.checkout_session_id = checkoutSessionId;
+            }
+
+            const datosPersonales = datosContratacion?.DatosPersonales?.personal;
+
+            if (datosPersonales) {
+                const userData = normalizeUserData({
+                    email: datosPersonales.email,
+                    phone: datosPersonales.phone,
+                    firstName: datosPersonales.firstName,
+                    lastName: datosPersonales.firstLastName,
+                    street: coberturaData.address,
+                    city: coberturaData.municipio,
+                    state: coberturaData.estado,
+                    postalCode: coberturaData.zipCode,
+                });
+
+                extraParams.user_data = userData;
+            }
+
+            if (currentStep === 1) {
+                extraParams.coverage_verified = true;
+                extraParams.coverage_type = "fiber";
+                extraParams.coverage_region = coberturaData?.municipio || null;
+            }
+
+            pushEcommerceEvent(
+                EVENTS.CHECKOUT_PROGRESS,
+                {
+                    currency: CURRENCY,
+                    value: ecommerceValue,
+                    items,
+                },
+                extraParams
+            );
+
+            trackedStepsRef.current.add(stepMeta.flowStep);
+        }
+    }, [currentStep, globalFlagDomicilio, globalIzziSelection, precioTotal, datosContratacion, coberturaData]);
+
     const handleContinue = async () => {
         if (isSubmittingRef.current) return;
 
@@ -397,7 +633,7 @@ export default function ResumenContainer() {
 
             await handler(stepData);
 
-            window.scrollTo({ top:0, behavior: 'smooth'});
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
         } finally {
             isSubmittingRef.current = false;
@@ -405,8 +641,7 @@ export default function ResumenContainer() {
         }
     }
 
-    // Botón Continuar
-    const ContinueButton = (
+    const renderContinueButton = () => (
         <Button
             disabled={isDisabled}
             className='py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50'
@@ -416,88 +651,90 @@ export default function ResumenContainer() {
         </Button>
     );
 
+    const resumenDetailContent = (
+        <>
+            <h1 className="font-bold leading-[24px] text-xl mb-[32px]">{resumenCopys.titulo}</h1>
+            <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
+        </>
+    );
+
     return (
         <>
-            {/* Desktop */}
-            <div className="fixed xl:static bottom-0 left-0 z-40 xl:border xl:rounded-md xl:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 xl:bg-white-0 shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)] xl:shadow-none">
-                {/* Header Mobile */}
-                <div className="block xl:hidden">
-                    <div className="flex justify-between mb-[16px]">
-                        <div className="flex flex-col gap-[8px]">
-                            <div className="flex gap-[4px] font-normal text-base leading-[24px] text-gray-500 items-baseline">
-                                <h3 className="font-extrabold text-[32px] leading-[32px] text-black-0">
-                                    {FormatCurrency(Number(precioTotal))}
-                                </h3>
-                                <h5>{resumenCopys.infoDrawer.plazo}</h5>
-                                <p>|</p>
-                                <h5 className="font-bold">{infoPaquetes}</h5>
-
+            {variant === 'mobile' ? (
+                <>
+                    <div className="fixed bottom-0 left-0 z-40 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)]">
+                        <div className="flex justify-between mb-[16px]">
+                            <div className="flex flex-col gap-[8px]">
+                                <div className="flex gap-[4px] font-normal text-base leading-[24px] text-gray-500 items-baseline">
+                                    <h3 className="font-extrabold text-[32px] leading-[32px] text-black-0">
+                                        {FormatCurrency(Number(precioTotal))}
+                                    </h3>
+                                    <h5>{resumenCopys.infoDrawer.plazo}</h5>
+                                    <p>|</p>
+                                    <h5 className="font-bold">{infoPaquetes}</h5>
+                                </div>
+                                <div className="font-bold">{`¡Te ahorras ${FormatCurrency(Number(precioCombinado))} al combinar!`}</div>
                             </div>
-                            <div className="font-bold">{`¡Te ahorras ${FormatCurrency(Number(precioCombinado))} al combinar!`}</div>
 
+                            <button
+                                className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
+                                onClick={onOpen}
+                            >
+                                <ArrowUpIcon />
+                            </button>
                         </div>
-                        <button
-                            className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
-                            onClick={onOpen}
-                        >
-                            <ArrowUpIcon />
-                        </button>
+
+                        {renderContinueButton()}
+                    </div>
+
+                    <Drawer
+                        isOpen={isOpen}
+                        onOpenChange={onOpenChange}
+                        size="full"
+                        placement="bottom"
+                        hideCloseButton
+                        classNames={{
+                            header: "px-[16px] py-[24px]",
+                            body: "px-[16px] py-0 gap-0",
+                            footer: "w-full px-[16px] pt-[32px] bottom-0 z-50"
+                        }}
+                    >
+                        <DrawerContent>
+                            {(onClose) => (
+                                <>
+                                    <DrawerHeader className="flex flex-row justify-between items-center">
+                                        <h3 className="font-bold text-xl leading-[24px] text-[#11181C]">{resumenCopys.titulo}</h3>
+                                        <button
+                                            className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
+                                            onClick={onClose}
+                                        >
+                                            <ArrowDownIcon />
+                                        </button>
+                                    </DrawerHeader>
+
+                                    <DrawerBody>
+                                        <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
+                                    </DrawerBody>
+
+                                    <DrawerFooter>
+                                        {renderContinueButton()}
+                                    </DrawerFooter>
+                                </>
+                            )}
+                        </DrawerContent>
+                    </Drawer>
+                </>
+            ) : (
+                <div className="border rounded-md border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-white-0">
+                    {resumenDetailContent}
+
+                    <div className="pt-[32px] border-t-1 border-t-gray-150 z-50">
+                        {renderContinueButton()}
                     </div>
                 </div>
+            )}
 
-                {/* Desktop Resumen */}
-                <div className="hidden xl:block">
-                    <h1 className="font-bold leading-[24px] text-xl mb-[32px]">{resumenCopys.titulo}</h1>
-
-                    <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
-
-                </div>
-
-                <div className="xl:pt-[32px] xl:border-t-1 xl:border-t-gray-150 z-50">
-                    {ContinueButton}
-                </div>
-                <ModalContratacion isOpen={modalLoading} name={modalName} />
-            </div>
-
-            {/* Drawer Mobile */}
-            <Drawer
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
-                size="full"
-                placement="bottom"
-                hideCloseButton
-                classNames={{
-                    header: "px-[16px] py-[24px]",
-                    body: "px-[16px] py-0 gap-0",
-                    footer: "w-full px-[16px] pt-[32px] bottom-0 z-50"
-                }}
-            >
-                <DrawerContent>
-                    {(onClose) => (
-                        <>
-                            <DrawerHeader
-                                className="flex flex-row justify-between items-center"
-                            >
-                                <h3 className="font-bold text-xl leading-[24px] text-[#11181C]">{resumenCopys.titulo}</h3>
-                                <button
-                                    className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
-                                    onClick={onClose}
-                                >
-                                    <ArrowDownIcon />
-                                </button>
-                            </DrawerHeader>
-
-                            <DrawerBody>
-                                <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
-                            </DrawerBody>
-
-                            <DrawerFooter>
-                                {ContinueButton}
-                            </DrawerFooter>
-                        </>
-                    )}
-                </DrawerContent>
-            </Drawer>
+            <ModalContratacion isOpen={modalLoading} name={modalName} />
         </>
     )
 }

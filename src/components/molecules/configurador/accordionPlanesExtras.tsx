@@ -1,6 +1,8 @@
 import { CheckPlanesIcon, DropIcon, LoaderIcon } from "@/constants/IconsConstants";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
-import { OttProps, OttsImages, PackageInfo } from "@/types/ConfiguradorTypes";
+import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
+import type { IzziSelection, OttProps, OttsImages, PackageInfo } from "@/types/ConfiguradorTypes";
+import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
 import { PlanesTypes } from "@/types/PlanesExtrasTypes";
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
@@ -9,6 +11,70 @@ import { EntrySkeletonType } from "contentful";
 import Image from "next/image";
 import { Key, useEffect, useState } from "react";
 import useSWR from "swr";
+
+function computeNextOttSelection(
+    prev: OttProps[],
+    card: OttProps,
+    planesExtras: OttProps[] | null
+): { next: OttProps[]; didAdd: boolean } {
+    const cardSelected = prev.some((item) => item.idExtra === card.idExtra);
+
+    if (cardSelected) {
+        let newSelect = prev.filter((item) => item.idExtra !== card.idExtra);
+        if (card.titulo.toLowerCase() === 'vix premium') {
+            newSelect = newSelect.filter((item) => item.titulo.toLowerCase() !== 'vix premium mundial');
+        }
+        return { next: newSelect, didAdd: false };
+    }
+
+    let newSelection = prev.filter((item) => {
+        const isVixCombo =
+            card.titulo.toLowerCase().includes('vix') && item.titulo.toLowerCase().includes('vix');
+        if (isVixCombo) return true;
+        return item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra;
+    });
+
+    if (card.titulo.toLowerCase() === 'vix premium mundial') {
+        const hasVixPremium = planesExtras?.find((plan) => plan.titulo.toLowerCase() === 'vix premium');
+        const noSelectedVix = newSelection.filter((item) => !item.titulo.toLowerCase().includes('vix'));
+        if (hasVixPremium) {
+            return { next: [...noSelectedVix, hasVixPremium, card], didAdd: true };
+        }
+        newSelection = [...noSelectedVix, card];
+    }
+
+    if (card.titulo.toLowerCase() === 'vix premium') {
+        newSelection = newSelection.filter((item) => item.titulo.toLowerCase() !== 'vix premium mundial');
+    }
+    return { next: [...newSelection, card], didAdd: true };
+}
+
+function trackStreamingExtrasSelectItem(base: IzziSelection, ottPlanes: OttProps[]) {
+    if (typeof window === 'undefined') return;
+
+    const synthetic: IzziSelection = {
+        ...base,
+        extrasMap: ottPlanes.length ? { ott: ottPlanes } : undefined,
+    };
+    const bundleBase = Number(base.precioPaquete) || 0;
+    const sumOtt = ottPlanes.reduce((acc, o) => acc + (Number(o.costo) || 0), 0);
+    const movilPrice = base.extras ? Number(base.extras.precioPaquete) || 0 : 0;
+    const value = izziDataLayerHelpers.normalizeEcommerceValue(bundleBase + sumOtt + movilPrice);
+
+    const items = izziDataLayerHelpers.buildEcommerceLineItems(synthetic, {
+        precioTotal: value,
+        mainListId: 'configurador',
+        mainListName: 'Configurador - plan principal',
+        extrasListId: 'configurador_tv_extras',
+        extrasListName: 'Configurador - streaming extras',
+    });
+
+    izziDataLayerHelpers.pushEcommerceEvent(EVENTS.SELECT_ITEM, {
+        currency: CURRENCY,
+        value,
+        items,
+    });
+}
 
 const fetchGetPackageInfo = async ([, data]: [string, PackageInfo]) => {
     const res = await fetch('/api/configurador/planes-extras', {
@@ -40,7 +106,7 @@ export default function AccordionPlanesExtras() {
         coverage: content.configuradorEntry?.coverageType
     } as unknown as PackageInfo;
 
-    const shouldFetch = Boolean(content.userAnswers.tv);
+    const shouldFetch = Boolean(content.userAnswers.tv || content.userAnswers.internet);
 
     const { data: ottsData, error: errorOtts, isLoading: loadingOtts } = useSWR(
         shouldFetch ? ['planes-extras', packageInfo] : null,
@@ -68,58 +134,31 @@ export default function AccordionPlanesExtras() {
     }
 
     function handleSelect(card: OttProps) {
+        let trackPair: { base: IzziSelection; ott: OttProps[] } | null = null;
 
         setSelectedCard((prev) => {
-            const cardSelected = prev.some(item => item.idExtra === card.idExtra);
-
-            //---Deseleccionar
-            if (cardSelected) {
-                let newSelect = prev.filter(item => item.idExtra !== card.idExtra);
-
-                //CASO VIX MUNDIAL
-                if (card.titulo.toLowerCase() === 'vix premium') {
-                    newSelect = newSelect.filter(item => item.titulo.toLowerCase() !== 'vix premium mundial')
-                }
-
-                return newSelect;
+            const { next, didAdd } = computeNextOttSelection(prev, card, planesExtras);
+            if (didAdd && content.izziSelection?.idPaquete) {
+                trackPair = { base: content.izziSelection, ott: next };
             }
-
-
-            let newSelection = prev.filter(item => {
-                const isVixCombo = (card.titulo.toLowerCase().includes('vix') && item.titulo.toLowerCase().includes('vix'));
-                if (isVixCombo) return true;
-                return item.grupo !== card.grupo && item.categoriaExtra !== card.categoriaExtra;
-            }
-            );
-
-            //CASO VIX SLECCION
-            if (card.titulo.toLowerCase() === 'vix premium mundial') {
-
-                const hasVixPremium = planesExtras?.find(plan => plan.titulo.toLowerCase() === 'vix premium');
-
-                const noSelectedVix = newSelection.filter(item => !item.titulo.toLowerCase().includes('vix'));
-
-                if (hasVixPremium) {
-                    return newSelection = [...noSelectedVix, hasVixPremium, card];
-                } else {
-                    newSelection = [...noSelectedVix, card];
-                }
-            }
-
-            if (card.titulo.toLowerCase() === 'vix premium') {
-                newSelection = newSelection.filter(item => item.titulo.toLowerCase() !== 'vix premium mundial');
-            }
-            return [...newSelection, card];
+            return next;
         });
 
+        if (trackPair) {
+            const { base, ott } = trackPair;
+            queueMicrotask(() => trackStreamingExtrasSelectItem(base, ott));
+        }
     }
 
     useEffect(() => {
-        const ottsPlanes = content.userAnswers.tv?.ott?.planes;
+        const hasTv = Boolean(content.userAnswers.tv);
+        const ottsPlanes = hasTv
+            ? content.userAnswers.tv?.ott?.planes
+            : content.userAnswers.internet?.ott?.planes;
         if (ottsPlanes && ottsPlanes.length > 0) {
             setSelectedCard(ottsPlanes);
         }
-    }, [content.userAnswers.tv?.ott?.planes]);
+    }, [content.userAnswers.tv?.ott?.planes, content.userAnswers.internet?.ott?.planes, content.userAnswers.tv]);
 
     useEffect(() => {
         if (!planesExtras || planesExtras.length === 0) return;
@@ -140,13 +179,6 @@ export default function AccordionPlanesExtras() {
 
             if (prevIds === newIds) return prev;
             return newSelect;
-            /* 
-            const validIds = new Set(planesExtras.map(plan => plan.idExtra));
-            const filtrados = prev.filter(item => validIds.has(item.idExtra));
-
-            if (filtrados.length === prev.length) return prev;
-
-            return filtrados; */
         });
     }, [planesExtras]);
 
@@ -154,7 +186,10 @@ export default function AccordionPlanesExtras() {
         if (!selectedCard) return;
 
         content.setUserAnswers((prev) => {
-            const prevOTT = prev.tv?.ott?.planes ?? [];
+            const hasTv = Boolean(prev.tv);
+            const prevOTT = hasTv
+                ? prev.tv?.ott?.planes ?? []
+                : prev.internet?.ott?.planes ?? [];
             const prevIds = prevOTT.map((plan) => plan.idExtra).join(",");
             const newIds = selectedCard.map((plan) => plan.idExtra).join(",");
 
@@ -162,16 +197,23 @@ export default function AccordionPlanesExtras() {
 
             const total = selectedCard.reduce((acc, item) => acc + Number(item.costo), 0);
 
-            return {
-                ...prev,
-                tv: {
-                    ...prev.tv,
-                    ott: {
-                        planes: selectedCard,
-                        total
+            if (hasTv) {
+                return {
+                    ...prev,
+                    tv: {
+                        ...prev.tv,
+                        ott: { planes: selectedCard, total }
                     }
-                }
-            };
+                };
+            } else {
+                return {
+                    ...prev,
+                    internet: {
+                        ...prev.internet,
+                        ott: { planes: selectedCard, total }
+                    }
+                };
+            }
         });
     }, [content, selectedCard]);
 
@@ -210,7 +252,7 @@ export default function AccordionPlanesExtras() {
                     </div>
                 )}
 
-                {planesExtras && planesExtras.length > 0 && (
+                {!loadingOtts && planesExtras && planesExtras.length > 0 && (
                     <div className="grid grid-cols-1 2xl:grid-cols-2 gap-[16px] 2xl:gap-[24px] auto-rows-fr">
 
                         {planesExtras && planesExtras.map((ott: OttProps, index: Key) => {
@@ -245,6 +287,7 @@ export default function AccordionPlanesExtras() {
 
                                             return (
                                                 <Image
+                                                    style={{filter: `blur(${content.isLoading?"3":"0"}px)`}}
                                                     src={`https:${setIcon.fields.ottImage.fields.image.fields.file.url}`}
                                                     alt={setIcon.fields.ottImage.fields.altText || ott.titulo || "Ícono del servicio extra"}
                                                     width={96}
@@ -252,41 +295,14 @@ export default function AccordionPlanesExtras() {
                                                 />
                                             )
                                         })()}
-                                        {/* {ottsImages.map((icon, index) => (
-                                            <div key={index}>
-                                                {
-                                                    ott.titulo.includes(icon.fields.type) &&
-                                                    <Image
-                                                        src={`https:${icon.fields.ottImage.fields.image.fields.file.url}`}
-                                                        alt={icon.fields.ottImage.fields.altText}
-                                                        width={96}
-                                                        height={46}
-                                                    />
-                                                }
-                                            </div>
-                                        ))
-                                        } */}
                                     </CardHeader>
                                     <CardBody>
                                         <div className="flex flex-col gap-[4px] text-xs md:text-sm leading-[16px] text-start justify-start">
                                             <h3 className="font-bold">{ott.titulo}</h3>
-                                            {/* <p className="font-normal">{ott.descripcion}</p> */}
                                         </div>
                                     </CardBody>
                                     <CardFooter>
                                         <div className="flex flex-row gap-[8px] items-center justify-end pr-[4px]">
-                                            {/* {ott.promo && <span
-                                            className="
-                                                absolute top-0 right-0
-                                                w-5 h-5
-                                                bg-(--color--turquoise-450)
-                                                rounded-bl-md
-                                                flex items-center justify-center
-                                                text-white text-sm
-                                                shadow-md">
-                                            %
-                                        </span>
-                                        } */}
                                             <div className="flex flex-col gap-[4px]">
                                                 <h3 className="font-bold text-base leading-[24px]">{`+${FormatCurrency(ott.costo)}`}</h3>
                                                 <p className="font-normal text-sm leading-[16px]">{duration}</p>

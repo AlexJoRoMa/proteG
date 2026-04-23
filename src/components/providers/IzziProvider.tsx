@@ -41,6 +41,7 @@ export const IzziProvider = ({
     const [totalSinDescuento, setTotalSinDescuento] = useState<number>(0);
     const [addressFielSelected, setAddressFielSelected] = useState<boolean>(false);
     const [streetDireccion, setStreetDireccion] = useState<string>("");
+    const [coloniaError, setColoniaError ] = useState<boolean>(false);
 
     const clearCheckoutFlow = useCallback(() => {
         setGlobalDatosContratacion({});
@@ -49,7 +50,12 @@ export const IzziProvider = ({
         setGlobalUserAnswers({});
         setGlobalFlagDomicilio(false);
         setCheckSwitch(false);
-    }, [])
+
+      
+   
+        sessionStorage.removeItem("izzi-checkout-current-step");
+        sessionStorage.removeItem("izzi-checkout-step-meta");
+    }, []);
 
 
     return (
@@ -95,7 +101,9 @@ export const IzziProvider = ({
             addressFielSelected,
             setAddressFielSelected,
             streetDireccion,
-            setStreetDireccion
+            setStreetDireccion,
+            coloniaError, 
+            setColoniaError 
         }}>
             {children}
         </izziContext.Provider>
