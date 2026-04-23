@@ -4,7 +4,6 @@ import { Form, Input, Progress  } from '@heroui/react'
 import { DeleteIcon, UploadICon } from '@/constants/IconsConstants';
 import { useStep4Form } from '@/hooks/checkout/useStep4Form';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
-import { progress } from 'framer-motion';
 
 const descriptionStyle = 'mt-2 w-full text-black text-[16px] animate-appearance-in';
 const barTextStyle = 'flex items-center justify-between gap-3';
@@ -52,7 +51,7 @@ const Step4 = () => {
 
   }, [comprobanteFile])
 
-  const getSeconds = (progress: number) => Math.ceil(((100-progress) * 3) / 33.33)
+  const getSeconds = (progress: number) => Math.ceil((100-progress) / 33.33)
 
   const handleFileChange =
     (
@@ -199,7 +198,7 @@ const Step4 = () => {
             base: `${isCFileLoad ? 'pointer-events-none' : 'data-[hover=true]:!cursor-pointer'}`,
             label: 'font-bold text-lg leading-[24px] text-[#11181C] mt-[25px] px-[24px] cursor-pointer',
             mainWrapper: 'mb-[16px] pointer',
-            input: "cursor-pointer file:!hidden text-indent-[-9999px] text-transparent",
+            input: "cursor-pointer file:!hidden text-indent-[-9999px] text-transparent h-full",
             inputWrapper: `cursor-pointer rounded-xl shadow-none h-[78px] ${borderClass(!!comprobanteFile, !!errorComprobante, progressCFile)}`,
             innerWrapper: "!items-center cursor-pointer bg-white-0 rounded-md px-[24px] !border-0 group-data-[focus=true]:border-0 group-data-[hover=true]:!border-0",
           }}
