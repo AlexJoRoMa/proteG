@@ -35,6 +35,8 @@ interface ResumenContainerProps {
 
 export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const ATTACH_STATUS_SETTLE_DELAY_MS = 1200;
+    const PROCESS_STATUS_WAIT_TIMEOUT_MS = 300000;
+    const PROCESS_STATUS_WAIT_INTERVAL_MS = 3000;
     const [loading, setLoading] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
     const [modalName, setModalName] = useState<string>("modal-generico");
@@ -202,8 +204,15 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             }
 
             if (!globalFlagDomicilio) {
-                // GetCapacity() 
-                await showModaluntilAction(async () => await runGetCapacity(true), "modal-disponibilidad")
+                const capacityCompleted = await runWithModal(async () => {
+                    await waitForWaitingForAction();
+                    await runGetCapacity(true);
+                    return true;
+                }, "modal-disponibilidad");
+
+                if (!capacityCompleted) {
+                    return;
+                }
             }
             nextStep()
 
@@ -338,6 +347,25 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         }
 
         return updatedStatus;
+    };
+
+    const waitForWaitingForAction = async () => {
+        if (processStatusRef.current.waitingForAction) {
+            return processStatusRef.current;
+        }
+
+        const startedAt = Date.now();
+
+        while (Date.now() - startedAt < PROCESS_STATUS_WAIT_TIMEOUT_MS) {
+            const updatedStatus = await refreshCurrentProcessStatus();
+            if (updatedStatus?.waitingForAction) {
+                return updatedStatus;
+            }
+
+            await sleep(PROCESS_STATUS_WAIT_INTERVAL_MS);
+        }
+
+        throw new Error("ProcessStatus no reportó waitingForAction=true a tiempo.");
     };
 
     const getRequiredAttachInfo = (documentKey: "ine" | "comprobante") => {
