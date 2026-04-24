@@ -738,7 +738,10 @@ export default function CoberturaForm() {
             onValueChange={setState}
             classNames={inputDisableStyles}
           />
-          <Input
+          </>
+        )}
+
+        <Input
             isRequired
             isInvalid={nameError}
             label={getText('cobertura.form.nombre.label')}
@@ -777,8 +780,6 @@ export default function CoberturaForm() {
             minLength={10}
             classNames={inputStyles(true)}
           />
-          </>
-        )}
         
          <div>
           <Checkbox isRequired={true} isSelected={isSelected} onValueChange={setIsSelected} defaultSelected={false} color="default" className='text-gray-450 pt-4 pb-8' />
