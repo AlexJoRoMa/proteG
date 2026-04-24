@@ -342,6 +342,8 @@ export default function CoberturaForm() {
         
 
         const userData = normalizeUserData({
+            firstName: name,
+            phone: phone,
             street: coveraData.address,
             city: locality,
             state,
@@ -362,6 +364,7 @@ export default function CoberturaForm() {
                 coverage_type: 'fiber',
                 coverage_region: locality,
                 lead_data: {
+                    name: userData.address.first_name,
                     phone: userData.phone_number,
                     address: {
                         street: coveraData.address,
@@ -738,7 +741,10 @@ export default function CoberturaForm() {
             onValueChange={setState}
             classNames={inputDisableStyles}
           />
-          <Input
+          </>
+        )}
+
+        <Input
             isRequired
             isInvalid={nameError}
             label={getText('cobertura.form.nombre.label')}
@@ -777,8 +783,6 @@ export default function CoberturaForm() {
             minLength={10}
             classNames={inputStyles(true)}
           />
-          </>
-        )}
         
          <div>
           <Checkbox isRequired={true} isSelected={isSelected} onValueChange={setIsSelected} defaultSelected={false} color="default" className='text-gray-450 pt-4 pb-8' />

@@ -55,7 +55,7 @@ type Step4FormData = {
     } | null,
 }
 
-export const useStep4Form = () => {
+export const useStep4Form = (progressIne: number, progressCFile: number) => {
     const { registerStepValidator, registerFormData, setIsStepValid, datosContratacion, currentStep } = useCheckout();
 
     const DocumentosTitularRef = useRef<HTMLFormElement | null>(null);
@@ -68,6 +68,8 @@ export const useStep4Form = () => {
     // validar archivos cargados existen
     const validateStep4 = useCallback(async () => {
         const valid =
+            progressIne === 100 &&
+            progressCFile === 100 &&
             !!ineFile &&
             !!comprobanteFile &&
             !!preparedPayload?.ine?.data &&
@@ -78,7 +80,7 @@ export const useStep4Form = () => {
 
         setIsStepValid(valid);
         return Promise.resolve(valid);
-    }, [ineFile, comprobanteFile, isPreparingFiles, preparedPayload, setIsStepValid]);
+    }, [ineFile, comprobanteFile, isPreparingFiles, preparedPayload, setIsStepValid, progressIne, progressCFile]);
 
     // registro de validador
     useEffect(() => {
