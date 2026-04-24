@@ -40,6 +40,10 @@ const Step2 = () => {
     setCfdi,
     regimen,
     setRegimen,
+    rfc,
+    setRfc,
+    isDireccionFacturacionValid,
+    isPersonalValid,
     setIsPersonalValid,
     setIsEnvioValid,
     setIsFacturacionValid,
@@ -58,12 +62,55 @@ const Step2 = () => {
     setPrivacyCheckboxChecked(value);
   }
 
+    const cleanLocalBillinglData = ()=> {
+    try {
+      if (localStorage.getItem('PersistentBillingData')) {
+        localStorage.removeItem('PersistentBillingData')
+
+        setRfc('')
+        setCfdi('')
+        setRegimen('')
+
+      }
+    } catch (error) {
+      console.error('Algo salio mal borrando datos de facturacion', error);
+    }
+  }
+  const cleanLocalAdditionalAddressData = () =>{
+    try {
+        if (localStorage.getItem('PersistentAdditionalAddressData')) {
+            localStorage.removeItem('PersistentAdditionalAddressData')
+
+        }
+    } catch (error) {
+        console.error('Algo salio mal borrando datos de facturacion', error);
+    }
+  }
+
+
   useEffect(() => {
     if (!necesitaFacturar) {
       setFacturarOtraDireccion(false);
     }
   }, [necesitaFacturar, setFacturarOtraDireccion])
 
+  const getLocalBillingData = () => {
+      if (typeof window === 'undefined') return null
+      return JSON.parse(localStorage.getItem('PersistentBillingData') as string)
+  }
+  const getLocalAdditionalAddressData = () => {
+      if (typeof window === 'undefined') return null
+      return JSON.parse(localStorage.getItem('PersistentAdditionalAddressData') as string)
+  }
+
+  useEffect(()=>{
+    if (!!getLocalBillingData()) {
+      setNecesitaFacturar(!necesitaFacturar)
+    }
+    if(!!getLocalAdditionalAddressData()){
+      setFacturarOtraDireccion(!facturarOtraDireccion)
+    }
+  },[])
 
   return (
     <div className='step2-container'>
@@ -96,7 +143,7 @@ const Step2 = () => {
         </div>
       </div>
 
-      <DatosPersonalesForm formRef={DatosPersonalesRef} esExtrangero={esExtranjero} setIsValid={setIsPersonalValid} />
+      <DatosPersonalesForm formRef={DatosPersonalesRef} esExtrangero={esExtranjero} isValid={isPersonalValid} setIsValid={setIsPersonalValid} />
 
       <Divider orientation="horizontal" className='!border-[var(--color-gray-300)] mt-12 mb-7' />
 
@@ -142,7 +189,13 @@ const Step2 = () => {
         <Switch
           aria-label="Facturacion"
           isSelected={necesitaFacturar}
-          onValueChange={(checked) => setNecesitaFacturar(checked)}
+          onValueChange={(checked) => {
+            setNecesitaFacturar(checked)
+            cleanLocalBillinglData()
+            cleanLocalAdditionalAddressData()
+
+          }
+          }
           classNames={{
             wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
             thumb: "bg-white-0"
@@ -151,7 +204,7 @@ const Step2 = () => {
       </div>
 
       {
-        necesitaFacturar && (
+        (necesitaFacturar || facturarOtraDireccion) && (
           <>
             <DatosFacturacionForm
               formRef={DatosFacturacionRef}
@@ -159,6 +212,8 @@ const Step2 = () => {
               setCfdi={setCfdi}
               regimen={regimen}
               setRegimen={setRegimen}
+              rfc={rfc}
+              setRfc={setRfc}
               setIsValid={setIsFacturacionValid}
             />
 
@@ -167,7 +222,10 @@ const Step2 = () => {
               <Switch
                 aria-label="Direccion Diferente"
                 isSelected={facturarOtraDireccion}
-                onValueChange={(checked) => setFacturarOtraDireccion(checked)}
+                onValueChange={(checked) => {
+                  setFacturarOtraDireccion(checked)
+                  cleanLocalAdditionalAddressData()
+                }}
                 classNames={{
                   wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
                   thumb: "bg-white-0"
@@ -177,7 +235,7 @@ const Step2 = () => {
 
             {
               facturarOtraDireccion && (
-                <DireccionFacturacionForm formRef={DireccionFacturacionRef} setIsValid={setIsDireccionFacturacionValid} />
+                <DireccionFacturacionForm formRef={DireccionFacturacionRef} setIsValid={setIsDireccionFacturacionValid} isAddressValid={isDireccionFacturacionValid} />
               )
             }
           </>

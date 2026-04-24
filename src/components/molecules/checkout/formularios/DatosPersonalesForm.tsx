@@ -11,6 +11,7 @@ import { DatosContratacion } from "@/types/Contratacion";
 
 interface Props {
     formRef: RefObject<HTMLFormElement | null>
+    isValid: boolean;
     esExtrangero: boolean
     setIsValid: (valid: boolean) => void
 }
@@ -26,7 +27,8 @@ type PersonalData={
     passport?: string;
 }
 
-export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsValid }) => {
+export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, isValid, setIsValid }) => {
+
     const { datosContratacion } = useCheckout();
     const { getValue } = useMicrocopies('formulario-datosPersonales');
 
@@ -122,18 +124,15 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
         setPhone(personalDataFromLocal.phone)
         setAditionalTel(personalDataFromLocal.aditionalTel ?? "")
         setEmail(personalDataFromLocal.email)
-        setCurp(personalDataFromLocal.curp ?? "kkk")
+        setCurp(personalDataFromLocal.curp ?? "")
         setPassport(personalDataFromLocal.passport ?? "")
-
     }
 
     useEffect(()=>{
         personalDataFromLocal = getLocalPropertyByKey('PersistentPersonalData')
         if (personalDataFromLocal != null) {
             updateDataStateOnLoad()
-        } 
-            
-
+        }
     },[])
 
     useEffect(() => {
@@ -164,6 +163,17 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
         }
 
     }, [firstName, firstLastName, secondLastName, phone, email, curp, passport, curpValid, passportValid, esExtrangero, setIsValid]);
+
+
+    useEffect(()=>{
+        const areAdditionalValid = 
+            secondName.trim() !== '' &&
+            aditionalTel.trim() !== '' && aditionalTel.length === 10 
+
+        if (areAdditionalValid && isValid) {
+            writePersonalInfoToLocal()
+        }
+    },[secondName, aditionalTel])
 
     return (
         <Form

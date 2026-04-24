@@ -34,6 +34,9 @@ export default function ThankYou() {
     useEffect(() => {
         localStorage.removeItem('PersistentPersonalData');
         localStorage.removeItem('PersistentDireccionData');
+        localStorage.removeItem('PersistentBillingData')
+        localStorage.removeItem('PersistentAdditionalAddressData')
+
     }, [])
 
     useEffect(() => {
