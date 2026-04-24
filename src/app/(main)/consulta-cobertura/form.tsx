@@ -342,6 +342,8 @@ export default function CoberturaForm() {
         
 
         const userData = normalizeUserData({
+            firstName: name,
+            phone: phone,
             street: coveraData.address,
             city: locality,
             state,
@@ -362,6 +364,7 @@ export default function CoberturaForm() {
                 coverage_type: 'fiber',
                 coverage_region: locality,
                 lead_data: {
+                    name: userData.address.first_name,
                     phone: userData.phone_number,
                     address: {
                         street: coveraData.address,
