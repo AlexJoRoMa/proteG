@@ -35,13 +35,13 @@ export const IzziProvider = ({
     const [offnetIzzi, setOffnetIzzi] = useState<boolean>(false);
     const [offnetSky, setOffnetSky] = useState<boolean>(false);
     const [infoPaquetes, setInfoPaquetes] = useState<string>("");
-    const [globalCheckedPromotions, setGlobalCheckedPromotions] = useState<boolean>(false);
     const [ahorroTotal, setAhorroTotal] = useState<number>(0);
     const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
     const [totalSinDescuento, setTotalSinDescuento] = useState<number>(0);
     const [addressFielSelected, setAddressFielSelected] = useState<boolean>(false);
     const [streetDireccion, setStreetDireccion] = useState<string>("");
     const [coloniaError, setColoniaError ] = useState<boolean>(false);
+    const [checkedPromotions, setCheckedPromotions] = useState<boolean>(false);
 
     const clearCheckoutFlow = useCallback(() => {
         setGlobalDatosContratacion({});
@@ -50,7 +50,12 @@ export const IzziProvider = ({
         setGlobalUserAnswers({});
         setGlobalFlagDomicilio(false);
         setCheckSwitch(false);
-    }, [])
+
+      
+   
+        sessionStorage.removeItem("izzi-checkout-current-step");
+        sessionStorage.removeItem("izzi-checkout-step-meta");
+    }, []);
 
 
     return (
@@ -83,9 +88,9 @@ export const IzziProvider = ({
             infoPaquetes,
             setInfoPaquetes,
             clearCheckoutFlow,
-            globalCheckedPromotions,
-            setGlobalCheckedPromotions,
-            ahorroTotal, 
+            checkedPromotions,
+            setCheckedPromotions,
+            ahorroTotal,
             setAhorroTotal,
             globalFlagDomicilio,
             setGlobalFlagDomicilio,

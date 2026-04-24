@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
-import { Card, CardBody, Tab, Tabs } from '@heroui/react'
+import { Radio, RadioGroup } from '@heroui/react'
 import PagoTecnico from './metodosPago/PagoTecnico';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import PaymentInfoBanner from './metodosPago/PaymentInfoBanner';
@@ -8,34 +8,18 @@ import PagoPayPal from './metodosPago/PagoPayPal';
 import PagoTarjeta from './metodosPago/PagoTarjeta';
 import { useCheckout } from '@/components/providers/CheckoutProvider';
 import { useIzziContent } from '@/components/providers/IzziProvider';
-import { MetodoPago, TabConfigItem } from '@/types/Contratacion';
+import { MetodoPago } from '@/types/Contratacion';
+import { CreditCardIcon, PayPalIcon, ToolboxIcon } from "@/constants/IconsConstants";
 
-const TABS_CONFIG = (getValue: (key: string) => string, globalFlagDomicilio: boolean): TabConfigItem[] => {
-  const baseTabs: TabConfigItem[] = [
-    {
-      key: "creditCard",
-      title: getValue("pago.tarjet.titulo"),
-      Component: PagoTarjeta,
-      isHidden: false
-    },
-    {
-      key: "paypal",
-      title: getValue("pago.paypal.titulo"),
-      Component: PagoPayPal,
-      isHidden: true
-    }
-  ];
-
-  if (!globalFlagDomicilio) {
-    baseTabs.push({
-      key: "tecnico",
-      title: getValue("pago.tecnico.titulo"),
-      Component: PagoTecnico,
-      isHidden: false
-    });
-  }
-  return baseTabs;
-};
+const RadioStyles = {
+  base: "flex items-center p-0 xl:py-0 w-full m-0 pl-5 ",
+  control: "group-data-[selected=true]:bg-black-0 h-[10px] w-[10px]",
+  wrapper: "bg-white-0 group-data-[selected=true]:border-black-0 border-1 h-[24px] w-[24px]",
+  label: "text-base xsm:text-[16px] xl:text-[20px]"
+}
+const boxStyle = 'border border-gray-100 rounded-xl pt-4 pb-4 flex flex-col items-center w-full';
+const topMargin = 'mt-5 w-full px-4'
+const subTitleStyle = 'xsm:text-[16px] xl:text-[20px]'
 
 const Step6 = () => {
 
@@ -43,26 +27,27 @@ const Step6 = () => {
   const { globalFlagDomicilio } = useIzziContent();
   const { setDatosContratacion, currentStep, setIsStepValid, totalSteps } = useCheckout();
 
-  const [selectedTab, setSelectedTab] = useState<MetodoPago>("creditCard");
-  const tabsConfig = TABS_CONFIG(getValue, globalFlagDomicilio);
-
+  const [radioState, setRadioState] = useState<MetodoPago | ''>('');
+  
   useEffect(() => {
+    
     if (currentStep === totalSteps) {
-      setIsStepValid(true);
+      const isValid = radioState !== '';
+      setIsStepValid(isValid);
       setDatosContratacion((prev) => ({
         ...prev,
         Pago: {
           ...prev.Pago,
-          metodoPago: selectedTab,
+          metodoPago: radioState as MetodoPago,
         }
       }));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStep]);
+  
+  }, [radioState, currentStep, totalSteps, setDatosContratacion, setIsStepValid])
 
-  function handleTabChange(key: React.Key) {
-    const metodo = key as MetodoPago;
-    setSelectedTab(metodo);
+  const handleRadioChange = (value: string) => {
+    const metodo = value as MetodoPago
+    setRadioState(metodo)
 
     setDatosContratacion((prev) => ({
       ...prev,
@@ -71,35 +56,83 @@ const Step6 = () => {
         metodoPago: metodo,
       }
     }));
-  };
+  }
 
   return (
     <>
+      <p className='xsm:text-[20px] xl:text-[24px] font-bold '>{getValue('pago.seleccionar.titulo')}</p>
+    <RadioGroup
+    orientation='vertical'
+    className='flex flex-col gap-6 mt-6 w-full items-start h-full'
+    value={radioState}
+    classNames={{
+      wrapper: "flex flex-col w-full !gap-6",
+      base: "h-full"
+    }}
+    onValueChange={handleRadioChange}
+    >
 
-      <Tabs
-        aria-label="Options"
-        className='w-full'
-        fullWidth={true}
-        variant='underlined'
-        defaultSelectedKey={selectedTab}
-        onSelectionChange={handleTabChange}
-        classNames={{
-          tabList: "pb-0",
-          base: "border-b-1 border-b-gray-150",
-          tab: "pb-[16px] text-[14px] md:text-[16px] font-normal leading-[16px] text-black-0 data-[selected=true]:text-gray-450 data-[selected=true]:font-bold",
-          tabContent: "flex-warp !text-warp whitespace-normal"
-        }}
-      >
-        {
-          tabsConfig.map(({ key, title, Component, isHidden }) => (
-            !isHidden &&
-            <Tab key={key} title={title}>
-              <PaymentInfoBanner />
-              <Component />
-            </Tab>
-          ))
-        }
-      </Tabs>
+      <p className={subTitleStyle}>{getValue('pago.tipo.titulo.linea')}</p>
+      <div className={boxStyle}>
+        <div className='flex  gap-3 justify-between pr-4  w-full'>
+          <Radio
+            value='creditCard'
+            classNames={RadioStyles}
+            >
+              <p>{getValue('pago.tarjet.titulo')}</p>
+          </Radio>
+          <CreditCardIcon/>
+        </div>
+        {radioState === 'creditCard' && (
+          <div className={topMargin}>
+            <PagoTarjeta/>
+          </div>
+        )}
+      </div>
+      
+
+      {/* <div className={boxStyle}>
+        <div className='flex  gap-3 justify-between pr-4  w-full'>
+          <Radio
+            value='paypal'
+            classNames={RadioStyles}
+            >
+              <p>{getValue('pago.paypal.titulo')}</p>
+          </Radio>
+          <PayPalIcon/>
+        </div>
+        {radioState === 'paypal' && (
+          <div className={topMargin}>
+            <PagoPayPal/>
+          </div>
+        )}
+      </div> */}
+
+
+      {!globalFlagDomicilio && (
+        <>
+          <p className={subTitleStyle}>{getValue('pago.tipo.titulo.efectivo')}</p>
+          <div className={boxStyle}>
+            <div className='flex  gap-3 justify-between pr-4  w-full'>
+              <Radio
+              value='tecnico'
+              classNames={RadioStyles}
+              >
+                <p>{getValue('pago.tecnico.titulo')}</p>
+              </Radio>
+              <ToolboxIcon/>
+            </div>
+            {radioState === 'tecnico' && (
+              <div className={topMargin}>
+                <PagoTecnico/>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+
+    </RadioGroup>
 
     </>
   )
