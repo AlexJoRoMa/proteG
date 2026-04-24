@@ -6,6 +6,7 @@ import { useMicrocopies } from '@/hooks/useMicrocopies';
 import { useIzziContent } from '@/components/providers/IzziProvider';
 import { useCheckout } from '@/components/providers/CheckoutProvider';
 import { GetEnvioCodigo } from '@/utils/GetEnvioCodigo';
+import { InfoIcon } from '@/constants/IconsConstants';
 
 const RadioStyles = {
   base: "flex items-center p-0 xl:py-0 w-full m-0",
@@ -102,7 +103,7 @@ const Step3 = ({
 
         <RadioGroup
           orientation='vertical'
-          className='flex flex-col gap-6 mt-6 w-full items-start h-[144px]'
+          className='flex flex-col gap-6 mt-6 w-full items-start h-full'
           value={radioState}
           classNames={{
             wrapper: "flex flex-col w-full !gap-6",
@@ -140,7 +141,18 @@ const Step3 = ({
           )}
         </RadioGroup>
 
-        <div className='flex w-full justify-center mt-[24px] xl:mt-[48px]'>
+        {radioState === 'Correo Electrónico'   && (
+          <div className='bg-gray-50 rounded-lg mt-5 flex items-center gap-3 pl-4 pt-3 pb-4'>
+            <div className='flex-shrink-0'>
+              <InfoIcon />
+            </div>
+            <p className='text-[16px]'>
+              {getValue('verificacion.radio.correo.spam')}
+            </p>
+          </div>
+        )}
+
+        <div className='flex w-full justify-center mt-[24px] xl:mt-[30px]'>
           <Button
             disabled={!radioState || sendCode}
             className='h-[48px] py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-3xs text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50'
