@@ -5,7 +5,6 @@ import { getCopyForComponent } from "@/services/contentful/components";
 import { ConfiguradorProvider } from "@/utils/ConfiguradorProvider";
 import ExitGuard from "@/utils/guards/ExitGuard";
 import Link from "next/link";
-import ResumenPedido from "../molecules/configurador/resumenPedido";
 import ResumenInfo from "../molecules/configurador/resumenInfo";
 import { STEPSCOVERAGECOMPONENT, STEPSNOCOVERAGECOMPONENT } from "@/constants/ConfiguradorConstants";
 import { getOfertas } from "@/services/izzi/configurador";
@@ -15,6 +14,9 @@ import { Arrow } from "@/constants/IconsConstants";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import StepsRenderer from "@/lib/configurador/step-Renderer";
+import ResumenContainerDesktop from "../molecules/configurador/ResumenContainerDesktop";
+import ResumenContainerMobile from "../molecules/configurador/ResumenContainerMobile";
+import ResumenFlotante from "../molecules/resumenCompra/resumenFlotante";
 
 async function getCobertura() {
     const cookieStore = await cookies()
@@ -119,9 +121,14 @@ export default async function Configurador() {
         >
             {/* Guard detector de salida del flujo */}
             <ExitGuard />
+            {/* Activamos comportamiento flotante */}
+            <ResumenFlotante />
+
             <section className="border-t-1 border-t-gray-150">
-                <div className="flex flex-col xl:grid xl:grid-cols-3 gap-[24px] xl:mx-md 4xl:mx-xl">
-                    <div className="xl:col-span-2">
+                <div className="flex flex-col xl:flex-row gap-[24px] xl:mx-md 4xl:mx-xl">
+
+                    {/* Planes - Configura tu paquete */}
+                    <div className="xl:w-2/3 mb-[18vh] xl:mb-0">
                         <div className="flex flex-col pb-[16px] xl:pb-[24px] mx-[16px] xl:mx-0 font-[family-name:var(--lato)]">
                             <div className='flex flex-col mt-[24px] mb-[34px] gap-[24px]'>
                                 <Link
@@ -158,17 +165,35 @@ export default async function Configurador() {
                         </div>
                     </div>
 
-                    {/* Resumen de pedido & Sticky mobile */}
-                    <div className="xl:mt-[34px] sticky z-10 bottom-0 xl:static xl:top-auto xl:z-0">
-                        <div className="block xl:hidden mx-[16px] mb-[16px] xl:mx-0">
-                            <ResumenInfo />
+                    {/* Resumen de pedido */}
+                    <div className="xl:w-1/3 xl:mt-[34px] relative" id="resumen-parent">
+
+                        {/* Resumen mobile*/}
+                        <div
+                            id="resumen-mobile"
+                            className="block xl:hidden"
+                        >
+                            <div className="mx-[16px] mb-[16px]">
+                                <ResumenInfo />
+                            </div>
+                            <div className="shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)]">
+                                <ResumenContainerMobile />
+                            </div>
                         </div>
-                        <div className="shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)] xl:shadow-none">
-                            <ResumenPedido />
+
+                        {/* Sentinel */}
+                        <div id="resumen-end" className="h-[1px]" />
+
+                        {/* Resumen desktop*/}
+                        <div className="hidden xl:block sticky top-[120px] mb-[24px]">
+                            <div className="border rounded-md border-gray-150 w-full px-[16px] pt-[24px] bg-white-0">
+                                <ResumenContainerDesktop />
+                            </div>
+                            <div className="mx-0 mt-[24px]">
+                                <ResumenInfo />
+                            </div>
                         </div>
-                        <div className="hidden xl:block mx-[16px] xl:mx-0 xl:mt-[24px]">
-                            <ResumenInfo />
-                        </div>
+
                     </div>
                 </div>
             </section>

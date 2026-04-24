@@ -22,7 +22,7 @@ export type DataFields = {
     setGlobalProcessStatus: React.Dispatch<React.SetStateAction<Partial<ProcessStatus>>>,
     formattedAddress: string,
     setFormattedAddress: React.Dispatch<React.SetStateAction<string>>,
-    coberturaData: CoberturaType, 
+    coberturaData: CoberturaType,
     setCoberturaData: React.Dispatch<React.SetStateAction<CoberturaType>>,
     promoData: Promotion,
     setPromoData: React.Dispatch<React.SetStateAction<Promotion>>,
@@ -39,8 +39,6 @@ export type DataFields = {
     infoPaquetes: string
     setInfoPaquetes: React.Dispatch<React.SetStateAction<string>>
     clearCheckoutFlow: () => void
-    globalCheckedPromotions: boolean,
-    setGlobalCheckedPromotions: React.Dispatch<React.SetStateAction<boolean>>
     ahorroTotal: number,
     setAhorroTotal: React.Dispatch<React.SetStateAction<number>>,
     globalFlagDomicilio: boolean,
@@ -55,4 +53,6 @@ export type DataFields = {
     setStreetDireccion: React.Dispatch<React.SetStateAction<string>>,
     coloniaError: boolean,
     setColoniaError: React.Dispatch<React.SetStateAction<boolean>>,
+    checkedPromotions: boolean,
+    setCheckedPromotions: React.Dispatch<React.SetStateAction<boolean>>,
 }
