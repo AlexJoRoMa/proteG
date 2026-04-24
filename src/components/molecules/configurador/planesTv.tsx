@@ -9,12 +9,15 @@ import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
+import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
 
 export default function PlanesTv({ step, preSeleccion }: StepProps) {
     const { configuradorEntry, setUserAnswers, setDisabled, userAnswers, copysConfigurador } = useContent();
 
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const tvUserInteracted = useRef(false);
+    const viewListTrackedRef = useRef(false);
 
     const offersCopys = copysConfigurador as unknown as OffersCopys;
     const precioTv = configuradorEntry?.offers.TV.find((offer) => offer.titulo === 'izzi tv')?.precioPaquete;
@@ -50,6 +53,45 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
     }, [userAnswers.internet, configuradorEntry?.offers.TV, configuradorEntry?.offers.TRIPLE_PLAY, offersCopys.tv.cards.titulo, offersCopys.tv.cards.tituloPlus, precioTv]);
 
     useEffect(() => {
+        if (viewListTrackedRef.current) return;
+        if (!tvPlans || tvPlans.length === 0) return;
+
+        const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
+        const listId = "tv";
+        const listName = offersCopys.tv.titulo;
+
+        const items = tvPlans.map((offer, index) =>
+            buildPlanItem(
+                {
+                    id: String(offer.idPaquete),
+                    sku: offer.nombreCode,
+                    name: offer.tituloTriplePlay ?? offer.titulo,
+                    category: "Bundle",
+                    technology: offer.tiempoPlan?.includes("TRIPLE") ? "Triple_Play" : "Doble_Play",
+                    price: offer.precioPaquete,
+                    speed: offer.velocidadMinima,
+                    channels: offer.canales,
+                    contractMonths: offer.tiempoPlan,
+                },
+                index,
+                listId,
+                listName
+            )
+        );
+
+        pushEcommerceEvent(
+            EVENTS.VIEW_ITEM_LIST,
+            {
+                currency: CURRENCY,
+                value: 0,
+                items,
+            }
+        );
+
+        viewListTrackedRef.current = true;
+    }, [tvPlans, offersCopys.tv.titulo]);
+
+    useEffect(() => {
         if (userAnswers.tv?.paquete) {
             updateTvAnswers(tvPlans[0])
         }
@@ -83,14 +125,36 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
         }
 
         setSelectedIndex(index);
-        setUserAnswers(prev => ({
-            ...prev,
-            tv: {
-                ...prev.tv,
-                paquete: card,
-                total: Number(card.precioPaquete) || 0
+        const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
+        const listId = "tv";
+        const listName = offersCopys.tv.titulo;
+
+        const item = buildPlanItem(
+            {
+                id: String(card.idPaquete),
+                sku: card.nombreCode,
+                name: card.tituloTriplePlay ?? card.titulo,
+                category: "Bundle",
+                technology: card.tiempoPlan?.includes("TRIPLE") ? "Triple_Play" : "Doble_Play",
+                price: card.precioPaquete,
+                speed: card.velocidadMinima,
+                channels: card.canales,
+                contractMonths: card.tiempoPlan,
+            },
+            0,
+            listId,
+            listName
+        );
+
+        pushEcommerceEvent(
+            EVENTS.SELECT_ITEM,
+            {
+                currency: CURRENCY,
+                value: Number(card.precioPaquete) || 0,
+                items: [item],
             }
-        }));
+        );
+        setUserAnswers(prev => ({ ...prev, tv: { ...prev.tv, paquete: card, total: Number(card.precioPaquete) || 0 } }));
 
         if (card.titulo.includes('light') || card.titulo.includes('premium')) {
             setDisabled(true);
@@ -105,6 +169,38 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
         } else {
             return true;
         }
+    }
+
+    function trackPlanDetailView(card: OfferItem, index: number) {
+        const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
+        const listId = "tv";
+        const listName = offersCopys.tv.titulo;
+
+        const item = buildPlanItem(
+            {
+                id: String(card.idPaquete),
+                sku: card.nombreCode,
+                name: card.tituloTriplePlay ?? card.titulo,
+                category: "Bundle",
+                technology: card.tiempoPlan?.includes("TRIPLE") ? "Triple_Play" : "Doble_Play",
+                price: card.precioPaquete,
+                speed: card.velocidadMinima,
+                channels: card.canales,
+                contractMonths: card.tiempoPlan,
+            },
+            index,
+            listId,
+            listName
+        );
+
+        pushEcommerceEvent(
+            EVENTS.VIEW_ITEM,
+            {
+                currency: CURRENCY,
+                value: Number(card.precioPaquete) || 0,
+                items: [item],
+            }
+        );
     }
 
     useEffect(() => {
@@ -248,7 +344,15 @@ export default function PlanesTv({ step, preSeleccion }: StepProps) {
                                             }
                                         </div>
                                         <div className="flex flex-row gap-[16px] items-center justify-between">
-                                            <LinkModal classNames='underline text-black-0 text-[16px] cursor-pointer' text={offersCopys.internet.cards.info} closeButtonStroke='black' modalContentClassName="w-full h-auto sm:w-[80vw] xl:h-auto xl:w-[90vw] 2xl:w-[62vw] 2xl:h-auto" backdropColor='black-0/80' idModal={""}>
+                                            <LinkModal
+                                                classNames='underline text-black-0 text-[16px] cursor-pointer'
+                                                text={offersCopys.internet.cards.info}
+                                                closeButtonStroke='black'
+                                                modalContentClassName="w-full h-auto sm:w-[80vw] xl:h-auto xl:w-[90vw] 2xl:w-[62vw] 2xl:h-auto"
+                                                backdropColor='black-0/80'
+                                                idModal={""}
+                                                onOpenModal={() => trackPlanDetailView(card, index)}
+                                            >
                                                 <ConfiguradorCardsModalComponent variables={{ canales: card.canales, precioPaquete: card.precioPaquete, extras: card.extrasIncluidos }} type="tv" />
                                             </LinkModal>
                                             <span className={`w-[24px] h-[24px] rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-black-0 border-black-0' : 'bg-white-0 border-gray-150'}`} aria-pressed={isSelected}>

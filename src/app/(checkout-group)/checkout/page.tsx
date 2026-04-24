@@ -1,11 +1,12 @@
-import Checkout from '@/components/organisms/Checkout'
-import CheckoutProvider from '@/components/providers/CheckoutProvider'
-import { contentfulClient } from '@/services/contentful/client'
-import { getCopyForComponent } from '@/services/contentful/components'
-import { ResumenIcon } from '@/types/ConfiguradorTypes'
-import ExitGuard from '@/utils/guards/ExitGuard'
-import { EntrySkeletonType } from 'contentful'
-import React from 'react'
+import Checkout from '@/components/organisms/Checkout';
+import CheckoutProvider from '@/components/providers/CheckoutProvider';
+import { contentfulClient } from '@/services/contentful/client';
+import { getCopyForComponent } from '@/services/contentful/components';
+import { ResumenIcon } from '@/types/ConfiguradorTypes';
+import ExitGuard from '@/utils/guards/ExitGuard';
+import { EntrySkeletonType } from 'contentful';
+import React from 'react';
+import PageDataTracker from '@/components/tracking/PageDataTracker';
 
 const CheckoutPage = async () => {
 
@@ -32,13 +33,18 @@ const CheckoutPage = async () => {
 
   return (
     <main className="min-h-screen w-full">
+      <PageDataTracker
+        pageType="checkout"
+        pageName="Checkout - Configura tu paquete"
+        checkoutStep={1}
+      />
       <CheckoutProvider initialStep={2} icon={Icon} paypalIcon={PaypalIcon} copyResumen={copysResumen}>
         {/* Guard detector de salida del flujo */}
         <ExitGuard />
         <Checkout />
       </CheckoutProvider>
     </main>
-  )
+  );
 }
 
 export default CheckoutPage
