@@ -158,6 +158,9 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         }));
 
         try {
+            setModalName("modal-generico");
+            setModalLoading(true);
+
             // IzziEnroll
             const resultIzziEnroll = await GetIzziEnroll(coberturaData, { ...datosContratacionRef.current, VerificacionContacto: stepData }, offnetIzzi, offnetSky, globalIzziSelection);
             if (!resultIzziEnroll || resultIzziEnroll?.code || resultIzziEnroll?.error) {
@@ -170,13 +173,15 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             await iniciarPolling();
 
             // SubmitOffer
-            await showModaluntilAction(async () => await runSubmitOffer(), "modal-generico");
+            await showModaluntilAction(async () => await runSubmitOffer(), null);
 
             nextStep()
 
         } catch (err) {
             console.error('Error en step3', err)
             router.push("/error");
+        } finally {
+            setModalLoading(false);
         }
     };
 
@@ -369,12 +374,14 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
     const showModaluntilAction = async (
         action: () => Promise<any>,
-        modalKey: string
+        modalKey: string | null
     ) => {
         try {
             setProcessStatus((prev) => ({ ...prev, waitingForAction: false }));
-            setModalName(modalKey)
-            setModalLoading(true);
+            if (modalKey !== null) {
+                setModalName(modalKey)
+                setModalLoading(true);
+            }
 
             const result = await action();
             if (result?.error) {
