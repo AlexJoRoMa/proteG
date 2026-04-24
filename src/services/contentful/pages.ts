@@ -1,4 +1,5 @@
 import { contentfulClient } from "./client"
+import { Entry, EntrySkeletonType } from "contentful"
 
 
 /**
@@ -37,4 +38,21 @@ export async function fetchComponentsBySlugPage(
 
   // Al final devolvemos el resultado del último segmento (o el único)
   return res!;
+}
+
+export async function fetchHeaderByPageSlug(
+  slug: string
+): Promise<Entry<EntrySkeletonType, undefined, string>[] | null> {
+  const res = await contentfulClient.getEntries({
+    content_type: "page",
+    "fields.slug": slug,
+    include: 3,
+  });
+
+  if (res.total !== 1) return null;
+
+  const header = res.items[0].fields.header;
+  if (!header) return null;
+
+  return (Array.isArray(header) ? header : [header]) as Entry<EntrySkeletonType, undefined, string>[];
 }

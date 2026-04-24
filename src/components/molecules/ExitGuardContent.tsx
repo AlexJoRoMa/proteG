@@ -8,6 +8,13 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useIzziContent } from "../providers/IzziProvider";
+import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
+import { CURRENCY, EVENTS } from "@/lib/tracking/constants";
+import type { IzziSelection, UserAnswers } from "@/types/ConfiguradorTypes";
+import {
+    getCheckoutStepTrackingMeta,
+    type CheckoutStepMetaSerialized,
+} from "@/utils/checkoutStepTracking";
 
 export const CloseIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
@@ -32,6 +39,38 @@ function useIsMobile(breakpoint = 768) {
     return isMobile;
 }
 
+/** Fallback si no hay meta ni se puede derivar el paso (sesión antigua). */
+const LEGACY_CHECKOUT_STEP_NAMES: Record<number, string> = {
+    1: "package_configuration",
+    2: "personal_data",
+    3: "contact_verification",
+    4: "documents",
+    5: "installation_date",
+    6: "payment",
+};
+
+function countSelectedPackages(userAnswers: UserAnswers, selection: IzziSelection | null): number {
+    let n = 0;
+    if (userAnswers.internet?.paquete) n += 1;
+    if (userAnswers.tv?.paquete) n += 1;
+    if (userAnswers.movil?.paquete) n += 1;
+    if (n === 0 && selection?.idPaquete) n = 1;
+    const ott =
+        (userAnswers.tv?.ott?.planes?.length ?? 0);
+    return n + ott;
+}
+
+function buildFullName(p: {
+    firstName?: string;
+    secondName?: string;
+    firstLastName?: string;
+    secondLastName?: string;
+} | undefined): string | undefined {
+    if (!p) return undefined;
+    const s = [p.firstName, p.secondName, p.firstLastName, p.secondLastName].filter(Boolean).join(" ").trim();
+    return s || undefined;
+}
+
 export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonType<IzziLogo>, text: ModalCopys }) {
 
     const router = useRouter();
@@ -39,7 +78,33 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
     const pendingRouteRef = useRef<string | null>(null);
     const isMobile = useIsMobile(768);
     const scopePrefix = ["/configurador", "/checkout", "/thank-you"];
-    const { clearCheckoutFlow } = useIzziContent();
+    const {
+        clearCheckoutFlow,
+        globalDatosContratacion,
+        globalIzziSelection,
+        globalUserAnswers,
+        precioTotal,
+        coberturaData,
+        globalFlagDomicilio,
+    } = useIzziContent();
+
+    const trackingSnapshotRef = useRef({
+        globalDatosContratacion,
+        globalIzziSelection,
+        globalUserAnswers,
+        precioTotal,
+        coberturaData,
+        globalFlagDomicilio,
+    });
+    trackingSnapshotRef.current = {
+        globalDatosContratacion,
+        globalIzziSelection,
+        globalUserAnswers,
+        precioTotal,
+        coberturaData,
+        globalFlagDomicilio,
+    };
+    const exitIntentTrackedRef = useRef(false);
 
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -61,7 +126,146 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
         return !isAllowed;
     };
 
-    //Interceptar reload del navegador.
+    // Helpers de tracking compartidos
+
+    const getCheckoutTrackingParams = () => {
+        const sessionId = window.sessionStorage.getItem("izzi-checkout-session-id") || undefined;
+        const rawStep = window.sessionStorage.getItem("izzi-checkout-current-step");
+        const step = rawStep ? parseInt(rawStep, 10) : undefined;
+        return { sessionId, step };
+    };
+
+    const resolveCheckoutStepMetaForExit = (): CheckoutStepMetaSerialized | null => {
+        if (typeof window === "undefined") return null;
+        const raw = window.sessionStorage.getItem("izzi-checkout-step-meta");
+        if (raw) {
+            try {
+                const parsed = JSON.parse(raw) as CheckoutStepMetaSerialized;
+                if (typeof parsed.flowStep === "number" && typeof parsed.uiStep === "number") {
+                    return parsed;
+                }
+            } catch {
+                /* ignore */
+            }
+        }
+        const rawUi = window.sessionStorage.getItem("izzi-checkout-current-step");
+        const uiStep = rawUi ? parseInt(rawUi, 10) : NaN;
+        if (!Number.isFinite(uiStep)) return null;
+        const computed = getCheckoutStepTrackingMeta(uiStep, trackingSnapshotRef.current.globalFlagDomicilio);
+        if (!computed) return null;
+        return {
+            uiStep: computed.uiStep,
+            flowStep: computed.flowStep,
+            label: computed.label,
+            analyticsStepName: computed.analyticsStepName,
+        };
+    };
+
+    const buildEcommercePayloadForExit = (): Record<string, unknown> => {
+        const { globalIzziSelection, precioTotal } = trackingSnapshotRef.current;
+        const { buildEcommerceLineItems, normalizeEcommerceValue } = izziDataLayerHelpers;
+
+        if (!globalIzziSelection?.idPaquete) {
+            return { currency: CURRENCY, value: 0, items: [] };
+        }
+
+        const rawValue =
+            precioTotal ||
+            (globalIzziSelection.precioPaquete ? parseFloat(globalIzziSelection.precioPaquete) || 0 : 0);
+        const value = normalizeEcommerceValue(rawValue);
+
+        const items = buildEcommerceLineItems(globalIzziSelection, {
+            precioTotal: value,
+            mainListId: "checkout",
+            mainListName: "Checkout - plan principal",
+            extrasListId: "checkout",
+            extrasListName: "Checkout - extras",
+        });
+
+        return { currency: CURRENCY, value, items };
+    };
+
+    const enrichCheckoutExitParams = (extraParams: Record<string, unknown>) => {
+        const { globalDatosContratacion, globalIzziSelection, globalUserAnswers, coberturaData } =
+            trackingSnapshotRef.current;
+
+        const datosPersonales = globalDatosContratacion?.DatosPersonales?.personal;
+        extraParams.package_count = countSelectedPackages(globalUserAnswers, globalIzziSelection);
+
+        const fullName = buildFullName(datosPersonales);
+        if (fullName) extraParams.full_name = fullName;
+
+        if (datosPersonales?.email) {
+            extraParams.email = datosPersonales.email.trim().toLowerCase();
+        }
+
+        if (datosPersonales) {
+            extraParams.user_data = izziDataLayerHelpers.normalizeUserData({
+                email: datosPersonales.email,
+                phone: datosPersonales.phone,
+                firstName: datosPersonales.firstName,
+                lastName: datosPersonales.firstLastName,
+                street: coberturaData.address,
+                city: coberturaData.municipio,
+                state: coberturaData.estado,
+                postalCode: coberturaData.zipCode,
+            });
+        }
+    };
+
+    const trackCheckoutExitIntent = () => {
+        if (typeof window === "undefined") return;
+        if (!window.location.pathname.startsWith("/checkout")) return;
+
+        const { sessionId, step } = getCheckoutTrackingParams();
+        const stepMeta = resolveCheckoutStepMetaForExit();
+        const extraParams: Record<string, unknown> = {};
+        if (sessionId) extraParams.checkout_session_id = sessionId;
+        if (stepMeta) {
+            extraParams.exit_intent_checkout_step = stepMeta.flowStep;
+            extraParams.exit_intent_checkout_step_ui = stepMeta.uiStep;
+            extraParams.exit_intent_checkout_step_label = stepMeta.label;
+            extraParams.exit_intent_checkout_step_name = stepMeta.analyticsStepName;
+        } else if (step) {
+            extraParams.exit_intent_checkout_step = step;
+            extraParams.exit_intent_checkout_step_name = LEGACY_CHECKOUT_STEP_NAMES[step] ?? `step_${step}`;
+        }
+
+        enrichCheckoutExitParams(extraParams);
+
+        izziDataLayerHelpers.pushEcommerceEvent(
+            EVENTS.CHECKOUT_EXIT_INTENT,
+            buildEcommercePayloadForExit(),
+            extraParams
+        );
+    };
+
+    const trackCheckoutAbandon = (reason: string) => {
+        if (typeof window === "undefined") return;
+        if (!window.location.pathname.startsWith("/checkout")) return;
+
+        const { sessionId, step } = getCheckoutTrackingParams();
+        const stepMeta = resolveCheckoutStepMetaForExit();
+        const extraParams: Record<string, unknown> = { abandon_reason: reason };
+        if (sessionId) extraParams.checkout_session_id = sessionId;
+        if (stepMeta) {
+            extraParams.abandon_checkout_step = stepMeta.flowStep;
+            extraParams.abandon_checkout_step_ui = stepMeta.uiStep;
+            extraParams.abandon_checkout_step_label = stepMeta.label;
+            extraParams.abandon_checkout_step_name = stepMeta.analyticsStepName;
+        } else if (step) {
+            extraParams.abandon_checkout_step = step;
+            extraParams.abandon_checkout_step_name = LEGACY_CHECKOUT_STEP_NAMES[step] ?? `step_${step}`;
+        }
+
+        enrichCheckoutExitParams(extraParams);
+
+        izziDataLayerHelpers.pushEcommerceEvent(
+            EVENTS.CHECKOUT_ABANDON,
+            buildEcommercePayloadForExit(),
+            extraParams
+        );
+    };
 
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -69,7 +273,36 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
         };
         window.addEventListener("beforeunload", handleBeforeUnload);
         return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+    }, []);
 
+    // Tracking por cambio de visibilidad (cambiar tab, minimizar, cerrar pestaña)
+
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                exitIntentTrackedRef.current = false;
+                return;
+            }
+            if (!window.location.pathname.startsWith("/checkout")) return;
+            if (exitIntentTrackedRef.current) return;
+
+            exitIntentTrackedRef.current = true;
+            trackCheckoutExitIntent();
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }, []);
+
+    // Tracking por cierre real de página (pagehide cubre cierre de tab y navegación)
+
+    useEffect(() => {
+        const handlePageHide = () => {
+            trackCheckoutAbandon("page_unload");
+        };
+
+        window.addEventListener('pagehide', handlePageHide);
+        return () => window.removeEventListener('pagehide', handlePageHide);
     }, []);
 
     //Captura de clicks (<a> || <Link>)
@@ -105,6 +338,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
 
             pendingRouteRef.current = url.pathname + url.search + url.hash;
             setTimeout(() => {
+                trackCheckoutExitIntent();
                 onOpen();
             }, 0);
         }
@@ -119,6 +353,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
     const confirmExit = () => {
         const toRoute = pendingRouteRef.current;
         pendingRouteRef.current = null;
+        trackCheckoutAbandon("user_confirmed_exit");
         clearCheckoutFlow();
         onClose();
 

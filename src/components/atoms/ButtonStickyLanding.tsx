@@ -8,7 +8,7 @@ interface ButtonLandingProps {
   classStyles?: string;
 }
 
-const ButtonLanding: React.FC<ButtonLandingProps> = async(
+const ButtonLanding: React.FC<ButtonLandingProps> = (
   {textBoton, landing, classStyles}) => {
   try {
 

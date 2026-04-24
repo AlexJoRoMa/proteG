@@ -79,10 +79,20 @@ export function useStep5Form() {
         });
     }, [registerFormData, selectedCapacityItem]);
 
-    //reset al cambiar de turno
+    //reset al cambiar de turno, mantener fecha si está disponible en el nuevo turno
     useEffect(() => {
-        setSelectedDateIso(null);
-        setSelectedCapacityItem(null);
+        if (!selectedDateIso) return;
+        const wanted = shiftMap[selectedShift];
+        const found = normalizarCapacity.find(
+            item => item.isoDate === selectedDateIso && item.shift === wanted
+        );
+        if (found) {
+            setSelectedCapacityItem(found.original);
+        } else {
+            setSelectedDateIso(null);
+            setSelectedCapacityItem(null);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedShift]);
 
     useEffect(() => {
