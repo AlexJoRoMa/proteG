@@ -62,6 +62,8 @@ const Step2 = () => {
     setPrivacyCheckboxChecked(value);
   }
 
+  const updateIsForeign = (value:boolean)=> setEsExtranjero(value)
+
   useEffect(() => {
     if (!necesitaFacturar) {
       setFacturarOtraDireccion(false);
@@ -117,7 +119,7 @@ const Step2 = () => {
         </div>
       </div>
 
-      <DatosPersonalesForm formRef={DatosPersonalesRef} esExtrangero={esExtranjero} isValid={isPersonalValid} setIsValid={setIsPersonalValid} />
+      <DatosPersonalesForm formRef={DatosPersonalesRef} esExtrangero={esExtranjero} isValid={isPersonalValid} updateIsForeign={updateIsForeign} setIsValid={setIsPersonalValid} />
 
       <Divider orientation="horizontal" className='!border-[var(--color-gray-300)] mt-12 mb-7' />
 
