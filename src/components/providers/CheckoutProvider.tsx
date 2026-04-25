@@ -96,18 +96,18 @@ export const CheckoutProvider = ({
   });
 
   const { setGlobalDatosContratacion, setGlobalProcessStatus, globalFlagDomicilio } = useIzziContent();
-
+  
   // states con informacion del los steps
   const [datosContratacion, setDatosContratacion] = useState<Partial<DatosContratacion>>({});
-
+  
   // states con informacion de las apis
   const [izziEnroll, setIzziEnroll] = useState<string>("");
   const [processStatus, setProcessStatus] = useState<Partial<ProcessStatus>>({});
-
+  
   useEffect(() => setGlobalDatosContratacion(datosContratacion), [datosContratacion, setGlobalDatosContratacion]);
   useEffect(() => setGlobalProcessStatus(processStatus), [processStatus, setGlobalProcessStatus]);
   useEffect(() => setTotalSteps(globalFlagDomicilio ? 5 : 6), [globalFlagDomicilio]);
-
+  
   const goToStep = useCallback((step: number) => {
     if (step === 1) {
       redirect('/configurador');

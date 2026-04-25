@@ -62,32 +62,6 @@ const Step2 = () => {
     setPrivacyCheckboxChecked(value);
   }
 
-    const cleanLocalBillinglData = ()=> {
-    try {
-      if (localStorage.getItem('PersistentBillingData')) {
-        localStorage.removeItem('PersistentBillingData')
-
-        setRfc('')
-        setCfdi('')
-        setRegimen('')
-
-      }
-    } catch (error) {
-      console.error('Algo salio mal borrando datos de facturacion', error);
-    }
-  }
-  const cleanLocalAdditionalAddressData = () =>{
-    try {
-        if (localStorage.getItem('PersistentAdditionalAddressData')) {
-            localStorage.removeItem('PersistentAdditionalAddressData')
-
-        }
-    } catch (error) {
-        console.error('Algo salio mal borrando datos de facturacion', error);
-    }
-  }
-
-
   useEffect(() => {
     if (!necesitaFacturar) {
       setFacturarOtraDireccion(false);
@@ -191,8 +165,6 @@ const Step2 = () => {
           isSelected={necesitaFacturar}
           onValueChange={(checked) => {
             setNecesitaFacturar(checked)
-            cleanLocalBillinglData()
-            cleanLocalAdditionalAddressData()
 
           }
           }
@@ -224,7 +196,6 @@ const Step2 = () => {
                 isSelected={facturarOtraDireccion}
                 onValueChange={(checked) => {
                   setFacturarOtraDireccion(checked)
-                  cleanLocalAdditionalAddressData()
                 }}
                 classNames={{
                   wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
