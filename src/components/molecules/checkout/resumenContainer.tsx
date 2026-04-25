@@ -27,6 +27,7 @@ import {
 } from "@/utils/checkoutStepTracking";
 import ResumenDesktop from "./resumenDesktop";
 import ResumenMobile from "./resumenMobile";
+import { useKeyboardOpen } from "@/hooks/checkout/useKeyboardOpen";
 
 interface ResumenContainerProps {
     variant: 'mobile' | 'desktop';
@@ -75,6 +76,8 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const addPaymentInfoTrackedRef = useRef(false);
 
     const CHECKOUT_SESSION_STORAGE_KEY = 'izzi-checkout-session-id';
+
+    const isKeyboardOpen = useKeyboardOpen();
 
     useEffect(() => {
         datosContratacionRef.current = datosContratacion;
@@ -692,7 +695,18 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         <>
             {
                 variant === 'mobile' ? (
-                    <div className="fixed bottom-0 left-0 z-40 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)]">
+                    <div
+                        className={`
+                        fixed bottom-0 left-0 z-40 w-full 
+                        px-[16px] pt-[24px] pb-[32px] 
+                        bg-gray-50 
+                        shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)]
+                        transition-all duration-200 ease-in-out
+                        ${isKeyboardOpen ?
+                                "opacity-0 pointer-events-none translate-y-full" :
+                                "opacity-100 translate-y-0"}
+                            `}
+                    >
                         <ResumenMobile
                             resumenCopys={resumenCopys}
                         >
