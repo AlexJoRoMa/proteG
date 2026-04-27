@@ -8,12 +8,10 @@ import { MovilPlansInfo, OfferItem, OffersCopys, StepProps } from "@/types/Confi
 import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader, Tab, Tabs } from "@heroui/react";
-import { useEffect, useMemo, useRef, useState } from "react";
-import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
-import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
+import { useEffect, useMemo, useState } from "react";
 
 export default function PlanesMovil({ step, preSeleccion }: StepProps) {
-    const { configuradorEntry, setUserAnswers, userAnswers, copysConfigurador, isLoading } = useContent();
+    const { configuradorEntry, setUserAnswers, userAnswers, copysConfigurador } = useContent();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const plans = configuradorEntry?.offers.MOVIL as unknown as OfferItem[] || [];
     const offersCopys = copysConfigurador as unknown as OffersCopys;
@@ -46,7 +44,6 @@ export default function PlanesMovil({ step, preSeleccion }: StepProps) {
 
     const [selectedTabKey, setSelectedTabKey] = useState<string>(defaultKey);
     const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
-    const trackedTabsRef = useRef<Set<string>>(new Set());
 
     const allCards = useMemo(() => plansInfo.flatMap(t => t.cards ?? []), [plansInfo]);
 
@@ -74,78 +71,7 @@ export default function PlanesMovil({ step, preSeleccion }: StepProps) {
         }
 
         setSelectedCardId(cardId);
-
-        const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
-        const listId = `movil_${selectedTabKey}`;
-        const listName = selectedTabKey;
-
-        const item = buildPlanItem(
-            {
-                id: String(card.idPaquete),
-                sku: card.nombreCode,
-                name: card.tituloTriplePlay ?? card.titulo,
-                category: "Bundle",
-                technology: card.tiempoPlan?.includes("12 meses") ? "Contrato" : "Sin_Plazo",
-                price: card.precioPaquete,
-                speed: card.velocidadMinima,
-                channels: card.canales,
-                contractMonths: card.tiempoPlan,
-            },
-            0,
-            listId,
-            listName
-        );
-
-        pushEcommerceEvent(
-            EVENTS.SELECT_ITEM,
-            {
-                currency: CURRENCY,
-                value: Number(card.precioPaquete) || 0,
-                items: [item],
-            }
-        );
-
         applyUserAnswersMovil(card, selectedTabKey);
-    }
-
-    function trackPlanDetailView(card: OfferItem, index: number) {
-        const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
-        const listId = `movil_${selectedTabKey}`;
-        const listName = selectedTabKey;
-
-        const item = buildPlanItem(
-            {
-                id: String(card.idPaquete),
-                sku: card.nombreCode,
-                name: card.tituloTriplePlay ?? card.titulo,
-                category: "Bundle",
-                technology: card.tiempoPlan?.includes("12 meses") ? "Contrato" : "Sin_Plazo",
-                price: card.precioPaquete,
-                speed: card.velocidadMinima,
-                channels: card.canales,
-                contractMonths: card.tiempoPlan,
-            },
-            index,
-            listId,
-            listName
-        );
-
-        pushEcommerceEvent(
-            EVENTS.VIEW_ITEM,
-            {
-                currency: CURRENCY,
-                value: Number(card.precioPaquete) || 0,
-                items: [item],
-            }
-        );
-    }
-
-    function clearSelection() {
-        setSelectedCardId(null);
-        setUserAnswers(prev => {
-            const { movil, ...rest } = prev;
-            return rest;
-        });
     }
 
     useEffect(() => {
@@ -206,47 +132,6 @@ export default function PlanesMovil({ step, preSeleccion }: StepProps) {
         setSelectedTabKey(key);
     };
 
-    useEffect(() => {
-        const currentTab = plansInfo.find(tab => tab.tituloTab === selectedTabKey);
-        if (!currentTab || !currentTab.cards || currentTab.cards.length === 0) return;
-
-        if (trackedTabsRef.current.has(selectedTabKey)) return;
-
-        const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
-        const listId = `movil_${selectedTabKey}`;
-        const listName = selectedTabKey;
-
-        const items = currentTab.cards.map((card, index) =>
-            buildPlanItem(
-                {
-                    id: String(card.idPaquete),
-                    sku: card.nombreCode,
-                    name: card.tituloTriplePlay ?? card.titulo,
-                    category: "Bundle",
-                    technology: card.titulo.includes("12 meses") ? "Contrato" : "Sin_Plazo",
-                    price: card.precioPaquete,
-                    speed: card.velocidadMinima,
-                    channels: card.canales,
-                    contractMonths: card.tiempoPlan,
-                },
-                index,
-                listId,
-                listName
-            )
-        );
-
-        pushEcommerceEvent(
-            EVENTS.VIEW_ITEM_LIST,
-            {
-                currency: CURRENCY,
-                value: 0,
-                items,
-            }
-        );
-
-        trackedTabsRef.current.add(selectedTabKey);
-    }, [plansInfo, selectedTabKey]);
-
     return (
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
@@ -306,7 +191,7 @@ export default function PlanesMovil({ step, preSeleccion }: StepProps) {
                                         }}>
                                         <CardHeader>
                                             <div className="flex flex-col text-start">
-                                                <h1 className={`text-2xl font-extrabold leading-[27px] ${isLoading ? 'text-gray-200' : 'text-black-0'}`}>{card.titulo}</h1>
+                                                <h1 className="text-2xl font-extrabold leading-[27px]">{card.titulo}</h1>
                                             </div>
                                         </CardHeader>
                                         <CardBody />
@@ -338,9 +223,7 @@ export default function PlanesMovil({ step, preSeleccion }: StepProps) {
                                                         closeButtonStroke='black'
                                                         modalContentClassName="w-full h-auto sm:w-[80vw] xl:h-auto xl:w-[90vw] 2xl:w-[62vw] 2xl:h-auto"
                                                         backdropColor='black-0/80'
-                                                        idModal={""}
-                                                        onOpenModal={() => trackPlanDetailView(card, index)}
-                                                    >
+                                                        idModal={""}>
                                                         <ConfiguradorCardsModalComponent
                                                             variables={{
                                                                 velocidadMaxima: card.velocidadMaxima,

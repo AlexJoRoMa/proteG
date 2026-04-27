@@ -6,10 +6,9 @@ import { notFound } from "next/navigation";
 import {SeoFieldSkeleton} from "@/types/SEOTypes";
 import SEOHead from '@/components/atoms/SEOHead';
 import { setTelNumber } from '@/services/izzi/getTelNumbers';
-import { setFullPath, setLandingSlug } from "@/services/izzi/getURL";
+import { setFullPath } from "@/services/izzi/getURL";
 import UrlPersister from "@/utils/utmTrack";
 import { Suspense } from "react";
-import PageDataTracker from '@/components/tracking/PageDataTracker';
 
 /* import NavigationLanding from '@/components/molecules/navigationLandingComponent'; */
 
@@ -297,7 +296,6 @@ export default async function LandingPage({ params}: DynamicPageProps) {
     /* valores para enviar valor de fullpath, no borrar */
     setTelNumber(fullPath)
     setFullPath(fullPath)
-    setLandingSlug(contentfulSlug as string)
 
 
     
@@ -328,11 +326,7 @@ export default async function LandingPage({ params}: DynamicPageProps) {
         </Suspense>
         
         <main>
-            <PageDataTracker
-                pageType="landing"
-                pageName={fullPath}
-                category={paqueteKey}
-            />
+            
             {components[0]?.fields.components &&
                 Array.isArray(components[0].fields.components) &&
                 components[0].fields.components.length > 0 ? (

@@ -11,8 +11,6 @@ export default function ResumenPaquetes({ userSelection, copys }: ResumenContent
     const movil = paquetes.movil as unknown as movilComponentFields;
 
 
-    const ottData = tv?.ott?.planes?.length ? tv.ott : internet?.ott?.planes?.length ? internet.ott : null;
-
     return (
         <>
 
@@ -100,24 +98,27 @@ export default function ResumenPaquetes({ userSelection, copys }: ResumenContent
 
             {/* Seleccion de otts adicionales - getPackageInfo */}
 
-            {ottData && (
-                    <div className="flex flex-col gap-[8px] pt-[24px] border-b-1 border-b-gray-150">
-                        <div className="flex justify-between items-center w-full font-bold leading-[24px] text-lg">
-                            <h5>{resumenCopys.paquetes.tv.ott.titulo}</h5>
-                            <h5>{FormatCurrency(ottData.total)}</h5>
-                        </div>
-                        <div className="flex flex-col gap-[8px] pb-[24px]">
-                            {ottData.planes.map((item, index) => (
-                                <div
-                                    key={index}
-                                    className="flex justify-between w-full font-normal leading-[24px] text-base text-gray-250"
-                                >
-                                    <h5>{`+ ${item.titulo}`}</h5>
-                                </div>
-                            ))}
-                        </div>
+            {
+                (tv && tv.ott?.planes && tv.ott?.planes.length > 0) &&
+                <div className="flex flex-col gap-[8px] pt-[24px] border-b-1 border-b-gray-150">
+                    <div className="flex justify-between items-center w-full font-bold leading-[24px] text-lg">
+                        <h5>{resumenCopys.paquetes.tv.ott.titulo}</h5>
+                        <h5>{FormatCurrency(tv.ott?.total)}</h5>
                     </div>
-            )}
+                    <div className="flex flex-col gap-[8px] pb-[24px]">
+                        {tv.ott?.planes.map((item, index) => (
+                            <div
+                                key={index}
+                                className="flex justify-between w-full font-normal leading-[24px] text-base text-gray-250"
+                            >
+                                <h5>
+                                    {`+ ${item.titulo}`}
+                                </h5>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            }
 
         </>
     )

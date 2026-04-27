@@ -200,9 +200,6 @@ export type DataFields = {
     disabled: boolean,
     setDisabled: React.Dispatch<React.SetStateAction<boolean>>,
     rehydrated: boolean,
-    isLoading:boolean,
-    setIsLoading:  React.Dispatch<React.SetStateAction<boolean>>,
-
 }
 
 export interface Promotion {
@@ -236,11 +233,7 @@ export interface UserAnswers {
     total?: number,
     internet?: {
         paquete?: OfferItem | null,
-        total?: number,
-        ott?: {
-            planes: OttProps[],
-            total: number
-        }
+        total?: number
     },
     movil?: {
         paquete?: OfferItem | null,
@@ -260,11 +253,8 @@ export interface UserAnswers {
 export interface IzziSelection {
     idPaquete?: number,
     idExtra?: number,
-    /** Código comercial (p. ej. izzitv_light); mismo criterio que select_item vía `sku` en GA4 */
-    nombreCode?: string,
     titulo?: string,
     tituloTriplePlay?: string,
-    tiempoPlan?: string,
     periodicidad?: string,
     descripcion?: string,
     precioPaquete?: string,
@@ -318,11 +308,7 @@ export type OttProps = {
 
 export type internetComponentFields = {
     paquete: OfferItem,
-    total: number,
-    ott?: {
-        planes: OttProps[],
-        total: number
-    }
+    total: number
 }
 
 export type tvComponentFields = {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Document } from '@contentful/rich-text-types';
 import { ColorOption } from '@/constants/ColorModalConstants';
 
@@ -15,14 +14,6 @@ export interface RichTextComponentProps {
    * Optional color option for HR elements
    */
   hrColor?: ColorOption;
-  /**
-   * Optional inline styles for the container (e.g. text color from Contentful)
-   */
-  style?: React.CSSProperties;
-  /**
-   * Optional hover text applied as title on images
-   */
-  hoverText?: string;
 }
 
 export interface RichTextRendererOptions {

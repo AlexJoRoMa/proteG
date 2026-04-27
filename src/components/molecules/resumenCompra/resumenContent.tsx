@@ -6,17 +6,6 @@ import { useEffect, useState } from "react";
 import { Promos } from "@/types/ConfiguradorTypes";
 import { mesIds } from "@/constants/ResumenConstants";
 
-const sanitizePromoValues = (promos: Promos[] | undefined):Promos[]=>{
-    if (promos) {
-        promos = promos.map((discountPromo)=> {
-            discountPromo.promoPrice = Number(discountPromo.promoName.match(/(CARGO POR INSTALACION)/i)? '-0':discountPromo.promoPrice);
-            return discountPromo;
-        })
-        return promos;
-    }
-    return Array<Promos>(1);
-}
-
 function calcularPromos(promos: Promos[] | undefined) {
     const maxMeses = mesIds.length;
     const meses = Array.from({ length: maxMeses }, () => ({
@@ -25,8 +14,6 @@ function calcularPromos(promos: Promos[] | undefined) {
     }));
 
     if (!promos) return [];
-
-    sanitizePromoValues(promos);
 
     promos.forEach((promo) => {
         const inicio = Number(promo.mesInicio) - 1;
@@ -67,16 +54,12 @@ function obtenerArray(mesesPromos: { totalPromo: number }[]) {
     const tope = primerMesCero ?? ultimoMes;
     const relevantes = mesesPromos.slice(0, tope);
     const resultado: { mesNumero: number; mesId: string; totalPromo: number; }[] = [];
-
-    if (relevantes.length === 0) return resultado;
-
-    let ultimoValor = relevantes[0].totalPromo;
+    let ultimoValor: number | null = null;
 
     relevantes.forEach((mes, index) => {
-        if (index === 0) return;
         const valorActual = mes.totalPromo;
 
-        if (valorActual !== ultimoValor) {
+        if (index !== 0 && valorActual !== ultimoValor) {
             resultado.push({
                 mesNumero: index + 1,
                 mesId: mesIds[index],
@@ -114,6 +97,11 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
         return () => window.removeEventListener('switch-change', handleSwitch);
     }, [])
 
+
+    /* const ottPromos = promoData?.promos?.filter(promo =>
+        globalIzziSelection?.extrasMap?.ott?.some(extra => extra.nombreSiebel === promo.product)
+    ); */
+
     const totalOttPrice = globalIzziSelection?.extrasMap?.ott?.reduce(
         (acc, promo) => acc + Number(promo.costo),
         0
@@ -125,8 +113,9 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     );
 
     const promotions = promoData?.promos;
-    const promoVisible = promotions?.filter((promo) => promo.visible === true);
+    const promoVisible = promotions?.filter((promo) => promo.visible === true && promo.promoPrice !== 0);
     const pagoAnticipado = promoData?.promos?.find(promo => promo.promoName.toLowerCase().includes('pago anticipado'));
+    /* const totalAfterPromos = Math.abs(Number((pagoAnticipado?.promoPrice || 0))); */
     const descuentoTv = Math.abs((Number(userSelection?.tv?.paquete?.precioPaquete)) - (Number(userSelection?.tv?.paquete?.precioTachado)));
     const totalOttDescuentoCombo = globalIzziSelection?.extrasMap?.ott?.reduce(
         (acc, ott) => acc + Number(ott.descuentoCombo?.monto || 0),
@@ -146,8 +135,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
             totalSinDescuento - ahorroCombinado :
         totalSinDescuento;
 
-    const internetDiscount = Number(userSelection?.internet?.paquete?.precioTachado || 0) - Number(userSelection?.internet?.paquete?.precioPaquete || 0)
-    const ahorroTotal = ((Number(ahorroCombinado) || 0) + (Number(internetDiscount) || 0) + (Number(pagoAnticipado) || 0)) + (Number(Math.abs(totalPromoPrice as number)) || 0);
+    const ahorroTotal = ((Number(ahorroCombinado) || 0) + (Number(pagoAnticipado) || 0)) + (Number(Math.abs(totalPromoPrice as number)) || 0);
 
     const promoMeses = calcularPromos(promotions);
     const descuentoMeses = obtenerArray(promoMeses);
@@ -168,9 +156,15 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     }, [validateSwitch, precioTotal])
 
 
+
+
+
+
     return (
         <>
+
             <ResumenPaquetes copys={resumenCopys} userSelection={userAnswers} />
+
             <>
                 <div className="py-[24px] border-b-1 border-b-gray-150">
                     <div className="flex justify-between items-center w-full font-normal leading-[24px] text-lg">
@@ -184,34 +178,32 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                             <h1 className="font-bold text-base leading-[24px] mb-[24px]">{resumenCopys.ahorro.titulo}</h1>
 
                             <div className="w-full font-normal leading-[24px] text-lg space-y-2">
+                                {(globalCheckedPromotions && (ahorroCombinado !== 0 || (promoVisible && promoVisible?.length > 0))) && (
+                                    <div className="flex justify-between w-full">
+                                        <h5 className="text-left mr-[8px]">{resumenCopys.ahorro.paquete}</h5>
+                                        <h5 className="text-right">-{FormatPromotions(ahorroCombinado)}</h5>
+                                    </div>
+                                )}
 
-                        {globalCheckedPromotions && internetDiscount > 0 && (
-                            <div className="flex justify-between w-full">
-                                <h5>{resumenCopys.ahorro.internet ?? 'Descuento internet'}</h5>
-                                <h5>-{FormatCurrency(internetDiscount)}</h5>
-                            </div>
-                        )}
 
-                        {globalCheckedPromotions && ahorroCombinado !== 0 && (
-                            <div className="flex justify-between w-full">
-                                <h5 className="text-left mr-[8px]">{resumenCopys.ahorro.paquete}</h5>
-                                <h5 className="text-right">-{FormatPromotions(ahorroCombinado)}</h5>
-                            </div>
-                        )}
+                                {
+                                    promoVisible?.map((promo, index) => {
+                                        return (
+                                            <div key={index} className="flex justify-between w-full">
+                                                <h5 className="text-left mr-[8px]">{promo.promoName}</h5>
+                                                {/* <h5 className="text-right">-{FormatPromotions(Math.abs(Number(promo.promoPrice)))}</h5> */}
+                                                <h5 className="text-right">{FormatPromotions(promo.promoPrice)}</h5>
+                                            </div>
+                                        )
+                                    })
+                                }
 
-                        {promoVisible?.map((promo, index) => (
-                            <div key={index} className="flex justify-between w-full">
-                                <h5 className="text-left mr-[8px]">{promo.promoName}</h5>
-                                <h5 className="text-right">{FormatPromotions(promo.promoPrice)}</h5>
-                            </div>
-                        ))}
-
-                        {validateSwitch && (
-                            <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
-                                <h5>{resumenCopys.ahorro.domicilio}</h5>
-                                <h5>-{FormatCurrency(Number(50))}</h5>
-                            </div>
-                        )}
+                                {validateSwitch && (
+                                    <div className="flex justify-between w-full font-normal leading-[24px] text-lg">
+                                        <h5>{resumenCopys.ahorro.domicilio}</h5>
+                                        <h5>-{FormatCurrency(Number(50))}</h5>
+                                    </div>
+                                )}
 
                             </div>
                         </div>
@@ -235,6 +227,17 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                         </h2>
                     </div>
                     <div className={`flex flex-col gap-[8px] ${validateSwitch ? "mb-[24px]" : "mb-0"}`}>
+                        {/* {     
+                            ottPromos &&
+                            ottPromos?.filter(promo => promo.permanente.toLowerCase() === 'no')
+                                .map((promo, index) => (
+                                    <div key={index} className="flex justify-between w-full font-normal leading-[24px] text-lg">
+                                        <h5>Después de {promo.meses} meses pagarás</h5>
+                                        <h5>{FormatCurrency(precioTotal + (totalAfterPromos + Math.abs(Number(promo.promoPrice))))}</h5>
+                                    </div>
+                                ))
+                        }
+                        */}
                         {
                             (descuentoMeses.length > 0) &&
                             <>

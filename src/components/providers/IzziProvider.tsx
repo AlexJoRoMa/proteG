@@ -41,7 +41,6 @@ export const IzziProvider = ({
     const [totalSinDescuento, setTotalSinDescuento] = useState<number>(0);
     const [addressFielSelected, setAddressFielSelected] = useState<boolean>(false);
     const [streetDireccion, setStreetDireccion] = useState<string>("");
-    const [coloniaError, setColoniaError ] = useState<boolean>(false);
 
     const cleanLocalConfiguratorData = () => {
         localStorage.removeItem('PersistentPersonalData')
@@ -107,9 +106,7 @@ export const IzziProvider = ({
             addressFielSelected,
             setAddressFielSelected,
             streetDireccion,
-            setStreetDireccion,
-            coloniaError, 
-            setColoniaError 
+            setStreetDireccion
         }}>
             {children}
         </izziContext.Provider>

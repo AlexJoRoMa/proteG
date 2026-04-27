@@ -12,8 +12,6 @@ import { FormatCurrency } from "@/utils/Currency";
 import { useRouter } from "next/navigation";
 import { LoaderIcon } from "@/constants/IconsConstants";
 import { getOttCategoriesFromContentful, isComboCategory } from "@/utils/OttCategoriesHelper";
-import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
-import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
 
 export const ArrowUpIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
@@ -38,7 +36,7 @@ function hasData(obj: unknown): boolean {
 export default function ResumenPedido() {
 
     const { userAnswers, copysResumen, setCheckedPromotions, checkedPromotions, infoDrawerContent, configuradorEntry, izziSelection } = useContent();
-    const { precioTotal, coberturaData, setPromoData, infoPaquetes, setInfoPaquetes, globalIzziSelection } = useIzziContent();
+    const { precioTotal, coberturaData, setPromoData, infoPaquetes, setInfoPaquetes } = useIzziContent();;
     const [loading, setLoading] = useState<boolean>(false);
     const [promoError, setPromoError] = useState(false);
     const [validComboCategories, setValidComboCategories] = useState<Set<string>>(new Set());
@@ -49,10 +47,7 @@ export default function ResumenPedido() {
     const tv = userAnswers.tv as unknown as tvComponentFields | undefined;
     const movil = userAnswers.movil as unknown as movilComponentFields | undefined;
 
-    const hasInternet = hasData(internet);
-    const hasTv = hasData(tv);
-    const hasMovil = hasData(movil);
-    const hasAnyMainProduct = hasInternet || hasTv || hasMovil;
+    const newSelection = (userAnswers && userAnswers !== null && Object.keys(userAnswers).length > 0)
 
     useEffect(() => {
         setCheckedPromotions(false);
@@ -91,15 +86,11 @@ export default function ResumenPedido() {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     function CheckPromotions() {
-        if (!hasAnyMainProduct) return;
         setCheckedPromotions(true);
         onOpen()
     }
 
     const handleClick = async () => {
-        if (!hasAnyMainProduct) {
-            return;
-        }
         setLoading(true);
         const extrasBody = [];
 
@@ -157,30 +148,6 @@ export default function ResumenPedido() {
     };
 
     function handleContratar() {
-        if (!hasAnyMainProduct) {
-            return;
-        }
-        if (globalIzziSelection && globalIzziSelection.idPaquete && precioTotal) {
-            const { buildEcommerceLineItems, normalizeEcommerceValue, pushEcommerceEvent } = izziDataLayerHelpers;
-            const ecommerceValue = normalizeEcommerceValue(precioTotal);
-
-            const items = buildEcommerceLineItems(globalIzziSelection, {
-                precioTotal: ecommerceValue,
-                mainListId: "configurador",
-                mainListName: "Configurador - plan principal",
-                extrasListId: "configurador",
-                extrasListName: "Configurador - extras",
-            });
-
-            pushEcommerceEvent(
-                EVENTS.ADD_TO_CART,
-                {
-                    currency: CURRENCY,
-                    value: ecommerceValue,
-                    items,
-                }
-            );
-        }
         setLoading(true);
         router.push(`${resumenCopys.boton.contratar.url}`)
     }
@@ -189,7 +156,7 @@ export default function ResumenPedido() {
         <>
         <div className="xl:border xl:rounded-md xl:border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 xl:bg-white-0">
 
-            {!hasAnyMainProduct ?
+            {!newSelection ?
                 <button
                     className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
                     disabled

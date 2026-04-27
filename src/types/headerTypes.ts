@@ -5,9 +5,6 @@ export type IzziNavbar = {
         internalName: string;
         brandLogo?: Logo;
         navigation: Array<Navigation>;
-        optionalButtons?: Array<Navigation>;
-        isLandingHeader?: Boolean;
-        backgroundColor?: {};
     }
 }
 

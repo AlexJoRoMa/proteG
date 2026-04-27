@@ -28,12 +28,10 @@ type ComponentProps = ButtonModalComponentProps | PriceComponentProps | TextAndI
  * This component takes a Contentful rich text document and renders it as React components
  * with custom styling and support for embedded assets and entries.
  */
-const RichTextComponent: React.FC<RichTextComponentProps> = ({
-  document,
+const RichTextComponent: React.FC<RichTextComponentProps> = ({ 
+  document, 
   className = '',
-  hrColor,
-  style,
-  hoverText,
+  hrColor
 }) => {
   // Custom rendering options for different node types
   const options = {
@@ -216,7 +214,6 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
               height={file.details?.image?.height || 600}
               className="max-w-full h-auto inline"
               priority={false}
-              title={hoverText}
             />
           );
         }
@@ -305,7 +302,7 @@ const RichTextComponent: React.FC<RichTextComponentProps> = ({
   }
 
   return (
-    <div className={`rich-text-content ${className}`} style={style}>
+    <div className={`rich-text-content ${className}`}>
       {documentToReactComponents(document, options)}
     </div>
   );

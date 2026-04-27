@@ -28,14 +28,8 @@ const LinkModal = ({
     modalContentClassName,
     backdropColor,
     hrColor,
-    onOpenModal,
 }: LinkModalProps) => {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-
-    const handleOpen = () => {
-        onOpenModal?.();
-        onOpen();
-    };
 
     const shouldFetch = isOpen && !!idModal;
 
@@ -54,7 +48,7 @@ const LinkModal = ({
 
     return (
         <>
-            <Link onPress={handleOpen} className={`cursor-pointer underline text-black ${classNames}`}>
+            <Link onPress={onOpen} className={`cursor-pointer underline text-black ${classNames}`}>
                 {text}
             </Link>
             <ModalComponent isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} closeButtonStroke={closeButtonStroke} modalContentClassName={modalContentClassName} backdropColor={backdropColor}>

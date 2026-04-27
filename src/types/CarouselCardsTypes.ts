@@ -5,5 +5,3 @@ export type CardPropType = {
     promo: boolean;
     index?: number;
 }
-
-export type CardEntry = CardPropType["card"];

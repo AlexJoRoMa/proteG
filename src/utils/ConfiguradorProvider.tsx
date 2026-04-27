@@ -32,7 +32,6 @@ export const ConfiguradorProvider = ({
     const [infoDrawerContent, setInfoDrawerContent] = useState<string>("");
     const [disabled, setDisabled] = useState<boolean>(false);
     const [rehydrated, setRehydrated] = useState(false);
-    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const { setGlobalUserAnswers, setGlobalIzziSelection, globalUserAnswers, setGlobalCheckedPromotions, setGlobalFlagDomicilio, setCoberturaData, setFormattedAddress } = useIzziContent();
 
@@ -110,9 +109,6 @@ export const ConfiguradorProvider = ({
         disabled,
         setDisabled,
         rehydrated,
-        isLoading,
-        setIsLoading,
-        
     }), [
         configuradorEntry, 
         copysResumen, 
@@ -125,9 +121,7 @@ export const ConfiguradorProvider = ({
         ottsImages, 
         infoDrawerContent, 
         disabled, 
-        rehydrated,
-        isLoading,
-        setIsLoading,
+        rehydrated
     ]);
     
     return (

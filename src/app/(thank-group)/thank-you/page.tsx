@@ -1,11 +1,10 @@
-import ThankYou from '@/components/organisms/Thank-You';
-import ThankYouProvider from '@/components/providers/ThankYouProvider';
-import { contentfulClient } from '@/services/contentful/client';
-import { getCopyForComponent } from '@/services/contentful/components';
-import { ResumenIcon } from '@/types/ConfiguradorTypes';
-import { EntrySkeletonType } from 'contentful';
-import React from 'react';
-import PageDataTracker from '@/components/tracking/PageDataTracker';
+import ThankYou from '@/components/organisms/Thank-You'
+import ThankYouProvider from '@/components/providers/ThankYouProvider'
+import { contentfulClient } from '@/services/contentful/client'
+import { getCopyForComponent } from '@/services/contentful/components'
+import { ResumenIcon } from '@/types/ConfiguradorTypes'
+import { EntrySkeletonType } from 'contentful'
+import React from 'react'
 
 const ThankYouPage = async () => {
 
@@ -28,10 +27,6 @@ const ThankYouPage = async () => {
 
     return (
         <main className="min-h-screen w-full">
-            <PageDataTracker
-                pageType="confirmation"
-                pageName="Orden Confirmada"
-            />
             <ThankYouProvider
                 icon={Icon}
                 copys={copys}

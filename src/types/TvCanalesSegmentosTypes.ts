@@ -1,5 +1,4 @@
 import { Entry, EntrySkeletonType } from "contentful";
-import type { Key } from "react";
 
 export interface MediaEntryFields {
     image: {
@@ -42,9 +41,5 @@ export type tabsTileProps = {
 }
 
 export type TabsContentProps = {
-    tabsData: EntrySkeletonType<TabsDataFields>[] | null;
-    filterContent: string[];
-    selectedFilter?: string[];
-    selectedTabKey?: Key | null;
-    onTabChange?: (key: Key) => void;
+    tabsData: EntrySkeletonType<TabsDataFields> | null
 }

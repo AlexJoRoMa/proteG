@@ -1,10 +1,19 @@
 import React from "react";
 import IzziHeaderLanding from "@/components/organisms/headerLanding";
+import { contentfulClient } from "@/services/contentful/client";
 import { Entry, EntrySkeletonType } from "contentful";
 import { getMicroCopy } from '@/services/contentful/components';
 import { getTelNumber } from '@/services/izzi/getTelNumbers';
-import { getTrackingBase, getLandingSlug } from "@/services/izzi/getURL";
-import { fetchHeaderByPageSlug } from "@/services/contentful/pages";
+import { getTrackingBase } from "@/services/izzi/getURL";
+
+async function getHeaderContentType() {
+  const responseData = await contentfulClient.getEntries({
+      content_type: 'header',
+      include: 3
+  });
+  return responseData.items;
+} 
+
 
 export default async function NavigationLanding() {
   
@@ -19,10 +28,7 @@ export default async function NavigationLanding() {
   const getNumberTelValue = getTelNumber();
   const getTracking = getTrackingBase();
 
-  const slug = getLandingSlug();
-  const apibarData: Entry<EntrySkeletonType, undefined, string>[] | null = slug
-    ? await fetchHeaderByPageSlug(slug)
-    : null;
+  const apibarData: Entry<EntrySkeletonType, undefined, string>[] | null = await getHeaderContentType();
 
   return (
     <IzziHeaderLanding getNumTel={getNumberTelValue} 

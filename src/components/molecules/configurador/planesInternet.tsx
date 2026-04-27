@@ -1,6 +1,5 @@
 'use client'
 
-import AccordionPlanesExtras from "@/components/molecules/configurador/accordionPlanesExtras";
 import LinkModal from "@/components/atoms/LinkModal";
 import ConfiguradorCardsModalComponent from "@/components/layouts/modals/ConfiguradorCardsModalComponent";
 import { CheckPlanesIcon } from "@/constants/IconsConstants";
@@ -9,11 +8,9 @@ import { useContent } from "@/utils/ConfiguradorProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { useEffect, useMemo, useRef } from "react";
-import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
-import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
 
 export default function PlanesInternet({ step, preSeleccion }: StepProps) {
-    const { configuradorEntry, setUserAnswers, disabled, userAnswers, copysConfigurador, rehydrated, isLoading } = useContent();
+    const { configuradorEntry, setUserAnswers, disabled, userAnswers, copysConfigurador, rehydrated } = useContent();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const plans = configuradorEntry?.offers?.DOBLE_PLAY as OfferItem[] || [];
@@ -52,88 +49,26 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
     }, [userAnswers.internet?.paquete, offersByType]);
 
     const userInteracted = useRef(false);
-    const viewListTrackedRef = useRef(false);
-
-    const listId = "internet";
-    const listName = offersCopys.internet.titulo;
-
-    function trackPlanDetailView(card: OfferItem, index: number) {
-        const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
-        const item = buildPlanItem(
-            {
-                id: String(card.idPaquete),
-                sku: card.nombreCode,
-                name: card.tituloTriplePlay ?? card.titulo,
-                category: "Bundle",
-                technology: card.tiempoPlan?.includes("TRIPLE") ? "Triple_Play" : "Doble_Play",
-                price: card.precioPaquete,
-                speed: card.velocidadMinima,
-                channels: card.canales,
-                contractMonths: card.tiempoPlan,
-            },
-            index,
-            listId,
-            listName
-        );
-        pushEcommerceEvent(
-            EVENTS.VIEW_ITEM,
-            {
-                currency: CURRENCY,
-                value: Number(card.precioPaquete) || 0,
-                items: [item],
-            }
-        );
-    }
 
     function handleSelect(index: number, card: OfferItem) {
         userInteracted.current = true;
-
-        const isSelected = selectedIndex === index;
-
-        if (isSelected) {
             setUserAnswers(prev => {
-                const newState = { ...prev };
-                delete newState.internet;
-                return newState;
+                const isSelected = selectedIndex === index;
+
+                if (isSelected) {
+                    const newState = { ...prev };
+                    delete newState.internet;
+                    return newState;
+                }
+
+                return {
+                    ...prev,
+                    internet: {
+                        paquete: card,
+                        total: Number(card.precioPaquete) || 0
+                    }
+                };
             });
-            return;
-        }
-
-        setUserAnswers(prev => ({
-            ...prev,
-            internet: {
-                paquete: card,
-                total: Number(card.precioPaquete) || 0
-            }
-        }));
-
-        const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
-
-        const item = buildPlanItem(
-            {
-                id: String(card.idPaquete),
-                sku: card.nombreCode,
-                name: card.tituloTriplePlay ?? card.titulo,
-                category: "Bundle",
-                technology: card.tiempoPlan?.includes("TRIPLE") ? "Triple_Play" : "Doble_Play",
-                price: card.precioPaquete,
-                speed: card.velocidadMinima,
-                channels: card.canales,
-                contractMonths: card.tiempoPlan,
-            },
-            0,
-            listId,
-            listName
-        );
-
-        pushEcommerceEvent(
-            EVENTS.SELECT_ITEM,
-            {
-                currency: CURRENCY,
-                value: Number(card.precioPaquete) || 0,
-                items: [item],
-            }
-        );
     }
 
     useEffect(() => {
@@ -150,43 +85,6 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
         () => offersByType.map(o => String(o.idPaquete)).join('|'),
         [offersByType]
     );
-
-    useEffect(() => {
-        if (viewListTrackedRef.current) return;
-        if (!offersByType || offersByType.length === 0) return;
-
-        const { buildPlanItem, pushEcommerceEvent } = izziDataLayerHelpers;
-
-        const items = offersByType.map((offer, index) =>
-            buildPlanItem(
-                {
-                    id: String(offer.idPaquete),
-                    sku: offer.nombreCode,
-                    name: offer.tituloTriplePlay ?? offer.titulo,
-                    category: "Bundle",
-                    technology: offer.tiempoPlan?.includes("TRIPLE") ? "Triple_Play" : "Doble_Play",
-                    price: offer.precioPaquete,
-                    speed: offer.velocidadMinima,
-                    channels: offer.canales,
-                    contractMonths: offer.tiempoPlan,
-                },
-                index,
-                listId,
-                listName
-            )
-        );
-
-        pushEcommerceEvent(
-            EVENTS.VIEW_ITEM_LIST,
-            {
-                currency: CURRENCY,
-                value: 0,
-                items,
-            }
-        );
-
-        viewListTrackedRef.current = true;
-    }, [offersByType, listId, listName]);
 
     useEffect(() => {
         if (!preSeleccion.seleccionPaquete) return;
@@ -247,8 +145,10 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
                                     }}>
                                     <CardHeader>
                                         <div className="flex flex-col text-start">
-                                            <p className={`text-base font-normal leading-[27px] ${isLoading ? 'text-gray-200' : 'text-black-0'} ${card.velocidadMinima === card.velocidadMaxima ? 'invisible' : ''}`}>{`${offersCopys.internet.cards.preVelocidad} ${card.velocidadMinima} ${offersCopys.internet.cards.posVelocidad}`}</p>
-                                            <p className={`leading-[27px] font-extrabold text-2xl ${isLoading ? 'text-gray-200' : 'text-black-0'}`}>{`${card.velocidadMaxima} ${offersCopys.internet.cards.unidadVelocidad}`}</p></div>
+
+                                            <p className={`text-base font-normal leading-[27px] ${card.velocidadMinima === card.velocidadMaxima ? 'invisible' : ''}`}>{`${offersCopys.internet.cards.preVelocidad} ${card.velocidadMinima} ${offersCopys.internet.cards.posVelocidad}`}</p>
+                                            <p className="leading-[27px] font-extrabold text-2xl">{`${card.velocidadMaxima} ${offersCopys.internet.cards.unidadVelocidad}`}</p>
+                                        </div>
                                     </CardHeader>
                                     <CardBody>
                                         <div className="flex items-stretch">
@@ -288,9 +188,7 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
                                                     closeButtonStroke='black'
                                                     modalContentClassName="w-full h-auto sm:w-[80vw] xl:h-auto xl:w-[90vw] 2xl:w-[62vw] 2xl:h-auto"
                                                     backdropColor='black-0/80'
-                                                    idModal={""}
-                                                    onOpenModal={() => trackPlanDetailView(card, index)}
-                                                >
+                                                    idModal={""}>
                                                     <ConfiguradorCardsModalComponent
                                                         variables={{
                                                             velocidadMinima: card.velocidadMinima,
@@ -315,10 +213,6 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
                         )
                     })
                 }
-            </div>
-
-            <div>
-                {selectedIndex !== null && !userAnswers.tv && <AccordionPlanesExtras />}
             </div>
         </div>
     );

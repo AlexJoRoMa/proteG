@@ -53,30 +53,39 @@ export async function validatePayment(datosContratacion: Partial<DatosContrataci
             }
         }
 
-        const metodoPago = datosContratacion.Pago?.metodoPago;
-        const isPayPal = metodoPago === "paypal";
+        const [okCard, okPayPal] = await Promise.all([
+            validateAPI(false),
+            validateAPI(true),
+        ]);
 
-        const ok = await validateAPI(isPayPal);
-
-        if (ok) {
+        if (okPayPal) {
             setDatosContratacion((prev) => ({
                 ...prev,
                 Pago: {
-                    metodoPago: isPayPal ? "paypal" : "creditCard",
+                    metodoPago: "paypal",
                     success: true,
                 }
             }));
             return true;
+        } else if (okCard) {
+            setDatosContratacion((prev) => ({
+                ...prev,
+                Pago: {
+                    metodoPago: "creditCard",
+                    success: true,
+                }
+            }));
+            return true;
+        } else {
+            setDatosContratacion((prev) => ({
+                ...prev,
+                Pago: {
+                    ...prev.Pago,
+                    success: false,
+                }
+            }));
+            return false;
         }
-
-        setDatosContratacion((prev) => ({
-            ...prev,
-            Pago: {
-                ...prev.Pago,
-                success: false,
-            }
-        }));
-        return false;
     } catch (err) {
         console.error("Error validando pago:", err);
         return false;

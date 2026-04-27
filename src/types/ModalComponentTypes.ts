@@ -45,8 +45,6 @@ export type LinkModalProps = {
     modalContentClassName?: string; // Clases adicionales para el ModalContent
     backdropColor?: string; // Color del backdrop del modal, por defecto "black"
     hrColor?: ColorOption; // Opción de color para el HR del RichTextComponent
-    /** GA4: disparar p. ej. view_item al abrir el modal (plan detalle) */
-    onOpenModal?: () => void;
 }
 
 export type ButtonModalComponentProps = {
