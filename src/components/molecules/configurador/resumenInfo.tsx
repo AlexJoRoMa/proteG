@@ -15,16 +15,21 @@ function hasData(obj: unknown): boolean {
 type Escenarios =
     "COBERTURA" |
     "SIN_COBERTURA" |
+    "DOBLE_PLAY" |
     "TV_NORMAL" |
     "TV_LIGHT" |
+    "TV_PREMIUM" |
     "TRIPLE_PLAY" |
     "PORTABILIDAD"
 
 function getEscenarios({ cobertura, internet, tv, movil }: { cobertura: boolean, internet?: internetComponentFields, tv?: tvComponentFields, movil?: movilComponentFields }): Escenarios {
+
     if (!cobertura) {
         if (hasData(tv) && !hasData(movil)) {
             if (tv?.paquete.titulo.includes("light")) {
                 return "TV_LIGHT";
+            } else if (tv?.paquete.titulo.includes("premium")) {
+                return "TV_PREMIUM"
             } else {
                 return "TV_NORMAL";
             }
@@ -38,20 +43,33 @@ function getEscenarios({ cobertura, internet, tv, movil }: { cobertura: boolean,
 
     } else {
 
-        if (hasData(tv) && !hasData(movil) && !hasData(internet)) {
-            if (tv?.paquete.titulo.includes("light")) {
-                return "TV_LIGHT";
-            } else {
-                return "TV_NORMAL";
+        if (hasData(internet)) {
+
+            if ((hasData(tv) && hasData(movil)) || (!hasData(tv) && hasData(movil))) {
+                return "PORTABILIDAD";
             }
-        }
 
-        if (hasData(internet) && hasData(tv) && !hasData(movil)) {
-            return "TRIPLE_PLAY";
-        }
+            if (hasData(tv) && !hasData(movil)) {
+                return "TRIPLE_PLAY";
+            }
 
-        if ((hasData(movil) && !hasData(tv) && !hasData(internet)) || (hasData(tv) && hasData(movil) && hasData(internet)) || (hasData(movil) && hasData(internet) && !hasData(tv))) {
-            return "PORTABILIDAD";
+            return "DOBLE_PLAY";
+
+        } else {
+
+            if (hasData(tv) && !hasData(movil)) {
+                if (tv?.paquete.titulo.includes("light")) {
+                    return "TV_LIGHT";
+                } else if (tv?.paquete.titulo.includes("premium")) {
+                    return "TV_PREMIUM"
+                } else {
+                    return "TV_NORMAL";
+                }
+            }
+
+            if ((hasData(tv) && hasData(movil)) || (!hasData(tv) && hasData(movil))) {
+                return "PORTABILIDAD";
+            }
         }
 
         return "COBERTURA";
@@ -62,7 +80,7 @@ export default function ResumenInfo() {
 
     // Componente de popups - notificaciones
 
-    const { userAnswers, copysResumen, setInfoDrawerContent, cobertura } = useContent();
+    const { userAnswers, copysResumen, cobertura } = useContent();
     const resumenCopys = copysResumen as ResumenData;
 
     const internet = userAnswers.internet as unknown as internetComponentFields | undefined;
@@ -78,75 +96,77 @@ export default function ResumenInfo() {
 
     const escenario = getEscenarios({ cobertura, internet, tv, movil });
 
-    const isFirstTime = (escenario: Escenarios) => escenario && !seenEscenarios.has(escenario);
+    // const isFirstTime = (escenario: Escenarios) => escenario && !seenEscenarios.has(escenario);
     const markAsSeen = (escenario: Escenarios) => {
         if (!escenario) return;
         setSeenEscenarios(prev => new Set(prev).add(escenario));
     }
 
-    const showNotification = (title: string, description: string) => {
-        setNotificationContent({ title, description });
-        setIsVisible(true);
+    const showNotification = (escenario: Escenarios, title: string, description: string) => {
+        if (title) {
+            if (!seenEscenarios.has(escenario)) {
+                setNotificationContent({ title, description });
+                setIsVisible(true);
+                markAsSeen(escenario);
+                setTimeout(() => setIsVisible(false), 4000);
 
-        setTimeout(() => setIsVisible(false), 4000);
+            } else {
+                setIsVisible(false);
+            }
+        } else {
+            setIsVisible(false);
+        }
+
     }
 
     useEffect(() => {
         if (!escenario) return;
 
         // NOTIFICACIONES - POP UP
-        if (isFirstTime(escenario)) {
-            switch (escenario) {
-                case "COBERTURA":
-                    showNotification(resumenCopys.info.existeCobertura, "");
-                    break;
-
-                case "SIN_COBERTURA":
-                    showNotification(
-                        resumenCopys.info.sinCobertura.titulo,
-                        resumenCopys.info.sinCobertura.subTitulo
-                    );
-                    break;
-
-                case "TV_LIGHT":
-                    showNotification(resumenCopys.info.tvLight, "");
-                    break;
-
-                case "TRIPLE_PLAY":
-                    if (precioCombinado) {
-                        showNotification(
-                            `${resumenCopys.info.combinacion.prevPrice} ${FormatCurrency(precioCombinado)} ${resumenCopys.info.combinacion.postPrice}`,
-                            ""
-                        );
-                    }
-                    break;
-
-                case "PORTABILIDAD":
-                    showNotification(resumenCopys.info.portabilidad, "");
-                    break;
-            }
-
-            markAsSeen(escenario);
-        }
-
-        // COPYS DRAWER - MOBILE
+        // if (isFirstTime(escenario)) {
         switch (escenario) {
             case "COBERTURA":
-            case "TV_NORMAL":
-                setInfoDrawerContent(resumenCopys.infoDrawer.nuevoFlujo);
+                showNotification(escenario, resumenCopys.notificacion.cobertura, "");
+                break;
+
+            case "SIN_COBERTURA":
+                showNotification(
+                    escenario,
+                    resumenCopys.notificacion.sinCobertura.titulo,
+                    resumenCopys.notificacion.sinCobertura.subtitulo
+                );
+                break;
+
+            case "TV_LIGHT":
+                showNotification(escenario, resumenCopys.notificacion.tvLight, "");
+                break;
+
+            case "TV_PREMIUM":
+                showNotification(escenario, resumenCopys.notificacion.tvPremium, "");
                 break;
 
             case "TRIPLE_PLAY":
+                showNotification(
+                    escenario,
+                    `¡${resumenCopys.notificacion.promocion}${FormatCurrency(precioCombinado)}!`,
+                    ""
+                );
+                break;
+
+            case "DOBLE_PLAY":
+            case "TV_NORMAL":
+                showNotification(escenario, resumenCopys.notificacion.combinacion, "");
+                break;
+
             case "PORTABILIDAD":
-                if (precioCombinado) {
-                    setInfoDrawerContent(
-                        `${resumenCopys.infoDrawer.combinacion.prePrice} ${FormatCurrency(precioCombinado)} ${resumenCopys.infoDrawer.combinacion.postPrice}`
-                    );
-                }
+                showNotification(escenario, resumenCopys.notificacion.portabilidad, "");
                 break;
         }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // markAsSeen(escenario);
+        // }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [escenario, precioCombinado]);
 
     return (
