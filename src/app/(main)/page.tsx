@@ -38,7 +38,6 @@ export default async function Home() {
   
   return (
     <>
-    
       {seo && <SEOHead seo={seo} slug={slug} />}
 
       <main className="">
@@ -57,7 +56,7 @@ export default async function Home() {
           )
         }
         <ButtonFixed />
-        <CookieConsent
+        <CookieConsent 
           title={cookieTitulo} 
           long={cookieLong}
           aceptar={cookieAceptar}

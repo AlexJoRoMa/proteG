@@ -120,10 +120,7 @@ function mapAddressFields(data: GeocodeType) {
             break;
           default:
             break;
-        }
-
-        setColoniaError(!coloniaExist)
-        
+        }       
       }
     }
 
@@ -132,6 +129,8 @@ function mapAddressFields(data: GeocodeType) {
     } else if(valueLocality){
       setLocality(valueLocality);
     }
+
+    setColoniaError(!coloniaExist)
 
   }
 

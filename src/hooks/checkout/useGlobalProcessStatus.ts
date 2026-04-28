@@ -64,6 +64,7 @@ export function useGlobalProcessStatus(onFinalizado?: (data: ProcessStatusRespon
             mutate(data, { revalidate: false });
         }
         if (data?.status.includes('error') || data?.status.includes('Error')) {
+            detenerPolling();
             console.error('ProcessStatus encontro un error');
             mutate(data, { revalidate: false });
             router.push('/error')
