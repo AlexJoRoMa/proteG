@@ -18,10 +18,10 @@ const FALLBACKS: Record<string, string> = {
 };
 
 const Step2 = () => {
-  const { setConditionCheckboxChecked /* setPrivacyCheckboxChecked */ } = useCheckout();
+  const { setConditionCheckboxChecked, setPrivacyCheckboxChecked } = useCheckout();
   const { getValue } = useMicrocopies('contratacion-datosPersonales');
   const [conditionChecked, setConditionChecked] = useState(false);
-  /* const [privacyChecked, setPrivacyChecked] = useState(false); */
+  const [privacyChecked, setPrivacyChecked] = useState(false);
   const { formattedAddress } = useIzziContent();
   const getText = (key: string) => getValue(key) || FALLBACKS[key] || key;
 
@@ -56,11 +56,11 @@ const Step2 = () => {
     setConditionCheckboxChecked(value);
   }
 
-  /* const handlePrivacyCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePrivacyCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.checked;
     setPrivacyChecked(value);
     setPrivacyCheckboxChecked(value);
-  } */
+  }
 
   const updateIsForeign = (value:boolean)=> setEsExtranjero(value)
 
@@ -243,7 +243,7 @@ const Step2 = () => {
           </ButtonGhost>
         </div>
 
-        {/* <div>
+        <div>
           <Checkbox
             isRequired
             checked={privacyChecked}
@@ -266,7 +266,7 @@ const Step2 = () => {
             external={true}
           >
           </ButtonGhost>
-        </div> */}
+        </div>
       </div>
 
     </div>

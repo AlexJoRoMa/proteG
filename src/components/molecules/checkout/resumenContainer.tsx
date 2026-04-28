@@ -29,6 +29,9 @@ import { FormatCurrency } from "@/utils/Currency";
 import { ArrowDownIcon, ArrowUpIcon } from "@/constants/IconsConstants";
 import ResumenContent from "../resumenCompra/resumenContent";
 
+import ResumenDesktop from "./resumenDesktop";
+import ResumenMobile from "./resumenMobile";
+import { useKeyboardOpen } from "@/hooks/checkout/useKeyboardOpen";
 
 interface ResumenContainerProps {
     variant: 'mobile' | 'desktop';
@@ -78,6 +81,8 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const CHECKOUT_SESSION_STORAGE_KEY = 'izzi-checkout-session-id';
+
+    const isKeyboardOpen = useKeyboardOpen();
 
     useEffect(() => {
         datosContratacionRef.current = datosContratacion;

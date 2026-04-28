@@ -8,7 +8,7 @@ function getFormData(ref: React.RefObject<HTMLFormElement | null>) {
 }
 
 export const useStep2Form = () => {
-    const { registerStepValidator, registerFormData, setIsStepValid, conditionCheckboxChecked, datosContratacion, currentStep /* privacyCheckboxChecked */ } = useCheckout();
+    const { registerStepValidator, registerFormData, setIsStepValid, conditionCheckboxChecked, datosContratacion, currentStep, privacyCheckboxChecked } = useCheckout();
 
     const DatosPersonalesRef = useRef<HTMLFormElement | null>(null);
     const DireccionEnvioRef = useRef<HTMLFormElement | null>(null);
@@ -38,8 +38,8 @@ export const useStep2Form = () => {
         const facturacionOk = !necesitaFacturar || (isFacturacionValid && cfdi.trim() !== '' && regimen.trim() !== '');
         const direccionFacturacionOk = !necesitaFacturar || !facturarOtraDireccion || isDireccionFacturacionValid;
 
-        return personalOk && envioOk && facturacionOk && direccionFacturacionOk && conditionCheckboxChecked /* && privacyCheckboxChecked */;
-    }, [isPersonalValid, isEnvioValid, isFacturacionValid, isDireccionFacturacionValid, necesitaFacturar, facturarOtraDireccion, cfdi, regimen, conditionCheckboxChecked /* privacyCheckboxChecked */]);
+        return personalOk && envioOk && facturacionOk && direccionFacturacionOk && conditionCheckboxChecked && privacyCheckboxChecked;
+    }, [isPersonalValid, isEnvioValid, isFacturacionValid, isDireccionFacturacionValid, necesitaFacturar, facturarOtraDireccion, cfdi, regimen, conditionCheckboxChecked, privacyCheckboxChecked]);
 
     // Registrar el validador del paso 2
     useEffect(() => {
@@ -53,7 +53,7 @@ export const useStep2Form = () => {
         if (currentStep === 2) {
             validateStep2().then(isValid => setIsStepValid(isValid));
         }
-    }, [currentStep, validateStep2, setIsStepValid, isPersonalValid, isEnvioValid, isFacturacionValid, isDireccionFacturacionValid, cfdi, regimen, conditionCheckboxChecked /* privacyCheckboxChecked */]);
+    }, [currentStep, validateStep2, setIsStepValid, isPersonalValid, isEnvioValid, isFacturacionValid, isDireccionFacturacionValid, cfdi, regimen, conditionCheckboxChecked, privacyCheckboxChecked]);
 
     // Registrar la función para obtener los datos del formulario
     useEffect(() => {
