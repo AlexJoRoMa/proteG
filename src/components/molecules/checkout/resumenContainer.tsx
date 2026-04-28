@@ -16,11 +16,13 @@ import { useEffect, useRef, useState } from "react";
 import { GetSubmitCapacity } from "@/utils/GetSubmitCapacity";
 import { useRouter } from "next/navigation";
 import ModalContratacion from "./modals/ModalContratacion";
-import { Button } from "@heroui/react";
+import { Button, useDisclosure, Modal, ModalContent } from "@heroui/react";
 import { ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
 import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
+import { useMicrocopies } from '@/hooks/useMicrocopies';
+import TeAyudamosModalComponentConfig from '../../../components/layouts/modals/TeAyudamosModalComponentConfigurador';
 import {
     getCheckoutStepTrackingMeta,
     type CheckoutStepMetaSerialized,
@@ -74,6 +76,8 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const addShippingInfoTrackedRef = useRef(false);
     const addPaymentInfoTrackedRef = useRef(false);
 
+     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
     const CHECKOUT_SESSION_STORAGE_KEY = 'izzi-checkout-session-id';
 
     useEffect(() => {
@@ -94,6 +98,47 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     }, [currentStep])
 
     const isDisabled = loading || (!isStepValid && !stepStatusRef.current);
+const { getValue2 } = useMicrocopies('contrataahoramodal');
+    const modalData = {
+    title: getValue2('stickyModal.title'),
+    column1: {
+      title: getValue2('stickyModal.column1.title'),
+      row1: {
+        text: getValue2('stickyModal.column1.row1.text'),
+        tel: getValue2('stickyModal.column1.row1.tel'),
+      },
+      row2: {
+        link: getValue2('stickyModal.column1.row2.link'),
+      },
+      row3: {
+        wpp: {
+          text: getValue2('stickyModal.column1.row3.wpp.text'),
+          tel: getValue2('stickyModal.column1.row3.wpp.tel'),
+          promoText: getValue2('stickyModal.column1.row3.wpp.promoText'),
+        },
+      },
+    },
+    column2: {
+      title: getValue2('stickyModal.column2.title'),
+      row1: {
+        text: getValue2('stickyModal.column2.row1.text'),
+        tel: getValue2('stickyModal.column2.row1.tel'),
+      },
+      row2: {
+        link: {
+          text: getValue2('stickyModal.column2.row2.link.text'),
+          url: getValue2('stickyModal.column2.row2.link.url'),
+        },
+      },
+      row3: {
+        wpp: {
+          text: getValue2('stickyModal.column2.row3.wpp.text'),
+          tel: getValue2('stickyModal.column2.row3.wpp.tel'),
+          promoText: getValue2('stickyModal.column2.row3.wpp.promoText'),
+        },
+      },
+    },
+  };
 
     // Logica Steps
     // Step 1
@@ -161,11 +206,18 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             setModalName("modal-generico");
             setModalLoading(true);
 
+            /* onOpen(); 🦄 */
+
             // IzziEnroll
-            const resultIzziEnroll = await GetIzziEnroll(coberturaData, { ...datosContratacionRef.current, VerificacionContacto: stepData }, offnetIzzi, offnetSky, globalIzziSelection);
+            const resultIzziEnroll = await GetIzziEnroll(coberturaData,
+                 { ...datosContratacionRef.current, VerificacionContacto: stepData }, 
+                 offnetIzzi, offnetSky, globalIzziSelection);
+
             if (!resultIzziEnroll || resultIzziEnroll?.code || resultIzziEnroll?.error) {
-                router.push("/error");
+                /* router.push("/error"); */
             }
+            
+            
             setIzziEnroll(resultIzziEnroll);
             izziEnrrollRef.current = resultIzziEnroll;
 
@@ -177,9 +229,11 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
             nextStep()
 
-        } catch (err) {
+        } catch (err: any) {
+            const errCode = err.message;
             console.error('Error en step3', err)
-            router.push("/error");
+            console.error('errCode 🚩🚩 ', errCode)
+            /* router.push("/error"); */
         } finally {
             setModalLoading(false);
         }
@@ -709,6 +763,20 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
                     </div>
                 )
             }
+
+            <Modal
+              isOpen={isOpen}
+              onOpenChange={onOpenChange}
+              backdrop='blur'
+              size='2xl'
+              classNames={{ wrapper: 'z-[50]' }}
+              >
+                <ModalContent>
+                    {(onClose) => (
+                        <TeAyudamosModalComponentConfig modalData={modalData} onClose={onClose} />
+                    )}
+                </ModalContent>
+            </Modal>
 
             <ModalContratacion isOpen={modalLoading} name={modalName} />
         </>
