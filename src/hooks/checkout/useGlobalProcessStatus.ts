@@ -69,7 +69,6 @@ export function useGlobalProcessStatus(onFinalizado?: (data: ProcessStatusRespon
             console.error('ProcessStatus encontro un error');
             mutate(data, { revalidate: false });
             apiErrorTrack.code = 409;
-            /* router.push('/error') */
         }
     }, [data, detenerPolling, mutate, onFinalizado, router]);
 
