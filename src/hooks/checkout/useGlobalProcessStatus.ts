@@ -18,6 +18,11 @@ export function useGlobalProcessStatus(onFinalizado?: (data: ProcessStatusRespon
     const [pollingActivo, setPollingActivo] = useState(false);
     const [puedeEjecutar, setPuedeEjecutar] = useState(false);
 
+    const detenerPolling = useCallback(() => {
+        setPollingActivo(false);
+        setPuedeEjecutar(false);
+    }, []);
+
     useEffect(() => {
         if (pollingActivo && izziEnroll) {
             setPuedeEjecutar(true);
@@ -37,7 +42,7 @@ export function useGlobalProcessStatus(onFinalizado?: (data: ProcessStatusRespon
         fetchProcessStatus,
         {
             refreshInterval: (data) =>
-                data?.status.includes('Finalizada') || data?.status.includes('error') || data?.status.includes('Error') ? 0 : 10000,
+                data?.waitingForAction || data?.status.includes('Finalizada') || data?.status.includes('error') || data?.status.includes('Error') ? 0 : 10000,
             revalidateOnFocus: false,
             keepPreviousData: false,
             revalidateIfStale: false,
@@ -47,7 +52,14 @@ export function useGlobalProcessStatus(onFinalizado?: (data: ProcessStatusRespon
     useEffect(() => {
         if (!data) return;
 
+        if (data.waitingForAction) {
+            detenerPolling();
+            mutate(data, { revalidate: false });
+            return;
+        }
+
         if (data?.status.includes('Finalizada')) {
+            detenerPolling();
             onFinalizado?.(data);
             mutate(data, { revalidate: false });
         }
@@ -56,7 +68,7 @@ export function useGlobalProcessStatus(onFinalizado?: (data: ProcessStatusRespon
             mutate(data, { revalidate: false });
             router.push('/error')
         }
-    }, [data, mutate, onFinalizado, setProcessStatus, router]);
+    }, [data, detenerPolling, mutate, onFinalizado, router]);
 
     const iniciarPolling = () => {
         if (!pollingActivo) {

@@ -3,7 +3,9 @@ import { componentMap } from "@/lib/contentful/dynamic-map";
 import { fetchComponentsBySlugPage } from "@/services/contentful/pages";
 import ButtonFixed from "@/components/atoms/ButtonSticky";
 import {SeoFieldSkeleton} from "@/types/SEOTypes";
-import SEOHead from '@/components/atoms/SEOHead';import CookieConsent from "@/components/organisms/cookieConsent";
+import SEOHead from '@/components/atoms/SEOHead';
+import CookieConsent from "@/components/organisms/cookieConsent";
+import PageDataTracker from '@/components/tracking/PageDataTracker';
 import { getMicroCopy } from '@/services/contentful/components';
 
 export const dynamic = 'force-dynamic';
@@ -37,9 +39,10 @@ export default async function Home() {
   return (
     <>
     
-    {seo && <SEOHead seo={seo} slug={slug} />}
-    
-    <main className="">
+      {seo && <SEOHead seo={seo} slug={slug} />}
+
+      <main className="">
+        <PageDataTracker pageType="home" pageName="Homepage" />
 
         {
           // Verificar si existen componentes y si son un array con al menos un elemento, Si es asi, mapearlos y renderizar el componente correspondiente
@@ -54,15 +57,15 @@ export default async function Home() {
           )
         }
         <ButtonFixed />
-        <CookieConsent 
-        title={cookieTitulo} 
-        long={cookieLong}
-        aceptar={cookieAceptar}
-        rechazar={cookieRechazar}
-        cookieAcept={cookieTextAcept}
-        cookieAutoriza={cookieAutoriza}
-          />
-    </main>
+        <CookieConsent
+          title={cookieTitulo} 
+          long={cookieLong}
+          aceptar={cookieAceptar}
+          rechazar={cookieRechazar}
+          cookieAcept={cookieTextAcept}
+          cookieAutoriza={cookieAutoriza}
+        />
+      </main>
     </>
   );
 }
