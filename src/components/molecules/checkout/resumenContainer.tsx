@@ -370,8 +370,10 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
             await sleep(PROCESS_STATUS_WAIT_INTERVAL_MS);
         }
-
+        console.error('ProcessStatus no reportó waitingForAction=true a tiempo.');
+        router.push('/error')
         throw new Error("ProcessStatus no reportó waitingForAction=true a tiempo.");
+        
     };
 
     const getRequiredAttachInfo = (documentKey: "ine" | "comprobante") => {
