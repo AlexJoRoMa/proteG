@@ -17,17 +17,17 @@ import { GetSubmitCapacity } from "@/utils/GetSubmitCapacity";
 import { useRouter } from "next/navigation";
 import ModalContratacion from "./modals/ModalContratacion";
 import { Button, Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, useDisclosure } from "@heroui/react";
-import { ArrowDownIcon, ArrowUpIcon } from "@/constants/IconsConstants";
 import { ResumenData } from "@/types/ResumenCompra";
-import ResumenContent from "../resumenCompra/resumenContent";
 import { useIzziContent } from "@/components/providers/IzziProvider";
-import { FormatCurrency } from "@/utils/Currency";
 import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
 import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
 import {
     getCheckoutStepTrackingMeta,
     type CheckoutStepMetaSerialized,
 } from "@/utils/checkoutStepTracking";
+import { FormatCurrency } from "@/utils/Currency";
+import { ArrowDownIcon, ArrowUpIcon } from "@/constants/IconsConstants";
+import ResumenContent from "../resumenCompra/resumenContent";
 
 interface ResumenContainerProps {
     variant: 'mobile' | 'desktop';
@@ -35,6 +35,8 @@ interface ResumenContainerProps {
 
 export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const ATTACH_STATUS_SETTLE_DELAY_MS = 1200;
+    const PROCESS_STATUS_WAIT_TIMEOUT_MS = 300000;
+    const PROCESS_STATUS_WAIT_INTERVAL_MS = 3000;
     const [loading, setLoading] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
     const [modalName, setModalName] = useState<string>("modal-generico");
@@ -158,6 +160,9 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         }));
 
         try {
+            setModalName("modal-generico");
+            setModalLoading(true);
+
             // IzziEnroll
             const resultIzziEnroll = await GetIzziEnroll(coberturaData, { ...datosContratacionRef.current, VerificacionContacto: stepData }, offnetIzzi, offnetSky, globalIzziSelection);
             if (!resultIzziEnroll || resultIzziEnroll?.code || resultIzziEnroll?.error) {
@@ -170,13 +175,15 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             await iniciarPolling();
 
             // SubmitOffer
-            await showModaluntilAction(async () => await runSubmitOffer(), "modal-generico");
+            await showModaluntilAction(async () => await runSubmitOffer(), null);
 
             nextStep()
 
         } catch (err) {
             console.error('Error en step3', err)
             router.push("/error");
+        } finally {
+            setModalLoading(false);
         }
     };
 
@@ -202,8 +209,15 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             }
 
             if (!globalFlagDomicilio) {
-                // GetCapacity() 
-                await showModaluntilAction(async () => await runGetCapacity(true), "modal-disponibilidad")
+                const capacityCompleted = await runWithModal(async () => {
+                    await waitForWaitingForAction();
+                    await runGetCapacity(true);
+                    return true;
+                }, "modal-disponibilidad");
+
+                if (!capacityCompleted) {
+                    return;
+                }
             }
             nextStep()
 
@@ -340,6 +354,25 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         return updatedStatus;
     };
 
+    const waitForWaitingForAction = async () => {
+        if (processStatusRef.current.waitingForAction) {
+            return processStatusRef.current;
+        }
+
+        const startedAt = Date.now();
+
+        while (Date.now() - startedAt < PROCESS_STATUS_WAIT_TIMEOUT_MS) {
+            const updatedStatus = await refreshCurrentProcessStatus();
+            if (updatedStatus?.waitingForAction) {
+                return updatedStatus;
+            }
+
+            await sleep(PROCESS_STATUS_WAIT_INTERVAL_MS);
+        }
+
+        throw new Error("ProcessStatus no reportó waitingForAction=true a tiempo.");
+    };
+
     const getRequiredAttachInfo = (documentKey: "ine" | "comprobante") => {
         const attachInfo = datosContratacionRef.current?.DocumentosTitular?.[documentKey];
         const currentStatus = processStatusRef.current;
@@ -369,12 +402,14 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
     const showModaluntilAction = async (
         action: () => Promise<any>,
-        modalKey: string
+        modalKey: string | null
     ) => {
         try {
             setProcessStatus((prev) => ({ ...prev, waitingForAction: false }));
-            setModalName(modalKey)
-            setModalLoading(true);
+            if (modalKey !== null) {
+                setModalName(modalKey)
+                setModalLoading(true);
+            }
 
             const result = await action();
             if (result?.error) {
@@ -658,6 +693,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         </>
     );
 
+
     return (
         <>
         {variant === 'mobile' ? (
@@ -729,8 +765,9 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
                     <div className="pt-[32px] border-t-1 border-t-gray-150 z-50">
                         {renderContinueButton()}
                     </div>
-                </div>
-            )}
+                </div> 
+                )
+            }
 
             <ModalContratacion isOpen={modalLoading} name={modalName} />
         </>

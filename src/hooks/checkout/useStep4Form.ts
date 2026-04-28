@@ -28,7 +28,34 @@ async function processFileToBase64(file: File): Promise<string> {
     return base64;
 }
 
-export const useStep4Form = () => {
+function getFileExtension(file: File): "pdf" | "png" | "jpg" {
+    if (file.type === "application/pdf") return "pdf";
+    if (file.type === "image/png") return "png";
+    return "jpg";
+}
+
+type Step4FormData = {
+    documentos: {
+        ine: {
+            file: File | null
+        },
+        comprobante: {
+            file: File | null
+        }
+    },
+    ine: {
+        fileName: string,
+        fileExtension: string,
+        data: string,
+    } | null,
+    comprobante: {
+        fileName: string,
+        fileExtension: string,
+        data: string,
+    } | null,
+}
+
+export const useStep4Form = (progressIne: number, progressCFile: number) => {
     const { registerStepValidator, registerFormData, setIsStepValid, datosContratacion, currentStep } = useCheckout();
 
     const DocumentosTitularRef = useRef<HTMLFormElement | null>(null);
@@ -38,6 +65,8 @@ export const useStep4Form = () => {
     // validar archivos cargados existen
     const validateStep4 = useCallback(async () => {
         const valid =
+            progressIne === 100 &&
+            progressCFile === 100 &&
             !!ineFile &&
             !!comprobanteFile &&
             (ineFile.size <= 4 * 1024 * 1024) &&
@@ -45,7 +74,7 @@ export const useStep4Form = () => {
 
         setIsStepValid(valid);
         return Promise.resolve(valid);
-    }, [ineFile, comprobanteFile, setIsStepValid]);
+    }, [ineFile, comprobanteFile, setIsStepValid, progressIne, progressCFile]);
 
     // registro de validador
     useEffect(() => {
