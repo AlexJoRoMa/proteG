@@ -11,10 +11,6 @@ interface StreamEvent {
     error?: string;
 }
 
-interface ApiError extends Error {
-    code?: number;
-}
-
 // Función para leer el stream SSE y obtener el resultado
 async function readStreamResponse(response: Response): Promise<IzziEnrollResponse> {
     const reader = response.body?.getReader();
@@ -50,16 +46,8 @@ async function readStreamResponse(response: Response): Promise<IzziEnrollRespons
                     }
                     
                     if (event.type === "error") {
-                        const streamError = new Error(event.error) as ApiError
-                        
-                        const match = event.error?.match(/\d{3}/);
-                        
-                        if(match){
-                            streamError.code = parseInt(match[0])
-                        }
                         console.error(`[Stream] Error:`, event.error);
-                        /* throw new Error(event.error || "Error en el proceso de enroll"); */
-                        throw streamError;
+                        throw new Error(event.error || "Error en el proceso de enroll");
                     }
                     
                     if (event.type === "result") {

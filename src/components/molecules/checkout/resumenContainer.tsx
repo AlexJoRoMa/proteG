@@ -206,7 +206,7 @@ const { getValue2 } = useMicrocopies('contrataahoramodal');
             setModalName("modal-generico");
             setModalLoading(true);
 
-            /* onOpen(); 🦄 */
+            
 
             // IzziEnroll
             const resultIzziEnroll = await GetIzziEnroll(coberturaData,
@@ -229,10 +229,10 @@ const { getValue2 } = useMicrocopies('contrataahoramodal');
 
             nextStep()
 
-        } catch (err: any) {
-            const errCode = err.message;
+        } catch (err) {
             console.error('Error en step3', err)
-            console.error('errCode 🚩🚩 ', errCode)
+            
+            /* onOpen(); */
             /* router.push("/error"); */
         } finally {
             setModalLoading(false);
