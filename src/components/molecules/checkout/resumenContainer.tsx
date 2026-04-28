@@ -29,6 +29,7 @@ import { FormatCurrency } from "@/utils/Currency";
 import { ArrowDownIcon, ArrowUpIcon } from "@/constants/IconsConstants";
 import ResumenContent from "../resumenCompra/resumenContent";
 
+
 interface ResumenContainerProps {
     variant: 'mobile' | 'desktop';
 }
@@ -41,7 +42,6 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const [modalLoading, setModalLoading] = useState(false);
     const [modalName, setModalName] = useState<string>("modal-generico");
     const router = useRouter();
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const { globalUserAnswers, coberturaData, offnetIzzi, offnetSky, globalIzziSelection, precioTotal, infoPaquetes, precioCombinado, globalFlagDomicilio, checkSwitch } = useIzziContent();
     const {
         nextStep,
@@ -75,6 +75,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const trackedStepsRef = useRef<Set<number>>(new Set());
     const addShippingInfoTrackedRef = useRef(false);
     const addPaymentInfoTrackedRef = useRef(false);
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const CHECKOUT_SESSION_STORAGE_KEY = 'izzi-checkout-session-id';
 
@@ -467,12 +468,14 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
             const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
-            
+
+
             // Después de attachFiles, consultar processStatus una vez para actualizar waitingForAction
             if (data?.error || data?.code) {
                 throw new Error("Error adjuntando INE.");
             }
-            
+
+
             return data;
         },
         resetKey: `step-4-attachFileIne`,
@@ -486,12 +489,14 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
             const res = await GetAttachFile(processStatusRef.current, attachInfo);
             const data = await res;
-            
+
+
             // Después de attachFiles, consultar processStatus una vez para actualizar waitingForAction
             if (data?.error || data?.code) {
                 throw new Error("Error adjuntando comprobante.");
             }
-            
+
+
             return data;
         },
         resetKey: `step-4-attachFileComprobante`,

@@ -1,4 +1,4 @@
-import { PagoEfectivoIcon } from "@/constants/IconsConstants";
+/* import { PagoEfectivoIcon } from "@/constants/IconsConstants"; */
 import { useMicrocopies } from "@/hooks/useMicrocopies";
 import { useIzziContent } from '@/components/providers/IzziProvider';
 
@@ -18,7 +18,7 @@ export default function PagoTecnico() {
                     {getValue('pago.tecnico.subtitulo')}
                 </p>
 
-                <PagoEfectivoIcon />
+                {/* <PagoEfectivoIcon /> */}
 
                 <p
                     className='font-bold text-[16px] leading-6'

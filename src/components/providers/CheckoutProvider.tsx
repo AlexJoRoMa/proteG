@@ -189,9 +189,7 @@ export const CheckoutProvider = ({
 
   useEffect(() => {
     const status = isStepCompleted(currentStep);
-    if (currentStep === totalSteps) {
-      setIsStepValid(true);
-    } else if (!status) {
+    if (!status) {
       setIsStepValid(false)
     }
   }, [isStepCompleted, currentStep, totalSteps]);

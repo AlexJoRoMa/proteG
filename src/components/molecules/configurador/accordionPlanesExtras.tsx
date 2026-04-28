@@ -217,7 +217,6 @@ export default function AccordionPlanesExtras() {
             showDivider={false}
             isCompact
             itemClasses={itemClasses}
-            defaultSelectedKeys={"all"}
         >
             <AccordionItem
                 key="1"

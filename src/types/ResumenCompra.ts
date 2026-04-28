@@ -20,6 +20,12 @@ export type ResumenData = {
         izziAhorro: string,
         internet: string,
         meses: Record<MesId, string>,
+        domiciliacion: {
+            descuento: string,
+            titulo: string,
+            subtitulo: string,
+        },
+        proximosPagos: string
     },
     boton: {
         comprobarPromociones: string,
@@ -30,7 +36,8 @@ export type ResumenData = {
     },
     total: {
         sinDescuentos: string,
-        titulo: string
+        titulo: string,
+        primerMes: string
     },
     promociones: {
         titulo: string,
@@ -68,26 +75,20 @@ export type ResumenData = {
         tv: string,
         'tv&movil': string
     },
-    info: {
-        combinacion: {
-            prevPrice: string,
-            postPrice: string
-        },
-        existeCobertura: string,
+    notificacion: {
+        cobertura: string,
         portabilidad: string,
         sinCobertura: {
             titulo: string,
-            subTitulo: string
+            subtitulo: string
         },
-        tvLight: string
+        tvLight: string,
+        tvPremium: string,
+        combinacion: string,
+        promocion: string
     },
     infoDrawer: {
-        nuevoFlujo: string,
         plazo: string,
-        combinacion: {
-            prePrice: string,
-            postPrice: string
-        },
         paquetes: {
             'internet&tv&movil': string,
             internet: string,
@@ -97,5 +98,10 @@ export type ResumenData = {
             tv: string,
             'tv&movil': string
         }
-    }
+    },
+    informacion: {
+        promociones: string,
+        combinaciones: string
+    },
+    detalleSeleccion: string
 }

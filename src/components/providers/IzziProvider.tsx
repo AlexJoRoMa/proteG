@@ -35,13 +35,13 @@ export const IzziProvider = ({
     const [offnetIzzi, setOffnetIzzi] = useState<boolean>(false);
     const [offnetSky, setOffnetSky] = useState<boolean>(false);
     const [infoPaquetes, setInfoPaquetes] = useState<string>("");
-    const [globalCheckedPromotions, setGlobalCheckedPromotions] = useState<boolean>(false);
     const [ahorroTotal, setAhorroTotal] = useState<number>(0);
     const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
     const [totalSinDescuento, setTotalSinDescuento] = useState<number>(0);
     const [addressFielSelected, setAddressFielSelected] = useState<boolean>(false);
     const [streetDireccion, setStreetDireccion] = useState<string>("");
     const [coloniaError, setColoniaError ] = useState<boolean>(false);
+    const [checkedPromotions, setCheckedPromotions] = useState<boolean>(false);
 
     const cleanLocalConfiguratorData = () => {
         localStorage.removeItem('PersistentPersonalData')
@@ -94,9 +94,9 @@ export const IzziProvider = ({
             infoPaquetes,
             setInfoPaquetes,
             clearCheckoutFlow,
-            globalCheckedPromotions,
-            setGlobalCheckedPromotions,
-            ahorroTotal, 
+            checkedPromotions,
+            setCheckedPromotions,
+            ahorroTotal,
             setAhorroTotal,
             globalFlagDomicilio,
             setGlobalFlagDomicilio,
