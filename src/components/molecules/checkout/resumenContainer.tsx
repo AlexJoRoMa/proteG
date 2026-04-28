@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { GetSubmitCapacity } from "@/utils/GetSubmitCapacity";
 import { useRouter } from "next/navigation";
 import ModalContratacion from "./modals/ModalContratacion";
-import { Button } from "@heroui/react";
+import { Button, Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, useDisclosure } from "@heroui/react";
 import { ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
@@ -25,6 +25,10 @@ import {
     getCheckoutStepTrackingMeta,
     type CheckoutStepMetaSerialized,
 } from "@/utils/checkoutStepTracking";
+import { FormatCurrency } from "@/utils/Currency";
+import { ArrowDownIcon, ArrowUpIcon } from "@/constants/IconsConstants";
+import ResumenContent from "../resumenCompra/resumenContent";
+
 import ResumenDesktop from "./resumenDesktop";
 import ResumenMobile from "./resumenMobile";
 import { useKeyboardOpen } from "@/hooks/checkout/useKeyboardOpen";
@@ -74,6 +78,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const trackedStepsRef = useRef<Set<number>>(new Set());
     const addShippingInfoTrackedRef = useRef(false);
     const addPaymentInfoTrackedRef = useRef(false);
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const CHECKOUT_SESSION_STORAGE_KEY = 'izzi-checkout-session-id';
 
@@ -675,7 +680,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
             await handler(stepData);
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top:0, behavior: 'smooth'});
 
         } finally {
             isSubmittingRef.current = false;
@@ -693,36 +698,86 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         </Button>
     );
 
+    const resumenDetailContent = (
+        <>
+            <h1 className="font-bold leading-[24px] text-xl mb-[32px]">{resumenCopys.titulo}</h1>
+            <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
+        </>
+    );
+
+
     return (
         <>
-            {
-                variant === 'mobile' ? (
-                    <div
-                        className={`
-                        fixed bottom-0 left-0 z-40 w-full 
-                        px-[16px] pt-[24px] pb-[32px] 
-                        bg-gray-50 
-                        shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)]
-                        transition-all duration-200 ease-in-out
-                        ${isKeyboardOpen ?
-                                "opacity-0 pointer-events-none translate-y-full" :
-                                "opacity-100 translate-y-0"}
-                            `}
+        {variant === 'mobile' ? (
+                <>
+                    <div className="fixed bottom-0 left-0 z-40 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)]">
+                        <div className="flex justify-between mb-[16px]">
+                            <div className="flex flex-col gap-[8px]">
+                                <div className="flex gap-[4px] font-normal text-base leading-[24px] text-gray-500 items-baseline">
+                                    <h3 className="font-extrabold text-[32px] leading-[32px] text-black-0">
+                                        {FormatCurrency(Number(precioTotal))}
+                                    </h3>
+                                    <h5>{resumenCopys.infoDrawer.plazo}</h5>
+                                    <p>|</p>
+                                    <h5 className="font-bold">{infoPaquetes}</h5>
+                                </div>
+                                <div className="font-bold">{`¡Te ahorras ${FormatCurrency(Number(precioCombinado))} al combinar!`}</div>
+                                </div>
+                                <button
+                                className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
+                                onClick={onOpen}
+                            >
+                                <ArrowUpIcon />
+                            </button>
+                        </div>
+
+                        {renderContinueButton()}
+                        </div>
+                        <Drawer
+                        isOpen={isOpen}
+                        onOpenChange={onOpenChange}
+                        size="full"
+                        placement="bottom"
+                        hideCloseButton
+                        classNames={{
+                            header: "px-[16px] py-[24px]",
+                            body: "px-[16px] py-0 gap-0",
+                            footer: "w-full px-[16px] pt-[32px] bottom-0 z-50"
+                        }}
                     >
-                        <ResumenMobile
-                            resumenCopys={resumenCopys}
-                        >
-                            {renderContinueButton}
-                        </ResumenMobile>
+                        <DrawerContent>
+                            {(onClose) => (
+                                <>
+                                    <DrawerHeader className="flex flex-row justify-between items-center">
+                                        <h3 className="font-bold text-xl leading-[24px] text-[#11181C]">{resumenCopys.titulo}</h3>
+                                        <button
+                                            className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
+                                            onClick={onClose}
+                                        >
+                                            <ArrowDownIcon />
+                                        </button>
+                                    </DrawerHeader>
+
+                                    <DrawerBody>
+                                        <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
+                                    </DrawerBody>
+
+                                    <DrawerFooter>
+                                        {renderContinueButton()}
+                                    </DrawerFooter>
+                                </>
+                            )}
+                        </DrawerContent>
+                    </Drawer>
+                </>
+            ) : (
+                <div className="border rounded-md border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-white-0">
+                    {resumenDetailContent}
+
+                    <div className="pt-[32px] border-t-1 border-t-gray-150 z-50">
+                        {renderContinueButton()}
                     </div>
-                ) : (
-                    <div className="border rounded-md border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-white-0">
-                        <ResumenDesktop
-                            resumenCopys={resumenCopys}
-                        >
-                            {renderContinueButton}
-                        </ResumenDesktop>
-                    </div>
+                </div> 
                 )
             }
 

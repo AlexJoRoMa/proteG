@@ -148,6 +148,7 @@ export default function AccordionPlanesExtras() {
             const { base, ott } = trackPair;
             queueMicrotask(() => trackStreamingExtrasSelectItem(base, ott));
         }
+
     }
 
     useEffect(() => {
