@@ -52,7 +52,6 @@ async function readStreamResponse(response: Response): Promise<IzziEnrollRespons
 
                         if( event.error?.includes('409')){
                             apiErrorTrack.code = 409;
-                            console.log('🦄🦄🦄 apiErrorTrack.code ', apiErrorTrack.code)
                         }
                         throw new Error(event.error || "Error en el proceso de enroll");
                     }

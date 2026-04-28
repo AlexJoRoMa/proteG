@@ -5,6 +5,7 @@ import { GetProcessStatus } from "@/utils/GetProcessStatus";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr"
+import {apiErrorTrack} from '@/utils/errorTrack';
 
 type ProcessStatusResponse = {
     status: 'error' | 'finalizada' | string;
@@ -67,7 +68,8 @@ export function useGlobalProcessStatus(onFinalizado?: (data: ProcessStatusRespon
             detenerPolling();
             console.error('ProcessStatus encontro un error');
             mutate(data, { revalidate: false });
-            router.push('/error')
+            apiErrorTrack.code = 409;
+            /* router.push('/error') */
         }
     }, [data, detenerPolling, mutate, onFinalizado, router]);
 

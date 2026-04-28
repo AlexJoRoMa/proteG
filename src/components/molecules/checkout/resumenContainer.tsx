@@ -95,51 +95,62 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
     useEffect(() => {
         stepStatusRef.current = isStepCompleted(currentStep)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps 
     }, [currentStep])
 
     const isDisabled = loading || (!isStepValid && !stepStatusRef.current);
-const { getValue2 } = useMicrocopies('contrataahoramodal');
+
+    const { getValue2: getValue } = useMicrocopies('checkoiterrormodal');
     const modalData = {
-    title: getValue2('stickyModal.title'),
-    column1: {
-      title: getValue2('stickyModal.column1.title'),
-      row1: {
-        text: getValue2('stickyModal.column1.row1.text'),
-        tel: getValue2('stickyModal.column1.row1.tel'),
-      },
-      row2: {
-        link: getValue2('stickyModal.column1.row2.link'),
-      },
-      row3: {
-        wpp: {
-          text: getValue2('stickyModal.column1.row3.wpp.text'),
-          tel: getValue2('stickyModal.column1.row3.wpp.tel'),
-          promoText: getValue2('stickyModal.column1.row3.wpp.promoText'),
+        title: getValue('stickymodal.title'),
+        column1: {
+        title: getValue('stickymodal.column1.title'),
+        row1: {
+            text: getValue('stickymodal.column1.row1.text'),
+            tel: getValue('stickymodal.column1.row1.tel'),
         },
-      },
-    },
-    column2: {
-      title: getValue2('stickyModal.column2.title'),
-      row1: {
-        text: getValue2('stickyModal.column2.row1.text'),
-        tel: getValue2('stickyModal.column2.row1.tel'),
-      },
-      row2: {
-        link: {
-          text: getValue2('stickyModal.column2.row2.link.text'),
-          url: getValue2('stickyModal.column2.row2.link.url'),
+        row2: {
+            link: getValue('stickymodal.column1.row2.link'),
         },
-      },
-      row3: {
-        wpp: {
-          text: getValue2('stickyModal.column2.row3.wpp.text'),
-          tel: getValue2('stickyModal.column2.row3.wpp.tel'),
-          promoText: getValue2('stickyModal.column2.row3.wpp.promoText'),
+        row3: {
+            wpp: {
+                text: getValue('stickymodal.column1.row3.wpp.text'),
+                tel: getValue('stickymodal.column1.row3.wpp.tel'),
+                promoText: getValue('stickymodal.column1.row3.wpp.promoText'),
+            },
         },
-      },
-    },
-  };
+        },
+        column2: {
+        title: getValue('stickyModal.column2.title'),
+        row1: {
+            text: getValue('stickyModal.column2.row1.text'),
+            tel: getValue('stickyModal.column2.row1.tel'),
+        },
+        row2: {
+            link: {
+                text: getValue('stickyModal.column2.row2.link.text'),
+                url: getValue('stickyModal.column2.row2.link.url'),
+            },
+        },
+        row3: {
+            wpp: {
+                text: getValue('stickyModal.column2.row3.wpp.text'),
+                tel: getValue('stickyModal.column2.row3.wpp.tel'),
+                promoText: getValue('stickyModal.column2.row3.wpp.promoText'),
+            },
+        },
+        },
+    };
+
+    useEffect(() => {
+        if(apiErrorTrack.code === 409){
+            onOpen();
+            apiErrorTrack.code = null;
+            setLoading(false);
+            setModalLoading(false);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps 
+    }, [ apiErrorTrack.code, onOpen])
 
     // Logica Steps
     // Step 1
@@ -215,7 +226,7 @@ const { getValue2 } = useMicrocopies('contrataahoramodal');
                  offnetIzzi, offnetSky, globalIzziSelection);
 
             if (!resultIzziEnroll || resultIzziEnroll?.code || resultIzziEnroll?.error) {
-                /* router.push("/error"); */
+                router.push("/error");
             }
             
             
@@ -235,18 +246,16 @@ const { getValue2 } = useMicrocopies('contrataahoramodal');
 
             console.error('Error en step3', err)
 
-            if(code === 409) {
-                onOpen(); 
+            if(code !== 409) {
+                router.push("/error");
             }
-            
-            /* */
-            /* router.push("/error"); */
+
         } finally {
             setModalLoading(false);
         }
     };
 
-    // Step 4
+    // Step 4  
     const step4 = async (stepData: any) => {
         setDatosContratacion((prev) => ({
             ...prev,
@@ -775,8 +784,9 @@ const { getValue2 } = useMicrocopies('contrataahoramodal');
               isOpen={isOpen}
               onOpenChange={onOpenChange}
               backdrop='blur'
-              size='2xl'
+              size='4xl'
               classNames={{ wrapper: 'z-[50]' }}
+              onClose={() => router.push('/')}
               >
                 <ModalContent>
                     {(onClose) => (
