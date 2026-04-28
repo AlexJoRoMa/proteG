@@ -332,8 +332,6 @@ export default function CoberturaForm() {
         
 
         const userData = normalizeUserData({
-            firstName: name,
-            phone: phone,
             street: coveraData.address,
             city: locality,
             state,
