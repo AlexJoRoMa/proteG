@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { GetSubmitCapacity } from "@/utils/GetSubmitCapacity";
 import { useRouter } from "next/navigation";
 import ModalContratacion from "./modals/ModalContratacion";
-import { Button, useDisclosure, Modal, ModalContent } from "@heroui/react";
+import { Button, Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader,  useDisclosure, Modal, ModalContent } from "@heroui/react";
 import { ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
@@ -27,9 +27,14 @@ import {
     getCheckoutStepTrackingMeta,
     type CheckoutStepMetaSerialized,
 } from "@/utils/checkoutStepTracking";
+import { FormatCurrency } from "@/utils/Currency";
+import { ArrowDownIcon, ArrowUpIcon } from "@/constants/IconsConstants";
+import ResumenContent from "../resumenCompra/resumenContent";
+
 import ResumenDesktop from "./resumenDesktop";
 import ResumenMobile from "./resumenMobile";
 import {apiErrorTrack} from '@/utils/errorTrack';
+import { useKeyboardOpen } from "@/hooks/checkout/useKeyboardOpen";
 
 interface ResumenContainerProps {
     variant: 'mobile' | 'desktop';
@@ -43,6 +48,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const [modalLoading, setModalLoading] = useState(false);
     const [modalName, setModalName] = useState<string>("modal-generico");
     const router = useRouter();
+    const [showErrorModal, setShowErrorModal] = useState(false);
     const { globalUserAnswers, coberturaData, offnetIzzi, offnetSky, globalIzziSelection, precioTotal, infoPaquetes, precioCombinado, globalFlagDomicilio, checkSwitch } = useIzziContent();
     const {
         nextStep,
@@ -76,10 +82,11 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const trackedStepsRef = useRef<Set<number>>(new Set());
     const addShippingInfoTrackedRef = useRef(false);
     const addPaymentInfoTrackedRef = useRef(false);
-
-     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const CHECKOUT_SESSION_STORAGE_KEY = 'izzi-checkout-session-id';
+
+    const isKeyboardOpen = useKeyboardOpen();
 
     useEffect(() => {
         datosContratacionRef.current = datosContratacion;
@@ -144,13 +151,13 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
     useEffect(() => {
         if(apiErrorTrack.code === 409){
-            onOpen();
+            setShowErrorModal(true);
             apiErrorTrack.code = null;
             setLoading(false);
             setModalLoading(false);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps 
-    }, [ apiErrorTrack.code, onOpen])
+    }, [ apiErrorTrack.code, setShowErrorModal])
 
     // Logica Steps
     // Step 1
@@ -437,8 +444,10 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
             await sleep(PROCESS_STATUS_WAIT_INTERVAL_MS);
         }
-
+        console.error('ProcessStatus no reportó waitingForAction=true a tiempo.');
+        router.push('/error')
         throw new Error("ProcessStatus no reportó waitingForAction=true a tiempo.");
+        
     };
 
     const getRequiredAttachInfo = (documentKey: "ine" | "comprobante") => {
@@ -740,7 +749,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
             await handler(stepData);
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top:0, behavior: 'smooth'});
 
         } finally {
             isSubmittingRef.current = false;
@@ -758,31 +767,92 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         </Button>
     );
 
+    const resumenDetailContent = (
+        <>
+            <h1 className="font-bold leading-[24px] text-xl mb-[32px]">{resumenCopys.titulo}</h1>
+            <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
+        </>
+    );
+
+
     return (
         <>
-            {
-                variant === 'mobile' ? (
+        {variant === 'mobile' ? (
+                <>
                     <div className="fixed bottom-0 left-0 z-40 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)]">
-                        <ResumenMobile
-                            resumenCopys={resumenCopys}
-                        >
-                            {renderContinueButton}
-                        </ResumenMobile>
+                        <div className="flex justify-between mb-[16px]">
+                            <div className="flex flex-col gap-[8px]">
+                                <div className="flex gap-[4px] font-normal text-base leading-[24px] text-gray-500 items-baseline">
+                                    <h3 className="font-extrabold text-[32px] leading-[32px] text-black-0">
+                                        {FormatCurrency(Number(precioTotal))}
+                                    </h3>
+                                    <h5>{resumenCopys.infoDrawer.plazo}</h5>
+                                    <p>|</p>
+                                    <h5 className="font-bold">{infoPaquetes}</h5>
+                                </div>
+                                <div className="font-bold">{`¡Te ahorras ${FormatCurrency(Number(precioCombinado))} al combinar!`}</div>
+                                </div>
+                                <button
+                                className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
+                                onClick={onOpen}
+                            >
+                                <ArrowUpIcon />
+                            </button>
+                        </div>
+
+                        {renderContinueButton()}
+                        </div>
+                        <Drawer
+                        isOpen={isOpen}
+                        onOpenChange={onOpenChange}
+                        size="full"
+                        placement="bottom"
+                        hideCloseButton
+                        classNames={{
+                            header: "px-[16px] py-[24px]",
+                            body: "px-[16px] py-0 gap-0",
+                            footer: "w-full px-[16px] pt-[32px] bottom-0 z-50"
+                        }}
+                    >
+                        <DrawerContent>
+                            {(onClose) => (
+                                <>
+                                    <DrawerHeader className="flex flex-row justify-between items-center">
+                                        <h3 className="font-bold text-xl leading-[24px] text-[#11181C]">{resumenCopys.titulo}</h3>
+                                        <button
+                                            className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
+                                            onClick={onClose}
+                                        >
+                                            <ArrowDownIcon />
+                                        </button>
+                                    </DrawerHeader>
+
+                                    <DrawerBody>
+                                        <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
+                                    </DrawerBody>
+
+                                    <DrawerFooter>
+                                        {renderContinueButton()}
+                                    </DrawerFooter>
+                                </>
+                            )}
+                        </DrawerContent>
+                    </Drawer>
+                </>
+            ) : (
+                <div className="border rounded-md border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-white-0">
+                    {resumenDetailContent}
+
+                    <div className="pt-[32px] border-t-1 border-t-gray-150 z-50">
+                        {renderContinueButton()}
                     </div>
-                ) : (
-                    <div className="border rounded-md border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-white-0">
-                        <ResumenDesktop
-                            resumenCopys={resumenCopys}
-                        >
-                            {renderContinueButton}
-                        </ResumenDesktop>
-                    </div>
+                </div> 
                 )
             }
 
             <Modal
-              isOpen={isOpen}
-              onOpenChange={onOpenChange}
+              isOpen={showErrorModal}
+              onOpenChange={(open) => setShowErrorModal(open)}
               backdrop='blur'
               size='4xl'
               classNames={{ wrapper: 'z-[50]' }}

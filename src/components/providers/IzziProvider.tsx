@@ -43,6 +43,13 @@ export const IzziProvider = ({
     const [coloniaError, setColoniaError ] = useState<boolean>(false);
     const [checkedPromotions, setCheckedPromotions] = useState<boolean>(false);
 
+    const cleanLocalConfiguratorData = () => {
+        localStorage.removeItem('PersistentPersonalData')
+        localStorage.removeItem('PersistentDireccionData')
+        localStorage.removeItem('PersistentBillingData')
+        localStorage.removeItem('PersistentAdditionalAddressData')
+    }
+    
     const clearCheckoutFlow = useCallback(() => {
         setGlobalDatosContratacion({});
         setGlobalIzziSelection(null);
@@ -50,8 +57,7 @@ export const IzziProvider = ({
         setGlobalUserAnswers({});
         setGlobalFlagDomicilio(false);
         setCheckSwitch(false);
-
-      
+        cleanLocalConfiguratorData();
    
         sessionStorage.removeItem("izzi-checkout-current-step");
         sessionStorage.removeItem("izzi-checkout-step-meta");

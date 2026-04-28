@@ -8,7 +8,7 @@ function getFormData(ref: React.RefObject<HTMLFormElement | null>) {
 }
 
 export const useStep2Form = () => {
-    const { registerStepValidator, registerFormData, setIsStepValid, conditionCheckboxChecked, datosContratacion, currentStep /* privacyCheckboxChecked */ } = useCheckout();
+    const { registerStepValidator, registerFormData, setIsStepValid, conditionCheckboxChecked, datosContratacion, currentStep, privacyCheckboxChecked } = useCheckout();
 
     const DatosPersonalesRef = useRef<HTMLFormElement | null>(null);
     const DireccionEnvioRef = useRef<HTMLFormElement | null>(null);
@@ -19,6 +19,8 @@ export const useStep2Form = () => {
     const [necesitaFacturar, setNecesitaFacturar] = useState(datosContratacion?.DatosPersonales?.meta?.necesitaFacturar ?? false);
     const [esExtranjero, setEsExtranjero] = useState(datosContratacion?.DatosPersonales?.meta?.esExtranjero ?? false);
 
+    //Estado para normalizacion del origen de la informacion
+    const [rfc, setRfc] = useState(datosContratacion.DatosPersonales?.facturacion?.rfc ?? '')
     // Estados para los Selects de HeroUI
     const [cfdi, setCfdi] = useState(datosContratacion?.DatosPersonales?.meta?.cfdi ?? '');
     const [regimen, setRegimen] = useState(datosContratacion?.DatosPersonales?.meta?.regimen ?? '');
@@ -36,8 +38,8 @@ export const useStep2Form = () => {
         const facturacionOk = !necesitaFacturar || (isFacturacionValid && cfdi.trim() !== '' && regimen.trim() !== '');
         const direccionFacturacionOk = !necesitaFacturar || !facturarOtraDireccion || isDireccionFacturacionValid;
 
-        return personalOk && envioOk && facturacionOk && direccionFacturacionOk && conditionCheckboxChecked /* && privacyCheckboxChecked */;
-    }, [isPersonalValid, isEnvioValid, isFacturacionValid, isDireccionFacturacionValid, necesitaFacturar, facturarOtraDireccion, cfdi, regimen, conditionCheckboxChecked /* privacyCheckboxChecked */]);
+        return personalOk && envioOk && facturacionOk && direccionFacturacionOk && conditionCheckboxChecked && privacyCheckboxChecked;
+    }, [isPersonalValid, isEnvioValid, isFacturacionValid, isDireccionFacturacionValid, necesitaFacturar, facturarOtraDireccion, cfdi, regimen, conditionCheckboxChecked, privacyCheckboxChecked]);
 
     // Registrar el validador del paso 2
     useEffect(() => {
@@ -51,7 +53,7 @@ export const useStep2Form = () => {
         if (currentStep === 2) {
             validateStep2().then(isValid => setIsStepValid(isValid));
         }
-    }, [currentStep, validateStep2, setIsStepValid, isPersonalValid, isEnvioValid, isFacturacionValid, isDireccionFacturacionValid, cfdi, regimen, conditionCheckboxChecked /* privacyCheckboxChecked */]);
+    }, [currentStep, validateStep2, setIsStepValid, isPersonalValid, isEnvioValid, isFacturacionValid, isDireccionFacturacionValid, cfdi, regimen, conditionCheckboxChecked, privacyCheckboxChecked]);
 
     // Registrar la función para obtener los datos del formulario
     useEffect(() => {
@@ -89,6 +91,10 @@ export const useStep2Form = () => {
         setCfdi,
         regimen,
         setRegimen,
+        rfc,
+        setRfc,
+        isDireccionFacturacionValid,
+        isPersonalValid,
         // Estados de validación
         setIsPersonalValid,
         setIsEnvioValid,
