@@ -1,5 +1,6 @@
 import { CoberturaType, IzziSelection } from "@/types/ConfiguradorTypes";
 import { DatosContratacion } from "@/types/Contratacion";
+import {apiErrorTrack} from '@/utils/errorTrack';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type IzziEnrollResponse = any;
@@ -10,6 +11,7 @@ interface StreamEvent {
     data?: IzziEnrollResponse;
     error?: string;
 }
+
 
 // Función para leer el stream SSE y obtener el resultado
 async function readStreamResponse(response: Response): Promise<IzziEnrollResponse> {
@@ -46,7 +48,12 @@ async function readStreamResponse(response: Response): Promise<IzziEnrollRespons
                     }
                     
                     if (event.type === "error") {
-                        console.error(`[Stream] Error:`, event.error);
+                        console.error(`[Stream] Error xxx:`, event.error);
+
+                        if( event.error?.includes('409')){
+                            apiErrorTrack.code = 409;
+                            console.log('🦄🦄🦄 apiErrorTrack.code ', apiErrorTrack.code)
+                        }
                         throw new Error(event.error || "Error en el proceso de enroll");
                     }
                     
@@ -67,7 +74,7 @@ export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratac
     const BODY = {
         "stepSavedProspect": "",
         "purchaseId": "",
-        /* "requestedAddress": {
+        "requestedAddress": {
             "stringAddress": `${coberturaData.zipCode}|${coberturaData.municipio}|${coberturaData.colonia}|${coberturaData.calle}|${coberturaData.numExt}`,
             "addressReference": datosContratacion?.DatosPersonales?.instalacion?.reference ? datosContratacion?.DatosPersonales?.instalacion.reference : "SINREF",
             "postalCode": coberturaData.zipCode,
@@ -110,7 +117,7 @@ export async function GetIzziEnroll(coberturaData: CoberturaType, datosContratac
             "giroNegocio": "",
             "codigoCfdi": datosContratacion?.DatosPersonales?.facturacion?.comprobanteFiscal ?? "",
             "regimenFiscal": datosContratacion?.DatosPersonales?.facturacion?.regimenFiscal ?? ""
-        }, */
+        },
         "ineInfo": {},
         "salesChannel": "WEB",
         "version": "NA",

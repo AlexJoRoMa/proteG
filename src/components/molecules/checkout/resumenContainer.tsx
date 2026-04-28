@@ -29,6 +29,7 @@ import {
 } from "@/utils/checkoutStepTracking";
 import ResumenDesktop from "./resumenDesktop";
 import ResumenMobile from "./resumenMobile";
+import {apiErrorTrack} from '@/utils/errorTrack';
 
 interface ResumenContainerProps {
     variant: 'mobile' | 'desktop';
@@ -229,10 +230,16 @@ const { getValue2 } = useMicrocopies('contrataahoramodal');
 
             nextStep()
 
-        } catch (err) {
+        } catch (err: any) {
+            const code = apiErrorTrack.code;
+
             console.error('Error en step3', err)
+
+            if(code === 409) {
+                onOpen(); 
+            }
             
-            /* onOpen(); */
+            /* */
             /* router.push("/error"); */
         } finally {
             setModalLoading(false);
