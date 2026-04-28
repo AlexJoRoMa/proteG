@@ -1,6 +1,6 @@
 'use client'
 import { useContent } from '@/components/providers/CoberturaProvider';
-import { Button, Form, Input, useDisclosure, Modal, ModalContent, Checkbox } from '@heroui/react';
+import { Button, Form, Input, useDisclosure, Modal, ModalContent } from '@heroui/react';
 import { createCookie } from './actions';
 import { CheckCoberturaIcon, CloseBlackIcon, LoaderIcon, LocationIcon } from '@/constants/IconsConstants';
 import React, { useEffect, useRef, useState } from 'react';
@@ -198,11 +198,8 @@ export default function CoberturaForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasResponse, setHasResponse] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState<boolean>(false);
-  const [nameError, setNameError] = useState<boolean>(false);
   const [numExtError, setNumExtError] = useState<boolean>(false);
-  const [phoneError, setPhoneError] = useState<boolean>(false);
   const [hasAddress, setHasAddress] = useState<string>('');
-  const [isSelected, setIsSelected] = useState<boolean>(false);
   const { getValue } = useMicrocopies('cobertura');
   const getText = (key: string) => getValue(key) || FALLBACKS[key] || key;
   const { getValue2 } = useMicrocopies('contrataahoramodal');
@@ -221,10 +218,6 @@ export default function CoberturaForm() {
     setLocality,
     state,
     setState,
-    name,
-    setName,
-    phone,
-    setPhone,
     lat,
     setLat,
     lng,
@@ -240,13 +233,10 @@ export default function CoberturaForm() {
 
   const showFields = (addressSelected || hasAddress !== '') && street.trim() !== '';
   const isFieldDisabled = !addressSelected;
-  const isPhovalid = phone.length === 10;
-  const isNameValid = name.trim().length >2;
-  const isPrivacyCheck = isSelected;
   const isColoniaValid = coloniaError || neighborhood.trim() === '';
   const isNumExtValid = streetNumber.trim().length > 0;
 
-  const isUserCheck = !isPhovalid || !isNameValid || !isPrivacyCheck || isColoniaValid || !isNumExtValid;
+  const isUserCheck = isColoniaValid || !isNumExtValid;
   const isFieldsCheck = !addressSelected || isSearching || hasResponse || isLoading;
 
   const btnDisable = isUserCheck || isFieldsCheck ;
@@ -342,8 +332,6 @@ export default function CoberturaForm() {
         
 
         const userData = normalizeUserData({
-            firstName: name,
-            phone: phone,
             street: coveraData.address,
             city: locality,
             state,
@@ -564,19 +552,6 @@ export default function CoberturaForm() {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab'];
-
-    if (allowedKeys.includes(e.key)) {
-      return;
-    }
-
-
-    if (!/\d/.test(e.key)) {
-      e.preventDefault();
-    }
-  };
-
   const handleDirectionChange = (change: string) => {
     const isEmpty = change.trim() === "";
     const wasNotEmpty = street.trim() !== "";
@@ -743,54 +718,6 @@ export default function CoberturaForm() {
           />
           </>
         )}
-
-        <Input
-            isRequired
-            isInvalid={nameError}
-            label={getText('cobertura.form.nombre.label')}
-            placeholder={getText('cobertura.form.nombre.placeholder')}
-            errorMessage={getText('cobertura.form.nombre.error')}
-            labelPlacement="outside"
-            name="name"
-            type="text"
-            value={name}
-            onKeyDown={handleCharPress}
-            onValueChange={(val) =>{
-              setName(val);
-              const validLenght = val.trim().length >2
-              setNameError(!validLenght)
-            }}
-            maxLength={100}
-            minLength={3}
-            classNames={inputStyles(true)}
-          />
-          <Input
-            isRequired
-            isInvalid={phoneError}
-            label={getText('cobertura.form.telefono.label')}
-            placeholder={getText('cobertura.form.telefono.placeholder')}
-            errorMessage={getText('cobertura.form.telefono.error')}
-            labelPlacement="outside"
-            name="phone"
-            type="text"
-            value={phone}
-            onKeyDown={handleKeyPress}
-            onValueChange={(val) =>{
-              setPhone(val);
-              setPhoneError(val.length !== 10)
-            }}
-            maxLength={10}
-            minLength={10}
-            classNames={inputStyles(true)}
-          />
-        
-         <div>
-          <Checkbox isRequired={true} isSelected={isSelected} onValueChange={setIsSelected} defaultSelected={false} color="default" className='text-gray-450 pt-4 pb-8' />
-          <span className='mr-1'>{getText('cobertura.form.privacidad.label')}</span>
-          <a target='_blank' rel='noopener noreferrer' href={getText('cobertura.form.privacidad.Aviso.link') as string} >
-            <span className='font-bold'>{getText('cobertura.form.privacidad.Aviso') as string}</span>
-          </a>
-        </div>
 
         <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-5'>
           <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
