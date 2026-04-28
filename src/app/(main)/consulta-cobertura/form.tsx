@@ -218,8 +218,6 @@ export default function CoberturaForm() {
     setLocality,
     state,
     setState,
-    name,
-    phone,
     lat,
     setLat,
     lng,
