@@ -16,7 +16,7 @@ interface MicrocopyEntry {
 
 async function fetchMicrocopies(key: string) {
     const params = new URLSearchParams({ key });
-    const res = await fetch(`/api/microcopies?${params.toString()}`);
+    const res = await fetch("/api/microcopies?" + params.toString());
 
     if (!res.ok) throw new Error("Error al obtener los microcopies desde Contentful");
     return res.json();
@@ -39,8 +39,8 @@ export function useMicrocopies(key: string) {
         const resources = data?.[0]?.fields?.resources;
 
         if (!resources) return '';
-        const item = resources.find((r) => r.fields.key === key);
-        return item?.fields.value || "";
+        const item = resources.find((r) => r.fields?.key === key);
+        return item?.fields?.value || "";
     };
 
     const getValue2 = (key: string): string => {
@@ -48,8 +48,8 @@ export function useMicrocopies(key: string) {
         const resources = data?.[0]?.fields?.resources;
 
         if (!resources) return '';
-        const item = resources.find((r) => r.fields.key === key);
-        return item?.fields.value || "";
+        const item = resources.find((r) => r.fields?.key === key);
+        return item?.fields?.value || "";
     };
 
     return {
