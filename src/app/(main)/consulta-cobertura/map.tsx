@@ -120,7 +120,7 @@ function mapAddressFields(data: GeocodeType) {
             break;
           default:
             break;
-        }       
+        }
       }
     }
 

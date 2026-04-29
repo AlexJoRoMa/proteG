@@ -1,21 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { inputStyles } from "@/constants/StylesConstants";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
 import { DatosContratacion } from "@/types/Contratacion";
-import { Form, Input, Textarea } from "@heroui/react";
+import { Form, Input, Switch, Textarea } from "@heroui/react";
 import { FC, RefObject, useEffect, useState } from "react";
 
 interface Props {
     formRef: RefObject<HTMLFormElement | null>;
     setIsValid: (valid: boolean) => void;
-}
-
-type DireccionData = {
-    street: string;
-    street2: string;
-    reference: string;
 }
 
 export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
@@ -25,58 +20,24 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
     const envio: Partial<DatosContratacion> = datosContratacion ?? {};
     const datosEnvio = envio.DatosPersonales?.instalacion;
 
-    const getLocalPropertyByKey = (propertyName: string) => JSON.parse(localStorage.getItem(propertyName) as string) ?? null;
+    // Estados para controlar los valores de los campos
+    const [street, setStreet] = useState(datosEnvio?.street ?? "");
+    const [street2, setStreet2] = useState(datosEnvio?.street2 ?? "");
+    const [reference, setReference] = useState(datosEnvio?.reference ?? "");
 
-    // Nueva inicializacion de informacion persistente
-     const getLocalPersonalData = () => {
-        if (typeof window === 'undefined') return null
-        return JSON.parse(localStorage.getItem('PersistentPersonalData') ?? 'null')
-    }
-    const [street, setStreet] = useState(() => {
-        const local = getLocalPersonalData()
-        return local?.street ?? datosEnvio?.street ?? ""
-    })
-    const [street2, setStreet2] = useState(() => {
-        const local = getLocalPersonalData()
-        return local?.street2 ?? datosEnvio?.street2 ?? ""
-    })
-    const [reference, setReference] = useState(() => {
-        const local = getLocalPersonalData()
-        return local?.reference ?? datosEnvio?.reference ?? ""
-    })
-
+    // Estados para controlar si los campos han sido tocados
     const [streetTouched, setStreetTouched] = useState(false);
     const [street2Touched, setStreet2Touched] = useState(false);
     const [referenceTouched, setReferenceTouched] = useState(false);
 
+    // Validar el formulario cuando cambien los valores
     useEffect(() => {
-        const localData: DireccionData = getLocalPropertyByKey('PersistentDireccionData')
-        if (!localData) return
-
-        setStreet(localData.street ?? "")
-        setStreet2(localData.street2 ?? "")
-        setReference(localData.reference ?? "")
-    }, [])
-
-    const writeDireccionToLocal = () => {
-        localStorage.setItem('PersistentDireccionData', JSON.stringify({
-            street,
-            street2,
-            reference,
-        }))
-    }
-
-    useEffect(() => {
-        const isFormValid =
+        const isFormValid = 
             street.trim() !== '' &&
             street2.trim() !== '' &&
             reference.trim() !== '';
 
         setIsValid(isFormValid);
-
-        if (isFormValid) {
-            writeDireccionToLocal()
-        }
     }, [street, street2, reference, setIsValid]);
 
     return (
@@ -128,10 +89,10 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
                 onBlur={() => setStreet2Touched(true)}
                 isInvalid={street2Touched && street2.trim() === ''}
             />
-
             <Textarea
                 label={getValue('instalacion.label.referencia')}
                 name="reference"
+                type="textarea"
                 variant='bordered'
                 radius='sm'
                 classNames={inputStyles}

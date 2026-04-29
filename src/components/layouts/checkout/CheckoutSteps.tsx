@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react'
 import { CheckoutStepsDomiciliado, CheckoutStepsNoDomiciliado } from '@/constants/CheckoutSteps'
 import { useCheckout } from '@/components/providers/CheckoutProvider'
@@ -32,7 +31,8 @@ const CheckoutSteps = ({ variant, activeStepContent }: CheckoutStepsProps) => {
               ? 'border-gradient-fixed'
               : 'border-b-1 border-b-gray-100'
           const stepSpacingClasses = isMobile ? 'mb-2 pb-[18px]' : 'mb-0 pb-0'
-        return (
+
+          return (
             <React.Fragment key={index}>
               <div
                 data-index={index}
@@ -50,7 +50,7 @@ const CheckoutSteps = ({ variant, activeStepContent }: CheckoutStepsProps) => {
                     </span>
                   )}
 
-            <h4
+                  <h4
                     className={`text-[20px] ${isMobile ? 'pl-3' : 'pl-0 text-[clamp(12px,1.5vw,20px)] w-[180px] leading-tight'} ${isActive || isComplete ? 'font-semibold text-black-0' : 'font-normal'} ${isActive ? 'text-black-0' : 'text-[#AEAEB5]'}`}
                   >
                     {stepName as string}
@@ -60,7 +60,7 @@ const CheckoutSteps = ({ variant, activeStepContent }: CheckoutStepsProps) => {
                 {isComplete ? <EditIcon /> : null}
               </div>
 
-      {isMobile && currentStep === stepNumber && activeStepContent ? (
+              {isMobile && currentStep === stepNumber && activeStepContent ? (
                 <div className="w-full border-gradient-fixed mb-[8px]">
                   {activeStepContent}
                 </div>
@@ -69,9 +69,7 @@ const CheckoutSteps = ({ variant, activeStepContent }: CheckoutStepsProps) => {
           )
         })}
       </div>
-
     </div>
-
   )
 }
 

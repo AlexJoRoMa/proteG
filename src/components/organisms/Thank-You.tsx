@@ -33,12 +33,10 @@ export default function ThankYou() {
     const copy = copys as ThankyouCopys;
 
     useEffect(() => {
-        localStorage.removeItem('PersistentPersonalData')
-        localStorage.removeItem('PersistentDireccionData')
-        localStorage.removeItem('PersistentBillingData')
-        localStorage.removeItem('PersistentAdditionalAddressData')
-
-    }, [])
+        if (!globalProcessStatus.accountNumber || !globalDatosContratacion.Pago?.metodoPago) {
+            redirect('/consulta-cobertura');
+        }
+    }, [globalDatosContratacion.Pago?.metodoPago, globalProcessStatus.accountNumber]);
 
     useEffect(() => {
         pushToDataLayer(EVENTS.PAGE_DATA, {
@@ -122,12 +120,6 @@ export default function ThankYou() {
             sessionStorage.removeItem('izzi-checkout-current-step');
         }
     }, [purchaseTracked, globalProcessStatus.orderNumber, globalProcessStatus.accountNumber, globalIzziSelection, globalDatosContratacion, coberturaData, precioTotal, totalSinDescuento]);
-
-    useEffect(() => {
-        if (!globalProcessStatus.accountNumber || !globalDatosContratacion.Pago?.metodoPago) {
-            redirect('/consulta-cobertura');
-        }
-    }, [globalDatosContratacion.Pago?.metodoPago, globalProcessStatus.accountNumber]);
 
     useEffect(() => {
         const horario = globalDatosContratacion.Instalacion;

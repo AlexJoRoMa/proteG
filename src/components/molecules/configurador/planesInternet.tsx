@@ -86,6 +86,7 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
 
     function handleSelect(index: number, card: OfferItem) {
         userInteracted.current = true;
+
         const isSelected = selectedIndex === index;
 
         if (isSelected) {
