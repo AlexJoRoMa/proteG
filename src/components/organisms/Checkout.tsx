@@ -1,7 +1,8 @@
 'use client'
 
-import CheckoutDesktopShell from '@/components/organisms/CheckoutDesktopShell'
-import CheckoutMobileShell from '@/components/organisms/CheckoutMobileShell'
+import CheckoutContent from '@/components/layouts/checkout/CheckoutContent'
+import CheckoutSteps from '@/components/layouts/checkout/CheckoutSteps'
+import ResumenContainer from '@/components/molecules/checkout/resumenContainer'
 import { useIzziContent } from '../providers/IzziProvider';
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -10,30 +11,39 @@ import { EVENTS, CURRENCY } from '@/lib/tracking/constants';
 import { pushToDataLayer } from '@/utils/gtm';
 
 const CHECKOUT_SESSION_STORAGE_KEY = 'izzi-checkout-session-id';
+const DESKTOP_BREAKPOINT = 1024;
 
 export default function Checkout() {
     const { formattedAddress, coberturaData, globalIzziSelection, precioTotal } = useIzziContent();
     const router = useRouter();
     const [isHydrated, setIsHydrated] = useState(false);
+    const [isDesktop, setIsDesktop] = useState(false);
     const beginCheckoutTrackedRef = useRef(false);
 
     useEffect(() => {
-        // Marcar como hidratado después de mount
+        const updateViewport = () => {
+            setIsDesktop(window.innerWidth >= DESKTOP_BREAKPOINT);
+        };
+
+        updateViewport();
+        window.addEventListener('resize', updateViewport);
         setIsHydrated(true);
+
+        return () => window.removeEventListener('resize', updateViewport);
     }, []);
 
     useEffect(() => {
-        // Solo validar después de la hidratación
+        // Solo validar despues de la hidratacion
         if (!isHydrated) return;
 
-        // Pequeño delay para asegurar que el estado esté sincronizado
+        // Pequeno delay para asegurar que el estado este sincronizado
         const timer = setTimeout(() => {
-            // Verificar múltiples indicadores del flujo
+            // Verificar multiples indicadores del flujo
             const hasAddress = formattedAddress && formattedAddress.trim() !== '';
             const hasCoberturaData = coberturaData && Object.keys(coberturaData).length > 0;
             const hasSelection = globalIzziSelection !== null;
 
-            // Solo redirigir si NO tiene ningún indicador del flujo
+            // Solo redirigir si NO tiene ningun indicador del flujo
             if (!hasAddress && !hasCoberturaData && !hasSelection) {
                 router.push('/consulta-cobertura');
             }
@@ -45,7 +55,7 @@ export default function Checkout() {
     useEffect(() => {
         if (!isHydrated) return;
 
-        // page_data básico para checkout
+        // page_data basico para checkout
         pushToDataLayer(EVENTS.PAGE_DATA, {
             page_type: 'checkout',
             page_name: 'checkout',
@@ -76,7 +86,7 @@ export default function Checkout() {
             let checkoutSessionId: string | undefined;
 
             if (typeof window !== 'undefined') {
-                // Limpiar claves de sesiones anteriores para evitar contaminación entre flujos
+                // Limpiar claves de sesiones anteriores para evitar contaminacion entre flujos
                 sessionStorage.removeItem('izzi-purchase-tracked');
                 sessionStorage.removeItem('izzi-checkout-current-step');
 
@@ -103,10 +113,24 @@ export default function Checkout() {
         }
     }, [isHydrated, globalIzziSelection, precioTotal]);
 
+    if (!isHydrated) {
+        return null;
+    }
+
     return (
-        <>
-            <CheckoutMobileShell />
-            <CheckoutDesktopShell />
-        </>
+        <CheckoutSteps
+            isDesktop={isDesktop}
+            contentSlot={(
+                <div className="mx-[var(--spacing-sm)] 4xl:mx-[var(--spacing-xl)] 3xl:mx-[var(--spacing-lg)] 2xl:mx-[var(--spacing-md)] sm:mx-[var(--spacing-sm)] my-6 xl:flex">
+                    <div className="w-full xl:w-7/12 xl:mr-auto">
+                        <CheckoutContent />
+                    </div>
+
+                    <div className={`w-full xl:w-4/12`}>
+                        <ResumenContainer variant={isDesktop ? 'desktop' : 'mobile'} />
+                    </div>
+                </div>
+            )}
+        />
     );
 }
