@@ -1,5 +1,6 @@
 import { CoberturaType, IzziSelection } from "@/types/ConfiguradorTypes";
 import { DatosContratacion } from "@/types/Contratacion";
+import {apiErrorTrack} from '@/utils/errorTrack';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type IzziEnrollResponse = any;
@@ -10,6 +11,7 @@ interface StreamEvent {
     data?: IzziEnrollResponse;
     error?: string;
 }
+
 
 // Función para leer el stream SSE y obtener el resultado
 async function readStreamResponse(response: Response): Promise<IzziEnrollResponse> {
@@ -46,7 +48,11 @@ async function readStreamResponse(response: Response): Promise<IzziEnrollRespons
                     }
                     
                     if (event.type === "error") {
-                        console.error(`[Stream] Error:`, event.error);
+                        console.error(`[Stream] Error xxx:`, event.error);
+
+                        if( event.error?.includes('409')){
+                            apiErrorTrack.code = 409;
+                        }
                         throw new Error(event.error || "Error en el proceso de enroll");
                     }
                     

@@ -16,17 +16,20 @@ import { useEffect, useRef, useState } from "react";
 import { GetSubmitCapacity } from "@/utils/GetSubmitCapacity";
 import { useRouter } from "next/navigation";
 import ModalContratacion from "./modals/ModalContratacion";
-import { Button } from "@heroui/react";
+import { Button, Modal, ModalContent } from "@heroui/react";
 import { ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
 import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
+import { useMicrocopies } from '@/hooks/useMicrocopies';
+import TeAyudamosModalComponentConfig from '../../../components/layouts/modals/TeAyudamosModalComponentConfigurador';
 import {
     getCheckoutStepTrackingMeta,
     type CheckoutStepMetaSerialized,
 } from "@/utils/checkoutStepTracking";
 import ResumenDesktop from "./resumenDesktop";
 import ResumenMobile from "./resumenMobile";
+import {apiErrorTrack} from '@/utils/errorTrack';
 import { useKeyboardOpen } from "@/hooks/checkout/useKeyboardOpen";
 import { useStepModalSequence } from "@/hooks/checkout/useStepModalSequence";
 import { stepModalsMap } from "@/constants/CheckoutModalsConstants";
@@ -44,6 +47,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const [isSpecificModalOpen, setIsSpecificModalOpen] = useState<boolean>(false);
     const [isProcessFinished, setIsProcessFinished] = useState(false);
     const router = useRouter();
+    const [showErrorModal, setShowErrorModal] = useState(false);
     const { globalUserAnswers, coberturaData, offnetIzzi, offnetSky, globalIzziSelection, precioTotal, infoPaquetes, precioCombinado, globalFlagDomicilio, checkSwitch } = useIzziContent();
     const {
         nextStep,
@@ -109,10 +113,61 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
     useEffect(() => {
         stepStatusRef.current = isStepCompleted(currentStep)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps 
     }, [currentStep])
 
     const isDisabled = loading || (!isStepValid && !stepStatusRef.current);
+
+    const { getValue2: getValue } = useMicrocopies('checkoiterrormodal');
+    const modalData = {
+        title: getValue('stickymodal.title'),
+        column1: {
+        title: getValue('stickymodal.column1.title'),
+        row1: {
+            text: getValue('stickymodal.column1.row1.text'),
+            tel: getValue('stickymodal.column1.row1.tel'),
+        },
+        row2: {
+            link: getValue('stickymodal.column1.row2.link'),
+        },
+        row3: {
+            wpp: {
+                text: getValue('stickymodal.column1.row3.wpp.text'),
+                tel: getValue('stickymodal.column1.row3.wpp.tel'),
+                promoText: getValue('stickymodal.column1.row3.wpp.promoText'),
+            },
+        },
+        },
+        column2: {
+        title: getValue('stickyModal.column2.title'),
+        row1: {
+            text: getValue('stickyModal.column2.row1.text'),
+            tel: getValue('stickyModal.column2.row1.tel'),
+        },
+        row2: {
+            link: {
+                text: getValue('stickyModal.column2.row2.link.text'),
+                url: getValue('stickyModal.column2.row2.link.url'),
+            },
+        },
+        row3: {
+            wpp: {
+                text: getValue('stickyModal.column2.row3.wpp.text'),
+                tel: getValue('stickyModal.column2.row3.wpp.tel'),
+                promoText: getValue('stickyModal.column2.row3.wpp.promoText'),
+            },
+        },
+        },
+    };
+
+    useEffect(() => {
+        if(apiErrorTrack.code === 409){
+            setShowErrorModal(true);
+            apiErrorTrack.code = null;
+            setLoading(false);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps 
+    }, [ apiErrorTrack.code, setShowErrorModal])
 
     // Logica Steps
     // Step 1
@@ -181,11 +236,16 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
         try {
 
+            
+
             // IzziEnroll
             const resultIzziEnroll = await GetIzziEnroll(coberturaData, { ...datosContratacionRef.current, VerificacionContacto: stepData }, offnetIzzi, offnetSky, globalIzziSelection);
+
             if (!resultIzziEnroll || resultIzziEnroll?.code || resultIzziEnroll?.error) {
                 router.push("/error");
             }
+            
+            
             setIzziEnroll(resultIzziEnroll);
             izziEnrrollRef.current = resultIzziEnroll;
 
@@ -199,14 +259,17 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
         } catch (err) {
             console.error('Error en step3', err);
+            const code = apiErrorTrack.code;
             setIsProcessFinished(true);
-            router.push("/error");
+            if(code !== 409) {
+                router.push("/error");
+            }
         } finally {
             setIsProcessFinished(true);
         }
     };
 
-    // Step 4
+    // Step 4  
     const step4 = async (stepData: any) => {
         setDatosContratacion((prev) => ({
             ...prev,
@@ -722,6 +785,21 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
                     </div>
                 )
             }
+
+            <Modal
+              isOpen={showErrorModal}
+              onOpenChange={(open) => setShowErrorModal(open)}
+              backdrop='blur'
+              size='4xl'
+              classNames={{ wrapper: 'z-[50]' }}
+              onClose={() => router.push('/')}
+              >
+                <ModalContent>
+                    {(onClose) => (
+                        <TeAyudamosModalComponentConfig modalData={modalData} onClose={onClose} />
+                    )}
+                </ModalContent>
+            </Modal>
 
             <ModalContratacion
                 isOpen={isSpecificModalOpen || isOpen}
