@@ -305,10 +305,8 @@ export default function CoberturaForm() {
     }
 
     try {
-      console.log(`${COVERAGE_LOG_PREFIX} getOfertas.request`, coveraData);
 
       const response = await getOfertas(coveraData)
-      console.log(`${COVERAGE_LOG_PREFIX} getOfertas.response`, response);
 
       if (response.message === 'Address is in a WIZZ coverage area') {
 
