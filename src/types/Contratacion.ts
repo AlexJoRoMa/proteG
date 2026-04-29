@@ -73,6 +73,41 @@ export type DatosContratacion = {
     }
 }
 
+export interface ModalData {
+    verificacionContacto: {
+        procesandoInfo: {
+            titulo: string,
+            subtitulo: string
+        },
+        validandoDatos: {
+            titulo: string,
+            subtitulo: string
+        }
+    },
+    documentosTitular: {
+        procesandoInfo: {
+            titulo: string,
+            subtitulo: string
+        },
+        ultimoDocumento: {
+            titulo: string,
+            subtitulo: string
+        },
+        documentosCargados: {
+            titulo: string,
+            subtitulo: string
+        },
+        validandoDatos: {
+            titulo: string,
+            subtitulo: string
+        }
+    },
+    cargaGenerica: {
+        titulo: string,
+        subtitulo: string
+    }
+}
+
 export interface ProcessStatus {
     accountNumber: string,
     accountId: string,
