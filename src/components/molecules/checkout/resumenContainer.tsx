@@ -5,7 +5,7 @@
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useControlledAction } from "@/hooks/checkout/useControlledAction";
 import { useGlobalProcessStatus } from "@/hooks/checkout/useGlobalProcessStatus";
-import { DatosContratacion } from "@/types/Contratacion";
+import { DatosContratacion, ModalData } from "@/types/Contratacion";
 import { GetAttachFile } from "@/utils/GetAttachFile";
 import { GetIzziEnroll } from "@/utils/GetIzziEnroll";
 import { GetSubmitOffer } from "@/utils/GetSubmitOffer";
@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { GetSubmitCapacity } from "@/utils/GetSubmitCapacity";
 import { useRouter } from "next/navigation";
 import ModalContratacion from "./modals/ModalContratacion";
-import { Button, Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader,  useDisclosure, Modal, ModalContent } from "@heroui/react";
+import { Button, Modal, ModalContent } from "@heroui/react";
 import { ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
@@ -27,14 +27,12 @@ import {
     getCheckoutStepTrackingMeta,
     type CheckoutStepMetaSerialized,
 } from "@/utils/checkoutStepTracking";
-import { FormatCurrency } from "@/utils/Currency";
-import { ArrowDownIcon, ArrowUpIcon } from "@/constants/IconsConstants";
-import ResumenContent from "../resumenCompra/resumenContent";
-
 import ResumenDesktop from "./resumenDesktop";
 import ResumenMobile from "./resumenMobile";
 import {apiErrorTrack} from '@/utils/errorTrack';
 import { useKeyboardOpen } from "@/hooks/checkout/useKeyboardOpen";
+import { useStepModalSequence } from "@/hooks/checkout/useStepModalSequence";
+import { stepModalsMap } from "@/constants/CheckoutModalsConstants";
 
 interface ResumenContainerProps {
     variant: 'mobile' | 'desktop';
@@ -45,8 +43,9 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const PROCESS_STATUS_WAIT_TIMEOUT_MS = 300000;
     const PROCESS_STATUS_WAIT_INTERVAL_MS = 3000;
     const [loading, setLoading] = useState(false);
-    const [modalLoading, setModalLoading] = useState(false);
-    const [modalName, setModalName] = useState<string>("modal-generico");
+    const [specificModal, setSpecificModal] = useState<string | null>(null);
+    const [isSpecificModalOpen, setIsSpecificModalOpen] = useState<boolean>(false);
+    const [isProcessFinished, setIsProcessFinished] = useState(false);
     const router = useRouter();
     const [showErrorModal, setShowErrorModal] = useState(false);
     const { globalUserAnswers, coberturaData, offnetIzzi, offnetSky, globalIzziSelection, precioTotal, infoPaquetes, precioCombinado, globalFlagDomicilio, checkSwitch } = useIzziContent();
@@ -67,10 +66,23 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         paymentReference,
         isStepCompleted,
         cardRecurrent,
-        setIsStepValid
+        setIsStepValid,
+        copyModales
     } = useCheckout();
 
     const resumenCopys = copyResumen as ResumenData;
+    const modalsCopys = copyModales as ModalData;
+
+    const {
+        currentModal,
+        isOpen,
+        start,
+        stop
+    } = useStepModalSequence({
+        modals: stepModalsMap[currentStep] || [],
+        isProcessFinished,
+        stepKey: currentStep
+    });
 
     // Referencias
     const datosContratacionRef = useRef<Partial<DatosContratacion>>(null);
@@ -82,7 +94,6 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const trackedStepsRef = useRef<Set<number>>(new Set());
     const addShippingInfoTrackedRef = useRef(false);
     const addPaymentInfoTrackedRef = useRef(false);
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const CHECKOUT_SESSION_STORAGE_KEY = 'izzi-checkout-session-id';
 
@@ -154,7 +165,6 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             setShowErrorModal(true);
             apiErrorTrack.code = null;
             setLoading(false);
-            setModalLoading(false);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps 
     }, [ apiErrorTrack.code, setShowErrorModal])
@@ -221,9 +231,10 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             VerificacionContacto: stepData
         }));
 
+        setIsProcessFinished(false);
+        start();
+
         try {
-            setModalName("modal-generico");
-            setModalLoading(true);
 
             
 
@@ -242,21 +253,19 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             await iniciarPolling();
 
             // SubmitOffer
-            await showModaluntilAction(async () => await runSubmitOffer(), null);
+            await runSubmitOffer()
 
             nextStep()
 
-        } catch (err: any) {
+        } catch (err) {
+            console.error('Error en step3', err);
             const code = apiErrorTrack.code;
-
-            console.error('Error en step3', err)
-
+            setIsProcessFinished(true);
             if(code !== 409) {
                 router.push("/error");
             }
-
         } finally {
-            setModalLoading(false);
+            setIsProcessFinished(true);
         }
     };
 
@@ -272,21 +281,18 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             DocumentosTitular: stepData,
         };
 
+        setIsProcessFinished(false);
+        start();
+
         try {
-            const attachCompleted = await runWithModal(
-                () => runAttachFiles(),
-                "modal-documentos"
-            );
+            const attachCompleted = await runAttachFiles();
+
             if (!attachCompleted) {
                 return;
             }
 
             if (!globalFlagDomicilio) {
-                const capacityCompleted = await runWithModal(async () => {
-                    await waitForWaitingForAction();
-                    await runGetCapacity(true);
-                    return true;
-                }, "modal-disponibilidad");
+                const capacityCompleted = await runInstalationSchedule();
 
                 if (!capacityCompleted) {
                     return;
@@ -296,6 +302,9 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
         } catch (err) {
             console.error('Error en step4', err)
+            setIsProcessFinished(true);
+        } finally {
+            setIsProcessFinished(true);
         }
     }
 
@@ -382,7 +391,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         if (metodoPago === "tecnico") {
             const success = await runWithModal(
                 () => runSubmitCapacityWithRetries(),
-                "modal-generico"
+                "cargaGenerica"
             );
 
             if (success) {
@@ -475,49 +484,30 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         return true;
     }
 
-    const showModaluntilAction = async (
-        action: () => Promise<any>,
-        modalKey: string | null
-    ) => {
-        try {
-            setProcessStatus((prev) => ({ ...prev, waitingForAction: false }));
-            if (modalKey !== null) {
-                setModalName(modalKey)
-                setModalLoading(true);
-            }
+    async function runInstalationSchedule(): Promise<boolean> {
+        await waitForWaitingForAction();
+        await runGetCapacity(true);
 
-            const result = await action();
-            if (result?.error) {
-                setModalLoading(false)
-                return result;
-            }
-
-            await new Promise<void>((resolve) => {
-                const interval = setInterval(() => {
-                    if (processStatusRef.current.waitingForAction === true) {
-                        clearInterval(interval);
-                        resolve();
-                    }
-                }, 500);
-            });
-            return result;
-        } finally {
-            setModalLoading(false);
-        }
-    };
+        return true;
+    }
 
     const runWithModal = async <T,>(
         action: () => Promise<T>,
+        /** Key del modal a mostrar, teniendo en cuenta la estructura en contentful */
         modalKey: string
     ): Promise<T> => {
-        setModalName(modalKey);
-        setModalLoading(true);
+        stop();
+        setSpecificModal(modalKey);
+        setIsSpecificModalOpen(true);
 
         try {
             const result = await action();
             return result;
         } finally {
-            setModalLoading(false);
+            setIsSpecificModalOpen(false);
+            setSpecificModal(null);
+            setIsProcessFinished(false);
+            start();
         }
     };
 
@@ -554,7 +544,6 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         },
         resetKey: `step-4-attachFileIne`,
         autoExecute: false,
-        onError: (err) => setModalLoading(false),
     });
 
     const { trigger: runAttachComprobante, isLoading: loadingAttachComprobante } = useControlledAction({
@@ -575,7 +564,6 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         },
         resetKey: `step-4-attachFileComprobante`,
         autoExecute: false,
-        onError: (err) => setModalLoading(false),
     });
 
     const { trigger: runGetCapacity, isLoading: loadingCapacity } = useControlledAction({
@@ -747,7 +735,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
             await handler(stepData);
 
-            window.scrollTo({ top:0, behavior: 'smooth'});
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
         } finally {
             isSubmittingRef.current = false;
@@ -765,86 +753,36 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         </Button>
     );
 
-    const resumenDetailContent = (
-        <>
-            <h1 className="font-bold leading-[24px] text-xl mb-[32px]">{resumenCopys.titulo}</h1>
-            <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
-        </>
-    );
-
-
     return (
         <>
-        {variant === 'mobile' ? (
-                <>
-                    <div className="fixed bottom-0 left-0 z-40 w-full px-[16px] pt-[24px] pb-[32px] bg-gray-50 shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)]">
-                        <div className="flex justify-between mb-[16px]">
-                            <div className="flex flex-col gap-[8px]">
-                                <div className="flex gap-[4px] font-normal text-base leading-[24px] text-gray-500 items-baseline">
-                                    <h3 className="font-extrabold text-[32px] leading-[32px] text-black-0">
-                                        {FormatCurrency(Number(precioTotal))}
-                                    </h3>
-                                    <h5>{resumenCopys.infoDrawer.plazo}</h5>
-                                    <p>|</p>
-                                    <h5 className="font-bold">{infoPaquetes}</h5>
-                                </div>
-                                <div className="font-bold">{`¡Te ahorras ${FormatCurrency(Number(precioCombinado))} al combinar!`}</div>
-                                </div>
-                                <button
-                                className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
-                                onClick={onOpen}
-                            >
-                                <ArrowUpIcon />
-                            </button>
-                        </div>
-
-                        {renderContinueButton()}
-                        </div>
-                        <Drawer
-                        isOpen={isOpen}
-                        onOpenChange={onOpenChange}
-                        size="full"
-                        placement="bottom"
-                        hideCloseButton
-                        classNames={{
-                            header: "px-[16px] py-[24px]",
-                            body: "px-[16px] py-0 gap-0",
-                            footer: "w-full px-[16px] pt-[32px] bottom-0 z-50"
-                        }}
+            {
+                variant === 'mobile' ? (
+                    <div
+                        className={`
+                        fixed bottom-0 left-0 z-40 w-full 
+                        px-[16px] pt-[24px] pb-[32px] 
+                        bg-gray-50 
+                        shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)]
+                        transition-all duration-200 ease-in-out
+                        ${isKeyboardOpen ?
+                                "opacity-0 pointer-events-none translate-y-full" :
+                                "opacity-100 translate-y-0"}
+                            `}
                     >
-                        <DrawerContent>
-                            {(onClose) => (
-                                <>
-                                    <DrawerHeader className="flex flex-row justify-between items-center">
-                                        <h3 className="font-bold text-xl leading-[24px] text-[#11181C]">{resumenCopys.titulo}</h3>
-                                        <button
-                                            className="w-[40px] h-[40px] rounded-full border-2 border-black-0 flex items-center justify-center"
-                                            onClick={onClose}
-                                        >
-                                            <ArrowDownIcon />
-                                        </button>
-                                    </DrawerHeader>
-
-                                    <DrawerBody>
-                                        <ResumenContent copys={resumenCopys} userSelection={globalUserAnswers} />
-                                    </DrawerBody>
-
-                                    <DrawerFooter>
-                                        {renderContinueButton()}
-                                    </DrawerFooter>
-                                </>
-                            )}
-                        </DrawerContent>
-                    </Drawer>
-                </>
-            ) : (
-                <div className="border rounded-md border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-white-0">
-                    {resumenDetailContent}
-
-                    <div className="pt-[32px] border-t-1 border-t-gray-150 z-50">
-                        {renderContinueButton()}
+                        <ResumenMobile
+                            resumenCopys={resumenCopys}
+                        >
+                            {renderContinueButton}
+                        </ResumenMobile>
                     </div>
-                </div> 
+                ) : (
+                    <div className="border rounded-md border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-white-0">
+                        <ResumenDesktop
+                            resumenCopys={resumenCopys}
+                        >
+                            {renderContinueButton}
+                        </ResumenDesktop>
+                    </div>
                 )
             }
 
@@ -863,7 +801,11 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
                 </ModalContent>
             </Modal>
 
-            <ModalContratacion isOpen={modalLoading} name={modalName} />
+            <ModalContratacion
+                isOpen={isSpecificModalOpen || isOpen}
+                name={isSpecificModalOpen ? specificModal : currentModal}
+                copys={modalsCopys}
+            />
         </>
     )
 }

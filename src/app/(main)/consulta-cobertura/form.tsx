@@ -305,8 +305,10 @@ export default function CoberturaForm() {
     }
 
     try {
+      console.log(`${COVERAGE_LOG_PREFIX} getOfertas.request`, coveraData);
 
       const response = await getOfertas(coveraData)
+      console.log(`${COVERAGE_LOG_PREFIX} getOfertas.response`, response);
 
       if (response.message === 'Address is in a WIZZ coverage area') {
 
@@ -322,7 +324,7 @@ export default function CoberturaForm() {
       setCoberturaData(coveraData);
       setIsLoading(false);
 
-      const { generateLeadId, generateCoverageSessionId, normalizeUserData, pushEcommerceEvent } = izziDataLayerHelpers;
+        const { generateLeadId, generateCoverageSessionId, normalizeUserData, pushEcommerceEvent } = izziDataLayerHelpers;
 
         const leadId = generateLeadId();
         const sessionId = generateCoverageSessionId();
@@ -350,8 +352,6 @@ export default function CoberturaForm() {
                 coverage_type: 'fiber',
                 coverage_region: locality,
                 lead_data: {
-                    name: userData.address.first_name,
-                    phone: userData.phone_number,
                     address: {
                         street: coveraData.address,
                         colony: neighborhood,
@@ -367,6 +367,7 @@ export default function CoberturaForm() {
       await createCookie(coveraData);
 
     } catch (error) {
+      console.error(`${COVERAGE_LOG_PREFIX} getOfertas.error`, error);
       console.error("Error validacion Wizz ", error)
       setIsLoading(false);
     }

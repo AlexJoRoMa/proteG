@@ -1,16 +1,41 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { LoaderIcon } from "@/constants/IconsConstants";
-import { useMicrocopies } from "@/hooks/useMicrocopies";
-import { Modal, ModalBody, ModalContent, useDisclosure } from "@heroui/react";
+import { ModalData } from "@/types/Contratacion";
+import { Modal, ModalBody, ModalContent } from "@heroui/react";
 
 type ModalContratacionProps = {
     isOpen: boolean;
-    name: string;
+    name: string | null;
+    copys: ModalData
 }
 
-export default function ModalContratacion({ isOpen, name }: ModalContratacionProps) {
+type ModalCopysProps = {
+    titulo: string;
+    subtitulo: string;
+}
 
-    const { getValue, isLoading, error } = useMicrocopies(name);
+const getCopyByPath = (
+    obj: ModalData,
+    path: string | null
+) => {
+    if (!obj || !path) return null;
+    const keys = path.split('.');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let current: any = obj;
+
+    for (const key of keys) {
+        if (!(key in current)) {
+            return null;
+        }
+        current = current[key];
+    }
+    return current;
+};
+
+export default function ModalContratacion({ isOpen, name, copys }: ModalContratacionProps) {
+
+    const modalCopy: ModalCopysProps = getCopyByPath(copys, name);
 
     return (
         <Modal
@@ -32,31 +57,23 @@ export default function ModalContratacion({ isOpen, name }: ModalContratacionPro
                     () => (
                         <ModalBody>
                             <div className="w-full">
-                                {isLoading && <div className="py-8 text-center">Cargando...</div>}
 
-                                {
-                                    error && (
-                                        <div className="py-8 text-center">
-                                            <div className="bg-red-100 text-red-700 px-4 py-2 rounded">
-                                                Ha surgido un error al traer la información solicitada.
-                                            </div>
+                                <>
+                                    <div className="flex justify-center w-full">
+                                        <div className="!w-[80px] !h-[80px]">
+                                            <LoaderIcon />
                                         </div>
-                                    )
-                                }
+                                    </div>
+                                    <div className="flex flex-col text-center gap-[24px] mt-[24px]">
+                                        <h1 className="font-bold text-2xl xl:text-[32px] leading-[40px] text-nowrap">
+                                            {modalCopy.titulo}
+                                        </h1>
+                                        <p className="font-normal text-lg xl:text-xl leading-[24px]">
+                                            {modalCopy.subtitulo}
+                                        </p>
+                                    </div>
+                                </>
 
-                                {!isLoading && !error && (
-                                    <>
-                                        <div className="flex justify-center w-full">
-                                            <div className="!w-[80px] !h-[80px]">
-                                                <LoaderIcon />
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-col text-center gap-[24px] mt-[24px]">
-                                            <h1 className="font-bold text-2xl xl:text-[32px] leading-[40px] text-nowrap">{getValue('titulo')}</h1>
-                                            <p className="font-normal text-lg xl:text-xl leading-[24px]">{getValue('subtitulo')}</p>
-                                        </div>
-                                    </>
-                                )}
                             </div>
                         </ModalBody>
                     )

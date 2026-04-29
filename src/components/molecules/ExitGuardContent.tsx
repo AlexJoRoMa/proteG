@@ -273,7 +273,7 @@ export default function ExitGuardContent({ icon, text }: { icon: EntrySkeletonTy
         };
         window.addEventListener("beforeunload", handleBeforeUnload);
         return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-        }, []);
+    }, []);
 
     // Tracking por cambio de visibilidad (cambiar tab, minimizar, cerrar pestaña)
 
