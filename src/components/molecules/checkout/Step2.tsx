@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Checkbox, Divider, Switch } from '@heroui/react'
 import Link from 'next/link'
 import { useStep2Form } from '@/hooks/checkout/useStep2Form';
@@ -6,7 +6,6 @@ import { DatosPersonalesForm } from './formularios/DatosPersonalesForm';
 import { DireccionEnvioForm } from './formularios/DireccionEnvioForm';
 import { DireccionFacturacionForm } from './formularios/DireccionFacturacionForm';
 import { DatosFacturacionForm } from './formularios/DatosFacturacionForm';
-import { useCheckout } from '@/components/providers/CheckoutProvider';
 import ButtonGhost from '@/components/atoms/ButtonGhost';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import { useIzziContent } from '@/components/providers/IzziProvider';
@@ -18,10 +17,7 @@ const FALLBACKS: Record<string, string> = {
 };
 
 const Step2 = () => {
-  const { setConditionCheckboxChecked, setPrivacyCheckboxChecked } = useCheckout();
   const { getValue } = useMicrocopies('contratacion-datosPersonales');
-  const [conditionChecked, setConditionChecked] = useState(false);
-  const [privacyChecked, setPrivacyChecked] = useState(false);
   const { formattedAddress } = useIzziContent();
   const getText = (key: string) => getValue(key) || FALLBACKS[key] || key;
 
@@ -43,19 +39,21 @@ const Step2 = () => {
     setIsPersonalValid,
     setIsEnvioValid,
     setIsFacturacionValid,
-    setIsDireccionFacturacionValid
+    setIsDireccionFacturacionValid,
+    conditionChecked,
+    setConditionChecked,
+    privacyChecked,
+    setPrivacyChecked
   } = useStep2Form();
 
   const handleConditionCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.checked;
     setConditionChecked(value);
-    setConditionCheckboxChecked(value);
   }
 
   const handlePrivacyCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.checked;
     setPrivacyChecked(value);
-    setPrivacyCheckboxChecked(value);
   }
 
   useEffect(() => {
