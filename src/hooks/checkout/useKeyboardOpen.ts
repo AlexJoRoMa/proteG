@@ -19,7 +19,20 @@ export function useKeyboardOpen() {
         };
 
         const handleBlur = () => {
-            setIsOpen(false);
+            setTimeout(() => {
+                const active = document.activeElement as HTMLElement | null;
+
+                const isStillInput =
+                    active &&
+                    (active.tagName === "INPUT" ||
+                        active.tagName === "TEXTAREA" ||
+                        active.getAttribute("contenteditable") === "true"
+                    );
+
+                if (!isStillInput) {
+                    setIsOpen(false);
+                }
+            }, 50);
         };
 
         window.addEventListener("focusin", handleFocus);

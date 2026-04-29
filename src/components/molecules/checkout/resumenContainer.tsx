@@ -29,7 +29,7 @@ import {
 } from "@/utils/checkoutStepTracking";
 import ResumenDesktop from "./resumenDesktop";
 import ResumenMobile from "./resumenMobile";
-import {apiErrorTrack} from '@/utils/errorTrack';
+import { apiErrorTrack } from '@/utils/errorTrack';
 import { useKeyboardOpen } from "@/hooks/checkout/useKeyboardOpen";
 import { useStepModalSequence } from "@/hooks/checkout/useStepModalSequence";
 import { stepModalsMap } from "@/constants/CheckoutModalsConstants";
@@ -98,6 +98,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const CHECKOUT_SESSION_STORAGE_KEY = 'izzi-checkout-session-id';
 
     const isKeyboardOpen = useKeyboardOpen();
+    const isVisible = !isKeyboardOpen || isStepValid;
 
     useEffect(() => {
         datosContratacionRef.current = datosContratacion;
@@ -122,52 +123,52 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const modalData = {
         title: getValue('stickymodal.title'),
         column1: {
-        title: getValue('stickymodal.column1.title'),
-        row1: {
-            text: getValue('stickymodal.column1.row1.text'),
-            tel: getValue('stickymodal.column1.row1.tel'),
-        },
-        row2: {
-            link: getValue('stickymodal.column1.row2.link'),
-        },
-        row3: {
-            wpp: {
-                text: getValue('stickymodal.column1.row3.wpp.text'),
-                tel: getValue('stickymodal.column1.row3.wpp.tel'),
-                promoText: getValue('stickymodal.column1.row3.wpp.promoText'),
+            title: getValue('stickymodal.column1.title'),
+            row1: {
+                text: getValue('stickymodal.column1.row1.text'),
+                tel: getValue('stickymodal.column1.row1.tel'),
             },
-        },
+            row2: {
+                link: getValue('stickymodal.column1.row2.link'),
+            },
+            row3: {
+                wpp: {
+                    text: getValue('stickymodal.column1.row3.wpp.text'),
+                    tel: getValue('stickymodal.column1.row3.wpp.tel'),
+                    promoText: getValue('stickymodal.column1.row3.wpp.promoText'),
+                },
+            },
         },
         column2: {
-        title: getValue('stickyModal.column2.title'),
-        row1: {
-            text: getValue('stickyModal.column2.row1.text'),
-            tel: getValue('stickyModal.column2.row1.tel'),
-        },
-        row2: {
-            link: {
-                text: getValue('stickyModal.column2.row2.link.text'),
-                url: getValue('stickyModal.column2.row2.link.url'),
+            title: getValue('stickyModal.column2.title'),
+            row1: {
+                text: getValue('stickyModal.column2.row1.text'),
+                tel: getValue('stickyModal.column2.row1.tel'),
             },
-        },
-        row3: {
-            wpp: {
-                text: getValue('stickyModal.column2.row3.wpp.text'),
-                tel: getValue('stickyModal.column2.row3.wpp.tel'),
-                promoText: getValue('stickyModal.column2.row3.wpp.promoText'),
+            row2: {
+                link: {
+                    text: getValue('stickyModal.column2.row2.link.text'),
+                    url: getValue('stickyModal.column2.row2.link.url'),
+                },
             },
-        },
+            row3: {
+                wpp: {
+                    text: getValue('stickyModal.column2.row3.wpp.text'),
+                    tel: getValue('stickyModal.column2.row3.wpp.tel'),
+                    promoText: getValue('stickyModal.column2.row3.wpp.promoText'),
+                },
+            },
         },
     };
 
     useEffect(() => {
-        if(apiErrorTrack.code === 409){
+        if (apiErrorTrack.code === 409) {
             setShowErrorModal(true);
             apiErrorTrack.code = null;
             setLoading(false);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps 
-    }, [ apiErrorTrack.code, setShowErrorModal])
+        // eslint-disable-next-line react-hooks/exhaustive-deps 
+    }, [apiErrorTrack.code, setShowErrorModal])
 
     // Logica Steps
     // Step 1
@@ -236,7 +237,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
         try {
 
-            
+
 
             // IzziEnroll
             const resultIzziEnroll = await GetIzziEnroll(coberturaData, { ...datosContratacionRef.current, VerificacionContacto: stepData }, offnetIzzi, offnetSky, globalIzziSelection);
@@ -244,8 +245,8 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             if (!resultIzziEnroll || resultIzziEnroll?.code || resultIzziEnroll?.error) {
                 router.push("/error");
             }
-            
-            
+
+
             setIzziEnroll(resultIzziEnroll);
             izziEnrrollRef.current = resultIzziEnroll;
 
@@ -261,7 +262,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             console.error('Error en step3', err);
             const code = apiErrorTrack.code;
             setIsProcessFinished(true);
-            if(code !== 409) {
+            if (code !== 409) {
                 router.push("/error");
             }
         } finally {
@@ -454,7 +455,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         console.error('ProcessStatus no reportó waitingForAction=true a tiempo.');
         router.push('/error')
         throw new Error("ProcessStatus no reportó waitingForAction=true a tiempo.");
-        
+
     };
 
     const getRequiredAttachInfo = (documentKey: "ine" | "comprobante") => {
@@ -721,6 +722,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
         isSubmittingRef.current = true;
         setLoading(true)
+
         const step = currentStep;
 
         try {
@@ -764,9 +766,9 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
                         bg-gray-50 
                         shadow-[0_-2px_20px_0_rgba(0,0,0,0.12)]
                         transition-all duration-200 ease-in-out
-                        ${isKeyboardOpen ?
-                                "opacity-0 pointer-events-none translate-y-full" :
-                                "opacity-100 translate-y-0"}
+                        ${isVisible ?
+                                "opacity-100 translate-y-0" :
+                                "opacity-0 pointer-events-none translate-y-full"}
                             `}
                     >
                         <ResumenMobile
@@ -787,13 +789,13 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             }
 
             <Modal
-              isOpen={showErrorModal}
-              onOpenChange={(open) => setShowErrorModal(open)}
-              backdrop='blur'
-              size='4xl'
-              classNames={{ wrapper: 'z-[50]' }}
-              onClose={() => router.push('/')}
-              >
+                isOpen={showErrorModal}
+                onOpenChange={(open) => setShowErrorModal(open)}
+                backdrop='blur'
+                size='4xl'
+                classNames={{ wrapper: 'z-[50]' }}
+                onClose={() => router.push('/')}
+            >
                 <ModalContent>
                     {(onClose) => (
                         <TeAyudamosModalComponentConfig modalData={modalData} onClose={onClose} />
