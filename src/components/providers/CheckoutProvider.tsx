@@ -18,6 +18,7 @@ interface CheckoutContextType {
   icon: EntrySkeletonType<ResumenIcon>
   paypalIcon: EntrySkeletonType<ResumenIcon>
   copyResumen: {}
+  copyModales: {}
   setIsStepValid: (value: boolean) => void
   conditionCheckboxChecked: boolean
   setConditionCheckboxChecked: (value: boolean) => void
@@ -65,6 +66,7 @@ interface CheckoutProviderProps {
   icon: EntrySkeletonType<ResumenIcon>
   paypalIcon: EntrySkeletonType<ResumenIcon>
   copyResumen: {}
+  copyModales: {}
 }
 
 export const CheckoutProvider = ({
@@ -73,6 +75,7 @@ export const CheckoutProvider = ({
   icon,
   paypalIcon,
   copyResumen,
+  copyModales,
 }: CheckoutProviderProps) => {
   const [totalSteps, setTotalSteps] = useState<number>(6);
   const [currentStep, setCurrentStep] = useState(initialStep)
@@ -202,6 +205,7 @@ export const CheckoutProvider = ({
     icon,
     paypalIcon,
     copyResumen,
+    copyModales,
     goToStep,
     nextStep,
     prevStep,

@@ -5,7 +5,7 @@
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { useControlledAction } from "@/hooks/checkout/useControlledAction";
 import { useGlobalProcessStatus } from "@/hooks/checkout/useGlobalProcessStatus";
-import { DatosContratacion } from "@/types/Contratacion";
+import { DatosContratacion, ModalData } from "@/types/Contratacion";
 import { GetAttachFile } from "@/utils/GetAttachFile";
 import { GetIzziEnroll } from "@/utils/GetIzziEnroll";
 import { GetSubmitOffer } from "@/utils/GetSubmitOffer";
@@ -28,6 +28,8 @@ import {
 import ResumenDesktop from "./resumenDesktop";
 import ResumenMobile from "./resumenMobile";
 import { useKeyboardOpen } from "@/hooks/checkout/useKeyboardOpen";
+import { useStepModalSequence } from "@/hooks/checkout/useStepModalSequence";
+import { stepModalsMap } from "@/constants/CheckoutModalsConstants";
 
 interface ResumenContainerProps {
     variant: 'mobile' | 'desktop';
@@ -38,8 +40,9 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const PROCESS_STATUS_WAIT_TIMEOUT_MS = 300000;
     const PROCESS_STATUS_WAIT_INTERVAL_MS = 3000;
     const [loading, setLoading] = useState(false);
-    const [modalLoading, setModalLoading] = useState(false);
-    const [modalName, setModalName] = useState<string>("modal-generico");
+    const [specificModal, setSpecificModal] = useState<string | null>(null);
+    const [isSpecificModalOpen, setIsSpecificModalOpen] = useState<boolean>(false);
+    const [isProcessFinished, setIsProcessFinished] = useState(false);
     const router = useRouter();
     const { globalUserAnswers, coberturaData, offnetIzzi, offnetSky, globalIzziSelection, precioTotal, infoPaquetes, precioCombinado, globalFlagDomicilio, checkSwitch } = useIzziContent();
     const {
@@ -59,10 +62,23 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         paymentReference,
         isStepCompleted,
         cardRecurrent,
-        setIsStepValid
+        setIsStepValid,
+        copyModales
     } = useCheckout();
 
     const resumenCopys = copyResumen as ResumenData;
+    const modalsCopys = copyModales as ModalData;
+
+    const {
+        currentModal,
+        isOpen,
+        start,
+        stop
+    } = useStepModalSequence({
+        modals: stepModalsMap[currentStep] || [],
+        isProcessFinished,
+        stepKey: currentStep
+    });
 
     // Referencias
     const datosContratacionRef = useRef<Partial<DatosContratacion>>(null);
@@ -160,9 +176,10 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             VerificacionContacto: stepData
         }));
 
+        setIsProcessFinished(false);
+        start();
+
         try {
-            setModalName("modal-generico");
-            setModalLoading(true);
 
             // IzziEnroll
             const resultIzziEnroll = await GetIzziEnroll(coberturaData, { ...datosContratacionRef.current, VerificacionContacto: stepData }, offnetIzzi, offnetSky, globalIzziSelection);
@@ -176,15 +193,16 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             await iniciarPolling();
 
             // SubmitOffer
-            await showModaluntilAction(async () => await runSubmitOffer(), null);
+            await runSubmitOffer()
 
             nextStep()
 
         } catch (err) {
-            console.error('Error en step3', err)
+            console.error('Error en step3', err);
+            setIsProcessFinished(true);
             router.push("/error");
         } finally {
-            setModalLoading(false);
+            setIsProcessFinished(true);
         }
     };
 
@@ -200,21 +218,18 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             DocumentosTitular: stepData,
         };
 
+        setIsProcessFinished(false);
+        start();
+
         try {
-            const attachCompleted = await runWithModal(
-                () => runAttachFiles(),
-                "modal-documentos"
-            );
+            const attachCompleted = await runAttachFiles();
+
             if (!attachCompleted) {
                 return;
             }
 
             if (!globalFlagDomicilio) {
-                const capacityCompleted = await runWithModal(async () => {
-                    await waitForWaitingForAction();
-                    await runGetCapacity(true);
-                    return true;
-                }, "modal-disponibilidad");
+                const capacityCompleted = await runInstalationSchedule();
 
                 if (!capacityCompleted) {
                     return;
@@ -224,6 +239,9 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
         } catch (err) {
             console.error('Error en step4', err)
+            setIsProcessFinished(true);
+        } finally {
+            setIsProcessFinished(true);
         }
     }
 
@@ -310,7 +328,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         if (metodoPago === "tecnico") {
             const success = await runWithModal(
                 () => runSubmitCapacityWithRetries(),
-                "modal-generico"
+                "cargaGenerica"
             );
 
             if (success) {
@@ -403,49 +421,30 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         return true;
     }
 
-    const showModaluntilAction = async (
-        action: () => Promise<any>,
-        modalKey: string | null
-    ) => {
-        try {
-            setProcessStatus((prev) => ({ ...prev, waitingForAction: false }));
-            if (modalKey !== null) {
-                setModalName(modalKey)
-                setModalLoading(true);
-            }
+    async function runInstalationSchedule(): Promise<boolean> {
+        await waitForWaitingForAction();
+        await runGetCapacity(true);
 
-            const result = await action();
-            if (result?.error) {
-                setModalLoading(false)
-                return result;
-            }
-
-            await new Promise<void>((resolve) => {
-                const interval = setInterval(() => {
-                    if (processStatusRef.current.waitingForAction === true) {
-                        clearInterval(interval);
-                        resolve();
-                    }
-                }, 500);
-            });
-            return result;
-        } finally {
-            setModalLoading(false);
-        }
-    };
+        return true;
+    }
 
     const runWithModal = async <T,>(
         action: () => Promise<T>,
+        /** Key del modal a mostrar, teniendo en cuenta la estructura en contentful */
         modalKey: string
     ): Promise<T> => {
-        setModalName(modalKey);
-        setModalLoading(true);
+        stop();
+        setSpecificModal(modalKey);
+        setIsSpecificModalOpen(true);
 
         try {
             const result = await action();
             return result;
         } finally {
-            setModalLoading(false);
+            setIsSpecificModalOpen(false);
+            setSpecificModal(null);
+            setIsProcessFinished(false);
+            start();
         }
     };
 
@@ -482,7 +481,6 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         },
         resetKey: `step-4-attachFileIne`,
         autoExecute: false,
-        onError: (err) => setModalLoading(false),
     });
 
     const { trigger: runAttachComprobante, isLoading: loadingAttachComprobante } = useControlledAction({
@@ -503,7 +501,6 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         },
         resetKey: `step-4-attachFileComprobante`,
         autoExecute: false,
-        onError: (err) => setModalLoading(false),
     });
 
     const { trigger: runGetCapacity, isLoading: loadingCapacity } = useControlledAction({
@@ -726,7 +723,11 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
                 )
             }
 
-            <ModalContratacion isOpen={modalLoading} name={modalName} />
+            <ModalContratacion
+                isOpen={isSpecificModalOpen || isOpen}
+                name={isSpecificModalOpen ? specificModal : currentModal}
+                copys={modalsCopys}
+            />
         </>
     )
 }
