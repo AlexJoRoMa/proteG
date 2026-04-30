@@ -319,6 +319,8 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     }
 
     // Step 6
+    const STEP6_SAFETY_TIMEOUT_MS = 90000;
+
     const step6 = async () => {
         const metodoPago = datosContratacion.Pago?.metodoPago;
 
@@ -332,6 +334,15 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             setSpecificModal(null);
         };
 
+        // Red de seguridad: si nada respondió en 90s, cerrar modal y mandar a /error
+        let safetyTriggered = false;
+        const safetyTimeout = setTimeout(() => {
+            safetyTriggered = true;
+            console.error("step6 safety timeout: nada respondió en 90s");
+            closeModal();
+            router.push("/error");
+        }, STEP6_SAFETY_TIMEOUT_MS);
+
         try {
             // ValidaPago
             const validated = await validatePayment(
@@ -340,6 +351,8 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
                 processStatusRef.current,
                 paymentReference
             );
+
+            if (safetyTriggered) return;
 
             if (!validated) {
                 closeModal();
@@ -405,6 +418,8 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             if (metodoPago === "tecnico") {
                 const success = await runSubmitCapacityWithRetries();
 
+                if (safetyTriggered) return;
+
                 if (success) {
                     router.push("/thank-you");
                 } else {
@@ -419,6 +434,8 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             // Flujo para otros métodos de pago
             const submitResponse = await runSubmitCapacity();
 
+            if (safetyTriggered) return;
+
             if (submitResponse) {
                 router.push("/thank-you");
             } else {
@@ -426,9 +443,12 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
                 router.push("/error");
             }
         } catch (err) {
+            if (safetyTriggered) return;
             console.error("Error en step6", err);
             closeModal();
             router.push("/error");
+        } finally {
+            clearTimeout(safetyTimeout);
         }
     }
 
