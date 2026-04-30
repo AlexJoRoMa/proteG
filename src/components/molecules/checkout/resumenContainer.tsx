@@ -405,16 +405,11 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             return;
         }
 
-        // Flujo para otros métodos de pago: submit con modal de carga
-        const submitResponse = await runWithModal(
-            () => runSubmitCapacity(),
-            "cargaGenerica"
-        );
+        // Flujo actual para otros métodos de pago
+        const submitResponse = await runSubmitCapacity();
 
         if (submitResponse) {
             router.push("/thank-you");
-        } else {
-            router.push("/error");
         }
     }
 
