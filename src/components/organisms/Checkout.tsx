@@ -121,7 +121,7 @@ export default function Checkout() {
         <CheckoutSteps
             isDesktop={isDesktop}
             contentSlot={(
-                <div className="mx-[var(--spacing-sm)] 4xl:mx-[var(--spacing-xl)] 3xl:mx-[var(--spacing-lg)] 2xl:mx-[var(--spacing-md)] sm:mx-[var(--spacing-sm)] my-6 xl:flex">
+                <div className="mx-[var(--spacing-sm)] sm:mx-[var(--spacing-sm)] my-6 xl:flex">
                     <div className="w-full xl:w-7/12 xl:mr-auto">
                         <CheckoutContent />
                     </div>

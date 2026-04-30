@@ -75,7 +75,7 @@ const CheckoutSteps = ({
 
                {sharedContentSlot ? (
           <div
-            className="w-full border-gradient-fixed mb-[8px] xl:border-none xl:mb-0"
+            className="w-full border-gradient-fixed border-gradient-fixed-main-desktop mb-[8px] xl:border-none xl:mb-0"
             style={{ order: resolvedIsDesktop ? stepsArray.length + 1 : currentStep * 2 }}
           >
             {sharedContentSlot}
