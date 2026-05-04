@@ -1,7 +1,7 @@
 import { FormatCurrency, FormatPromotions } from "@/utils/Currency";
-import { ResumenContentProps } from "@/types/ResumenCompra";
+import { ResumenContentProps, ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { internetComponentFields, Promos, tvComponentFields } from "@/types/ConfiguradorTypes";
 import { mesIds } from "@/constants/ResumenConstants";
 import { CircleCheckGreen } from "@/constants/IconsConstants";
@@ -31,7 +31,14 @@ function calcularPromos(promos: Promos[] | undefined) {
     return meses;
 }
 
-function obtenerArray(mesesPromos: { totalPromo: number }[]) {
+function obtenerArray(
+    mesesPromos: { totalPromo: number }[],
+    totalSinDescuento: number,
+    ahorroCombinado: number,
+    validateSwitch: boolean,
+    precioTotal: number,
+    resumenCopys: ResumenData
+) {
 
     let ultimoMes = 0;
     mesesPromos.forEach((mes, index) => {
@@ -55,6 +62,7 @@ function obtenerArray(mesesPromos: { totalPromo: number }[]) {
     const relevantes = mesesPromos.slice(0, tope);
     const resultado: { mesNumero: number; mesId: string; totalPromo: number; }[] = [];
     let ultimoValor: number | null = null;
+    const descuentoMeses: { proximoMes: string; precioPago: number; }[] = [];
 
     relevantes.forEach((mes, index) => {
         const valorActual = mes.totalPromo;
@@ -69,7 +77,30 @@ function obtenerArray(mesesPromos: { totalPromo: number }[]) {
         }
     });
 
-    return resultado;
+    resultado.forEach((item) => {
+        const precioMes = validateSwitch
+            ? totalSinDescuento - ahorroCombinado + item.totalPromo - 50
+            : totalSinDescuento - ahorroCombinado + item.totalPromo;
+
+        const copyMes = resumenCopys.ahorro.meses[item.mesId];
+
+        descuentoMeses.push({
+            proximoMes: copyMes,
+            precioPago: precioMes,
+        })
+    });
+
+    const filtrado = descuentoMeses.filter((item, index) => {
+        const esPrimerItem = index === 0;
+        const esSimilarTotal = item.precioPago === precioTotal;
+
+        if (esPrimerItem && esSimilarTotal) return false
+
+        return true;
+    });
+
+    return filtrado;
+
 }
 
 export default function ResumenContent({ copys, userSelection }: ResumenContentProps) {
@@ -138,8 +169,16 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
     const ahorroTotal = ((Number(ahorroCombinado) || 0) + (Number(pagoAnticipado) || 0)) + (Number(Math.abs(totalPromoPrice as number)) || 0);
 
     const promoMeses = calcularPromos(promotions);
-    const descuentoMeses = obtenerArray(promoMeses);
-
+    const descuentoMeses = useMemo(() => {
+        return obtenerArray(
+            promoMeses,
+            totalSinDescuento,
+            ahorroCombinado,
+            validateSwitch,
+            priceTotal,
+            resumenCopys
+        );
+    }, [promoMeses, totalSinDescuento, ahorroCombinado, validateSwitch, priceTotal, resumenCopys]);
     useEffect(() => {
         setTotalSinDescuento(totalSinDescuento);
         setAhorroTotal(ahorroTotal);
@@ -304,14 +343,12 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                         {resumenCopys.ahorro.proximosPagos}
                     </h1>
                     {
-                        descuentoMeses.map((item) => {
-                            const precioDespues = validateSwitch ? totalSinDescuento - Number(ahorroCombinado) + item.totalPromo - 50 : totalSinDescuento - Number(ahorroCombinado) + item.totalPromo;
-                            const copyMes = resumenCopys.ahorro.meses[item.mesId];
+                        descuentoMeses.map((item, index) => {
 
                             return (
-                                <div key={item.mesNumero} className="flex justify-between w-full font-normal leading-[24px] text-base space-y-2">
-                                    <h5>{copyMes}</h5>
-                                    <h5>{FormatPromotions(precioDespues)}</h5>
+                                <div key={index} className="flex justify-between w-full font-normal leading-[24px] text-base space-y-2">
+                                    <h5>{item.proximoMes}</h5>
+                                    <h5>{FormatPromotions(item.precioPago)}</h5>
                                 </div>
                             )
                         })

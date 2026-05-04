@@ -311,8 +311,29 @@ body {
 .border-gradient-fixed-main{
   border: none;
   
-  @media screen and (min-width: 760px) {
+  @media screen and (max-width: 760px) {
     border-bottom: 2px solid transparent;
     border-image: var(--gradient-button-fixed) 1;
+  }
+
+}
+
+.border-gradient-fixed-main-desktop{
+  &::before{
+
+    @media screen and (min-width: 1024px) {
+    content: '';
+    position: relative;
+    display: block;
+    top: 10px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    border-bottom: 2px solid transparent;
+    border-image: var(--gradient-button-fixed) 1;
+  }
+
   }
 }

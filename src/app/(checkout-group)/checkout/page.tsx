@@ -29,7 +29,10 @@ const CheckoutPage = async () => {
   const copysResumen = await getCopyForComponent('Resumen-de-Compra').then((entry) => {
     return entry.resumen
   });
-  
+
+  const ModalesCheckout = await getCopyForComponent('modales-checkout').then((entry) => {
+    return entry.modal
+  });
 
   return (
     <main className="min-h-screen w-full">
@@ -38,7 +41,7 @@ const CheckoutPage = async () => {
         pageName="Checkout - Configura tu paquete"
         checkoutStep={1}
       />
-      <CheckoutProvider initialStep={2} icon={Icon} paypalIcon={PaypalIcon} copyResumen={copysResumen}>
+      <CheckoutProvider initialStep={2} icon={Icon} paypalIcon={PaypalIcon} copyResumen={copysResumen} copyModales={ModalesCheckout}>
         {/* Guard detector de salida del flujo */}
         <ExitGuard />
         <Checkout />
