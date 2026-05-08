@@ -716,11 +716,11 @@ export default function CoberturaForm() {
         )}
 
         <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-5'>
-          <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
+          <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 max-w-[286px] sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
             {getText('cobertura.button.ubicacion')}
           </Button>
           <Button
-            className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} 
+            className={`w-full lg:w-1/2 max-w-[286px] ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} 
             isDisabled={btnDisable} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
