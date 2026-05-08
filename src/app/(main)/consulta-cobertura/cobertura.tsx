@@ -50,14 +50,15 @@ export default function Cobertura() {
                 <div className="items-center justify-center mb-8 mx-sm xl:mx-xl xl:justify-start">
                     <div className='flex flex-col gap-y-2'>
                         <p className="xsm:text-[20px] lg:text-[32px] font-bold">{getText('cobertura.title')}</p>
-                        <p className="xsm:text-[16px] lg:text-[18px]">{getText('cobertura.subtitle')}</p>
+                        
                     </div>
                     <APIProvider
                         solutionChannel='2'
                         apiKey={`${mapsKey}`}>
-                        <div className='lg:flex lg:flex-col-2 mt-8'>
+                        <div className='lg:flex lg:flex-col-2 mt-3'>
                             <div className='lg:w-1/2'>
-                                <div className="flex w-full flex-wrap md:flex-nowrap gap-4 ">
+                            <p className="xsm:text-[16px] lg:text-[18px] mt-1">{getText('cobertura.subtitle')}</p>
+                                <div className="flex w-full flex-wrap md:flex-nowrap gap-4 mt-5">
                                     <CoberturaForm />
                                 </div>
                             </div>
