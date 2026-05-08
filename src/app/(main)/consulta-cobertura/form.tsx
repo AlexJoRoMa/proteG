@@ -78,16 +78,16 @@ const inputStyles = (isAddressSelected?: boolean) => ({
 });
 
 const inputDisableStyles = {
-  label: "text-black opacity-100",
+  label: "!text-gray-200",
   inputWrapper: [
-    "bg-gray-100",
-    "border border-gray-100 border-solid rounded-md",
+    "bg-[#DADADF66]",
+    "border border-[#DADADF66]  border-solid rounded-md",
     "cursor-not-allowed"
   ],
   input: [
     "text-black",
     "placeholder:text-black",
-    "cursor-not-allowed"
+    "cursor-not-allowed",
   ],
   innerWrapper: [
     "bg-transparent",
@@ -655,20 +655,7 @@ export default function CoberturaForm() {
               className='max-w-[95%]'
             />
         </div>
-          <Input
-            isReadOnly
-            isRequired
-            label={getText('cobertura.form.codigo.label')}
-            placeholder={getText('cobertura.form.codigo.placeholder')}
-            errorMessage={getText('cobertura.form.codigo.error')}
-            labelPlacement="outside"
-            name="postalCode"
-            type="text"
-            value={postalCode}
-            onValueChange={setPostalCode}
-            classNames={inputDisableStyles}
-            maxLength={5}
-          />
+        <div className='grid gri-cols-1 lg:grid-cols-2 w-full h-full gap-4 mt-2'>
           <Input
             isReadOnly={isFieldDisabled}
             isRequired
@@ -712,15 +699,31 @@ export default function CoberturaForm() {
             onValueChange={setState}
             classNames={inputDisableStyles}
           />
+          <Input
+            isReadOnly
+            isRequired
+            label={getText('cobertura.form.codigo.label')}
+            placeholder={getText('cobertura.form.codigo.placeholder')}
+            errorMessage={getText('cobertura.form.codigo.error')}
+            labelPlacement="outside"
+            name="postalCode"
+            type="text"
+            value={postalCode}
+            onValueChange={setPostalCode}
+            classNames={inputDisableStyles}
+            maxLength={5}
+          />
+          
+        </div>
           </>
         )}
 
         <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-5'>
-          <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
+          <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 h-[48px] sm:my-4 xl:my-0 border border-black sm:text-[16px] xl:text-[12px] 3xl:text-[16px]' variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
             {getText('cobertura.button.ubicacion')}
           </Button>
           <Button
-            className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} 
+            className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} h-[48px] text-white sm:text-[16px] xl:text-[14px] 3xl:text-[18px] xsm:mt-4 lg:mt-0`} 
             isDisabled={btnDisable} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
