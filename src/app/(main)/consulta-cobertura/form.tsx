@@ -624,7 +624,7 @@ export default function CoberturaForm() {
 
         {showFields && (
           <>
-          <div className='flex col-2 w-full gap-4'>
+          <div className='flex col-2 w-full gap-4 xsm:mt-3 lg:mt-0'>
             <Input
               isReadOnly={isFieldDisabled}
               isRequired
@@ -715,12 +715,32 @@ export default function CoberturaForm() {
           </>
         )}
 
-        <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-5'>
-          <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 max-w-[286px] sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
+        {/* Desk */}
+        <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-5 lg:block xsm:hidden'>
+          <Button startContent={<LocationIcon />} 
+            className='lg:w-1/2 lg:w-[286px] xsm:w-full sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
             {getText('cobertura.button.ubicacion')}
           </Button>
           <Button
-            className={`w-full lg:w-1/2 max-w-[286px] ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} 
+            className={`lg:w-1/2 lg:w-[286px] xsm:w-full ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} 
+            isDisabled={btnDisable} type="submit">
+            {getText('cobertura.button.confirmar')}
+          </Button>
+        </div>
+
+        {/* Mobil */}
+        <div className='lg:hidden xsm:block flex items-center justify-center 
+        fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-4 w-[90%]
+        '>
+          <Button startContent={<LocationIcon />} 
+            className='w-full  sm:my-4 xl:my-0 bg-white border border-black sm:text-[18px] xl:text-[12px] 
+            ' 
+            variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
+            {getText('cobertura.button.ubicacion')}
+          </Button>
+          <Button
+            className={`w-full  ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0 
+            border border-gray-200 disabled:border-gray-200 !opacity-100 disabled:!opacity-100`} 
             isDisabled={btnDisable} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
