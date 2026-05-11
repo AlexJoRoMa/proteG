@@ -8,7 +8,7 @@ export default function DetalleResumen({ copys, userSelection }: ResumenContentP
     const itemClasses = {
         indicator: "data-[open=true]:rotate-180",
         title: "leading-[24px] font-bold text-lg xl:text-xl",
-        base: "py-[32px] data-[open=true]:pt-[32px] data-[open=true]:pb-0 border-t-1 border-t-gray-150",
+        base: "py-[32px] data-[open=true]:pt-[32px] data-[open=true]:pb-0",
         content: "p-0",
         trigger: "p-0"
     }

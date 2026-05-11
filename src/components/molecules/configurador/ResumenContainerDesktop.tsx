@@ -11,6 +11,7 @@ import DetalleResumen from "../resumenCompra/detalleResumen";
 import BotonContratarConfigurador from "./botonContratarConfigurador";
 import { internetComponentFields, movilComponentFields, tvComponentFields } from "@/types/ConfiguradorTypes";
 import BannerDomiciliacion from "@/components/atoms/bannerDomiciliacion";
+import { ResumenAdaptativo } from "@/utils/ResumenAdaptativo";
 
 function hasData(obj: unknown): boolean {
     return !!obj && typeof obj === "object" && Object.keys(obj as object).length > 0;
@@ -37,12 +38,14 @@ export default function ResumenContainerDesktop() {
         <>
             {
                 !hasAnyMainProduct ?
-                    <button
-                        className="mb-[32px] py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                        disabled
-                    >
-                        {resumenCopys.boton.comprobarPromociones}
-                    </button>
+                    <div className="px-[16px]">
+                        <button
+                            className="mb-[32px] py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
+                            disabled
+                        >
+                            {resumenCopys.boton.comprobarPromociones}
+                        </button>
+                    </div>
                     :
                     <section>
                         {
@@ -54,43 +57,43 @@ export default function ResumenContainerDesktop() {
                                 </div>
                             </div>
                         }
-                        <h1 className="hidden xl:block font-bold leading-[24px] text-xl">
-                            {resumenCopys.titulo}
-                        </h1>
+                        <ResumenAdaptativo
+                            maxHeight={714}
+                            title={resumenCopys.titulo}
+                            footer={
+                                <BotonContratarConfigurador
+                                    loading={loading}
+                                    setLoading={setLoading}
+                                />
+                            }
+                        >
+                            {
+                                checkedPromotions &&
+                                <BannerPromocionesResumen
+                                    copys={resumenCopys}
+                                />
+                            }
 
-                        {
-                            checkedPromotions &&
-                            <BannerPromocionesResumen
+                            <ResumenContent
                                 copys={resumenCopys}
+                                userSelection={userAnswers}
                             />
-                        }
 
-                        <ResumenContent
-                            copys={resumenCopys}
-                            userSelection={userAnswers}
-                        />
+                            {
+                                (checkedPromotions && !checkSwitch) && (
+                                    <div className="mt-[24px] pb-[32px] border-b-1 border-b-gray-150">
+                                        <BannerDomiciliacion copys={resumenCopys} />
+                                    </div>
+                                )
+                            }
 
-                        {
-                            (checkedPromotions && !checkSwitch) && (
-                                <div className="mt-[24px]">
-                                    <BannerDomiciliacion copys={resumenCopys} />
-                                </div>
-                            )
-                        }
-
-
-                        <div className="py-[32px] hidden xl:block">
-                            <BotonContratarConfigurador
-                                loading={loading}
-                                setLoading={setLoading}
+                            <DetalleResumen
+                                copys={resumenCopys}
+                                userSelection={userAnswers}
                             />
-                            {/* <ModalFechaInvalida isOpen={promoError} /> */}
-                        </div>
 
-                        <DetalleResumen
-                            copys={resumenCopys}
-                            userSelection={userAnswers}
-                        />
+                        </ResumenAdaptativo>
+
                     </section>
             }
 

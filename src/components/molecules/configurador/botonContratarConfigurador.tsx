@@ -142,7 +142,7 @@ export default function BotonContratarConfigurador({ loading, setLoading }: { lo
             {
                 !checkedPromotions ?
                     <Button
-                        className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
+                        className="py-[12px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
                         onPress={handleClick}
                         isDisabled={loading}
                     >
@@ -150,7 +150,7 @@ export default function BotonContratarConfigurador({ loading, setLoading }: { lo
                     </Button>
                     :
                     <Button
-                        className={"py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"}
+                        className={"py-[12px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"}
                         onPress={handleContratar}
                         isDisabled={loading && promoError}
                     >
