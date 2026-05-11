@@ -4,43 +4,44 @@ import { ResumenData } from "@/types/ResumenCompra";
 import DetalleResumen from "../resumenCompra/detalleResumen";
 import BannerPromocionesResumen from "@/components/atoms/BannerPromocionesResumen";
 import BannerDomiciliacion from "@/components/atoms/bannerDomiciliacion";
+import { ResumenAdaptativo } from "@/utils/ResumenAdaptativo";
 
-export default function ResumenDesktop({ resumenCopys, children }: { resumenCopys: ResumenData, children: () => React.ReactNode }) {
+export default function ResumenDesktop({ resumenCopys, children }: { resumenCopys: ResumenData, children: React.ReactNode }) {
 
     const { globalUserAnswers, checkSwitch, checkedPromotions } = useIzziContent();
 
     return (
         <>
-            <h1 className="font-bold leading-[24px] text-xl mb-[32px]">
-                {resumenCopys.titulo}
-            </h1>
+            <ResumenAdaptativo
+                maxHeight={714}
+                title={resumenCopys.titulo}
+                footer={children}
+            >
+                <BannerPromocionesResumen
+                    copys={resumenCopys}
+                />
+                <ResumenContent
+                    copys={resumenCopys}
+                    userSelection={globalUserAnswers}
+                />
 
-            <BannerPromocionesResumen
-                copys={resumenCopys}
-            />
+                {
+                    (checkedPromotions && !checkSwitch) && (
+                        <div className="mt-[24px]">
+                            <BannerDomiciliacion
+                                copys={resumenCopys}
+                            />
+                        </div>
+                    )
+                }
 
-            <ResumenContent
-                copys={resumenCopys}
-                userSelection={globalUserAnswers}
-            />
+                <DetalleResumen
+                    copys={resumenCopys}
+                    userSelection={globalUserAnswers}
+                />
 
-            {
-                (checkedPromotions && !checkSwitch) && (
-                    <div className="mt-[24px]">
-                        <BannerDomiciliacion
-                            copys={resumenCopys}
-                        />
-                    </div>
-                )
-            }
-            <div className="py-[32px] z-50">
-                {children()}
-            </div>
+            </ResumenAdaptativo>
 
-            <DetalleResumen
-                copys={resumenCopys}
-                userSelection={globalUserAnswers}
-            />
         </>
     )
 }

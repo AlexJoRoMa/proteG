@@ -784,7 +784,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         }
     }
 
-    const renderContinueButton = () => (
+    const renderContinueButton = (
         <Button
             disabled={isDisabled}
             className='py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50'
@@ -817,7 +817,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
                         </ResumenMobile>
                     </div>
                 ) : (
-                    <div className="border rounded-md border-gray-150 w-full px-[16px] pt-[24px] pb-[32px] bg-white-0">
+                    <div className="border rounded-md border-gray-150 w-full pt-[24px] bg-white-0">
                         <ResumenDesktop
                             resumenCopys={resumenCopys}
                         >
