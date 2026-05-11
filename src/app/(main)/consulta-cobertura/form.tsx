@@ -85,7 +85,7 @@ const inputDisableStyles = {
     "cursor-not-allowed"
   ],
   input: [
-    "text-black",
+    "!text-[#5F5A52]",
     "placeholder:text-black",
     "cursor-not-allowed",
   ],
@@ -719,11 +719,11 @@ export default function CoberturaForm() {
         )}
 
         <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-5'>
-          <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 h-[48px] sm:my-4 xl:my-0 border border-black sm:text-[16px] xl:text-[12px] 3xl:text-[16px]' variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
+          <Button startContent={<LocationIcon />} className='w-full lg:w-1/2 h-[48px] py-[14px] sm:my-4 xl:my-0 border border-black sm:text-[16px] xl:text-[12px] 3xl:text-[16px]' variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
             {getText('cobertura.button.ubicacion')}
           </Button>
           <Button
-            className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} h-[48px] text-white sm:text-[16px] xl:text-[14px] 3xl:text-[18px] xsm:mt-4 lg:mt-0`} 
+            className={`w-full lg:w-1/2 ${addressSelected ? 'bg-black' : 'bg-gray-150'} py-[14px] h-[48px] text-white sm:text-[16px] xl:text-[14px] 3xl:text-[18px] xsm:mt-4 lg:mt-0`} 
             isDisabled={btnDisable} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
