@@ -742,18 +742,19 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
         </div>
 
         {/* Mobil */}
-        <div className='lg:hidden xsm:block flex items-center justify-center 
-        fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-4 w-[90%]
+        <div className='lg:hidden xsm:block
+        fixed bottom-0 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center justify-center gap-4 
+        w-full h-[144px] bg-white pt-6
         '>
           <Button startContent={<LocationIcon />} 
-            className='w-full  sm:my-4 xl:my-0 bg-white border border-black sm:text-[18px] xl:text-[12px] 
+            className='w-[90%] sm:my-4 xl:my-0 bg-white border border-black sm:text-[18px] xl:text-[12px] 
             ' 
             variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
             {getText('cobertura.button.ubicacion')}
           </Button>
           <Button
-            className={`w-full  ${addressSelected ? 'bg-black' : 'bg-gray-100'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0 
-            border border-gray-300 disabled:border-gray-200 !opacity-100 disabled:!opacity-100`} 
+            className={`w-[90%]  ${addressSelected ? 'bg-black' : 'bg-[#BFBFC5]'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0 
+            !opacity-100 disabled:!opacity-100`} 
             isDisabled={btnDisable} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
