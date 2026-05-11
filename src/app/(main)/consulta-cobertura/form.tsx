@@ -734,11 +734,11 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
         {/* Desk */}
         <div className='w-full pb-4 lg:flex lg:col-2 gap-4 pt-5 lg:block xsm:hidden'>
           <Button startContent={<LocationIcon />} 
-            className='lg:w-1/2 lg:w-[286px] xsm:w-full sm:my-4 xl:my-0 border border-black sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
+            className='lg:w-1/2 lg:w-[286px] xsm:w-full sm:my-4 xl:my-0 border border-black py-[14px] h-[48px] sm:text-[18px] xl:text-[12px]' variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
             {getText('cobertura.button.ubicacion')}
           </Button>
           <Button
-            className={`lg:w-1/2 lg:w-[286px] xsm:w-full ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} 
+            className={`lg:w-1/2 lg:w-[286px] xsm:w-full ${addressSelected ? 'bg-black' : 'bg-gray-150'} py-[14px] h-[48px] text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0`} 
             isDisabled={btnDisable} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
@@ -746,7 +746,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
 
         {/* Mobil */}
         <div className='lg:hidden xsm:block
-        fixed bottom-0 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center justify-center gap-4 
+        fixed bottom-0 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center justify-center gap-4 py-[14px]
         w-full h-[144px] bg-white pt-6
         '>
           <Button startContent={<LocationIcon />} 
@@ -756,7 +756,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
             {getText('cobertura.button.ubicacion')}
           </Button>
           <Button
-            className={`w-[90%]  ${addressSelected ? 'bg-black' : 'bg-[#BFBFC5]'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0 
+            className={`w-[90%]  ${addressSelected ? 'bg-black' : 'bg-[#BFBFC5]'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0 py-[14px]
             !opacity-100 disabled:!opacity-100`} 
             isDisabled={btnDisable} type="submit">
             {getText('cobertura.button.confirmar')}
