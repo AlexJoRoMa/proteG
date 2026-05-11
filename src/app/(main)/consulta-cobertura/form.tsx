@@ -79,16 +79,16 @@ const inputStyles = (isAddressSelected?: boolean) => ({
 });
 
 const inputDisableStyles = {
-  label: "text-black opacity-100",
+  label: "!text-gray-200",
   inputWrapper: [
-    "bg-gray-100",
-    "border border-gray-100 border-solid rounded-md",
+    "bg-[#DADADF66]",
+    "border border-[#DADADF66]  border-solid rounded-md",
     "cursor-not-allowed"
   ],
   input: [
-    "text-black",
+    "!text-[#5F5A52]",
     "placeholder:text-black",
-    "cursor-not-allowed"
+    "cursor-not-allowed",
   ],
   innerWrapper: [
     "bg-transparent",
@@ -668,20 +668,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
               className='max-w-[95%]'
             />
         </div>
-          <Input
-            isReadOnly
-            isRequired
-            label={getText('cobertura.form.codigo.label')}
-            placeholder={getText('cobertura.form.codigo.placeholder')}
-            errorMessage={getText('cobertura.form.codigo.error')}
-            labelPlacement="outside"
-            name="postalCode"
-            type="text"
-            value={postalCode}
-            onValueChange={setPostalCode}
-            classNames={inputDisableStyles}
-            maxLength={5}
-          />
+        <div className='grid gri-cols-1 lg:grid-cols-2 w-full h-full gap-4 mt-2'>
           <Input
             isReadOnly={isFieldDisabled}
             isRequired
@@ -725,6 +712,22 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
             onValueChange={setState}
             classNames={inputDisableStyles}
           />
+          <Input
+            isReadOnly
+            isRequired
+            label={getText('cobertura.form.codigo.label')}
+            placeholder={getText('cobertura.form.codigo.placeholder')}
+            errorMessage={getText('cobertura.form.codigo.error')}
+            labelPlacement="outside"
+            name="postalCode"
+            type="text"
+            value={postalCode}
+            onValueChange={setPostalCode}
+            classNames={inputDisableStyles}
+            maxLength={5}
+          />
+          
+        </div>
           </>
         )}
 
