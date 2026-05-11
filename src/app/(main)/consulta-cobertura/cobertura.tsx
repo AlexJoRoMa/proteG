@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { APIProvider } from '@vis.gl/react-google-maps';
 import IzziMap from './map';
 import CoberturaForm from './form';
@@ -16,7 +16,7 @@ const FALLBACKS: Record<string, string> = {
     'cobertura.title': 'Comprueba tu cobertura',
     'cobertura.subtitle': 'Ingresa tu dirección y te mostraremos los paquetes y promociones que puedes contratar.',
     'cobertura.direccion.seleccionada': 'Dirección seleccionada:',
-    'cobertura.alertaAzul.mensaje': 'Puedes seleccionar tu dirección arrastrando y haciendo clic en el mapa'
+    'cobertura.alertaAzul.mensaje': 'Puedes seleccionar tu dirección arrastrando y haciendo clic en el mapa',
 };
 
 
@@ -30,6 +30,15 @@ export default function Cobertura() {
     const [initialStreet] = useState(streetDireccion);
 
     const checkValue = addressFielSelected && streetDireccion !== initialStreet && streetDireccion.length > 0;
+
+    const mapRef = useRef<HTMLDivElement>(null);
+    const goToMap = (e?: React.MouseEvent) => {
+        if(e){
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        mapRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start'});
+    };
 
     useEffect(() => {
 
@@ -58,13 +67,16 @@ export default function Cobertura() {
                         <div className='lg:flex lg:flex-col-2 mt-8'>
                             <div className='lg:w-1/2'>
                                 <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-                                    <CoberturaForm />
+                                    <CoberturaForm onGoMap={goToMap}/>
                                 </div>
                             </div>
                             {/* Lado derecho de la pagina */}
-                            <div className='lg:w-1/2'>
+                            
+                            
+                            <div  ref={mapRef}  className='lg:w-1/2'>
+                            <div className='lg:hidden xsm:block'/>
                                 {checkValue ?
-                                    <div className='pb-4'>
+                                    <div  className='pb-4'>
                                         <p className='xsm:text-[20px] lg:text-[24px] font-bold pb-2'>
                                             {getText('cobertura.direccion.seleccionada')}
                                         </p>
@@ -77,15 +89,17 @@ export default function Cobertura() {
                                         </div>
                                     </div>
                                     : <></>}
+
                                 <div className='bg-blue-700 rounded-lg text-white px-[20px] py-[16px] flex items-center gap-3 mb-4'>
                                     <div className='flex items-center justify-center w-5 h-5 border-1 border-white rounded-full flex-shrink-0'>
                                         <span className='text-[12px] font-bold pl-[1px]'>i</span>
                                     </div>
+
                                     <p className='fonrt-normal text-[16px] text-white leading-[1.4]'>
                                         {getText('cobertura.alertaAzul.mensaje')}
                                     </p>
                                 </div>
-
+                                
                                 <IzziMap />
 
                             </div>

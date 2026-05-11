@@ -49,6 +49,7 @@ const FALLBACKS: Record<string, string> = {
   'cobertura.button.ubicacion': 'utilizar mi ubicación actual',
   'cobertura.button.confirmar': 'confirmar dirección',
   'cobertura.descripcion.direccion': 'Ingresa tu dirección y selecciona uno de la lista',
+  'cobertura.seleccionar.mapa' : 'Seleccionar dirección desde el  mapa'
 };
 
 let descriptionText = '';
@@ -96,6 +97,10 @@ const inputDisableStyles = {
     "text-black",
     "text-[12px]"
   ]
+}
+
+interface CoberturaProps {
+  onGoMap?: () => void;
 }
 
 interface AddressParts {
@@ -192,7 +197,7 @@ const GooglePlacesInput = ({
   )
 }
 
-export default function CoberturaForm() {
+export default function CoberturaForm({ onGoMap}: CoberturaProps) {
   const map = useMap();
   const [error] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -622,9 +627,17 @@ export default function CoberturaForm() {
           onFocus={()=>setIsSearching(true)}
         />
 
+        <div  className='lg:hidden xsm:block mb-2'>
+          <button
+            onClick={onGoMap}
+            className=' font-bold text-[16px] text-[#007BFF] underline'>
+            {getText('cobertura.seleccionar.mapa')}
+          </button>
+        </div>
+
         {showFields && (
           <>
-          <div className='flex col-2 w-full gap-4 xsm:mt-3 lg:mt-0'>
+          <div className='flex col-2 w-full gap-4 xsm:mt-1 lg:mt-0'>
             <Input
               isReadOnly={isFieldDisabled}
               isRequired
@@ -740,7 +753,7 @@ export default function CoberturaForm() {
           </Button>
           <Button
             className={`w-full  ${addressSelected ? 'bg-black' : 'bg-gray-100'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0 
-            border border-gray-200 disabled:border-gray-200 !opacity-100 disabled:!opacity-100`} 
+            border border-gray-300 disabled:border-gray-200 !opacity-100 disabled:!opacity-100`} 
             isDisabled={btnDisable} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
