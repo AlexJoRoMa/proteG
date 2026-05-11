@@ -739,7 +739,7 @@ export default function CoberturaForm() {
             {getText('cobertura.button.ubicacion')}
           </Button>
           <Button
-            className={`w-full  ${addressSelected ? 'bg-black' : 'bg-gray-150'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0 
+            className={`w-full  ${addressSelected ? 'bg-black' : 'bg-gray-100'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0 
             border border-gray-200 disabled:border-gray-200 !opacity-100 disabled:!opacity-100`} 
             isDisabled={btnDisable} type="submit">
             {getText('cobertura.button.confirmar')}
