@@ -5,7 +5,6 @@ import { useContent } from "@/utils/ConfiguradorProvider"
 import { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, useDisclosure } from "@heroui/react";
 import { Button } from '@heroui/react';
 import { useEffect, useState } from "react";
-import ResumenContainerDesktop from "./ResumenContainerDesktop";
 import { ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { FormatCurrency } from "@/utils/Currency";
@@ -14,6 +13,10 @@ import { LoaderIcon } from "@/constants/IconsConstants";
 import { getOttCategoriesFromContentful, isComboCategory } from "@/utils/OttCategoriesHelper";
 import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
 import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
+import BannerPromocionesResumen from "@/components/atoms/BannerPromocionesResumen";
+import ResumenContent from "../resumenCompra/resumenContent";
+import BannerDomiciliacion from "@/components/atoms/bannerDomiciliacion";
+import DetalleResumen from "../resumenCompra/detalleResumen";
 
 export const ArrowUpIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
@@ -38,7 +41,7 @@ function hasData(obj: unknown): boolean {
 export default function ResumenContainerMobile() {
 
     const { userAnswers, copysResumen, configuradorEntry, izziSelection } = useContent();
-    const { precioTotal, coberturaData, setPromoData, infoPaquetes, setInfoPaquetes, setCheckedPromotions, checkedPromotions, globalIzziSelection } = useIzziContent();;
+    const { precioTotal, coberturaData, setPromoData, infoPaquetes, setInfoPaquetes, setCheckedPromotions, checkedPromotions, globalIzziSelection, checkSwitch } = useIzziContent();;
     const [loading, setLoading] = useState<boolean>(false);
     const [promoError, setPromoError] = useState(false);
     const [validComboCategories, setValidComboCategories] = useState<Set<string>>(new Set());
@@ -314,7 +317,33 @@ export default function ResumenContainerMobile() {
                                             </DrawerHeader>
 
                                             <DrawerBody>
-                                                <ResumenContainerDesktop />
+                                                <>
+                                                    {
+                                                        checkedPromotions &&
+                                                        <BannerPromocionesResumen
+                                                            copys={resumenCopys}
+                                                        />
+                                                    }
+
+                                                    <ResumenContent
+                                                        copys={resumenCopys}
+                                                        userSelection={userAnswers}
+                                                    />
+
+                                                    {
+                                                        (checkedPromotions && !checkSwitch) && (
+                                                            <div className="mt-[24px] pb-[32px] border-b-1 border-b-gray-150">
+                                                                <BannerDomiciliacion copys={resumenCopys} />
+                                                            </div>
+                                                        )
+                                                    }
+
+                                                    <DetalleResumen
+                                                        copys={resumenCopys}
+                                                        userSelection={userAnswers}
+                                                    />
+
+                                                </>
                                             </DrawerBody>
 
                                             <DrawerFooter>
