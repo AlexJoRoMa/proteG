@@ -71,11 +71,10 @@ export default function Cobertura() {
                                     <CoberturaForm onGoMap={goToMap}/>
                                 </div>
                             </div>
+
+
                             {/* Lado derecho de la pagina */}
-                            
-                            
                             <div  ref={mapRef}  className='lg:w-1/2'>
-                            <div className='lg:hidden xsm:block'/>
                                 {checkValue ?
                                     <div  className='pb-4'>
                                         <p className='xsm:text-[20px] lg:text-[24px] font-bold pb-2'>

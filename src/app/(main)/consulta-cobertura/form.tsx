@@ -743,26 +743,26 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
             {getText('cobertura.button.confirmar')}
           </Button>
         </div>
+      </Form>
 
-        {/* Mobil */}
-        <div className='lg:hidden xsm:block
-        fixed bottom-0 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center justify-center gap-4 py-[14px]
-        w-full h-[144px] bg-white pt-6
+      {/* Mobil */}
+        <div className='lg:hidden xsm:block xsm:flex 
+        fixed bottom-0 z-50 flex-col items-center justify-center
+        w-full h-[144px] bg-white pt-4 pb-4 md:pt-2 left-0 right-0 
         '>
           <Button startContent={<LocationIcon />} 
-            className='w-[90%] sm:my-4 xl:my-0 bg-white border border-black sm:text-[18px] xl:text-[12px] 
+            className='w-[90%] h-[48px] sm:my-4 xl:my-0 bg-white border border-black sm:text-[18px] xl:text-[12px] py-[14px]
             ' 
             variant='bordered' onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
             {getText('cobertura.button.ubicacion')}
           </Button>
           <Button
-            className={`w-[90%]  ${addressSelected ? 'bg-black' : 'bg-[#BFBFC5]'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 lg:mt-0 py-[14px]
-            !opacity-100 disabled:!opacity-100`} 
+            className={`w-[90%] h-[48px] ${addressSelected ? 'bg-black' : 'bg-[#BFBFC5]'} text-white sm:text-[18px] xl:text-[14px] xsm:mt-4 md:mt-0 py-[14px]
+             !opacity-100 disabled:!opacity-100`} 
             isDisabled={btnDisable} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
         </div>
-      </Form>
     </>
   )
 }
