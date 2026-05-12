@@ -91,7 +91,7 @@ export default function ResumenContainerDesktop() {
 
                         </div>
 
-                        <div className="shadow-[0_-2px_20px_-4px_rgba(0,0,0,0.12)] py-[12px] px-[16px]">
+                        <div className="shadow-[0_-2px_20px_-4px_rgba(0,0,0,0.12)] pt-[32px] pb-[24px] px-[16px]">
                             <BotonContratarConfigurador
                                 loading={loading}
                                 setLoading={setLoading}
