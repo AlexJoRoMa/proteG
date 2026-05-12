@@ -20,7 +20,7 @@ import { EVENTS, CURRENCY } from '@/lib/tracking/constants';
 const FALLBACKS: Record<string, string> = {
   'cobertura.form.direccion.label': 'Dirección',
   'cobertura.form.codigo.label': 'Código postal',
-  'cobertura.form.direccion.placeholder': 'Introduce tu dirección o código postal',
+  'cobertura.form.direccion.placeholder': 'Introduce tu dirección',
   'cobertura.form.direccion.error': 'Ingresa tu dirección y selecciona uno de la lista',
   'cobertura.form.codigo.placeholder': 'Introduce tu código postal',
   'cobertura.form.codigo.error': 'Ingresa un código postal válido',
@@ -730,10 +730,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
         </div>
           </>
         )}
-        {/* 
-        lg:w-[286px] lg:min-w-[136px]
         
-        */}
         <div className='w-full pb-4 lg:pt-5 xsm:pt-4 lg:gap-4 xsm:gap-0 
         lg:relative lg:bottom-auto lg:left-auto lg:right-auto lg:z-0 lg:flex-row lg:justify-start lg:h-auto lg:bg-transparent
         fixed bottom-0 left-0 right-0 z-50 flex flex-col items-center justify-center w-full h-[144px] bg-white'>
