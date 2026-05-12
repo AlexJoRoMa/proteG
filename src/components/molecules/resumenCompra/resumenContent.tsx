@@ -199,7 +199,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
         <section className="flex flex-col gap-[32px] pb-[20px] pt-0 xl:pb-0">
 
             <div className="flex flex-col">
-                <div className={`flex justify-between w-full ${checkedPromotions ? "mt-[24px]" : "mt-0 xl:mt-[24px]"}`}>
+                <div className={`flex justify-between w-full ${checkedPromotions ? "mt-[24px]" : "mt-0"}`}>
                     <h2 className="font-bold text-lg leading-[24px] xl:text-xl xl:leading-[40px]">
                         {resumenCopys.total.titulo}
                     </h2>

@@ -48,10 +48,12 @@ export default function ResumenMobile() {
                                     copys={resumenCopys}
                                     userSelection={globalUserAnswers}
                                 />
-                                <DetalleResumen
-                                    copys={resumenCopys}
-                                    userSelection={globalUserAnswers}
-                                />
+                                <div className="border-t-1 border-t-gray-150">
+                                    <DetalleResumen
+                                        copys={resumenCopys}
+                                        userSelection={globalUserAnswers}
+                                    />
+                                </div>
                             </>
                         </CardBody>
                     </Card>

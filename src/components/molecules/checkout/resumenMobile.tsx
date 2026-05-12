@@ -110,10 +110,12 @@ export default function ResumenMobile({ resumenCopys, children }: { resumenCopys
                                             </div>
                                         )
                                     }
-                                    <DetalleResumen 
-                                    copys={resumenCopys}
-                                    userSelection={globalUserAnswers}
-                                    />
+                                    <div className={`${(checkedPromotions && !checkSwitch) && "border-t-1 border-t-gray-150"}`}>
+                                        <DetalleResumen
+                                            copys={resumenCopys}
+                                            userSelection={globalUserAnswers}
+                                        />
+                                    </div>
                                 </>
                             </DrawerBody>
 
