@@ -25,7 +25,7 @@ export function ResumenAdaptativo({
 
         const checkOverflow = () => {
             setHasOverflow(
-                element.clientHeight > maxHeight
+                element.getBoundingClientRect().height > maxHeight
             );
         };
 
