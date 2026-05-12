@@ -59,7 +59,6 @@ export default function Cobertura() {
                 <div className="items-center justify-center mb-8 mx-sm xl:mx-xl xl:justify-start">
                     <div className='flex flex-col gap-y-2'>
                         <p className="xsm:text-[20px] lg:text-[32px] font-bold">{getText('cobertura.title')}</p>
-                        
                     </div>
                     <APIProvider
                         solutionChannel='2'
@@ -77,11 +76,11 @@ export default function Cobertura() {
                             <div  ref={mapRef}  className='lg:w-1/2'>
                                 {checkValue ?
                                     <div  className='pb-4'>
-                                        <p className='xsm:text-[20px] lg:text-[24px] font-bold pb-2'>
+                                        <p className='xsm:text-[20px] lg:text-[24px] font-bold pb-2 xsm:mt-6 lg:mt-0'>
                                             {getText('cobertura.direccion.seleccionada')}
                                         </p>
 
-                                        <div className='flex items-center gap-2'>
+                                        <div className='flex items-center gap-2 '>
                                             <LocationIcon />
                                             <p className='xsm:text-[16px] lg:text-[18px]'>
                                                 {streetDireccion}
