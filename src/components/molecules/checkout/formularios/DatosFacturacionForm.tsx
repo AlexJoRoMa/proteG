@@ -14,18 +14,10 @@ interface Props {
     setCfdi: (val: string) => void;
     regimen: string;
     setRegimen: (val: string) => void;
-    rfc: string;
-    setRfc: (val: string) => void;
     setIsValid: (valid: boolean) => void;
 }
 
-type BillingData ={
-    rfc: string;
-    regimen: string;
-    cfdi: string;
-}
-
-export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regimen, setRegimen,rfc, setRfc, setIsValid }) => {
+export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regimen, setRegimen, setIsValid }) => {
 
     const { getValue } = useMicrocopies('formulario-facturacion');
     const { datosContratacion } = useCheckout();
@@ -46,38 +38,15 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
         return (validPF || validPM) ? null : getValue('facturacion.error.rfc') || 'RFC incorrecto';
         
     };
-    const getLocalPropertyByKey = (propertyName: string)=> JSON.parse(localStorage.getItem(propertyName) as string)??null;
 
-    let billingDataFromLocal: BillingData={
-        rfc:'',
-        cfdi:'',
-        regimen:''
-    };
-    const writeBillingInfoToLocal=()=> {
-        const persistentBillingData = {
-            rfc,
-            cfdi,
-            regimen
-        }
-        localStorage.setItem('PersistentBillingData', JSON.stringify(persistentBillingData))
-    }
+
+
+    // Estado para el RFC
+    const [rfc, setRfc] = useState(datosFacturacion?.rfc ?? "");
 
     // Estados para controlar si los campos han sido tocados
     const [cfdiTouched, setCfdiTouched] = useState(false);
     const [regimenTouched, setRegimenTouched] = useState(false);
-
-    const updateBillingInfoStateOnLoad = ()=>{
-        setRfc(billingDataFromLocal.rfc)
-        setRegimen(billingDataFromLocal.regimen)
-        setCfdi(billingDataFromLocal.cfdi)
-    }
-
-    useEffect(()=>{
-        billingDataFromLocal = getLocalPropertyByKey('PersistentBillingData')
-        if (billingDataFromLocal != null) {
-            updateBillingInfoStateOnLoad()
-        }
-    },[])
 
     // Validar formulario cuando cambien los valores
     useEffect(() => {
@@ -86,10 +55,8 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
             rfc.length >= 12 && 
             cfdi.trim() !== '' && 
             regimen.trim() !== '';
+
         setIsValid(isFormValid);
-        if (isFormValid){
-            writeBillingInfoToLocal()
-        }
     }, [rfc, cfdi, regimen, setIsValid]);
 
     return (

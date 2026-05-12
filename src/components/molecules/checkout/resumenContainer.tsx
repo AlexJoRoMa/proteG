@@ -319,136 +319,97 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     }
 
     // Step 6
-    const STEP6_SAFETY_TIMEOUT_MS = 90000;
-
     const step6 = async () => {
         const metodoPago = datosContratacion.Pago?.metodoPago;
 
-        // Abrir modal y mantenerlo durante validate + submit + redirect
-        stop();
-        setSpecificModal("cargaGenerica");
-        setIsSpecificModalOpen(true);
+        // ValidaPago
+        const response = await validatePayment(
+            datosContratacion,
+            setDatosContratacion,
+            processStatusRef.current,
+            paymentReference
+        );
 
-        const closeModal = () => {
-            setIsSpecificModalOpen(false);
-            setSpecificModal(null);
-        };
+        if (!response) {
+            return;
+        }
 
-        // Red de seguridad: si nada respondió en 90s, cerrar modal y mandar a /error
-        let safetyTriggered = false;
-        const safetyTimeout = setTimeout(() => {
-            safetyTriggered = true;
-            console.error("step6 safety timeout: nada respondió en 90s");
-            closeModal();
-            router.push("/error");
-        }, STEP6_SAFETY_TIMEOUT_MS);
+        if (
+            !addPaymentInfoTrackedRef.current &&
+            metodoPago &&
+            globalIzziSelection &&
+            globalIzziSelection.idPaquete &&
+            precioTotal
+        ) {
+            const { buildEcommerceLineItems, normalizeEcommerceValue, pushEcommerceEvent } = izziDataLayerHelpers;
+            const ecommerceValue = normalizeEcommerceValue(precioTotal);
 
-        try {
-            // ValidaPago
-            const validated = await validatePayment(
-                datosContratacion,
-                setDatosContratacion,
-                processStatusRef.current,
-                paymentReference
+            const items = buildEcommerceLineItems(globalIzziSelection, {
+                precioTotal: ecommerceValue,
+                mainListId: "checkout",
+                mainListName: "Checkout - plan principal",
+                extrasListId: "checkout",
+                extrasListName: "Checkout - extras",
+            });
+
+            let checkoutSessionId: string | undefined;
+            if (typeof window !== "undefined") {
+                const existing = sessionStorage.getItem(CHECKOUT_SESSION_STORAGE_KEY);
+                if (existing) {
+                    checkoutSessionId = existing;
+                }
+            }
+
+            let paymentType: string | undefined;
+            if (metodoPago === "creditCard") {
+                paymentType = "credit_card";
+            } else if (metodoPago === "paypal") {
+                paymentType = "bank_transfer";
+            } else if (metodoPago === "tecnico") {
+                paymentType = "oxxo";
+            }
+
+            const additionalParams: Record<string, unknown> = {};
+            if (checkoutSessionId) {
+                additionalParams.checkout_session_id = checkoutSessionId;
+            }
+
+            pushEcommerceEvent(
+                EVENTS.ADD_PAYMENT_INFO,
+                {
+                    currency: CURRENCY,
+                    value: ecommerceValue,
+                    payment_type: paymentType,
+                    items,
+                },
+                Object.keys(additionalParams).length ? additionalParams : undefined
             );
 
-            if (safetyTriggered) return;
+            addPaymentInfoTrackedRef.current = true;
+        }
 
-            if (!validated) {
-                closeModal();
-                router.push("/error");
-                return;
-            }
+        // Flujo específico para pago con técnico: reintentos + modal
+        if (metodoPago === "tecnico") {
+            const success = await runWithModal(
+                () => runSubmitCapacityWithRetries(),
+                "cargaGenerica"
+            );
 
-            if (
-                !addPaymentInfoTrackedRef.current &&
-                metodoPago &&
-                globalIzziSelection &&
-                globalIzziSelection.idPaquete &&
-                precioTotal
-            ) {
-                const { buildEcommerceLineItems, normalizeEcommerceValue, pushEcommerceEvent } = izziDataLayerHelpers;
-                const ecommerceValue = normalizeEcommerceValue(precioTotal);
-
-                const items = buildEcommerceLineItems(globalIzziSelection, {
-                    precioTotal: ecommerceValue,
-                    mainListId: "checkout",
-                    mainListName: "Checkout - plan principal",
-                    extrasListId: "checkout",
-                    extrasListName: "Checkout - extras",
-                });
-
-                let checkoutSessionId: string | undefined;
-                if (typeof window !== "undefined") {
-                    const existing = sessionStorage.getItem(CHECKOUT_SESSION_STORAGE_KEY);
-                    if (existing) {
-                        checkoutSessionId = existing;
-                    }
-                }
-
-                let paymentType: string | undefined;
-                if (metodoPago === "creditCard") {
-                    paymentType = "credit_card";
-                } else if (metodoPago === "paypal") {
-                    paymentType = "bank_transfer";
-                } else if (metodoPago === "tecnico") {
-                    paymentType = "oxxo";
-                }
-
-                const additionalParams: Record<string, unknown> = {};
-                if (checkoutSessionId) {
-                    additionalParams.checkout_session_id = checkoutSessionId;
-                }
-
-                pushEcommerceEvent(
-                    EVENTS.ADD_PAYMENT_INFO,
-                    {
-                        currency: CURRENCY,
-                        value: ecommerceValue,
-                        payment_type: paymentType,
-                        items,
-                    },
-                    Object.keys(additionalParams).length ? additionalParams : undefined
-                );
-
-                addPaymentInfoTrackedRef.current = true;
-            }
-
-            // Flujo específico para pago con técnico: reintentos
-            if (metodoPago === "tecnico") {
-                const success = await runSubmitCapacityWithRetries();
-
-                if (safetyTriggered) return;
-
-                if (success) {
-                    router.push("/thank-you");
-                } else {
-                    console.error("SubmitCapacity failed after 3 attempts for pago tecnico");
-                    closeModal();
-                    router.push("/error");
-                }
-
-                return;
-            }
-
-            // Flujo para otros métodos de pago
-            const submitResponse = await runSubmitCapacity();
-
-            if (safetyTriggered) return;
-
-            if (submitResponse) {
+            if (success) {
                 router.push("/thank-you");
             } else {
-                closeModal();
+                console.error("SubmitCapacity failed after 3 attempts for pago tecnico");
                 router.push("/error");
             }
-        } catch (err) {
-            if (safetyTriggered) return;
-            console.error("Error en step6", err);
-            closeModal();
-            router.push("/error");
-        } finally {
-            clearTimeout(safetyTimeout);
+
+            return;
+        }
+
+        // Flujo actual para otros métodos de pago
+        const submitResponse = await runSubmitCapacity();
+
+        if (submitResponse) {
+            router.push("/thank-you");
         }
     }
 

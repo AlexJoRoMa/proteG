@@ -43,12 +43,6 @@ export default function ThankYou() {
             page_type: 'confirmation',
             page_name: 'thank_you',
         });
-        
-        localStorage.removeItem('PersistentPersonalData')
-        localStorage.removeItem('PersistentDireccionData')
-        localStorage.removeItem('PersistentBillingData')
-        localStorage.removeItem('PersistentAdditionalAddressData')
-
     }, []);
 
     useEffect(() => {
