@@ -637,7 +637,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
 
         {showFields && (
           <>
-          <div className='flex col-2 w-full gap-4 xsm:mt-1 lg:mt-0'>
+          <div className='flex col-2 w-full gap-4 xsm:mt-1 lg:mt-2 2xl:mt-0'>
             <Input
               isReadOnly={isFieldDisabled}
               isRequired
@@ -668,7 +668,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
               className='max-w-[95%]'
             />
         </div>
-        <div className='grid grid-cols-1 lg:grid-cols-2 w-full h-full gap-4 mt-2'>
+        <div className='grid grid-cols-1 lg:grid-cols-2 w-full h-full gap-4 mt-2 xl:mt-6 2xl:mt-2'>
           <Input
             isReadOnly={isFieldDisabled}
             isRequired
@@ -730,14 +730,17 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
         </div>
           </>
         )}
+        {/* 
+        lg:w-[286px] lg:min-w-[136px]
         
+        */}
         <div className='w-full pb-4 lg:pt-5 xsm:pt-4 lg:gap-4 xsm:gap-0 
         lg:relative lg:bottom-auto lg:left-auto lg:right-auto lg:z-0 lg:flex-row lg:justify-start lg:h-auto lg:bg-transparent
         fixed bottom-0 left-0 right-0 z-50 flex flex-col items-center justify-center w-full h-[144px] bg-white'>
 
           <Button startContent={<LocationIcon />} 
-            className='h-[48px] xsm:text-[16px] xl:text-[12px] border border-black py-[14px] 
-            lg:w-[286px]
+            className=' xsm:text-[16px] xl:text-[12px] border border-black py-[14px] 
+            lg:w-full
             w-[90%]' 
             variant='bordered' 
             onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
@@ -745,8 +748,8 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
           </Button>
 
           <Button
-            className={`w-[90%] h-[48px] text-white ${addressSelected ? 'bg-black' : 'bg-[#BFBFC5]'} xsm:text-[16px] xl:text-[14px] py-[14px]
-            lg:w-[286px] xsm:mt-4 lg:mt-0`} 
+            className={`w-[90%] text-white ${addressSelected ? 'bg-black' : 'bg-[#BFBFC5]'} xsm:text-[16px] xl:text-[14px] py-[14px]
+            lg:w-full xsm:mt-4 lg:mt-0`} 
             isDisabled={btnDisable} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
