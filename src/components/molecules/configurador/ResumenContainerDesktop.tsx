@@ -11,7 +11,6 @@ import DetalleResumen from "../resumenCompra/detalleResumen";
 import BotonContratarConfigurador from "./botonContratarConfigurador";
 import { internetComponentFields, movilComponentFields, tvComponentFields } from "@/types/ConfiguradorTypes";
 import BannerDomiciliacion from "@/components/atoms/bannerDomiciliacion";
-import { ResumenAdaptativo } from "@/utils/ResumenAdaptativo";
 
 function hasData(obj: unknown): boolean {
     return !!obj && typeof obj === "object" && Object.keys(obj as object).length > 0;
@@ -47,7 +46,7 @@ export default function ResumenContainerDesktop() {
                         </button>
                     </div>
                     :
-                    <section>
+                    <section className="flex flex-col h-full min-h-0">
                         {
                             loading &&
 
@@ -57,16 +56,12 @@ export default function ResumenContainerDesktop() {
                                 </div>
                             </div>
                         }
-                        <ResumenAdaptativo
-                            maxHeight={714}
-                            title={resumenCopys.titulo}
-                            footer={
-                                <BotonContratarConfigurador
-                                    loading={loading}
-                                    setLoading={setLoading}
-                                />
-                            }
-                        >
+
+                        <h1 className="hidden xl:block font-bold leading-[24px] text-xl px-[16px] mb-[32px]">
+                            {resumenCopys.titulo}
+                        </h1>
+
+                        <div className="px-[16px] overflow-y-auto custom-scroll flex-1 min-h-0">
                             {
                                 checkedPromotions &&
                                 <BannerPromocionesResumen
@@ -81,18 +76,27 @@ export default function ResumenContainerDesktop() {
 
                             {
                                 (checkedPromotions && !checkSwitch) && (
-                                    <div className="mt-[24px] pb-[32px] border-b-1 border-b-gray-150">
+                                    <div className="mt-[24px] pb-[32px]">
                                         <BannerDomiciliacion copys={resumenCopys} />
                                     </div>
                                 )
                             }
 
-                            <DetalleResumen
-                                copys={resumenCopys}
-                                userSelection={userAnswers}
-                            />
+                            <div className={`${(checkedPromotions && !checkSwitch) && "border-t-1 border-t-gray-150"}`}>
+                                <DetalleResumen
+                                    copys={resumenCopys}
+                                    userSelection={userAnswers}
+                                />
+                            </div>
 
-                        </ResumenAdaptativo>
+                        </div>
+
+                        <div className="shadow-[0_-2px_20px_-4px_rgba(0,0,0,0.12)] py-[12px] px-[16px]">
+                            <BotonContratarConfigurador
+                                loading={loading}
+                                setLoading={setLoading}
+                            />
+                        </div>
 
                     </section>
             }

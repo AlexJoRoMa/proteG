@@ -22,7 +22,7 @@ export default function ResumenDesktop() {
                 copys={resumenCopys}
                 userSelection={globalUserAnswers}
             />
-            <div className="mt-[24px]">
+            <div className="mt-[24px] border-t-1 border-t-gray-150">
                 <DetalleResumen
                     copys={resumenCopys}
                     userSelection={globalUserAnswers}

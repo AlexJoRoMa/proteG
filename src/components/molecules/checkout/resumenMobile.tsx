@@ -9,7 +9,7 @@ import BannerPromocionesResumen from "@/components/atoms/BannerPromocionesResume
 import BannerDomiciliacion from "@/components/atoms/bannerDomiciliacion";
 import DetalleResumen from "../resumenCompra/detalleResumen";
 
-export default function ResumenMobile({ resumenCopys, children }: { resumenCopys: ResumenData, children: React.ReactNode }) {
+export default function ResumenMobile({ resumenCopys, children }: { resumenCopys: ResumenData, children: () => React.ReactNode }) {
 
     const { precioTotal, precioCombinado, globalUserAnswers, infoPaquetes, checkSwitch, checkedPromotions } = useIzziContent();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -59,7 +59,7 @@ export default function ResumenMobile({ resumenCopys, children }: { resumenCopys
             </div>
 
             <div className="z-50">
-                {children}
+                {children()}
             </div>
 
 
@@ -110,15 +110,17 @@ export default function ResumenMobile({ resumenCopys, children }: { resumenCopys
                                             </div>
                                         )
                                     }
-                                    <DetalleResumen 
-                                    copys={resumenCopys}
-                                    userSelection={globalUserAnswers}
-                                    />
+                                    <div className={`${(checkedPromotions && !checkSwitch) && "border-t-1 border-t-gray-150"}`}>
+                                        <DetalleResumen
+                                            copys={resumenCopys}
+                                            userSelection={globalUserAnswers}
+                                        />
+                                    </div>
                                 </>
                             </DrawerBody>
 
                             <DrawerFooter>
-                                {children}
+                                {children()}
                             </DrawerFooter>
                         </>
                     )}
