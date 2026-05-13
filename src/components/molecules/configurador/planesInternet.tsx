@@ -29,8 +29,8 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
     }, [plans]);
 
     const mapOffersByType = useMemo(() => ({
-        hfc: [80, 100, 150],
-        ftth: [80, 100, 200, 1000]
+        hfc: [100, 120, 150],
+        ftth: [100, 120, 200, 1000]
     }), []);
 
     const offersByType = useMemo(() => {
