@@ -250,15 +250,13 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  console.log('🦄 checkScroll', doErrorScroll)
-
   useEffect(() => {
     if(doErrorScroll) {
       if(checkFieldRef.current) {
-        checkFieldRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start'});
+        checkFieldRef.current?.scrollIntoView({ behavior:'smooth', block:'start' });
       }
     }
-  }, [coloniaError, numExtError])
+  }, [doErrorScroll])
 
 
   const modalData = {
@@ -629,9 +627,6 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
       }
 
       <Form className="w-full max-w-[95%]" onSubmit={onSubmit}>
-        <div className='lg:hidden xsm:block mb-2'
-        ref={checkFieldRef}
-        />
         <GooglePlacesInput
           value={street}
           onValueChange={(e) => handleDirectionChange(e)}
@@ -644,6 +639,10 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
           addressSelected={addressSelected}
           clear={clearForm}
           onFocus={()=>setIsSearching(true)}
+        />
+
+        <div className='block scroll-mt-[100px] lg:scroll-mt-[300px]'
+        ref={checkFieldRef}
         />
 
         <div  className='lg:hidden xsm:block mb-2'>
