@@ -199,6 +199,7 @@ const GooglePlacesInput = ({
 
 export default function CoberturaForm({ onGoMap}: CoberturaProps) {
   const map = useMap();
+  const checkFieldRef = useRef<HTMLDivElement>(null);
   const [error] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasResponse, setHasResponse] = useState<boolean>(false);
@@ -240,6 +241,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
   const isFieldDisabled = !addressSelected;
   const isColoniaValid = coloniaError || neighborhood.trim() === '';
   const isNumExtValid = streetNumber.trim().length > 0;
+  const doErrorScroll = coloniaError || numExtError;
 
   const isUserCheck = isColoniaValid || !isNumExtValid;
   const isFieldsCheck = !addressSelected || isSearching || hasResponse || isLoading;
@@ -248,7 +250,16 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  
+  console.log('🦄 checkScroll', doErrorScroll)
+
+  useEffect(() => {
+    if(doErrorScroll) {
+      if(checkFieldRef.current) {
+        checkFieldRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start'});
+      }
+    }
+  }, [coloniaError, numExtError])
+
 
   const modalData = {
     title: getValue2('stickyModal.title'),
@@ -572,6 +583,9 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
 
   const resetForm = () => {
     resetCobertura();
+    setHasAddress('');
+    setColoniaError(false)
+    setNumExtError(false)
   }
 
   const clearForm = () => {
@@ -587,7 +601,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
     )
   }
 
-  console.log('  🐯🐯🐯🐯 btnDisable ', btnDisable)
+
 
   return (
     <>
@@ -607,14 +621,17 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
 
 
       {isLoading &&
-
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70">
           <div className="w-[104px] h-[104px]">
             <LoaderIcon />
           </div>
         </div>
       }
+
       <Form className="w-full max-w-[95%]" onSubmit={onSubmit}>
+        <div className='lg:hidden xsm:block mb-2'
+        ref={checkFieldRef}
+        />
         <GooglePlacesInput
           value={street}
           onValueChange={(e) => handleDirectionChange(e)}
@@ -728,7 +745,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
             classNames={inputDisableStyles}
             maxLength={5}
           />
-          
+
         </div>
           </>
         )}
@@ -751,7 +768,6 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
             isDisabled={btnDisable} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
-
         </div>
 
       </Form>
