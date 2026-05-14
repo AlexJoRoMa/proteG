@@ -37,14 +37,16 @@ export default function ResumenContainerDesktop() {
         <>
             {
                 !hasAnyMainProduct ?
-                    <button
-                        className="mb-[32px] py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                        disabled
-                    >
-                        {resumenCopys.boton.comprobarPromociones}
-                    </button>
+                    <div className="px-[16px]">
+                        <button
+                            className="mb-[32px] py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
+                            disabled
+                        >
+                            {resumenCopys.boton.comprobarPromociones}
+                        </button>
+                    </div>
                     :
-                    <section>
+                    <section className="flex flex-col h-full min-h-0">
                         {
                             loading &&
 
@@ -54,43 +56,48 @@ export default function ResumenContainerDesktop() {
                                 </div>
                             </div>
                         }
-                        <h1 className="hidden xl:block font-bold leading-[24px] text-xl">
+
+                        <h1 className="hidden xl:block font-bold leading-[24px] text-xl px-[16px] mb-[32px]">
                             {resumenCopys.titulo}
                         </h1>
 
-                        {
-                            checkedPromotions &&
-                            <BannerPromocionesResumen
+                        <div className="px-[16px] overflow-y-auto custom-scroll flex-1 min-h-0">
+                            {
+                                checkedPromotions &&
+                                <BannerPromocionesResumen
+                                    copys={resumenCopys}
+                                />
+                            }
+
+                            <ResumenContent
                                 copys={resumenCopys}
+                                userSelection={userAnswers}
                             />
-                        }
 
-                        <ResumenContent
-                            copys={resumenCopys}
-                            userSelection={userAnswers}
-                        />
+                            {
+                                (checkedPromotions && !checkSwitch) && (
+                                    <div className="mt-[24px] pb-[32px]">
+                                        <BannerDomiciliacion copys={resumenCopys} />
+                                    </div>
+                                )
+                            }
 
-                        {
-                            (checkedPromotions && !checkSwitch) && (
-                                <div className="mt-[24px]">
-                                    <BannerDomiciliacion copys={resumenCopys} />
-                                </div>
-                            )
-                        }
+                            <div className={`${(checkedPromotions && !checkSwitch) && "border-t-1 border-t-gray-150"}`}>
+                                <DetalleResumen
+                                    copys={resumenCopys}
+                                    userSelection={userAnswers}
+                                />
+                            </div>
 
+                        </div>
 
-                        <div className="py-[32px] hidden xl:block">
+                        <div className="shadow-[0_-2px_20px_-4px_rgba(0,0,0,0.12)] pt-[32px] pb-[24px] px-[16px]">
                             <BotonContratarConfigurador
                                 loading={loading}
                                 setLoading={setLoading}
                             />
-                            {/* <ModalFechaInvalida isOpen={promoError} /> */}
                         </div>
 
-                        <DetalleResumen
-                            copys={resumenCopys}
-                            userSelection={userAnswers}
-                        />
                     </section>
             }
 
