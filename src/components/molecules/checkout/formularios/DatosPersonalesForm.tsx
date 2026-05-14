@@ -13,9 +13,10 @@ interface Props {
     formRef: RefObject<HTMLFormElement | null>
     esExtrangero: boolean
     setIsValid: (valid: boolean) => void
+    submitAttempted: boolean
 }
 
-export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsValid }) => {
+export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsValid, submitAttempted }) => {
     const { datosContratacion } = useCheckout();
     const { getValue } = useMicrocopies('formulario-datosPersonales');
 
@@ -95,7 +96,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                         setFirstNameTouched(true);
                     }}
                     onBlur={() => setFirstNameTouched(true)}
-                    isInvalid={firstNameTouched && firstName.trim() === ''}
+                    isInvalid={(firstNameTouched || submitAttempted) && firstName.trim() === ''}
                 />
             </div>
 
@@ -138,7 +139,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                         setFirstLastNameTouched(true);
                     }}
                     onBlur={() => setFirstLastNameTouched(true)}
-                    isInvalid={firstLastNameTouched && firstLastName.trim() === ''}
+                    isInvalid={(firstLastNameTouched || submitAttempted) && firstLastName.trim() === ''}
                 />
             </div>
 
@@ -163,7 +164,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                         setSecondLastNameTouched(true);
                     }}
                     onBlur={() => setSecondLastNameTouched(true)}
-                    isInvalid={secondLastNameTouched && secondLastName.trim() === ''}
+                    isInvalid={(secondLastNameTouched || submitAttempted) && secondLastName.trim() === ''}
                 />
             </div>
 
@@ -189,7 +190,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                         setPhoneTouched(true);
                     }}
                     onBlur={() => setPhoneTouched(true)}
-                    isInvalid={phoneTouched && (phone.trim() === '' || phone.length < 10)}
+                    isInvalid={(phoneTouched || submitAttempted) && (phone.trim() === '' || phone.length < 10)}
                 />
             </div>
 
@@ -240,7 +241,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                             }}
                             placeholder={getValue('datosPersonales.placeholder.pasaporte')}
                             errorMessage={getValue('datosPersonales.error.pasaporte')}
-                            isInvalid={curpPassportTouched && (!passportValid || passport.trim() === '')}
+                            isInvalid={(curpPassportTouched || submitAttempted) && (!passportValid || passport.trim() === '')}
                             onBlur={(e) => {
                                 const { clean, isValid } = validatePassport(e.target.value);
                                 e.target.value = clean;
@@ -273,7 +274,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                             }}
                             placeholder={getValue('datosPersonales.placeholder.curp')}
                             errorMessage={getValue('datosPersonales.error.curp')}
-                            isInvalid={curpPassportTouched && (!curpValid || curp.trim() === '')}
+                            isInvalid={(curpPassportTouched || submitAttempted) && (!curpValid || curp.trim() === '')}
                             onBlur={(e) => {
                                 const { clean, isValid } = validateCurp(e.target.value);
                                 e.target.value = clean;
@@ -315,7 +316,7 @@ export const DatosPersonalesForm: FC<Props> = ({ formRef, esExtrangero, setIsVal
                         setEmailTouched(true);
                     }}
                     onBlur={() => setEmailTouched(true)}
-                    isInvalid={emailTouched && (email.trim() === '' || !email.includes('@'))}
+                    isInvalid={(emailTouched || submitAttempted) && (email.trim() === '' || !email.includes('@'))}
                 />
             </div>
         </Form>

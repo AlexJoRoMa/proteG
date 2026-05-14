@@ -15,9 +15,10 @@ interface Props {
     regimen: string;
     setRegimen: (val: string) => void;
     setIsValid: (valid: boolean) => void;
+    submitAttempted: boolean
 }
 
-export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regimen, setRegimen, setIsValid }) => {
+export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regimen, setRegimen, setIsValid, submitAttempted }) => {
 
     const { getValue } = useMicrocopies('formulario-facturacion');
     const { datosContratacion } = useCheckout();
@@ -39,14 +40,13 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
 
     };
 
-
-
     // Estado para el RFC
     const [rfc, setRfc] = useState(datosFacturacion?.rfc ?? "");
 
     // Estados para controlar si los campos han sido tocados
     const [cfdiTouched, setCfdiTouched] = useState(false);
     const [regimenTouched, setRegimenTouched] = useState(false);
+    const [rfcTouched, setRfcTouched] = useState(false);
 
     // Validar formulario cuando cambien los valores
     useEffect(() => {
@@ -71,6 +71,7 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 type='text'
                 variant='bordered'
                 placeholder={getValue('facturacion.placeholder.rfc')}
+                errorMessage={getValue('facturacion.error.rfc')}
                 radius='sm'
                 classNames={inputStyles}
                 labelPlacement='outside'
@@ -80,7 +81,12 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 maxLength={13}
                 onInput={(e) => InputFilter(e, 'alfanumerico')}
                 value={rfc}
-                onChange={(e) => setRfc(e.target.value)}
+                onChange={(e) => {
+                    setRfc(e.target.value)
+                    setRfcTouched(true);
+                }}
+                onBlur={() => setRfcTouched(true)}
+                isInvalid={(rfcTouched || submitAttempted) && rfc.trim() === ''}
             />
             <Autocomplete
                 label={getValue('facturacion.label.cfdi')}
@@ -106,8 +112,8 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                     CodigosCFDI.find(item => item.key === cfdi)?.label || ''
                 }
                 onInputChange={() => { }}
-                errorMessage="Ingresa un CFDI valido"
-                isInvalid={cfdiTouched && cfdi.trim() === ''}
+                errorMessage={getValue('facturacion.error.cfdi')}
+                isInvalid={(cfdiTouched || submitAttempted) && cfdi.trim() === ''}
             >
                 {
                     CodigosCFDI.map((reg, index, arr) => (
@@ -141,8 +147,8 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 inputValue={
                     RegimenFiscal.find(item => item.key === regimen)?.label || ''
                 }
-                errorMessage="Ingresa un regimen fiscal valido"
-                isInvalid={regimenTouched && regimen.trim() === ''}
+                errorMessage={getValue('facturacion.error.regimenFiscal')}
+                isInvalid={(regimenTouched || submitAttempted) && regimen.trim() === ''}
             >
                 {
                     RegimenFiscal.map((reg, index, arr) => (
