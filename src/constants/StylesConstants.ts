@@ -8,7 +8,7 @@ export const inputStyles = {
     ],
     inputWrapper: [
         "bg-transparent",
-        "hover: bg-transparent",
+        "hover:bg-transparent",
         "border-1 border-solid rounded-md border-black-0",
         "data-[invalid=true]:!border-red-700",
         "data-[invalid=true]:!border-2",
@@ -59,4 +59,48 @@ export const SelectStyles = {
     listbox: [
         "p-0"
     ]
+}
+
+export const AutoCompleteStyles = {
+    base: "w-full",
+    selectorButton: [
+        "text-text-0",
+        "text-xl",
+        "data-[hover=true]:bg-transparent"
+    ],
+    popoverContent: [
+        "border-1",
+        "border-solid",
+        "rounded-md",
+        "border-black-0",
+        "!px-0 !py-1"
+    ],
+}
+
+export const AutoCompleteInputStyles = {
+    classNames: {
+        input: [
+            "ml-1",
+            "!cursor-pointer",
+            "placeholder:!text-gray-200"
+        ],
+        inputWrapper: [
+            "border-1",
+            "border-solid",
+            "rounded-md",
+            "border-black-0",
+            "!cursor-pointer"
+        ],
+        label: [
+            "!text-black-0",
+            "data-[invalid=true]:!text-black-0",
+            "text-base xl:text-lg",
+            "after:!text-black-0",
+            "data-[invalid=true]:after:!text-black-0"
+        ],
+        errorMessage: [
+            "text-sm",
+            "!text-red-700"
+        ]
+    }
 }
