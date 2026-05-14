@@ -27,7 +27,7 @@ const FALLBACKS: Record<string, string> = {
   'cobertura.form.numExterno.label': 'Número exterior',
   'cobertura.form.numExterno.placeholder': 'Introduce tu número exterior',
   'cobertura.form.numExterno.error': 'Ingresa un número válido',
-  'cobertura.form.numInterno.label': 'Número interior',
+  'cobertura.form.numInterno.label': 'Número Interior (Opc.)',
   'cobertura.form.numInterno.placeholder': 'Introduce tu número interior',
   'cobertura.form.colonia.label': 'Colonia',
   'cobertura.form.colonia.placeholder': 'Introduce tu colonia',

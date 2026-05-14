@@ -13,10 +13,10 @@ import { useIzziContent } from '@/components/providers/IzziProvider';
 const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
 
 const FALLBACKS: Record<string, string> = {
-    'cobertura.title': 'Comprueba tu cobertura',
+    'cobertura.title': 'Descubre los servicios de izzi disponibles en tu zona',
     'cobertura.subtitle': 'Ingresa tu dirección y te mostraremos los paquetes y promociones que puedes contratar.',
     'cobertura.direccion.seleccionada': 'Dirección seleccionada:',
-    'cobertura.alertaAzul.mensaje': 'Puedes seleccionar tu dirección arrastrando y haciendo clic en el mapa',
+    'cobertura.alertaAzul.mensaje': 'Ayudanos a ubicar tu dirección en el mapa',
 };
 
 
