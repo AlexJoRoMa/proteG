@@ -14,10 +14,18 @@ interface Props {
     setCfdi: (val: string) => void;
     regimen: string;
     setRegimen: (val: string) => void;
+    rfc: string;
+    setRfc: (val: string) => void;
     setIsValid: (valid: boolean) => void;
 }
 
-export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regimen, setRegimen, setIsValid }) => {
+type BillingData = {
+    rfc: string;
+    regimen: string;
+    cfdi: string;
+}
+
+export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regimen, setRegimen, rfc, setRfc, setIsValid }) => {
 
     const { getValue } = useMicrocopies('formulario-facturacion');
     const { datosContratacion } = useCheckout();
@@ -26,7 +34,7 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
     const datosFacturacion = facturacion.DatosPersonales?.facturacion;
 
     const validateRfc = (value: string) => {
-        if(!value) return null;
+        if (!value) return null;
 
         //PM -> Persona Moral  PF-> Persona Fisica
         const rfc_pattern_pm = /^([A-ZÑ&]{3})([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])[A-Z0-9]{3}$/i;
@@ -36,27 +44,52 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
         const validPF = rfc_pattern_pf.test(value) && value.length === 13;
 
         return (validPF || validPM) ? null : getValue('facturacion.error.rfc') || 'RFC incorrecto';
-        
+
     };
+    const getLocalPropertyByKey = (propertyName: string) => JSON.parse(localStorage.getItem(propertyName) as string) ?? null;
 
-
-
-    // Estado para el RFC
-    const [rfc, setRfc] = useState(datosFacturacion?.rfc ?? "");
+    let billingDataFromLocal: BillingData = {
+        rfc: '',
+        cfdi: '',
+        regimen: ''
+    };
+    const writeBillingInfoToLocal = () => {
+        const persistentBillingData = {
+            rfc,
+            cfdi,
+            regimen
+        }
+        localStorage.setItem('PersistentBillingData', JSON.stringify(persistentBillingData))
+    }
 
     // Estados para controlar si los campos han sido tocados
     const [cfdiTouched, setCfdiTouched] = useState(false);
     const [regimenTouched, setRegimenTouched] = useState(false);
 
+    const updateBillingInfoStateOnLoad = () => {
+        setRfc(billingDataFromLocal.rfc)
+        setRegimen(billingDataFromLocal.regimen)
+        setCfdi(billingDataFromLocal.cfdi)
+    }
+
+    useEffect(() => {
+        billingDataFromLocal = getLocalPropertyByKey('PersistentBillingData')
+        if (billingDataFromLocal != null) {
+            updateBillingInfoStateOnLoad()
+        }
+    }, [])
+
     // Validar formulario cuando cambien los valores
     useEffect(() => {
-        const isFormValid = 
-            rfc.trim() !== '' && 
-            rfc.length >= 12 && 
-            cfdi.trim() !== '' && 
+        const isFormValid =
+            rfc.trim() !== '' &&
+            rfc.length >= 12 &&
+            cfdi.trim() !== '' &&
             regimen.trim() !== '';
-
         setIsValid(isFormValid);
+        if (isFormValid) {
+            writeBillingInfoToLocal()
+        }
     }, [rfc, cfdi, regimen, setIsValid]);
 
     return (
@@ -147,5 +180,3 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
         </Form >
     )
 }
-
-

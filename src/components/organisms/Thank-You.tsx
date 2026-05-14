@@ -25,7 +25,7 @@ type Shift = {
 export default function ThankYou() {
 
     const { globalDatosContratacion, globalIzziSelection, globalProcessStatus, clearCheckoutFlow, globalFlagDomicilio, totalSinDescuento, precioTotal, coberturaData } = useIzziContent();
-    const { icon, copys} = useThankYou();
+    const { icon, copys } = useThankYou();
 
     const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
     const [purchaseTracked, setPurchaseTracked] = useState(false);
@@ -43,6 +43,12 @@ export default function ThankYou() {
             page_type: 'confirmation',
             page_name: 'thank_you',
         });
+
+        localStorage.removeItem('PersistentPersonalData')
+        localStorage.removeItem('PersistentDireccionData')
+        localStorage.removeItem('PersistentBillingData')
+        localStorage.removeItem('PersistentAdditionalAddressData')
+
     }, []);
 
     useEffect(() => {
