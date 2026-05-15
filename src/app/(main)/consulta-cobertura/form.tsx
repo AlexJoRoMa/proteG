@@ -199,6 +199,7 @@ const GooglePlacesInput = ({
 
 export default function CoberturaForm({ onGoMap}: CoberturaProps) {
   const map = useMap();
+  const checkFieldRef = useRef<HTMLDivElement>(null);
   const [error] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasResponse, setHasResponse] = useState<boolean>(false);
@@ -240,6 +241,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
   const isFieldDisabled = !addressSelected;
   const isColoniaValid = coloniaError || neighborhood.trim() === '';
   const isNumExtValid = streetNumber.trim().length > 0;
+  const doErrorScroll = coloniaError || numExtError;
 
   const isUserCheck = isColoniaValid || !isNumExtValid;
   const isFieldsCheck = !addressSelected || isSearching || hasResponse || isLoading;
@@ -248,7 +250,14 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  
+  useEffect(() => {
+    if(doErrorScroll) {
+      if(checkFieldRef.current) {
+        checkFieldRef.current?.scrollIntoView({ behavior:'smooth', block:'start' });
+      }
+    }
+  }, [doErrorScroll])
+
 
   const modalData = {
     title: getValue2('stickyModal.title'),
@@ -572,6 +581,9 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
 
   const resetForm = () => {
     resetCobertura();
+    setHasAddress('');
+    setColoniaError(false)
+    setNumExtError(false)
   }
 
   const clearForm = () => {
@@ -586,6 +598,8 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
       </Button>
     )
   }
+
+
 
   return (
     <>
@@ -605,13 +619,13 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
 
 
       {isLoading &&
-
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70">
           <div className="w-[104px] h-[104px]">
             <LoaderIcon />
           </div>
         </div>
       }
+
       <Form className="w-full max-w-[95%]" onSubmit={onSubmit}>
         <GooglePlacesInput
           value={street}
@@ -625,6 +639,10 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
           addressSelected={addressSelected}
           clear={clearForm}
           onFocus={()=>setIsSearching(true)}
+        />
+
+        <div className='block scroll-mt-[100px] lg:scroll-mt-[300px]'
+        ref={checkFieldRef}
         />
 
         <div  className='lg:hidden xsm:block mb-2'>
@@ -726,7 +744,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
             classNames={inputDisableStyles}
             maxLength={5}
           />
-          
+
         </div>
           </>
         )}
@@ -735,22 +753,20 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
         lg:relative lg:bottom-auto lg:left-auto lg:right-auto lg:z-0 lg:flex-row lg:justify-start lg:h-auto lg:bg-transparent
         fixed bottom-0 left-0 right-0 z-50 flex flex-col items-center justify-center w-full h-[144px] bg-white'>
 
-          <Button startContent={<LocationIcon />} 
-            className=' xsm:text-[16px] xl:text-[12px] border border-black py-[14px] 
-            lg:w-full
-            w-[90%]' 
+          <Button startContent={<LocationIcon className='shrink-0'/>} 
+            className='rounded-md  border border-black xsm:text-[16px] xl:text-[12px] text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[16px] min-[1150px]:text-[18px]
+            whitespace-normal py-[14px] h-[48px] w-[90%] lg:w-full' 
             variant='bordered' 
             onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
             {getText('cobertura.button.ubicacion')}
           </Button>
 
           <Button
-            className={`w-[90%] text-white ${addressSelected ? 'bg-black' : 'bg-[#BFBFC5]'} xsm:text-[16px] xl:text-[14px] py-[14px]
-            lg:w-full xsm:mt-4 lg:mt-0`} 
+            className={`text-white ${btnDisable ? 'bg-[#BFBFC5]' : 'bg-black'} xsm:text-[16px] text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[12px] min-[1150px]:text-[18px]
+            py-[14px] rounded-md h-[48px] w-[90%] lg:w-full xsm:mt-4 lg:mt-0`} 
             isDisabled={btnDisable} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
-
         </div>
 
       </Form>

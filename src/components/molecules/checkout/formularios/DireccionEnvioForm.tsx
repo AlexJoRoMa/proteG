@@ -11,9 +11,10 @@ import { FC, RefObject, useEffect, useState } from "react";
 interface Props {
     formRef: RefObject<HTMLFormElement | null>;
     setIsValid: (valid: boolean) => void;
+    submitAttempted: boolean;
 }
 
-export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
+export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid, submitAttempted }) => {
     const { getValue } = useMicrocopies('formulario-datosInstalacion');
     const { datosContratacion } = useCheckout();
 
@@ -65,7 +66,7 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
                     setStreetTouched(true);
                 }}
                 onBlur={() => setStreetTouched(true)}
-                isInvalid={streetTouched && street.trim() === ''}
+                isInvalid={(streetTouched || submitAttempted) && street.trim() === ''}
             />
 
             <Input
@@ -87,7 +88,7 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
                     setStreet2Touched(true);
                 }}
                 onBlur={() => setStreet2Touched(true)}
-                isInvalid={street2Touched && street2.trim() === ''}
+                isInvalid={(street2Touched || submitAttempted) && street2.trim() === ''}
             />
             <Textarea
                 label={getValue('instalacion.label.referencia')}
@@ -108,7 +109,7 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
                     setReferenceTouched(true);
                 }}
                 onBlur={() => setReferenceTouched(true)}
-                isInvalid={referenceTouched && reference.trim() === ''}
+                isInvalid={(referenceTouched || submitAttempted) && reference.trim() === ''}
             />
         </Form>
     )
