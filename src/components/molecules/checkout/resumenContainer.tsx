@@ -780,7 +780,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
                     </div>
                 ) : (
                     <div className="sticky top-[120px] my-[24px]">
-                        <div className="border rounded-md border-gray-150 w-full pt-[24px] bg-white-0 max-h-[calc(100dvh-144px)] flex flex-col">
+                        <div className="border rounded-md border-gray-150 w-full pt-[24px] bg-white-0 max-h-[calc(90dvh-144px)] flex flex-col">
                             <ResumenDesktop
                                 resumenCopys={resumenCopys}
                             >
