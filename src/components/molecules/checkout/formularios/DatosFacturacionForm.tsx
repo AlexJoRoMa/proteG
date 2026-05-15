@@ -1,11 +1,11 @@
 'use client'
 import { useCheckout } from "@/components/providers/CheckoutProvider";
 import { CodigosCFDI, RegimenFiscal } from "@/constants/ContratacionConstants";
-import { inputStyles, SelectStyles } from "@/constants/StylesConstants";
+import { AutoCompleteInputStyles, AutoCompleteStyles, inputStyles } from "@/constants/StylesConstants";
 import { useMicrocopies } from "@/hooks/useMicrocopies";
 import { DatosContratacion } from "@/types/Contratacion";
 import { InputFilter } from "@/utils/inputFilters";
-import { Form, Input, Select, SelectItem } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Form, Input } from "@heroui/react";
 import { FC, RefObject, useEffect, useState } from "react";
 
 interface Props {
@@ -17,6 +17,7 @@ interface Props {
     rfc: string;
     setRfc: (val: string) => void;
     setIsValid: (valid: boolean) => void;
+    submitAttempted: boolean
 }
 
 type BillingData = {
@@ -25,7 +26,7 @@ type BillingData = {
     cfdi: string;
 }
 
-export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regimen, setRegimen, rfc, setRfc, setIsValid }) => {
+export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regimen, setRegimen, setIsValid, submitAttempted }) => {
 
     const { getValue } = useMicrocopies('formulario-facturacion');
     const { datosContratacion } = useCheckout();
@@ -61,10 +62,13 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
         }
         localStorage.setItem('PersistentBillingData', JSON.stringify(persistentBillingData))
     }
+    // Estado para el RFC
+    const [rfc, setRfc] = useState(datosFacturacion?.rfc ?? "");
 
     // Estados para controlar si los campos han sido tocados
     const [cfdiTouched, setCfdiTouched] = useState(false);
     const [regimenTouched, setRegimenTouched] = useState(false);
+    const [rfcTouched, setRfcTouched] = useState(false);
 
     const updateBillingInfoStateOnLoad = () => {
         setRfc(billingDataFromLocal.rfc)
@@ -104,6 +108,7 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 type='text'
                 variant='bordered'
                 placeholder={getValue('facturacion.placeholder.rfc')}
+                errorMessage={getValue('facturacion.error.rfc')}
                 radius='sm'
                 classNames={inputStyles}
                 labelPlacement='outside'
@@ -113,9 +118,14 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 maxLength={13}
                 onInput={(e) => InputFilter(e, 'alfanumerico')}
                 value={rfc}
-                onChange={(e) => setRfc(e.target.value)}
+                onChange={(e) => {
+                    setRfc(e.target.value)
+                    setRfcTouched(true);
+                }}
+                onBlur={() => setRfcTouched(true)}
+                isInvalid={(rfcTouched || submitAttempted) && rfc.trim() === ''}
             />
-            <Select
+            <Autocomplete
                 label={getValue('facturacion.label.cfdi')}
                 name="comprobanteFiscal"
                 labelPlacement="outside"
@@ -123,30 +133,35 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 variant='bordered'
                 maxListboxHeight={200}
                 isVirtualized
+                isClearable={false}
                 radius='sm'
-                classNames={SelectStyles}
+                classNames={AutoCompleteStyles}
+                inputProps={AutoCompleteInputStyles}
                 isRequired
                 className='w-full'
-                selectedKeys={cfdi ? [cfdi] : []}
-                onSelectionChange={(keys) => {
-                    const selected = Array.from(keys)[0] as string;
-                    setCfdi(selected || '');
+                defaultItems={CodigosCFDI}
+                selectedKey={cfdi}
+                onSelectionChange={(key) => {
+                    setCfdi(key as string);
                     setCfdiTouched(true);
                 }}
-                onClose={() => setCfdiTouched(true)}
-                errorMessage="Ingresa un CFDI valido"
-                isInvalid={cfdiTouched && cfdi.trim() === ''}
-                defaultSelectedKeys={datosFacturacion?.comprobanteFiscal ? [datosFacturacion.comprobanteFiscal] : []}
+                inputValue={
+                    CodigosCFDI.find(item => item.key === cfdi)?.label || ''
+                }
+                onInputChange={() => { }}
+                errorMessage={getValue('facturacion.error.cfdi')}
+                isInvalid={(cfdiTouched || submitAttempted) && cfdi.trim() === ''}
             >
                 {
-                    CodigosCFDI.map((codigo, index, arr) => (
-                        <SelectItem key={codigo.key} className={`h-[38px] ${index !== arr.length - 1 ? "border-b-1 border-black-0 rounded-none" : ""}`}>
-                            {codigo.label}
-                        </SelectItem>
+                    CodigosCFDI.map((reg, index, arr) => (
+                        <AutocompleteItem key={reg.key} className={`h-[38px] ${index !== arr.length - 1 ? "border-b-1 border-black-0 rounded-none" : ""}`}>
+                            {reg.label}
+                        </AutocompleteItem>
                     ))
                 }
-            </Select >
-            <Select
+            </ Autocomplete>
+
+            <Autocomplete
                 label={getValue('facturacion.label.regimenFiscal')}
                 name="regimenFiscal"
                 labelPlacement="outside"
@@ -154,29 +169,32 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
                 variant='bordered'
                 maxListboxHeight={200}
                 isVirtualized
+                isClearable={false}
                 radius='sm'
-                classNames={SelectStyles}
+                classNames={AutoCompleteStyles}
+                inputProps={AutoCompleteInputStyles}
                 isRequired
                 className='w-full'
-                selectedKeys={regimen ? [regimen] : []}
-                onSelectionChange={(keys) => {
-                    const selected = Array.from(keys)[0] as string;
-                    setRegimen(selected || '');
+                defaultItems={RegimenFiscal}
+                selectedKey={regimen}
+                onSelectionChange={(key) => {
+                    setRegimen(key as string);
                     setRegimenTouched(true);
                 }}
-                onClose={() => setRegimenTouched(true)}
-                errorMessage="Ingresa un regimen fiscal valido"
-                isInvalid={regimenTouched && regimen.trim() === ''}
-                defaultSelectedKeys={datosFacturacion?.regimenFiscal ? [datosFacturacion.regimenFiscal] : []}
+                inputValue={
+                    RegimenFiscal.find(item => item.key === regimen)?.label || ''
+                }
+                errorMessage={getValue('facturacion.error.regimenFiscal')}
+                isInvalid={(regimenTouched || submitAttempted) && regimen.trim() === ''}
             >
                 {
                     RegimenFiscal.map((reg, index, arr) => (
-                        <SelectItem key={reg.key} className={`h-[38px] ${index !== arr.length - 1 ? "border-b-1 border-black-0 rounded-none" : ""}`}>
+                        <AutocompleteItem key={reg.key} className={`h-[38px] ${index !== arr.length - 1 ? "border-b-1 border-black-0 rounded-none" : ""}`}>
                             {reg.label}
-                        </SelectItem>
+                        </AutocompleteItem>
                     ))
                 }
-            </Select>
+            </Autocomplete>
         </Form >
     )
 }

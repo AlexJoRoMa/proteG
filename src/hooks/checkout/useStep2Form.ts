@@ -1,7 +1,7 @@
 import { useCheckout } from "@/components/providers/CheckoutProvider";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 
-function getFormData(ref: React.RefObject<HTMLFormElement | null>) {
+function getFormData(ref: RefObject<HTMLFormElement | null>) {
     if (!ref.current) return {};
     const data = new FormData(ref.current);
     return Object.fromEntries(data.entries());
@@ -34,22 +34,61 @@ export const useStep2Form = () => {
     const [conditionChecked, setConditionChecked] = useState(false);
     const [privacyChecked, setPrivacyChecked] = useState(false);
 
+    const [submitAttempted, setSubmitAttempted] = useState(false);
+    const [submitfacturation, setSubmitfacturation] = useState(false);
+    const [submitOtherDirection, setSubmitOtherDirection] = useState(false);
+
     // Función para validar el paso 2 basado en estados
     const validateStep2 = useCallback(async () => {
+
         const personalOk = isPersonalValid;
         const envioOk = isEnvioValid;
         const facturacionOk = !necesitaFacturar || (isFacturacionValid && cfdi.trim() !== '' && regimen.trim() !== '');
         const direccionFacturacionOk = !necesitaFacturar || !facturarOtraDireccion || isDireccionFacturacionValid;
+        const checkboxOk = conditionChecked && privacyChecked;
 
-        return personalOk && envioOk && facturacionOk && direccionFacturacionOk && conditionChecked && privacyChecked;
+        return (
+            personalOk &&
+            envioOk &&
+            facturacionOk &&
+            direccionFacturacionOk &&
+            checkboxOk
+        );
     }, [isPersonalValid, isEnvioValid, isFacturacionValid, isDireccionFacturacionValid, necesitaFacturar, facturarOtraDireccion, cfdi, regimen, conditionChecked, privacyChecked]);
+
+    const triggerStep2Validation = useCallback(async () => {
+        setSubmitAttempted(true);
+        setSubmitfacturation(true);
+        setSubmitOtherDirection(true);
+
+        const isValid = await validateStep2();
+
+        if (!isValid) {
+            requestAnimationFrame(() => {
+                const firstInvalid = document.querySelector(
+                    '[aria-invalid="true"]'
+                );
+
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    (firstInvalid as HTMLElement).blur?.();
+                }
+            });
+        }
+
+        return isValid;
+    }, [validateStep2]);
 
     // Registrar el validador del paso 2
     useEffect(() => {
         if (currentStep === 2) {
-            registerStepValidator(2, validateStep2);
+            registerStepValidator(2, triggerStep2Validation);
         }
-    }, [registerStepValidator, validateStep2, currentStep]);
+    }, [registerStepValidator, currentStep, triggerStep2Validation]);
 
     // Actualizar la validez del paso cuando cambien los estados de validación
     useEffect(() => {
@@ -106,7 +145,13 @@ export const useStep2Form = () => {
         conditionChecked,
         setConditionChecked,
         privacyChecked,
-        setPrivacyChecked
+        setPrivacyChecked,
+        submitAttempted,
+        setSubmitAttempted,
+        submitfacturation,
+        setSubmitfacturation,
+        submitOtherDirection,
+        setSubmitOtherDirection
     };
 };
 
