@@ -117,7 +117,8 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         // eslint-disable-next-line react-hooks/exhaustive-deps 
     }, [currentStep])
 
-    const isDisabled = loading || (!isStepValid && !stepStatusRef.current);
+    const isStep2 = currentStep === 2;
+    const isDisabled = loading || (!isStep2 && !isStepValid && !stepStatusRef.current);
 
     const { getValue2: getValue } = useMicrocopies('checkoiterrormodal');
     const modalData = {

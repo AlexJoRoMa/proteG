@@ -10,24 +10,52 @@ import { FC, RefObject, useEffect, useState } from "react";
 
 interface Props {
     formRef: RefObject<HTMLFormElement | null>;
+    isAddressValid: boolean;
     setIsValid: (valid: boolean) => void;
+    submitAttempted: boolean;
 }
 
-export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => {
+export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid, submitAttempted, isAddressValid }) => {
     const { getValue } = useMicrocopies('formulario-otraDireccion');
     const { datosContratacion } = useCheckout();
 
     const direccionFacturacion: Partial<DatosContratacion> = datosContratacion ?? {};
     const datosDireccion = direccionFacturacion.DatosPersonales?.direccionFacturacion;
 
+    const getLocalAdditionalAddressData = () => {
+        if (typeof window === 'undefined') return null
+        return JSON.parse(localStorage.getItem('PersistentAdditionalAddressData') as string)
+    }
+
     // Estados para controlar los valores de los campos
-    const [postalCode, setPostalCode] = useState(datosDireccion?.postalCode ?? "");
-    const [address, setAddress] = useState(datosDireccion?.address ?? "");
-    const [exteriorNumber, setExteriorNumber] = useState(datosDireccion?.exteriorNumber ?? "");
-    const [interiorNumber, setInteriorNumber] = useState(datosDireccion?.interiorNumber ?? "");
-    const [colony, setColony] = useState(datosDireccion?.colony ?? "");
-    const [city, setCity] = useState(datosDireccion?.city ?? "");
-    const [state, setState] = useState(datosDireccion?.state ?? "");
+    const [postalCode, setPostalCode] = useState(() => {
+        const local = getLocalAdditionalAddressData()
+        return local?.postalCode ?? datosDireccion?.postalCode ?? ""
+    })
+    const [address, setAddress] = useState(() => {
+        const local = getLocalAdditionalAddressData()
+        return local?.address ?? datosDireccion?.address ?? ""
+    })
+    const [exteriorNumber, setExteriorNumber] = useState(() => {
+        const local = getLocalAdditionalAddressData()
+        return local?.exteriorNumber ?? datosDireccion?.exteriorNumber ?? ""
+    })
+    const [interiorNumber, setInteriorNumber] = useState(() => {
+        const local = getLocalAdditionalAddressData()
+        return local?.interiorNumber ?? datosDireccion?.interiorNumber ?? ""
+    })
+    const [colony, setColony] = useState(() => {
+        const local = getLocalAdditionalAddressData()
+        return local?.colony ?? datosDireccion?.colony ?? ""
+    })
+    const [city, setCity] = useState(() => {
+        const local = getLocalAdditionalAddressData()
+        return local?.city ?? datosDireccion?.city ?? ""
+    })
+    const [state, setState] = useState(() => {
+        const local = getLocalAdditionalAddressData()
+        return local?.state ?? datosDireccion?.state ?? ""
+    })
 
     // Estados para controlar si los campos han sido tocados
     const [postalCodeTouched, setPostalCodeTouched] = useState(false);
@@ -39,7 +67,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
 
     // Validar el formulario cuando cambien los valores
     useEffect(() => {
-        const isFormValid = 
+        const isFormValid =
             postalCode.trim() !== '' && postalCode.length === 5 &&
             address.trim() !== '' &&
             exteriorNumber.trim() !== '' &&
@@ -48,7 +76,30 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
             state.trim() !== '';
 
         setIsValid(isFormValid);
+        if (isFormValid) {
+            writeAdditionalAddressToLocal()
+        }
     }, [postalCode, address, exteriorNumber, colony, city, state, setIsValid]);
+
+    useEffect(() => {
+        const isAdditionalValid = interiorNumber.trim() !== ''
+        if (isAdditionalValid && isAddressValid) {
+            writeAdditionalAddressToLocal()
+        }
+    }, [interiorNumber])
+
+    const writeAdditionalAddressToLocal = () => {
+        const persistentAdditionalAddressData = {
+            postalCode,
+            address,
+            exteriorNumber,
+            interiorNumber,
+            colony,
+            city,
+            state
+        }
+        localStorage.setItem('PersistentAdditionalAddressData', JSON.stringify(persistentAdditionalAddressData))
+    }
 
     return (
 
@@ -79,7 +130,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                         setPostalCodeTouched(true);
                     }}
                     onBlur={() => setPostalCodeTouched(true)}
-                    isInvalid={postalCodeTouched && (postalCode.trim() === '' || postalCode.length < 5)}
+                    isInvalid={(postalCodeTouched || submitAttempted) && (postalCode.trim() === '' || postalCode.length < 5)}
                 />
             </div>
             {/* Dirección*/}
@@ -103,7 +154,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                         setAddressTouched(true);
                     }}
                     onBlur={() => setAddressTouched(true)}
-                    isInvalid={addressTouched && address.trim() === ''}
+                    isInvalid={(addressTouched || submitAttempted) && address.trim() === ''}
                 />
             </div>
             <div className='grid grid-cols-2 gap-4 order-3 md:contents'>
@@ -127,7 +178,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                         setExteriorNumberTouched(true);
                     }}
                     onBlur={() => setExteriorNumberTouched(true)}
-                    isInvalid={exteriorNumberTouched && exteriorNumber.trim() === ''}
+                    isInvalid={(exteriorNumberTouched || submitAttempted) && exteriorNumber.trim() === ''}
                 />
                 {/* Número interior */}
                 <Input
@@ -166,7 +217,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                         setColonyTouched(true);
                     }}
                     onBlur={() => setColonyTouched(true)}
-                    isInvalid={colonyTouched && colony.trim() === ''}
+                    isInvalid={(colonyTouched || submitAttempted) && colony.trim() === ''}
                 />
             </div>
             {/* Alcaldía o Municipo */}
@@ -190,7 +241,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                         setCityTouched(true);
                     }}
                     onBlur={() => setCityTouched(true)}
-                    isInvalid={cityTouched && city.trim() === ''}
+                    isInvalid={(cityTouched || submitAttempted) && city.trim() === ''}
                 />
             </div>
             {/* Estado */}
@@ -214,7 +265,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                         setStateTouched(true);
                     }}
                     onBlur={() => setStateTouched(true)}
-                    isInvalid={stateTouched && state.trim() === ''}
+                    isInvalid={(stateTouched || submitAttempted) && state.trim() === ''}
                 />
             </div>
         </Form>
