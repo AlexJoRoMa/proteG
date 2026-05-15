@@ -11,9 +11,10 @@ import { FC, RefObject, useEffect, useState } from "react";
 interface Props {
     formRef: RefObject<HTMLFormElement | null>;
     setIsValid: (valid: boolean) => void;
+    submitAttempted: boolean;
 }
 
-export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => {
+export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid, submitAttempted }) => {
     const { getValue } = useMicrocopies('formulario-otraDireccion');
     const { datosContratacion } = useCheckout();
 
@@ -79,7 +80,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                         setPostalCodeTouched(true);
                     }}
                     onBlur={() => setPostalCodeTouched(true)}
-                    isInvalid={postalCodeTouched && (postalCode.trim() === '' || postalCode.length < 5)}
+                    isInvalid={(postalCodeTouched || submitAttempted) && (postalCode.trim() === '' || postalCode.length < 5)}
                 />
             </div>
             {/* Dirección*/}
@@ -103,7 +104,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                         setAddressTouched(true);
                     }}
                     onBlur={() => setAddressTouched(true)}
-                    isInvalid={addressTouched && address.trim() === ''}
+                    isInvalid={(addressTouched || submitAttempted) && address.trim() === ''}
                 />
             </div>
             <div className='grid grid-cols-2 gap-4 order-3 md:contents'>
@@ -127,7 +128,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                         setExteriorNumberTouched(true);
                     }}
                     onBlur={() => setExteriorNumberTouched(true)}
-                    isInvalid={exteriorNumberTouched && exteriorNumber.trim() === ''}
+                    isInvalid={(exteriorNumberTouched || submitAttempted) && exteriorNumber.trim() === ''}
                 />
                 {/* Número interior */}
                 <Input
@@ -166,7 +167,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                         setColonyTouched(true);
                     }}
                     onBlur={() => setColonyTouched(true)}
-                    isInvalid={colonyTouched && colony.trim() === ''}
+                    isInvalid={(colonyTouched || submitAttempted) && colony.trim() === ''}
                 />
             </div>
             {/* Alcaldía o Municipo */}
@@ -190,7 +191,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                         setCityTouched(true);
                     }}
                     onBlur={() => setCityTouched(true)}
-                    isInvalid={cityTouched && city.trim() === ''}
+                    isInvalid={(cityTouched || submitAttempted) && city.trim() === ''}
                 />
             </div>
             {/* Estado */}
@@ -214,7 +215,7 @@ export const DireccionFacturacionForm: FC<Props> = ({ formRef, setIsValid }) => 
                         setStateTouched(true);
                     }}
                     onBlur={() => setStateTouched(true)}
-                    isInvalid={stateTouched && state.trim() === ''}
+                    isInvalid={(stateTouched || submitAttempted) && state.trim() === ''}
                 />
             </div>
         </Form>

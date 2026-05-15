@@ -222,21 +222,21 @@ export const CheckCoberturaIcon = () => {
 }
 
 export const InfoIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <circle cx="12" cy="12" r="10" />
-    <path d="M12 16v-4" />
-    <path d="M12 8h.01" />
-  </svg>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+    >
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 16v-4" />
+        <path d="M12 8h.01" />
+    </svg>
 );
 export const CircleCheck = () => {
     return (
@@ -271,64 +271,85 @@ export const PiggyBank = () => {
 export const CreditCardIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" {...props}>
-            <path d="M4 8C4 6.89543 4.89543 6 6 6H26C27.1046 6 28 6.89543 28 8V24C28 25.1046 27.1046 26 26 26H6C4.89543 26 4 25.1046 4 24V8Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M4 12H28" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M8 20H12" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M4 8C4 6.89543 4.89543 6 6 6H26C27.1046 6 28 6.89543 28 8V24C28 25.1046 27.1046 26 26 26H6C4.89543 26 4 25.1046 4 24V8Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4 12H28" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M8 20H12" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
     );
 };
 
 export const PayPalIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 512 512"
-      width="32"
-      height="32"
-      {...props}
-    >
-      <g>
-        <path
-          fill="#002c8a"
-          d="M377 184.8L180.7 399h-72c-5 0-9-5-8-10l48-304c1-7 7-12 14-12h122c84 3 107 46 92 112z"
-        />
-        <path
-          fill="#009be1"
-          d="M380.2 165c30 16 37 46 27 86-13 59-52 84-109 85l-16 1c-6 0-10 4-11 10l-13 79c-1 7-7 12-14 12h-60c-5 0-9-5-8-10l22-143c1-5 182-120 182-120z"
-        />
-        <path
-          fill="#001f6b"
-          d="M197 292l20-127a14 14 0 0 1 13-11h96c23 0 40 4 54 11-5 44-26 115-128 117h-44c-5 0-10 4-11 10z"
-        />
-      </g>
-    </svg>
-  );
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+            width="32"
+            height="32"
+            {...props}
+        >
+            <g>
+                <path
+                    fill="#002c8a"
+                    d="M377 184.8L180.7 399h-72c-5 0-9-5-8-10l48-304c1-7 7-12 14-12h122c84 3 107 46 92 112z"
+                />
+                <path
+                    fill="#009be1"
+                    d="M380.2 165c30 16 37 46 27 86-13 59-52 84-109 85l-16 1c-6 0-10 4-11 10l-13 79c-1 7-7 12-14 12h-60c-5 0-9-5-8-10l22-143c1-5 182-120 182-120z"
+                />
+                <path
+                    fill="#001f6b"
+                    d="M197 292l20-127a14 14 0 0 1 13-11h96c23 0 40 4 54 11-5 44-26 115-128 117h-44c-5 0-10 4-11 10z"
+                />
+            </g>
+        </svg>
+    );
 };
 
 export const ToolboxIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="32" // Ajustado a 32 para que coincida con el tamaño base de tu PayPalIcon
-      height="32"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      {/* Cuerpo de la caja de herramientas */}
-      <path d="M16 12v4" />
-      <path d="M16 6a2 2 0 0 1 1.414.586l4 4A2 2 0 0 1 22 12v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 .586-1.414l4-4A2 2 0 0 1 8 6z" />
-      {/* Mango superior */}
-      <path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-      {/* Línea de apertura */}
-      <path d="M2 14h20" />
-      {/* Detalles adicionales */}
-      <path d="M8 12v4" />
-    </svg>
-  );
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32" // Ajustado a 32 para que coincida con el tamaño base de tu PayPalIcon
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            {...props}
+        >
+            {/* Cuerpo de la caja de herramientas */}
+            <path d="M16 12v4" />
+            <path d="M16 6a2 2 0 0 1 1.414.586l4 4A2 2 0 0 1 22 12v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 .586-1.414l4-4A2 2 0 0 1 8 6z" />
+            {/* Mango superior */}
+            <path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+            {/* Línea de apertura */}
+            <path d="M2 14h20" />
+            {/* Detalles adicionales */}
+            <path d="M8 12v4" />
+        </svg>
+    );
+};
+
+export const EditCoberturaIcon = () => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <mask id="mask0_7201_46941" style={{ maskType: 'alpha' }} maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32">
+                <rect width="32" height="32" fill="#D9D9D9" />
+            </mask>
+            <g mask="url(#mask0_7201_46941)">
+                <path d="M2.66602 31.9999V29.3332H29.3327V31.9999H2.66602ZM7.99935 
+                        22.4359H9.43002L21.1633 10.7102L20.4533 9.97424L19.725 9.27157L7.99935 
+                        21.0049V22.4359ZM6.66602 23.7692V20.4359L21.625 5.48457C21.7668 5.34257 
+                        21.9219 5.23913 22.0903 5.17424C22.2588 5.10935 22.4303 5.0769 22.605 5.0769C22.7797 5.0769 
+                        22.9489 5.10935 23.1127 5.17424C23.2765 5.23913 23.4318 5.34513 23.5787 
+                        5.49224L24.9507 6.87157C25.0976 7.01357 25.2022 7.16713 25.2647 7.33224C25.3271 
+                        7.49757 25.3583 7.66835 25.3583 7.84457C25.3583 8.00968 25.3258 8.17779 25.2607
+                        8.3489C25.1958 8.52002 25.0925 8.67635 24.9507 8.8179L9.99935 23.7692H6.66602ZM21.1633 
+                        10.7102L20.4533 9.97424L19.725 9.27157L21.1633 10.7102Z" fill="#1C1B1F" />
+            </g>
+        </svg>
+    );
 };
 
