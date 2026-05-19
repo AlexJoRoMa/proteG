@@ -2,7 +2,7 @@
 import { useContent } from '@/components/providers/CoberturaProvider';
 import { Button, Form, Input, useDisclosure, Modal, ModalContent } from '@heroui/react';
 import { createCookie } from './actions';
-import { /* CheckCoberturaIcon, */ CloseBlackIcon, LoaderIcon, LocationIcon } from '@/constants/IconsConstants';
+import { CloseBlackIcon, LoaderIcon, LocationIcon } from '@/constants/IconsConstants';
 import React, { useEffect, useRef, useState } from 'react';
 import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
@@ -52,7 +52,6 @@ const FALLBACKS: Record<string, string> = {
   'cobertura.seleccionar.mapa' : 'Seleccionar dirección desde el  mapa'
 };
 
-/* let descriptionText = ''; */
 const COVERAGE_LOG_PREFIX = '[Cobertura][API]';
 
 const inputStyles = (isAddressSelected?: boolean) => ({
@@ -169,14 +168,6 @@ const GooglePlacesInput = ({
   return (
     <div ref={wrapperRef} className='w-full'>
       <Input
-        /* description={
-          <div className='flex items-center gap-2 mt-1'>
-            {description ? <CheckCoberturaIcon /> : ''}
-            <span>
-              {descriptionText as string}
-            </span>
-          </div>
-        } */
         isRequired
         label={label}
         placeholder={placeholder}
@@ -235,7 +226,6 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
   
   const { setGlobalFlag, setFormattedAddress, setCoberturaData, 
     setAddressFielSelected, setStreetDireccion, setColoniaError, coloniaError } = useIzziContent();
-  /* descriptionText = getText('cobertura.descripcion.direccion'); */
 
   const showFields = (addressSelected || hasAddress !== '') && street.trim() !== '';
   const isFieldDisabled = !addressSelected;

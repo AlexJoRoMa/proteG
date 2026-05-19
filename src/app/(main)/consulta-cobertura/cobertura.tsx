@@ -14,7 +14,7 @@ const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
 
 const FALLBACKS: Record<string, string> = {
     'cobertura.title': 'Descubre los servicios de izzi disponibles en tu zona',
-    'cobertura.subtitle': 'Ingresa tu dirección y te mostraremos los paquetes y promociones que puedes contratar.',
+    'cobertura.subtitle': 'Consulta los paquetes, velocidades y promociones disponibles en tu hogar.',
     'cobertura.direccion.seleccionada': 'Dirección seleccionada:',
     'cobertura.alertaAzul.mensaje': 'Ayudanos a ubicar tu dirección en el mapa',
     'cobertura.seleccionaLista.mensaje': 'Escribe tu dirección y selecciona la mejor sugerencia',
