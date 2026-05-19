@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Checkbox, Divider, Switch } from '@heroui/react'
 import Link from 'next/link'
 import { useStep2Form } from '@/hooks/checkout/useStep2Form';
@@ -37,6 +37,10 @@ const Step2 = () => {
     setCfdi,
     regimen,
     setRegimen,
+    rfc,
+    setRfc,
+    isDireccionFacturacionValid,
+    isPersonalValid,
     setIsPersonalValid,
     setIsEnvioValid,
     setIsFacturacionValid,
@@ -63,6 +67,32 @@ const Step2 = () => {
     const value = e.target.checked;
     setPrivacyChecked(value);
   }
+
+  const updateIsForeign = (value: boolean) => setEsExtranjero(value)
+
+  useEffect(() => {
+    if (!necesitaFacturar) {
+      setFacturarOtraDireccion(false);
+    }
+  }, [necesitaFacturar, setFacturarOtraDireccion])
+
+  const getLocalBillingData = () => {
+    if (typeof window === 'undefined') return null
+    return JSON.parse(localStorage.getItem('PersistentBillingData') as string)
+  }
+  const getLocalAdditionalAddressData = () => {
+    if (typeof window === 'undefined') return null
+    return JSON.parse(localStorage.getItem('PersistentAdditionalAddressData') as string)
+  }
+
+  useEffect(() => {
+    if (!!getLocalBillingData()) {
+      setNecesitaFacturar(!necesitaFacturar)
+    }
+    if (!!getLocalAdditionalAddressData()) {
+      setFacturarOtraDireccion(!facturarOtraDireccion)
+    }
+  }, [])
 
   return (
     <div className='step2-container'>
@@ -98,7 +128,9 @@ const Step2 = () => {
       <DatosPersonalesForm
         formRef={DatosPersonalesRef}
         esExtrangero={esExtranjero}
+        isValid={isPersonalValid}
         setIsValid={setIsPersonalValid}
+        updateIsForeign={updateIsForeign}
         submitAttempted={submitAttempted}
       />
 
@@ -117,7 +149,7 @@ const Step2 = () => {
           <Link href={getValue('datosPersonales.direccionInstalacion.urlEdicion')}>
             <Button
               className='ml-auto bg-transparent'>
-                <EditCoberturaIcon />
+              <EditCoberturaIcon />
             </Button>
           </Link>
         </div>
@@ -149,7 +181,7 @@ const Step2 = () => {
       </div>
 
       {
-        necesitaFacturar && (
+        (necesitaFacturar || facturarOtraDireccion) && (
           <>
             <DatosFacturacionForm
               formRef={DatosFacturacionRef}
@@ -157,6 +189,8 @@ const Step2 = () => {
               setCfdi={setCfdi}
               regimen={regimen}
               setRegimen={setRegimen}
+              rfc={rfc}
+              setRfc={setRfc}
               setIsValid={setIsFacturacionValid}
               submitAttempted={submitfacturation}
             />
@@ -185,6 +219,7 @@ const Step2 = () => {
                   formRef={DireccionFacturacionRef}
                   setIsValid={setIsDireccionFacturacionValid}
                   submitAttempted={submitOtherDirection}
+                  isAddressValid={isDireccionFacturacionValid}
                 />
               )
             }

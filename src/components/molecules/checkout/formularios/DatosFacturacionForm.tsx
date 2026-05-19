@@ -14,8 +14,16 @@ interface Props {
     setCfdi: (val: string) => void;
     regimen: string;
     setRegimen: (val: string) => void;
+    rfc: string;
+    setRfc: (val: string) => void;
     setIsValid: (valid: boolean) => void;
     submitAttempted: boolean
+}
+
+type BillingData = {
+    rfc: string;
+    regimen: string;
+    cfdi: string;
 }
 
 export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regimen, setRegimen, setIsValid, submitAttempted }) => {
@@ -39,7 +47,21 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
         return (validPF || validPM) ? null : getValue('facturacion.error.rfc') || 'RFC incorrecto';
 
     };
+    const getLocalPropertyByKey = (propertyName: string) => JSON.parse(localStorage.getItem(propertyName) as string) ?? null;
 
+    let billingDataFromLocal: BillingData = {
+        rfc: '',
+        cfdi: '',
+        regimen: ''
+    };
+    const writeBillingInfoToLocal = () => {
+        const persistentBillingData = {
+            rfc,
+            cfdi,
+            regimen
+        }
+        localStorage.setItem('PersistentBillingData', JSON.stringify(persistentBillingData))
+    }
     // Estado para el RFC
     const [rfc, setRfc] = useState(datosFacturacion?.rfc ?? "");
 
@@ -48,6 +70,19 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
     const [regimenTouched, setRegimenTouched] = useState(false);
     const [rfcTouched, setRfcTouched] = useState(false);
 
+    const updateBillingInfoStateOnLoad = () => {
+        setRfc(billingDataFromLocal.rfc)
+        setRegimen(billingDataFromLocal.regimen)
+        setCfdi(billingDataFromLocal.cfdi)
+    }
+
+    useEffect(() => {
+        billingDataFromLocal = getLocalPropertyByKey('PersistentBillingData')
+        if (billingDataFromLocal != null) {
+            updateBillingInfoStateOnLoad()
+        }
+    }, [])
+
     // Validar formulario cuando cambien los valores
     useEffect(() => {
         const isFormValid =
@@ -55,8 +90,10 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
             rfc.length >= 12 &&
             cfdi.trim() !== '' &&
             regimen.trim() !== '';
-
         setIsValid(isFormValid);
+        if (isFormValid) {
+            writeBillingInfoToLocal()
+        }
     }, [rfc, cfdi, regimen, setIsValid]);
 
     return (
@@ -161,5 +198,3 @@ export const DatosFacturacionForm: FC<Props> = ({ formRef, cfdi, setCfdi, regime
         </Form >
     )
 }
-
-
