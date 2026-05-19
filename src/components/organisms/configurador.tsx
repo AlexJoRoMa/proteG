@@ -186,7 +186,7 @@ export default async function Configurador() {
 
                         {/* Resumen desktop*/}
                         <div className="hidden xl:block sticky top-[120px] mb-[24px]">
-                            <div className="flex flex-col gap-[24px] h-[calc(90dvh-144px)]">
+                            <div className="flex flex-col gap-[24px] h-[calc(95dvh-144px)]">
                                 <div className="border rounded-md border-gray-150 w-full pt-[24px] bg-white-0 min-h-0 max-h-full flex flex-col">
                                     <ResumenContainerDesktop />
                                 </div>
