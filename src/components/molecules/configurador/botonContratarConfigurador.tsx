@@ -8,6 +8,7 @@ import { ResumenData } from "@/types/ResumenCompra";
 import { internetComponentFields, movilComponentFields, tvComponentFields } from "@/types/ConfiguradorTypes";
 import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
 import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
+import { motion, useTime, useTransform } from "framer-motion";
 
 function hasData(obj: unknown): boolean {
     return !!obj && typeof obj === "object" && Object.keys(obj as object).length > 0;
@@ -15,11 +16,12 @@ function hasData(obj: unknown): boolean {
 
 export default function BotonContratarConfigurador({ loading, setLoading }: { loading: boolean, setLoading: (value: boolean) => void }) {
     const { configuradorEntry, izziSelection, copysResumen, userAnswers } = useContent();
-    const { checkedPromotions, setCheckedPromotions, coberturaData, setRpt, setOffnetIzzi, setOffnetSky, setPromoData, globalIzziSelection, precioTotal } = useIzziContent();
+    const { checkedPromotions, setCheckedPromotions, coberturaData, setRpt, setOffnetIzzi, setOffnetSky, setPromoData, globalIzziSelection, precioTotal, globalUserAnswers } = useIzziContent();
     const router = useRouter();
 
     const [promoError, setPromoError] = useState(false);
     const [validComboCategories, setValidComboCategories] = useState<Set<string>>(new Set());
+    const [newSelection, setNewSelection] = useState<boolean>(false);
 
     const resumenCopys = copysResumen as ResumenData;
 
@@ -41,6 +43,18 @@ export default function BotonContratarConfigurador({ loading, setLoading }: { lo
         };
         loadCategories();
     }, []);
+
+    useEffect(() => {
+
+        setNewSelection(true);
+
+        const timer = setTimeout(() => {
+            setNewSelection(false);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+
+    }, [globalUserAnswers]);
 
     const handleClick = async () => {
         if (!hasAnyMainProduct) {
@@ -137,17 +151,47 @@ export default function BotonContratarConfigurador({ loading, setLoading }: { lo
         router.push(`${resumenCopys.boton.contratar.url}`)
     }
 
+    const time = useTime();
+
+    /* time cuenta en milisegundos, tiempo que tarda en dar un ciclo, cuantos giros hacer, clamp permite el loop de la animacion */
+    const rotate = useTransform(time, [0, 1000], [0, 360], {
+        clamp: false
+    });
+
+    /* se le puede agregar o quitar la cantidad de colores que se quiera, esto para ayudar al bucle visual */
+    const rotatingBG = useTransform(rotate, (r) => {
+        return `conic-gradient(from ${r}deg, #ff6c07, #CE32A3, #3CB594, #ff6c07)`;
+    })
+
+    const shouldAnimate = newSelection && !loading;
+
     return (
         <div>
             {
                 !checkedPromotions ?
-                    <Button
-                        className="py-[12px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                        onPress={handleClick}
-                        isDisabled={loading}
-                    >
-                        {resumenCopys.boton.comprobarPromociones}
-                    </Button>
+                    <div className=" w-full flex flex-col items-center justify-center">
+                        <div className="relative w-full">
+                            <Button
+                                className={`relative z-10 py-[12px] px-[16px] bg-black-0 border-black-0 ${newSelection ? "rounded-sm" : "rounded-md"} w-full h-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50`}
+                                onPress={handleClick}
+                                isDisabled={loading}
+                            >
+                                {resumenCopys.boton.comprobarPromociones}
+                            </Button>
+
+                            {/* fondo animado , inset es el ancho del borde */}
+                            {
+                                shouldAnimate && (
+                                    <motion.div
+                                        className={`absolute -inset-1 rounded-md z-0`}
+                                        style={{
+                                            background: newSelection ? rotatingBG : "#000"
+                                        }}
+                                    />
+                                )}
+                        </div>
+                    </div>
+
                     :
                     <Button
                         className={"py-[12px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-full text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"}
