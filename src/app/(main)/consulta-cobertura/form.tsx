@@ -453,6 +453,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
     let valueLocality = '';
     let valueArealvl3 = '';
     let coloniaExist = false;
+    let valueStreet = false;
 
     for (const item of allComponents) {
       const value = item.long_name;
@@ -467,6 +468,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
             break;
           case 'street_number':
             setStreetNumber(value);
+            valueStreet = true;
             break;
           case 'neighborhood':
           case 'sublocality':
@@ -499,6 +501,9 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
       setColoniaError(true)
     }
 
+    if(!valueStreet) {
+      setNumExtError(true)
+    }
   }
 
 
