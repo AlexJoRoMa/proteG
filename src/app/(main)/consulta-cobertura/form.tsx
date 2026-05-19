@@ -241,6 +241,12 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   useEffect(() => {
+    if (addressSelected) {
+      setNumExtError(streetNumber.trim().length === 0);
+    }
+  }, [streetNumber, addressSelected]);
+
+  useEffect(() => {
     if(doErrorScroll) {
       if(checkFieldRef.current) {
         checkFieldRef.current?.scrollIntoView({ behavior:'smooth', block:'start' });
@@ -453,6 +459,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
     let valueLocality = '';
     let valueArealvl3 = '';
     let coloniaExist = false;
+    let valueStreet = false;
 
     for (const item of allComponents) {
       const value = item.long_name;
@@ -467,6 +474,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
             break;
           case 'street_number':
             setStreetNumber(value);
+            valueStreet = true;
             break;
           case 'neighborhood':
           case 'sublocality':
@@ -499,6 +507,9 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
       setColoniaError(true)
     }
 
+    if(!valueStreet) {
+      setNumExtError(true)
+    }
   }
 
 
@@ -659,7 +670,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
               value={streetNumber}
               onValueChange={(val) =>{
                 setStreetNumber(val);
-                setNumExtError(val.trim() === '')
+                setNumExtError(val.trim().length === 0)
               }}
               classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
             />
