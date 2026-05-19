@@ -37,13 +37,15 @@ export default function ResumenContainerDesktop() {
         <>
             {
                 !hasAnyMainProduct ?
-                    <div className="px-[16px]">
-                        <button
-                            className="mb-[32px] py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                            disabled
-                        >
-                            {resumenCopys.boton.comprobarPromociones}
-                        </button>
+                    <div className="flex items-start">
+                        <div className="px-[16px] w-full">
+                            <button
+                                className="mb-[32px] py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
+                                disabled
+                            >
+                                {resumenCopys.boton.comprobarPromociones}
+                            </button>
+                        </div>
                     </div>
                     :
                     <section className="flex flex-col h-full min-h-0">
