@@ -10,7 +10,6 @@ import { FC, RefObject, useEffect, useState } from "react";
 interface Props {
     formRef: RefObject<HTMLFormElement | null>;
     setIsValid: (valid: boolean) => void;
-    submitAttempted: boolean;
 }
 
 type DireccionData = {
@@ -19,7 +18,7 @@ type DireccionData = {
     reference: string;
 }
 
-export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid, submitAttempted }) => {
+export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
     const { getValue } = useMicrocopies('formulario-datosInstalacion');
     const { datosContratacion } = useCheckout();
 
@@ -46,10 +45,6 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid, submitAttem
         return local?.reference ?? datosEnvio?.reference ?? ""
     })
 
-    const [streetTouched, setStreetTouched] = useState(false);
-    const [street2Touched, setStreet2Touched] = useState(false);
-    const [referenceTouched, setReferenceTouched] = useState(false);
-
     useEffect(() => {
         const localData: DireccionData = getLocalPropertyByKey('PersistentDireccionData')
         if (!localData) return
@@ -68,17 +63,13 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid, submitAttem
     }
 
     useEffect(() => {
-        const isFormValid =
-            street.trim() !== '' &&
-            street2.trim() !== '' &&
-            reference.trim() !== '';
+        const isFormValid = true;
 
         setIsValid(isFormValid);
 
-        if (isFormValid) {
-            writeDireccionToLocal()
-        }
-    }, [street, street2, reference, setIsValid]);
+        writeDireccionToLocal();
+
+    }, [street, street2, reference]);
 
     return (
         <Form
@@ -95,17 +86,12 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid, submitAttem
                 classNames={inputStyles}
                 labelPlacement="outside"
                 className='w-full !mt-[34px]'
-                isRequired
                 placeholder={getValue('instalacion.placeholder.calle')}
-                errorMessage={getValue('instalacion.error.calle')}
                 value={street}
                 maxLength={40}
                 onChange={(e) => {
                     setStreet(e.target.value);
-                    setStreetTouched(true);
                 }}
-                onBlur={() => setStreetTouched(true)}
-                isInvalid={(streetTouched || submitAttempted) && street.trim() === ''}
             />
 
             <Input
@@ -117,17 +103,12 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid, submitAttem
                 classNames={inputStyles}
                 labelPlacement="outside"
                 className='w-full !mt-[34px]'
-                isRequired
                 placeholder={getValue('instalacion.placeholder.calle2')}
-                errorMessage={getValue('instalacion.error.calle2')}
                 value={street2}
                 maxLength={40}
                 onChange={(e) => {
                     setStreet2(e.target.value);
-                    setStreet2Touched(true);
                 }}
-                onBlur={() => setStreet2Touched(true)}
-                isInvalid={(street2Touched || submitAttempted) && street2.trim() === ''}
             />
 
             <Textarea
@@ -138,17 +119,12 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid, submitAttem
                 classNames={inputStyles}
                 labelPlacement="outside"
                 className='w-full'
-                isRequired
-                errorMessage={getValue('instalacion.error.referencia')}
                 placeholder={getValue('instalacion.placeholder.referencia')}
                 value={reference}
                 maxLength={40}
                 onChange={(e) => {
                     setReference(e.target.value);
-                    setReferenceTouched(true);
                 }}
-                onBlur={() => setReferenceTouched(true)}
-                isInvalid={(referenceTouched || submitAttempted) && reference.trim() === ''}
             />
         </Form>
     )
