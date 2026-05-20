@@ -38,29 +38,20 @@ type Step4FormData = {
     documentos: {
         ine: {
             file: File | null
-        },
-        comprobante: {
-            file: File | null
         }
     },
     ine: {
         fileName: string,
         fileExtension: string,
         data: string,
-    } | null,
-    comprobante: {
-        fileName: string,
-        fileExtension: string,
-        data: string,
-    } | null,
+    } | null
 }
 
-export const useStep4Form = (progressIne: number, progressCFile: number) => {
+export const useStep4Form = (progressIne: number) => {
     const { registerStepValidator, registerFormData, setIsStepValid, datosContratacion, currentStep } = useCheckout();
 
     const DocumentosTitularRef = useRef<HTMLFormElement | null>(null);
     const [ineFile, setIneFile] = useState<File | null>(datosContratacion.DocumentosTitular?.documentos.ine.file ?? null);
-    const [comprobanteFile, setComprobanteFile] = useState<File | null>(datosContratacion.DocumentosTitular?.documentos.comprobante.file ?? null);
     const [preparedPayload, setPreparedPayload] = useState<Step4FormData | null>(datosContratacion.DocumentosTitular ?? null);
     const [isPreparingFiles, setIsPreparingFiles] = useState(false);
     const latestPreparationId = useRef(0);
@@ -69,18 +60,14 @@ export const useStep4Form = (progressIne: number, progressCFile: number) => {
     const validateStep4 = useCallback(async () => {
         const valid =
             progressIne === 100 &&
-            progressCFile === 100 &&
             !!ineFile &&
-            !!comprobanteFile &&
             !!preparedPayload?.ine?.data &&
-            !!preparedPayload?.comprobante?.data &&
             !isPreparingFiles &&
-            (ineFile.size <= 4 * 1024 * 1024) &&
-            (comprobanteFile.size <= 4 * 1024 * 1024);
+            (ineFile.size <= 4 * 1024 * 1024)
 
         setIsStepValid(valid);
         return Promise.resolve(valid);
-    }, [ineFile, comprobanteFile, isPreparingFiles, preparedPayload, setIsStepValid, progressIne, progressCFile]);
+    }, [ineFile, isPreparingFiles, preparedPayload, setIsStepValid, progressIne]);
 
     // registro de validador
     useEffect(() => {
@@ -94,22 +81,18 @@ export const useStep4Form = (progressIne: number, progressCFile: number) => {
             documentos: {
                 ine: {
                     file: ineFile
-                },
-                comprobante: {
-                    file: comprobanteFile
-                },
+                }
             },
             ine: null,
-            comprobante: null,
         });
-    }, [registerFormData, preparedPayload, ineFile, comprobanteFile]);
+    }, [registerFormData, preparedPayload, ineFile]);
 
     // Preparar payload final antes de permitir continuar.
     useEffect(() => {
         const preparationId = latestPreparationId.current + 1;
         latestPreparationId.current = preparationId;
 
-        if (!ineFile || !comprobanteFile) {
+        if (!ineFile) {
             setPreparedPayload(null);
             setIsPreparingFiles(false);
             return;
@@ -121,9 +104,8 @@ export const useStep4Form = (progressIne: number, progressCFile: number) => {
 
         const prepareFiles = async () => {
             try {
-                const [ineBase64, comprobanteBase64] = await Promise.all([
+                const [ineBase64] = await Promise.all([
                     processFileToBase64(ineFile),
-                    processFileToBase64(comprobanteFile),
                 ]);
 
                 if (latestPreparationId.current !== preparationId) {
@@ -134,21 +116,13 @@ export const useStep4Form = (progressIne: number, progressCFile: number) => {
                     documentos: {
                         ine: {
                             file: ineFile
-                        },
-                        comprobante: {
-                            file: comprobanteFile
-                        },
+                        }
                     },
                     ine: {
                         fileName: "INEIFE",
                         fileExtension: getFileExtension(ineFile),
                         data: ineBase64,
-                    },
-                    comprobante: {
-                        fileName: "COMDOMICILIO",
-                        fileExtension: getFileExtension(comprobanteFile),
-                        data: comprobanteBase64,
-                    },
+                    }
                 });
             } catch (err) {
                 if (latestPreparationId.current !== preparationId) {
@@ -165,13 +139,13 @@ export const useStep4Form = (progressIne: number, progressCFile: number) => {
         };
 
         prepareFiles();
-    }, [ineFile, comprobanteFile, setIsStepValid]);
+    }, [ineFile, setIsStepValid]);
 
     useEffect(() => {
         if (currentStep === 4) {
             validateStep4();
         }
-    }, [ineFile, comprobanteFile, isPreparingFiles, preparedPayload, validateStep4, currentStep])
+    }, [ineFile, isPreparingFiles, preparedPayload, validateStep4, currentStep])
 
     const invalidateStep = useCallback(() => {
         setIsStepValid(false);
@@ -180,10 +154,8 @@ export const useStep4Form = (progressIne: number, progressCFile: number) => {
     return {
         DocumentosTitularRef,
         ineFile,
-        comprobanteFile,
         isPreparingFiles,
         setIneFile,
-        setComprobanteFile,
         invalidateStep
     };
 };

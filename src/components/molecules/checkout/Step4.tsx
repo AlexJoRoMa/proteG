@@ -10,21 +10,17 @@ const barTextStyle = 'flex items-center justify-between gap-3';
 
 const Step4 = () => {
 
-  const [progressCFile, setProgressCFile] = useState(0);
   const [progressIne, setProgressIne] = useState(0);
 
-  const { DocumentosTitularRef, ineFile, comprobanteFile, isPreparingFiles, setIneFile, setComprobanteFile, invalidateStep } = useStep4Form(progressIne, progressCFile);
+  const { DocumentosTitularRef, ineFile, isPreparingFiles, setIneFile, invalidateStep } = useStep4Form(progressIne);
 
   const { getValue } = useMicrocopies('contratacion-documentosTitular');
 
   const ineInputRef = useRef<HTMLInputElement | null>(null);
-  const comprobanteInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [errorComprobante, setErrorComprobante] = useState<string | null>(null);
   const [errorIne, setErrorIne] = useState<string | null>(null);
 
   const isIneLoad = !!ineFile && progressIne < 100;
-  const isCFileLoad = !!comprobanteFile && progressCFile < 100;
 
   useEffect(() => {
     if(ineFile) {
@@ -37,19 +33,6 @@ const Step4 = () => {
     }
 
   }, [ineFile])
-
-  useEffect(() => {
-
-    if(comprobanteFile) {
-      const timer = setInterval(() => {
-        setProgressCFile((prev) => (prev >= 100 ? 100 : prev + 10));
-      }, 300);
-      return ()=> clearInterval(timer);
-    } else {
-      setProgressCFile(0);
-    }
-
-  }, [comprobanteFile])
 
   const getSeconds = (progress: number) => Math.ceil((100-progress) / 33.33)
 
@@ -177,62 +160,6 @@ const Step4 = () => {
         />
         {errorIne && (
           <p className='mt-[12px] text-red-700 text-xs md:text-sm'>{errorIne}</p>
-        )}
-
-        <p
-          className='text-[18px] mb-4 mt-6'
-        >
-          {`${getValue('documentos.comprobante.titulo')} `}
-          <b>{getValue('documentos.formatos')}</b>
-        </p>
-
-        <Input
-          ref={comprobanteInputRef}
-          label={comprobanteFile ? `${getValue('documentos.input.comprobante')}.${comprobanteFile.type.split("/")[1].toLowerCase()}` : getValue('documentos.input.vacio')}
-          name="comprobante"
-          type="file"
-          variant='bordered'
-          radius='sm'
-          accept='.jpg, .jpeg, .png, .pdf'
-          classNames={{
-            base: `${isCFileLoad ? 'pointer-events-none' : 'data-[hover=true]:!cursor-pointer'}`,
-            label: 'font-bold text-lg leading-[24px] text-[#11181C] mt-[25px] px-[24px] cursor-pointer',
-            mainWrapper: 'mb-[16px] pointer',
-            input: "cursor-pointer file:!hidden text-indent-[-9999px] text-transparent h-full",
-            inputWrapper: `cursor-pointer rounded-xl shadow-none h-[78px] ${borderClass(!!comprobanteFile, !!errorComprobante, progressCFile)}`,
-            innerWrapper: "!items-center cursor-pointer bg-white-0 rounded-md px-[24px] !border-0 group-data-[focus=true]:border-0 group-data-[hover=true]:!border-0",
-          }}
-          required
-          className='w-full'
-          endContent={
-            comprobanteFile && progressCFile ===100 ? (
-              <div onClick={() => clearFile(comprobanteInputRef, setComprobanteFile, setErrorComprobante, setProgressCFile)}><DeleteIcon /></div>
-            ) : (
-              <UploadICon />
-            )
-          }
-          onChange={handleFileChange(setComprobanteFile, setErrorComprobante, setProgressCFile)}
-          description={
-            comprobanteFile && progressCFile < 100 && (
-              <div className={descriptionStyle}>
-                <div className={barTextStyle}>
-                  <Progress
-                  size="md"
-                  value={progressCFile}
-                  classNames={{indicator: "bg-black"}}
-                  /><span>{Math.round(progressCFile)}%</span>
-                </div>
-                <div className='mt-2'>
-                  <span>Subiendo documento...</span>
-                  <span>({getSeconds(progressCFile)})s restantes</span>
-                </div>
-              </div>
-            )
-          }
-        />
-
-        {errorComprobante && (
-          <p className='mt-[12px] text-red-700 text-xs md:text-sm'>{errorComprobante}</p>
         )}
 
         {isPreparingFiles && (

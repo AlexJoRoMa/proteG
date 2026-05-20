@@ -498,7 +498,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
     };
 
-    const getRequiredAttachInfo = (documentKey: "ine" | "comprobante") => {
+    const getRequiredAttachInfo = (documentKey: "ine") => {
         const attachInfo = datosContratacionRef.current?.DocumentosTitular?.[documentKey];
         const currentStatus = processStatusRef.current;
 
@@ -515,10 +515,6 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
     async function runAttachFiles(): Promise<boolean> {
         await runAttachIne(true);
-        await sleep(ATTACH_STATUS_SETTLE_DELAY_MS);
-        await refreshCurrentProcessStatus();
-
-        await runAttachComprobante(true);
         await sleep(ATTACH_STATUS_SETTLE_DELAY_MS);
         await refreshCurrentProcessStatus();
 
@@ -584,26 +580,6 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
             return data;
         },
         resetKey: `step-4-attachFileIne`,
-        autoExecute: false,
-    });
-
-    const { trigger: runAttachComprobante, isLoading: loadingAttachComprobante } = useControlledAction({
-        action: async () => {
-            const attachInfo = getRequiredAttachInfo("comprobante");
-
-            const res = await GetAttachFile(processStatusRef.current, attachInfo);
-            const data = await res;
-
-
-            // Después de attachFiles, consultar processStatus una vez para actualizar waitingForAction
-            if (data?.error || data?.code) {
-                throw new Error("Error adjuntando comprobante.");
-            }
-
-
-            return data;
-        },
-        resetKey: `step-4-attachFileComprobante`,
         autoExecute: false,
     });
 
