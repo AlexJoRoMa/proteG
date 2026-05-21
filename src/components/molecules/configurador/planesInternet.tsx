@@ -217,6 +217,14 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
         return !!movil && Object.keys(movil).length > 0;
     }, [userAnswers.movil]);
 
+    const getMaxVelocity = (card: OfferItem) => {
+        if(!userAnswers.movil) return card.velocidadMaxima;
+        
+        if(!card.velocidadMaximaMovil) return card.velocidadMaxima;
+
+        return card.velocidadMaximaMovil
+    }
+    
     return (
         <div className="flex flex-col gap-[24px]">
             <div className='flex flex-row gap-[8px] items-center'>
@@ -228,6 +236,7 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
                 {
                     offersByType && offersByType.map((card: OfferItem, index) => {
                         const isSelected = selectedIndex === index;
+                        const maxVelocity = getMaxVelocity(card);
 
                         return (
                             <div
@@ -247,8 +256,9 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
                                     <CardHeader>
                                         <div className="flex flex-col text-start">
 
-                                            <p className={`text-base font-normal leading-[27px] ${card.velocidadMinima === card.velocidadMaxima ? 'invisible' : ''}`}>{`${offersCopys.internet.cards.preVelocidad} ${card.velocidadMinima} ${offersCopys.internet.cards.posVelocidad}`}</p>
-                                            <p className="leading-[27px] font-extrabold text-2xl">{`${card.velocidadMaxima} ${offersCopys.internet.cards.unidadVelocidad}`}</p>
+                                            <p className={`text-base font-normal leading-[27px] ${card.velocidadMinima === maxVelocity ? 'invisible' : ''}`}>{`${offersCopys.internet.cards.preVelocidad} ${card.velocidadMinima} ${offersCopys.internet.cards.posVelocidad}`}</p>
+                                            <p className="leading-[27px] font-extrabold text-2xl">{`${maxVelocity} ${offersCopys.internet.cards.unidadVelocidad}`}</p>
+                                            <p></p>
                                         </div>
                                     </CardHeader>
                                     <CardBody>
@@ -295,7 +305,7 @@ export default function PlanesInternet({ step, preSeleccion }: StepProps) {
                                                     <ConfiguradorCardsModalComponent
                                                         variables={{
                                                             velocidadMinima: card.velocidadMinima,
-                                                            velocidadMaxima: card.velocidadMaxima,
+                                                            velocidadMaxima: maxVelocity,
                                                             precioPaquete: card.precioPaquete,
                                                             extras: card.extrasIncluidos
                                                         }}
