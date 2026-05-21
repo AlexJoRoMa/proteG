@@ -145,8 +145,6 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
 
     const promotions = promoData?.promos;
     const promoVisible = promotions?.filter((promo) => promo.visible === true && promo.promoPrice !== 0);
-    const pagoAnticipado = promoData?.promos?.find(promo => promo.promoName.toLowerCase().includes('pago anticipado'));
-    /* const totalAfterPromos = Math.abs(Number((pagoAnticipado?.promoPrice || 0))); */
     const descuentoTv = Math.abs((Number(userSelection?.tv?.paquete?.precioPaquete)) - (Number(userSelection?.tv?.paquete?.precioTachado)));
     const totalOttDescuentoCombo = globalIzziSelection?.extrasMap?.ott?.reduce(
         (acc, ott) => acc + Number(ott.descuentoCombo?.monto || 0),
@@ -166,7 +164,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
             totalSinDescuento - ahorroCombinado :
         totalSinDescuento;
 
-    const ahorroTotal = ((Number(ahorroCombinado) || 0) + (Number(pagoAnticipado) || 0)) + (Number(Math.abs(totalPromoPrice as number)) || 0);
+    const ahorroTotal = totalSinDescuento - precioTotal;
 
     const promoMeses = calcularPromos(promotions);
     const descuentoMeses = useMemo(() => {
@@ -244,7 +242,7 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                                     </h2>
                                     <p>
                                         {
-                                            FormatPromotions(Number(totalSinDescuento - priceTotal))
+                                            FormatPromotions(Number(ahorroTotal))
                                         }
                                     </p>
                                 </div>
@@ -262,7 +260,6 @@ export default function ResumenContent({ copys, userSelection }: ResumenContentP
                                                             <div className="w-[24px] h-[24px]">
                                                                 <CircleCheckGreen />
                                                             </div>
-                                                            {/* <h5 className="text-left mr-[8px]">{resumenCopys.ahorro.paquete}</h5> */}
                                                             <h5>{resumenCopys.ahorro.paquete}</h5>
                                                         </div>
                                                         <h5 className="text-right text-green-700">-{FormatPromotions(ahorroCombinado)}</h5>
