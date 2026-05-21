@@ -3,7 +3,7 @@ import { SeoFields, SEOHeadProps} from "@/types/SEOTypes";
 export default function SEOHead({ seo, slug}: SEOHeadProps) {
     
     const bastURL =  seo.baseUrl;
-    const canonicalURL = `${bastURL}/${slug}`;
+    const canonicalURL = slug === "home" ? `${bastURL}/${slug}/`: `${bastURL}/${slug}`;
   
     const imagen = (seo?.imagen as SeoFields["imagen"])
     const imgURL = imagen.fields.image.fields.file.url;
