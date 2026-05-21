@@ -12,11 +12,6 @@ interface Props {
     setIsValid: (valid: boolean) => void;
 }
 
-type DireccionData = {
-    street: string;
-    street2: string;
-    reference: string;
-}
 
 export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
     const { getValue } = useMicrocopies('formulario-datosInstalacion');
@@ -25,34 +20,22 @@ export const DireccionEnvioForm: FC<Props> = ({ formRef, setIsValid }) => {
     const envio: Partial<DatosContratacion> = datosContratacion ?? {};
     const datosEnvio = envio.DatosPersonales?.instalacion;
 
-    const getLocalPropertyByKey = (propertyName: string) => JSON.parse(localStorage.getItem(propertyName) as string) ?? null;
-
-    // Nueva inicializacion de informacion persistente
-    const getLocalPersonalData = () => {
+    const getLocalDireccionData = () => {
         if (typeof window === 'undefined') return null
-        return JSON.parse(localStorage.getItem('PersistentPersonalData') ?? 'null')
+        return JSON.parse(localStorage.getItem('PersistentDireccionData') ?? 'null')
     }
     const [street, setStreet] = useState(() => {
-        const local = getLocalPersonalData()
+        const local = getLocalDireccionData()
         return local?.street ?? datosEnvio?.street ?? ""
     })
     const [street2, setStreet2] = useState(() => {
-        const local = getLocalPersonalData()
+        const local = getLocalDireccionData()
         return local?.street2 ?? datosEnvio?.street2 ?? ""
     })
     const [reference, setReference] = useState(() => {
-        const local = getLocalPersonalData()
+        const local = getLocalDireccionData()
         return local?.reference ?? datosEnvio?.reference ?? ""
     })
-
-    useEffect(() => {
-        const localData: DireccionData = getLocalPropertyByKey('PersistentDireccionData')
-        if (!localData) return
-
-        setStreet(localData.street ?? "")
-        setStreet2(localData.street2 ?? "")
-        setReference(localData.reference ?? "")
-    }, [])
 
     const writeDireccionToLocal = () => {
         localStorage.setItem('PersistentDireccionData', JSON.stringify({
