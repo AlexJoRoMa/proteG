@@ -7,16 +7,17 @@ import { CoberturaProvider } from '@/components/providers/CoberturaProvider';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
 import { useSearchParams } from 'next/navigation';
 import { preSelectionCookie } from './actions';
-import { LocationIcon } from '@/constants/IconsConstants';
+import { LocationIcon, InfoIcon } from '@/constants/IconsConstants';
 import { useIzziContent } from '@/components/providers/IzziProvider';
 
 const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
 
 const FALLBACKS: Record<string, string> = {
     'cobertura.title': 'Descubre los servicios de izzi disponibles en tu zona',
-    'cobertura.subtitle': 'Ingresa tu dirección y te mostraremos los paquetes y promociones que puedes contratar.',
+    'cobertura.subtitle': 'Consulta los paquetes, velocidades y promociones disponibles en tu hogar.',
     'cobertura.direccion.seleccionada': 'Dirección seleccionada:',
     'cobertura.alertaAzul.mensaje': 'Ayudanos a ubicar tu dirección en el mapa',
+    'cobertura.seleccionaLista.mensaje': 'Escribe tu dirección y selecciona la mejor sugerencia',
 };
 
 
@@ -66,6 +67,9 @@ export default function Cobertura() {
                         <div className='lg:flex lg:flex-col-2 mt-3'>
                             <div className='lg:w-1/2'>
                             <p className="xsm:text-[16px] lg:text-[18px] mt-1">{getText('cobertura.subtitle')}</p>
+                            {!checkValue ? 
+                                <p className="xsm:text-[16px] lg:text-[18px] mt-5 font-bold">{getText('cobertura.seleccionaLista.mensaje')}</p>
+                            : <></>}
                                 <div className="flex w-full flex-wrap md:flex-nowrap gap-4 mt-5">
                                     <CoberturaForm onGoMap={goToMap}/>
                                 </div>
@@ -81,7 +85,10 @@ export default function Cobertura() {
                                         </p>
 
                                         <div className='flex items-center gap-2 '>
-                                            <LocationIcon />
+                                            <div className='flex-shrink-0'>
+                                                <LocationIcon />
+                                            </div>
+                                            
                                             <p className='xsm:text-[16px] lg:text-[18px]'>
                                                 {streetDireccion}
                                             </p>
@@ -89,9 +96,9 @@ export default function Cobertura() {
                                     </div>
                                     : <></>}
 
-                                <div className='bg-blue-700 rounded-lg text-white px-[20px] py-[16px] flex items-center gap-3 mb-4'>
-                                    <div className='flex items-center justify-center w-5 h-5 border-1 border-white rounded-full flex-shrink-0'>
-                                        <span className='text-[12px] font-bold pl-[1px]'>i</span>
+                                <div className='bg-blue-700 rounded-lg text-white px-[20px] py-[16px] flex items-center gap-3 mb-4 xsm:mt-3 lg:mt-0'>
+                                    <div className='flex-shrink-0'>
+                                        <InfoIcon />
                                     </div>
 
                                     <p className='fonrt-normal text-[16px] text-white leading-[1.4]'>

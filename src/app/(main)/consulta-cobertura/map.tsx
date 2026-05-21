@@ -23,7 +23,7 @@ export default function IzziMap(){
     setState,
     setLat,
     setLng,
-    setMode
+    setMode,
    } = useContent();
 
    const { setAddressFielSelected, setStreetDireccion, setColoniaError } = useIzziContent();
@@ -73,6 +73,10 @@ export default function IzziMap(){
 function mapAddressFields(data: GeocodeType) {
     const components = data?.results?.[0]?.address_components ?? [];
     let coloniaExist = false;
+
+    setNeighborhood('')
+    setStreetNumber('')
+    setColoniaError(false)
     
     //Se busca si existe un array con administrative_area_level_3
     const getAreaLevel = data?.results?.find( result => 

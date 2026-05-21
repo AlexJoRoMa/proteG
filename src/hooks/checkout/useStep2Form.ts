@@ -1,7 +1,7 @@
 import { useCheckout } from "@/components/providers/CheckoutProvider";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 
-function getFormData(ref: React.RefObject<HTMLFormElement | null>) {
+function getFormData(ref: RefObject<HTMLFormElement | null>) {
     if (!ref.current) return {};
     const data = new FormData(ref.current);
     return Object.fromEntries(data.entries());
@@ -19,6 +19,8 @@ export const useStep2Form = () => {
     const [necesitaFacturar, setNecesitaFacturar] = useState(datosContratacion?.DatosPersonales?.meta?.necesitaFacturar ?? false);
     const [esExtranjero, setEsExtranjero] = useState(datosContratacion?.DatosPersonales?.meta?.esExtranjero ?? false);
 
+    //Estado para normalizacion del origen de la informacion
+    const [rfc, setRfc] = useState(datosContratacion.DatosPersonales?.facturacion?.rfc ?? '')
     // Estados para los Selects de HeroUI
     const [cfdi, setCfdi] = useState(datosContratacion?.DatosPersonales?.meta?.cfdi ?? '');
     const [regimen, setRegimen] = useState(datosContratacion?.DatosPersonales?.meta?.regimen ?? '');
@@ -32,22 +34,61 @@ export const useStep2Form = () => {
     const [conditionChecked, setConditionChecked] = useState(false);
     const [privacyChecked, setPrivacyChecked] = useState(false);
 
+    const [submitAttempted, setSubmitAttempted] = useState(false);
+    const [submitfacturation, setSubmitfacturation] = useState(false);
+    const [submitOtherDirection, setSubmitOtherDirection] = useState(false);
+
     // Función para validar el paso 2 basado en estados
     const validateStep2 = useCallback(async () => {
+
         const personalOk = isPersonalValid;
         const envioOk = isEnvioValid;
         const facturacionOk = !necesitaFacturar || (isFacturacionValid && cfdi.trim() !== '' && regimen.trim() !== '');
         const direccionFacturacionOk = !necesitaFacturar || !facturarOtraDireccion || isDireccionFacturacionValid;
+        const checkboxOk = conditionChecked && privacyChecked;
 
-        return personalOk && envioOk && facturacionOk && direccionFacturacionOk && conditionChecked && privacyChecked;
+        return (
+            personalOk &&
+            envioOk &&
+            facturacionOk &&
+            direccionFacturacionOk &&
+            checkboxOk
+        );
     }, [isPersonalValid, isEnvioValid, isFacturacionValid, isDireccionFacturacionValid, necesitaFacturar, facturarOtraDireccion, cfdi, regimen, conditionChecked, privacyChecked]);
+
+    const triggerStep2Validation = useCallback(async () => {
+        setSubmitAttempted(true);
+        setSubmitfacturation(true);
+        setSubmitOtherDirection(true);
+
+        const isValid = await validateStep2();
+
+        if (!isValid) {
+            requestAnimationFrame(() => {
+                const firstInvalid = document.querySelector(
+                    '[aria-invalid="true"]'
+                );
+
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    (firstInvalid as HTMLElement).blur?.();
+                }
+            });
+        }
+
+        return isValid;
+    }, [validateStep2]);
 
     // Registrar el validador del paso 2
     useEffect(() => {
         if (currentStep === 2) {
-            registerStepValidator(2, validateStep2);
+            registerStepValidator(2, triggerStep2Validation);
         }
-    }, [registerStepValidator, validateStep2, currentStep]);
+    }, [registerStepValidator, currentStep, triggerStep2Validation]);
 
     // Actualizar la validez del paso cuando cambien los estados de validación
     useEffect(() => {
@@ -92,6 +133,10 @@ export const useStep2Form = () => {
         setCfdi,
         regimen,
         setRegimen,
+        rfc,
+        setRfc,
+        isDireccionFacturacionValid,
+        isPersonalValid,
         // Estados de validación
         setIsPersonalValid,
         setIsEnvioValid,
@@ -100,7 +145,13 @@ export const useStep2Form = () => {
         conditionChecked,
         setConditionChecked,
         privacyChecked,
-        setPrivacyChecked
+        setPrivacyChecked,
+        submitAttempted,
+        setSubmitAttempted,
+        submitfacturation,
+        setSubmitfacturation,
+        submitOtherDirection,
+        setSubmitOtherDirection
     };
 };
 

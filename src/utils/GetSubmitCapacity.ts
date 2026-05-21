@@ -1,6 +1,8 @@
 import { DatosContratacion } from "@/types/Contratacion";
 import { RefObject } from "react";
 
+const SUBMIT_CAPACITY_TIMEOUT_MS = 30000;
+
 export async function GetSubmitCapacity(processId: string, datosContratacion: RefObject<Partial<DatosContratacion> | null>, isRecurrent: boolean, globalFlagDomicilio: boolean) {
 
     function getPaymentReference() {
@@ -16,6 +18,9 @@ export async function GetSubmitCapacity(processId: string, datosContratacion: Re
             return "IZZI_CHANNELS";
         }
     }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), SUBMIT_CAPACITY_TIMEOUT_MS);
 
     try {
         const headers = new Headers({
@@ -45,6 +50,7 @@ export async function GetSubmitCapacity(processId: string, datosContratacion: Re
             method: "POST",
             headers,
             body,
+            signal: controller.signal,
         });
 
         const data = await response.json();
@@ -53,8 +59,11 @@ export async function GetSubmitCapacity(processId: string, datosContratacion: Re
         return data;
 
     } catch (err) {
-        console.error("Error al generar GetSubmitCapacity", err);
+        const isAbort = (err as { name?: string })?.name === "AbortError";
+        console.error(`Error al generar GetSubmitCapacity${isAbort ? " (timeout)" : ""}`, err);
         throw err;
+    } finally {
+        clearTimeout(timeoutId);
     }
 
 }
