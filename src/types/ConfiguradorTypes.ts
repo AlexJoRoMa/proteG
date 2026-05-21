@@ -87,6 +87,7 @@ export interface OfferItem {
     canalesHd?: string,
     spTV: boolean,
     spMovil: boolean,
+    velocidadMaximaMovil?: number,
     velocidadMaxima?: number,
     velocidadMinima?: number,
     extrasIncluidos?: ExtrasIncluidos[],
