@@ -97,7 +97,8 @@ export type ResumenData = {
             movil: string,
             tv: string,
             'tv&movil': string
-        }
+        },
+        ahorro: string
     },
     informacion: {
         promociones: string,
