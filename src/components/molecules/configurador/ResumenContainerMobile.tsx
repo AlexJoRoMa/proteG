@@ -9,7 +9,7 @@ import { ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { useRouter } from "next/navigation";
-import { LoaderIcon } from "@/constants/IconsConstants";
+import { ArrowDownIcon, ArrowUpIcon, LoaderIcon } from "@/constants/IconsConstants";
 import { getOttCategoriesFromContentful, isComboCategory } from "@/utils/OttCategoriesHelper";
 import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
 import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
@@ -18,22 +18,6 @@ import ResumenContent from "../resumenCompra/resumenContent";
 import BannerDomiciliacion from "@/components/atoms/bannerDomiciliacion";
 import DetalleResumen from "../resumenCompra/detalleResumen";
 import { motion, useTime, useTransform } from "framer-motion";
-
-export const ArrowUpIcon = (props: React.SVGProps<SVGSVGElement>) => {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
-            <path d="M19 15L12 9L5 15" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-    )
-}
-
-export const ArrowDownIcon = (props: React.SVGProps<SVGSVGElement>) => {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
-            <path d="M19 9L12 15L5 9" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-    )
-}
 
 function hasData(obj: unknown): boolean {
     return !!obj && typeof obj === "object" && Object.keys(obj as object).length > 0;
