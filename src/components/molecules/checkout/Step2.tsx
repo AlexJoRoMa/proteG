@@ -27,8 +27,6 @@ const Step2 = () => {
     DireccionEnvioRef,
     DatosFacturacionRef,
     DireccionFacturacionRef,
-    esExtranjero,
-    setEsExtranjero,
     necesitaFacturar,
     setNecesitaFacturar,
     facturarOtraDireccion,
@@ -68,7 +66,7 @@ const Step2 = () => {
     setPrivacyChecked(value);
   }
 
-  const updateIsForeign = (value: boolean) => setEsExtranjero(value)
+  // const updateIsForeign = (value: boolean) => setEsExtranjero(value)
 
   useEffect(() => {
     if (!necesitaFacturar) {
@@ -109,32 +107,19 @@ const Step2 = () => {
           </Link>
         </div>
 
-        <Divider orientation="horizontal" className='!border-[var(--color-gray-300)] mb-[16px] block md:hidden' />
+        <Divider orientation="horizontal" className='!border-[var(--color-gray-300)] xl:mb-[16px] block md:hidden' />
 
-        <div className='flex items-center justify-between md:justify-end w-full gap-[53px]'>
-          <p className='text-nowrap text-base'>{getValue('datosPersonales.extranjero')}</p>
-          <Switch
-            aria-label="Extrangero"
-            isSelected={esExtranjero}
-            onValueChange={(checked) => setEsExtranjero(checked)}
-            classNames={{
-              wrapper: "bg-gray-100 group-data-[selected=true]:!bg-black-0",
-              thumb: "bg-white-0"
-            }}
-          />
-        </div>
       </div>
 
       <DatosPersonalesForm
         formRef={DatosPersonalesRef}
-        esExtrangero={esExtranjero}
         isValid={isPersonalValid}
         setIsValid={setIsPersonalValid}
-        updateIsForeign={updateIsForeign}
+        // updateIsForeign={updateIsForeign}
         submitAttempted={submitAttempted}
       />
 
-      <Divider orientation="horizontal" className='!border-[var(--color-gray-300)] mt-12 mb-7' />
+      <Divider orientation="horizontal" className='!border-[var(--color-gray-300)] mt-2 xl:mt-6 mb-7' />
 
       <>
         <h4 className='mb-[38px] font-bold text-[20px] leading-6'>
@@ -157,7 +142,6 @@ const Step2 = () => {
         <DireccionEnvioForm
           formRef={DireccionEnvioRef}
           setIsValid={setIsEnvioValid}
-          submitAttempted={submitAttempted}
         />
 
       </>

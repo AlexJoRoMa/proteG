@@ -17,7 +17,6 @@ export const useStep2Form = () => {
 
     const [facturarOtraDireccion, setFacturarOtraDireccion] = useState(datosContratacion?.DatosPersonales?.meta?.facturarOtraDireccion ?? false);
     const [necesitaFacturar, setNecesitaFacturar] = useState(datosContratacion?.DatosPersonales?.meta?.necesitaFacturar ?? false);
-    const [esExtranjero, setEsExtranjero] = useState(datosContratacion?.DatosPersonales?.meta?.esExtranjero ?? false);
 
     //Estado para normalizacion del origen de la informacion
     const [rfc, setRfc] = useState(datosContratacion.DatosPersonales?.facturacion?.rfc ?? '')
@@ -105,7 +104,7 @@ export const useStep2Form = () => {
                 instalacion: getFormData(DireccionEnvioRef),
                 facturacion: necesitaFacturar ? getFormData(DatosFacturacionRef) : null,
                 direccionFacturacion: necesitaFacturar && facturarOtraDireccion ? getFormData(DireccionFacturacionRef) : null,
-                meta: { esExtranjero, necesitaFacturar, facturarOtraDireccion, cfdi, regimen }
+                meta: { necesitaFacturar, facturarOtraDireccion, cfdi, regimen }
             };
 
             return {
@@ -116,15 +115,13 @@ export const useStep2Form = () => {
                 meta: allData.meta,
             };
         });
-    }, [esExtranjero, necesitaFacturar, facturarOtraDireccion, cfdi, regimen, registerFormData, datosContratacion?.DatosPersonales?.personal, datosContratacion?.DatosPersonales?.instalacion, datosContratacion?.DatosPersonales?.facturacion, datosContratacion?.DatosPersonales?.direccionFacturacion]);
+    }, [necesitaFacturar, facturarOtraDireccion, cfdi, regimen, registerFormData, datosContratacion?.DatosPersonales?.personal, datosContratacion?.DatosPersonales?.instalacion, datosContratacion?.DatosPersonales?.facturacion, datosContratacion?.DatosPersonales?.direccionFacturacion]);
 
     return {
         DatosPersonalesRef,
         DireccionEnvioRef,
         DatosFacturacionRef,
         DireccionFacturacionRef,
-        esExtranjero,
-        setEsExtranjero,
         necesitaFacturar,
         setNecesitaFacturar,
         facturarOtraDireccion,
