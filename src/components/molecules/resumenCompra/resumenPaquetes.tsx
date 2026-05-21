@@ -13,6 +13,17 @@ export default function ResumenPaquetes({ userSelection, copys }: ResumenContent
 
     const hasData = (obj: unknown) => obj && typeof obj == 'object' && Object.keys(obj).length > 0;
     const hasOtt = tv?.ott && Array.isArray(tv.ott.planes) && tv.ott.planes.length > 0;
+    const hasMovilSelected = hasData(movil) as boolean;
+
+    const getInternetMaxVelocity = () => {
+        if (!internet?.paquete) return undefined;
+
+        if (hasMovilSelected && internet.paquete.velocidadMaximaMovil) {
+            return internet.paquete.velocidadMaximaMovil;
+        }
+
+        return internet.paquete.velocidadMaxima;
+    };
 
     const sections = [];
 
@@ -34,9 +45,9 @@ export default function ResumenPaquetes({ userSelection, copys }: ResumenContent
                             ${resumenCopys.paquetes.internet.prevCapacidad} ${internet.paquete.velocidadMinima}${resumenCopys.paquetes.internet.postCapacidad}`}
                     </p>
                     {
-                        movil &&
+                        hasMovilSelected &&
                         <p>
-                            {`${resumenCopys.paquetes.internet.textoContratacion} ${internet.paquete.velocidadMaxima}${resumenCopys.paquetes.internet.postCapacidad}`}
+                            {`${resumenCopys.paquetes.internet.textoContratacion} ${getInternetMaxVelocity()}${resumenCopys.paquetes.internet.postCapacidad}`}
                         </p>
                     }
                     <p>
