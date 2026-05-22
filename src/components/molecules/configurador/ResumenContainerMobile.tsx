@@ -9,7 +9,7 @@ import { ResumenData } from "@/types/ResumenCompra";
 import { useIzziContent } from "@/components/providers/IzziProvider";
 import { FormatCurrency } from "@/utils/Currency";
 import { useRouter } from "next/navigation";
-import { LoaderIcon } from "@/constants/IconsConstants";
+import { ArrowDownIcon, ArrowUpIcon, LoaderIcon } from "@/constants/IconsConstants";
 import { getOttCategoriesFromContentful, isComboCategory } from "@/utils/OttCategoriesHelper";
 import izziDataLayerHelpers from "@/utils/izzi-data-layer-helpers";
 import { EVENTS, CURRENCY } from "@/lib/tracking/constants";
@@ -17,22 +17,7 @@ import BannerPromocionesResumen from "@/components/atoms/BannerPromocionesResume
 import ResumenContent from "../resumenCompra/resumenContent";
 import BannerDomiciliacion from "@/components/atoms/bannerDomiciliacion";
 import DetalleResumen from "../resumenCompra/detalleResumen";
-
-export const ArrowUpIcon = (props: React.SVGProps<SVGSVGElement>) => {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
-            <path d="M19 15L12 9L5 15" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-    )
-}
-
-export const ArrowDownIcon = (props: React.SVGProps<SVGSVGElement>) => {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
-            <path d="M19 9L12 15L5 9" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-    )
-}
+import { motion, useTime, useTransform } from "framer-motion";
 
 function hasData(obj: unknown): boolean {
     return !!obj && typeof obj === "object" && Object.keys(obj as object).length > 0;
@@ -41,8 +26,9 @@ function hasData(obj: unknown): boolean {
 export default function ResumenContainerMobile() {
 
     const { userAnswers, copysResumen, configuradorEntry, izziSelection } = useContent();
-    const { precioTotal, coberturaData, setPromoData, infoPaquetes, setInfoPaquetes, setCheckedPromotions, checkedPromotions, globalIzziSelection, checkSwitch } = useIzziContent();;
+    const { precioTotal, coberturaData, setPromoData, infoPaquetes, setInfoPaquetes, setCheckedPromotions, checkedPromotions, globalIzziSelection, checkSwitch, globalUserAnswers } = useIzziContent();;
     const [loading, setLoading] = useState<boolean>(false);
+    const [newSelection, setNewSelection] = useState<boolean>(false);
     const [promoError, setPromoError] = useState(false);
     const [validComboCategories, setValidComboCategories] = useState<Set<string>>(new Set());
     const router = useRouter();
@@ -98,6 +84,18 @@ export default function ResumenContainerMobile() {
             setInfoPaquetes(resumenCopys.infoDrawer.paquetes["internet&tv&movil"]);
         }
     }, [internet, movil, resumenCopys.infoDrawer.paquetes, setCheckedPromotions, setInfoPaquetes, tv, userAnswers, setPromoData])
+
+    useEffect(() => {
+
+        setNewSelection(true);
+
+        const timer = setTimeout(() => {
+            setNewSelection(false);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+
+    }, [globalUserAnswers]);
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -198,6 +196,20 @@ export default function ResumenContainerMobile() {
         router.push(`${resumenCopys.boton.contratar.url}`)
     }
 
+    const time = useTime();
+
+    /* time cuenta en milisegundos, tiempo que tarda en dar un ciclo, cuantos giros hacer, clamp permite el loop de la animacion */
+    const rotate = useTransform(time, [0, 1000], [0, 360], {
+        clamp: false
+    });
+
+    /* se le puede agregar o quitar la cantidad de colores que se quiera, esto para ayudar al bucle visual */
+    const rotatingBG = useTransform(rotate, (r) => {
+        return `conic-gradient(from ${r}deg, #ff6c07, #CE32A3, #3CB594, #ff6c07)`;
+    })
+
+    const shouldAnimate = newSelection && !loading;
+
     return (
         <>
             <div className="w-full px-[16px] pt-[24px] bg-gray-50 pb-[32px]">
@@ -256,16 +268,31 @@ export default function ResumenContainerMobile() {
 
                                 {
                                     !checkedPromotions ?
-                                        <button
-                                            className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                                            onClick={() => {
-                                                handleClick();
-                                                CheckPromotions();
-                                            }
-                                            }
-                                        >
-                                            {resumenCopys.boton.comprobarPromociones}
-                                        </button>
+                                        <div className=" w-full flex flex-col items-center justify-center">
+                                            <div className="relative w-full">
+                                                <button
+                                                    className={`relative z-10 py-[14px] px-[16px] bg-black-0 border-black-0 ${newSelection ? "rounded-sm" : "rounded-md"} w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50`}
+                                                    onClick={() => {
+                                                        handleClick()
+                                                        CheckPromotions()
+                                                    }}
+                                                    disabled={loading}
+                                                >
+                                                    {resumenCopys.boton.comprobarPromociones}
+                                                </button>
+
+                                                {/* fondo animado , inset es el ancho del borde */}
+                                                {
+                                                    shouldAnimate && (
+                                                        <motion.div
+                                                            className={`absolute -inset-1 rounded-md z-0`}
+                                                            style={{
+                                                                background: newSelection ? rotatingBG : "#000"
+                                                            }}
+                                                        />
+                                                    )}
+                                            </div>
+                                        </div >
                                         :
                                         <Button
                                             isDisabled={loading || promoError}
@@ -349,16 +376,31 @@ export default function ResumenContainerMobile() {
                                             <DrawerFooter>
                                                 <div className="flex flex-col w-full">
                                                     {!checkedPromotions ?
-                                                        <button
-                                                            className="py-[14px] px-[16px] bg-black-0 border-black-0 rounded-md w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50"
-                                                            onClick={() => {
-                                                                handleClick();
-                                                                CheckPromotions();
-                                                            }
-                                                            }
-                                                        >
-                                                            {resumenCopys.boton.comprobarPromociones}
-                                                        </button>
+                                                        <div className=" w-full flex flex-col items-center justify-center">
+                                                            <div className="relative w-full">
+                                                                <button
+                                                                    className={`relative z-10 py-[14px] px-[16px] bg-black-0 border-black-0 ${newSelection ? "rounded-sm" : "rounded-md"} w-full h-[48px] text-white-0 font-semibold leading-[24px] text-lg text-center disabled:bg-gray-150 disabled:text-gray-50`}
+                                                                    onClick={() => {
+                                                                        handleClick()
+                                                                        CheckPromotions()
+                                                                    }}
+                                                                    disabled={loading}
+                                                                >
+                                                                    {resumenCopys.boton.comprobarPromociones}
+                                                                </button>
+
+                                                                {/* fondo animado , inset es el ancho del borde */}
+                                                                {
+                                                                    shouldAnimate && (
+                                                                        <motion.div
+                                                                            className={`absolute -inset-1 rounded-md z-0`}
+                                                                            style={{
+                                                                                background: newSelection ? rotatingBG : "#000"
+                                                                            }}
+                                                                        />
+                                                                    )}
+                                                            </div>
+                                                        </div >
                                                         :
                                                         <Button
                                                             isDisabled={loading || promoError}
