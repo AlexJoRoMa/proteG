@@ -107,46 +107,44 @@
   --spacing-xl: 200px;
 
 
-   --text-high-contrast-rgb-value: 49, 49, 49;
-   --detail-medium-contrast: rgb(234, 234, 234);
-   --text-body: rgb(54, 49, 61);
+  --text-high-contrast-rgb-value: 49, 49, 49;
+  --detail-medium-contrast: rgb(234, 234, 234);
+  --text-body: rgb(54, 49, 61);
 
-   /*Gradientes*/
-   --gradient-card-tag-home: linear-gradient(90deg, #D60270 0%, #FF6C07 100%);
-   --gradient-card-line-1: linear-gradient(90deg, #FF6C07, #4DA9A7);
-   --gradient-card-line-2: linear-gradient(to right, #00C1B5, #00C1B5);
-   --gradient-card-line-3: linear-gradient(to right, #FF6C07, #FF6C07);
-   --gradient-background: linear-gradient(to right,#DCEFF0,#F4F4F6,#F3E6EE);
-   --gradient-button-fixed: linear-gradient(90deg,#FF6C07 0%,#4DA9A7 33%, #D31772 66%, #FCD116 100%);
-   
-   --gradient-bar-horizontal: linear-gradient(to right,#FF6C07,#4DA9A7,#D31772,#FCD116);
-   --gradient-bar-horizontal-4-naranverderosaamarillo: linear-gradient(to right,#FF6C07,#4DA9A7,#D31772,#FCD116);
-   --gradient-bar-vertical-4-naranverderosaamarillo: linear-gradient( to bottom,#FF6C07,#4DA9A7,#D31772,#FCD116);
-   --gradient-bar-horizontal-5-verde: linear-gradient(to right,#00C1B5,#99EAE5,#00877F,#99EAE5,#00C1B5);
-   --gradient-bar-vertical-5-verde: linear-gradient( to bottom,#00C1B5,#99EAE5,#00877F,#99EAE5,#00C1B5);
-   --gradient-bar-horizontal-5-amarillo: linear-gradient(to right,#FF6C07,#FCD116,#FFB066,#FCD116,#FF6C07);
-   --gradient-bar-vertical-5-amarillo: linear-gradient( to bottom,#FF6C07,#FCD116,#FFB066,#FCD116,#FF6C07);
-   --gradient-bar-horizontal-5-magenta: linear-gradient(to right,#D60270,#F9C1DB,#ED418D,#F9C1DB,#D60270);
-   --gradient-bar-vertical-5-magenta: linear-gradient( to bottom,#D60270,#F9C1DB,#ED418D,#F9C1DB,#D60270);
-   --gradient-bar-vertical: linear-gradient( to bottom,#FF6C07,#4DA9A7,#D31772,#FCD116);
-   --gradient-background: linear-gradient(to right,#DCEFF0,#F4F4F6,#F3E6EE);
-   --gradient-button-fixed: linear-gradient(90deg,#FF6C07 0%,#4DA9A7 33%, #D31772 66%, #FCD116 100%);
-   
-   --gradient-card-border: conic-gradient(from -17.59deg at 50% 50%, #CE32A3 -34.36deg, #3CB594 86.54deg, #ff6c07 179.07deg, #CE32A3 325.64deg, #3CB594 446.54deg);
-   --gradient-loader: conic-gradient(from -17.59deg at 50% 50%, #CE32A3 -34.36deg, #3CB594 86.54deg, #FF6C07 179.07deg, #CE32A3 325.64deg, #3CB594 446.54deg);
+  /*Gradientes*/
+  --gradient-card-tag-home: linear-gradient(90deg, #D60270 0%, #FF6C07 100%);
+  --gradient-card-line-1: linear-gradient(90deg, #FF6C07, #4DA9A7);
+  --gradient-card-line-2: linear-gradient(to right, #00C1B5, #00C1B5);
+  --gradient-card-line-3: linear-gradient(to right, #FF6C07, #FF6C07);
+  --gradient-background: linear-gradient(to right, #DCEFF0, #F4F4F6, #F3E6EE);
+  --gradient-button-fixed: linear-gradient(90deg, #FF6C07 0%, #4DA9A7 33%, #D31772 66%, #FCD116 100%);
+
+  --gradient-bar-horizontal: linear-gradient(to right, #FF6C07, #4DA9A7, #D31772, #FCD116);
+  --gradient-bar-horizontal-4-naranverderosaamarillo: linear-gradient(to right, #FF6C07, #4DA9A7, #D31772, #FCD116);
+  --gradient-bar-vertical-4-naranverderosaamarillo: linear-gradient(to bottom, #FF6C07, #4DA9A7, #D31772, #FCD116);
+  --gradient-bar-horizontal-5-verde: linear-gradient(to right, #00C1B5, #99EAE5, #00877F, #99EAE5, #00C1B5);
+  --gradient-bar-vertical-5-verde: linear-gradient(to bottom, #00C1B5, #99EAE5, #00877F, #99EAE5, #00C1B5);
+  --gradient-bar-horizontal-5-amarillo: linear-gradient(to right, #FF6C07, #FCD116, #FFB066, #FCD116, #FF6C07);
+  --gradient-bar-vertical-5-amarillo: linear-gradient(to bottom, #FF6C07, #FCD116, #FFB066, #FCD116, #FF6C07);
+  --gradient-bar-horizontal-5-magenta: linear-gradient(to right, #D60270, #F9C1DB, #ED418D, #F9C1DB, #D60270);
+  --gradient-bar-vertical-5-magenta: linear-gradient(to bottom, #D60270, #F9C1DB, #ED418D, #F9C1DB, #D60270);
+  --gradient-bar-vertical: linear-gradient(to bottom, #FF6C07, #4DA9A7, #D31772, #FCD116);
+  --gradient-background: linear-gradient(to right, #DCEFF0, #F4F4F6, #F3E6EE);
+  --gradient-button-fixed: linear-gradient(90deg, #FF6C07 0%, #4DA9A7 33%, #D31772 66%, #FCD116 100%);
+
+  --gradient-card-border: conic-gradient(from -17.59deg at 50% 50%, #CE32A3 -34.36deg, #3CB594 86.54deg, #ff6c07 179.07deg, #CE32A3 325.64deg, #3CB594 446.54deg);
+  --gradient-loader: conic-gradient(from -17.59deg at 50% 50%, #CE32A3 -34.36deg, #3CB594 86.54deg, #FF6C07 179.07deg, #CE32A3 325.64deg, #3CB594 446.54deg);
 
 }
 
-  .bg-conic-custom {
-    background-image: conic-gradient(
-      from -17.59deg at 50% 50%,
+.bg-conic-custom {
+  background-image: conic-gradient(from -17.59deg at 50% 50%,
       #CE32A3 -34.36deg,
       #3CB594 86.54deg,
       #ff6c07 179.07deg,
       #CE32A3 325.64deg,
-      #3CB594 446.54deg
-    );
-  }
+      #3CB594 446.54deg);
+}
 
 body {
   background: var(--background);
@@ -251,6 +249,7 @@ body {
   width: fit-content;
   margin-inline: auto;
 }
+
 .embla__dot {
   -webkit-appearance: none;
   appearance: none;
@@ -267,16 +266,15 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: box-shadow 0.2s ease-in-out, width 0.2s
-   ease-in-out, height 0.2s ease-in-out, border-radius 0.2s ease-in-out;
+  transition: box-shadow 0.2s ease-in-out, width 0.2s ease-in-out, height 0.2s ease-in-out, border-radius 0.2s ease-in-out;
 
-   @media screen and (max-width: 576px) {
+  @media screen and (max-width: 576px) {
     width: 12px;
     height: 12px;
   }
 }
 
-.embla__dot--selected{
+.embla__dot--selected {
   width: 48px;
   height: 16px;
   border-radius: 16px;
@@ -295,22 +293,22 @@ body {
   cursor: not-allowed;
 }
 
-.border-gradient-verde{
-  border:none;
+.border-gradient-verde {
+  border: none;
   border-bottom: 2px solid transparent;
-  border-image: linear-gradient(to right, #00C1B5,#99EAE5,#00877F,#99EAE5,#00C1B5);
+  border-image: linear-gradient(to right, #00C1B5, #99EAE5, #00877F, #99EAE5, #00C1B5);
   border-image-slice: 0 0 100% 0;
 }
 
-.border-gradient-fixed{
+.border-gradient-fixed {
   border: none;
   border-bottom: 2px solid transparent;
   border-image: var(--gradient-button-fixed) 1;
 }
 
-.border-gradient-fixed-main{
+.border-gradient-fixed-main {
   border: none;
-  
+
   @media screen and (max-width: 760px) {
     border-bottom: 2px solid transparent;
     border-image: var(--gradient-button-fixed) 1;
@@ -318,22 +316,22 @@ body {
 
 }
 
-.border-gradient-fixed-main-desktop{
-  &::before{
+.border-gradient-fixed-main-desktop {
+  &::before {
 
     @media screen and (min-width: 1024px) {
-    content: '';
-    position: relative;
-    display: block;
-    top: 10px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 2px;
-    width: 100%;
-    border-bottom: 2px solid transparent;
-    border-image: var(--gradient-button-fixed) 1;
-  }
+      content: '';
+      position: relative;
+      display: block;
+      top: 10px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
+      width: 100%;
+      border-bottom: 2px solid transparent;
+      border-image: var(--gradient-button-fixed) 1;
+    }
 
   }
 }
@@ -363,3 +361,19 @@ body {
 .custom-scroll::-webkit-scrollbar-button {
   display: none !important;
 }
+
+  @media screen and (max-width: 1024px) {
+
+    .mobile-input-font input,
+    .mobile-input-font textarea,
+    .mobile-input-font select,
+    .mobile-input-font [role="textbox"],
+    .mobile-input-font [data-slot="input"] {
+      font-size: 16px !important;
+    }
+
+    .mobile-input-font label,
+    .mobile-input-font [data-slot="label"] {
+      font-size: 16px;
+    }
+  }

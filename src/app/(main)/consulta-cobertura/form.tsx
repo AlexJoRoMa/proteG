@@ -627,7 +627,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
         </div>
       }
 
-      <Form className="w-full max-w-[95%]" onSubmit={onSubmit}>
+      <Form className="w-full max-w-[95%] mobile-input-font" onSubmit={onSubmit}>
         <GooglePlacesInput
           value={street}
           onValueChange={(e) => handleDirectionChange(e)}
