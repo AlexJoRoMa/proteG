@@ -292,7 +292,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
                         </div>
 
                         <Input 
-                            className='min-w-[340px] mb-6 text-[16px]' 
+                            className='min-w-[340px] mb-6 text-[16px] mobile-input-font' 
                             maxLength={12}
                             labelPlacement='outside-top' 
                             isClearable 
