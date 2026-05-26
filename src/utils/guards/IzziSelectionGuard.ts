@@ -1,4 +1,4 @@
-import { IzziSelection, UserAnswers } from "@/types/ConfiguradorTypes";
+import { IzziSelection, OfferItem, UserAnswers } from "@/types/ConfiguradorTypes";
 import { Dispatch, SetStateAction } from "react";
 
 export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: Dispatch<SetStateAction<IzziSelection | null>>) {
@@ -6,6 +6,16 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
     const hasInternet = !!userAnswers.internet;
     const hasTv = !!userAnswers.tv;
     const hasMovil = !!userAnswers.movil;
+
+    const getVelocidadMaxima = (paquete?: OfferItem | null, useMovilVelocity: boolean = false) => {
+        if (!paquete) return undefined;
+
+        if (useMovilVelocity && paquete.velocidadMaximaMovil) {
+            return paquete.velocidadMaximaMovil;
+        }
+
+        return paquete.velocidadMaxima;
+    };
 
     // izzi internet
     if (hasInternet && !hasTv && !hasMovil) {
@@ -20,7 +30,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
             precioDomiciliacion: userAnswers.internet?.paquete?.precioDomiciliacion,
             tiempoPlan: userAnswers.internet?.paquete?.tiempoPlan,
             velocidadMinima: userAnswers.internet?.paquete?.velocidadMinima,
-            velocidadMaxima: userAnswers.internet?.paquete?.velocidadMaxima,
+            velocidadMaxima: getVelocidadMaxima(userAnswers.internet?.paquete, true),
             extrasIncluidos: userAnswers.internet?.paquete?.extrasIncluidos,
             canales: userAnswers.internet?.paquete?.canales,
             canalesHd: userAnswers.internet?.paquete?.canalesHd,
@@ -45,7 +55,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
             precioDomiciliacion: userAnswers.tv?.paquete?.precioDomiciliacion,
             tiempoPlan: userAnswers.tv?.paquete?.tiempoPlan,
             velocidadMinima: userAnswers.tv?.paquete?.velocidadMinima,
-            velocidadMaxima: userAnswers.tv?.paquete?.velocidadMaxima,
+            velocidadMaxima: getVelocidadMaxima(userAnswers.tv?.paquete, true),
             extrasIncluidos: userAnswers.tv?.paquete?.extrasIncluidos,
             canales: userAnswers.tv?.paquete?.canales,
             canalesHd: userAnswers.tv?.paquete?.canalesHd,
@@ -115,7 +125,7 @@ export function IzziSelectionGuard(userAnswers: UserAnswers, setIzziSelection: D
             precioDomiciliacion: userAnswers.tv?.paquete?.precioDomiciliacion,
             tiempoPlan: userAnswers.tv?.paquete?.tiempoPlan,
             velocidadMinima: userAnswers.tv?.paquete?.velocidadMinima,
-            velocidadMaxima: userAnswers.tv?.paquete?.velocidadMaxima,
+            velocidadMaxima: getVelocidadMaxima(userAnswers.tv?.paquete, true),
             extrasIncluidos: userAnswers.tv?.paquete?.extrasIncluidos,
             canales: userAnswers.tv?.paquete?.canales,
             canalesHd: userAnswers.tv?.paquete?.canalesHd,
