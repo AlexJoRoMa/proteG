@@ -8,6 +8,7 @@ import { EntrySkeletonType } from 'contentful';
 import React from 'react';
 import PageDataTracker from '@/components/tracking/PageDataTracker';
 
+export const dynamic = 'force-dynamic';
 const CheckoutPage = async () => {
 
   const Icon = await contentfulClient.getEntries({
