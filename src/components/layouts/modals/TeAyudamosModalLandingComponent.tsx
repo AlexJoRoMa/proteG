@@ -39,7 +39,7 @@ const TeAyudamosLandingModalComponent = ({ isOpen = true, onClose, modalData, te
                   text={<><CallMeIcon/>{data.column1.row2.link}</>}
                   idModal='te-llamamos-modal'
                   closeButtonStroke='black'
-                  modalContentClassName="w-full h-[52dvh] sm:h-[52vh] sm:w-[80vw] xl:h-auto xl:w-[80vw] 2xl:w-[52vw] 2xl:h-auto"
+                  modalContentClassName="modal-content-size"
                   backdropColor='black-0/80'>
                     <TeLlamamosModalComponent />
                   </LinkModal>

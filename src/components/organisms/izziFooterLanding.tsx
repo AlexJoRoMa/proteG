@@ -62,7 +62,7 @@ export default function LandingFooterContent({FooterData}: FooterComponentProps)
                 textBtn={contact.fields.navigationTitle}
                 classStyles={`bg-color-trasparent underline   text-[18px]`}
                 closeButtonStroke='black'
-                modalContentClassName='w-full h-[52dvh] sm:h-[52vh] sm:w-[80vw] xl:h-auto xl:w-[80vw] 2xl:w-[52vw] 2xl:h-auto'
+                modalContentClassName='modal-content-size'
                 backdropColor='black-0/80'
                 startContent={<Image className='max-w-[24px] h-auto' src={`https:${contact.fields.linkIcon?.fields.file.url}`} alt={`${contact.fields.linkIcon?.fields.file.fileName}`} width={24} height={24} priority />}
                 style={{color:contact.fields.backgroundColor?.value as string}}
