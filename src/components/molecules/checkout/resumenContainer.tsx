@@ -67,7 +67,8 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
         isStepCompleted,
         cardRecurrent,
         setIsStepValid,
-        copyModales
+        copyModales,
+        completedSteps
     } = useCheckout();
 
     const resumenCopys = copyResumen as ResumenData;
@@ -115,7 +116,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     useEffect(() => {
         stepStatusRef.current = isStepCompleted(currentStep)
         // eslint-disable-next-line react-hooks/exhaustive-deps 
-    }, [currentStep])
+    }, [currentStep, completedSteps])
 
     const isStep2 = currentStep === 2;
     const isDisabled = loading || (!isStep2 && !isStepValid && !stepStatusRef.current);

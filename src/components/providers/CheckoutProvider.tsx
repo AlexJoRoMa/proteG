@@ -46,6 +46,7 @@ interface CheckoutContextType {
   nextStep: () => void
   prevStep: () => void
   markStepAsCompleted: (step: number) => void
+  markStepAsIncompleted: (step: number) => void
 
   // Helper functions
   isStepCompleted: (step: number) => boolean
@@ -124,6 +125,11 @@ export const CheckoutProvider = ({
       setCompletedSteps(prev => [...prev, step])
     }
   }, [completedSteps])
+
+  const markStepAsIncompleted = useCallback((step: number) => {
+    const filteredSteps = completedSteps.filter(arr => arr !== step);
+    setCompletedSteps(filteredSteps);
+  }, [completedSteps]);
 
   const nextStep = useCallback(async () => {
     const validator = validators.current[currentStep]
@@ -210,6 +216,7 @@ export const CheckoutProvider = ({
     nextStep,
     prevStep,
     markStepAsCompleted,
+    markStepAsIncompleted,
     isStepCompleted,
     isStepActive,
     canGoToStep,
