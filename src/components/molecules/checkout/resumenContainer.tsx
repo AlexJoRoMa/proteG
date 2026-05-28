@@ -43,6 +43,7 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
     const PROCESS_STATUS_WAIT_TIMEOUT_MS = 300000;
     const PROCESS_STATUS_WAIT_INTERVAL_MS = 3000;
     const [loading, setLoading] = useState(false);
+    const [activeProcess, setActiveProcess] = useState(false);
     const [specificModal, setSpecificModal] = useState<string | null>(null);
     const [isSpecificModalOpen, setIsSpecificModalOpen] = useState<boolean>(false);
     const [isProcessFinished, setIsProcessFinished] = useState(false);
@@ -239,24 +240,25 @@ export default function ResumenContainer({ variant }: ResumenContainerProps) {
 
         try {
 
+            if (!activeProcess) {
+                // IzziEnroll
+                const resultIzziEnroll = await GetIzziEnroll(coberturaData, { ...datosContratacionRef.current, VerificacionContacto: stepData }, offnetIzzi, offnetSky, globalIzziSelection);
 
+                if (!resultIzziEnroll || resultIzziEnroll?.code || resultIzziEnroll?.error) {
+                    setActiveProcess(false);
+                    router.push("/error");
+                }
 
-            // IzziEnroll
-            const resultIzziEnroll = await GetIzziEnroll(coberturaData, { ...datosContratacionRef.current, VerificacionContacto: stepData }, offnetIzzi, offnetSky, globalIzziSelection);
+                setActiveProcess(true);
+                setIzziEnroll(resultIzziEnroll);
+                izziEnrrollRef.current = resultIzziEnroll;
 
-            if (!resultIzziEnroll || resultIzziEnroll?.code || resultIzziEnroll?.error) {
-                router.push("/error");
+                // // ProcessStatus
+                await iniciarPolling();
+
+                // SubmitOffer
+                await runSubmitOffer()
             }
-
-
-            setIzziEnroll(resultIzziEnroll);
-            izziEnrrollRef.current = resultIzziEnroll;
-
-            // // ProcessStatus
-            await iniciarPolling();
-
-            // SubmitOffer
-            await runSubmitOffer()
 
             nextStep()
 
