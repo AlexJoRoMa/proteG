@@ -1,14 +1,17 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Form, Input, Progress  } from '@heroui/react'
+import { Form, Input, Progress } from '@heroui/react'
 import { DeleteIcon, UploadICon } from '@/constants/IconsConstants';
 import { useStep4Form } from '@/hooks/checkout/useStep4Form';
 import { useMicrocopies } from '@/hooks/useMicrocopies';
+import { useCheckout } from '@/components/providers/CheckoutProvider';
 
 const descriptionStyle = 'mt-2 w-full text-black text-[16px] animate-appearance-in';
 const barTextStyle = 'flex items-center justify-between gap-3';
 
 const Step4 = () => {
+
+  const { markStepAsIncompleted, currentStep } = useCheckout();
 
   const [progressIne, setProgressIne] = useState(0);
 
@@ -23,24 +26,24 @@ const Step4 = () => {
   const isIneLoad = !!ineFile && progressIne < 100;
 
   useEffect(() => {
-    if(ineFile) {
+    if (ineFile) {
       const timer = setInterval(() => {
         setProgressIne((prev) => (prev >= 100 ? 100 : prev + 10));
       }, 300);
-      return ()=> clearInterval(timer);
+      return () => clearInterval(timer);
     } else {
       setProgressIne(0);
     }
 
   }, [ineFile])
 
-  const getSeconds = (progress: number) => Math.ceil((100-progress) / 33.33)
+  const getSeconds = (progress: number) => Math.ceil((100 - progress) / 33.33)
 
   const handleFileChange =
     (
       setter: (f: File | null) => void,
       setError: (e: string | null) => void,
-      resetProgress : (n: number) => void
+      resetProgress: (n: number) => void
     ) =>
       (e: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -85,7 +88,8 @@ const Step4 = () => {
     setter(null);
     setError(null);
     invalidateStep();
-    resetProgress(0)
+    resetProgress(0);
+    markStepAsIncompleted(currentStep);
   };
 
   const borderClass = (hasFile: boolean, hasError: boolean, progress: number) =>
@@ -132,7 +136,7 @@ const Step4 = () => {
           required
           className='w-full'
           endContent={
-            ineFile && progressIne ===100 ? (
+            ineFile && progressIne === 100 ? (
               <div onClick={() => clearFile(ineInputRef, setIneFile, setErrorIne, setProgressIne)}><DeleteIcon /></div>
             ) : (
               <UploadICon />
@@ -144,9 +148,9 @@ const Step4 = () => {
               <div className={descriptionStyle}>
                 <div className={barTextStyle}>
                   <Progress
-                  size="md"
-                  value={progressIne}
-                  classNames={{indicator: "bg-black"}}
+                    size="md"
+                    value={progressIne}
+                    classNames={{ indicator: "bg-black" }}
                   /><span>{Math.round(progressIne)}%</span>
                 </div>
                 <div className='mt-2'>
@@ -156,7 +160,7 @@ const Step4 = () => {
               </div>
             )
           }
-          
+
         />
         {errorIne && (
           <p className='mt-[12px] text-red-700 text-xs md:text-sm'>{errorIne}</p>
