@@ -333,7 +333,7 @@ const TeLlamamosFormContent = ({ modalData, onClose }: TeLlamamosFormModalProps 
 
                         <Button 
                             type='submit' 
-                            className='bg-black w-[260px] mx-auto md:w-[340px] text-white font-bold h-[48px] text-[16px] leading-[24px] rounded-none mt-4 disabled:cursor-not-allowed disabled:opacity-30 disabled:pointer-events-none' 
+                            className='bg-black w-[260px] mx-auto md:w-[340px]  text-white font-bold h-[48px] text-[16px] leading-[24px] rounded-none mt-4 disabled:cursor-not-allowed disabled:opacity-30 disabled:pointer-events-none' 
                             disabled={!isFormValid() || isSubmitting}
                         >
                             {isSubmitting ? 'Enviando...' : finalData.buttonText}

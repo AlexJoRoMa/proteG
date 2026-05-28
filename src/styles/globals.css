@@ -362,6 +362,10 @@ body {
   display: none !important;
 }
 
+.modal-content-size {
+  @apply w-full h-[auto] sm:h-[auto] sm:w-[80vw] xl:h-auto xl:w-[80vw] 2xl:w-[52vw] 2xl:h-auto;
+}
+
   @media screen and (max-width: 1024px) {
 
     .mobile-input-font input,
