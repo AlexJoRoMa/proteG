@@ -49,7 +49,7 @@ const FALLBACKS: Record<string, string> = {
   'cobertura.button.ubicacion': 'utilizar mi ubicación actual',
   'cobertura.button.confirmar': 'confirmar dirección',
   'cobertura.descripcion.direccion': 'Ingresa tu dirección y selecciona uno de la lista',
-  'cobertura.seleccionar.mapa' : 'Seleccionar dirección desde el  mapa'
+  'cobertura.seleccionar.mapa': 'Seleccionar dirección desde el  mapa'
 };
 
 const COVERAGE_LOG_PREFIX = '[Cobertura][API]';
@@ -137,7 +137,7 @@ const GooglePlacesInput = ({
   addressSelected,
   clear,
   onFocus
- }: GooglePlacesInputProps) => {
+}: GooglePlacesInputProps) => {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -188,7 +188,7 @@ const GooglePlacesInput = ({
   )
 }
 
-export default function CoberturaForm({ onGoMap}: CoberturaProps) {
+export default function CoberturaForm({ onGoMap }: CoberturaProps) {
   const map = useMap();
   const checkFieldRef = useRef<HTMLDivElement>(null);
   const [error] = useState<string | null>(null);
@@ -223,8 +223,8 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
     setMode,
     resetCobertura
   } = useContent();
-  
-  const { setGlobalFlag, setFormattedAddress, setCoberturaData, 
+
+  const { setGlobalFlag, setFormattedAddress, setCoberturaData,
     setAddressFielSelected, setStreetDireccion, setColoniaError, coloniaError } = useIzziContent();
 
   const showFields = (addressSelected || hasAddress !== '') && street.trim() !== '';
@@ -236,7 +236,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
   const isUserCheck = isColoniaValid || !isNumExtValid;
   const isFieldsCheck = !addressSelected || isSearching || hasResponse || isLoading;
 
-  const btnDisable = isUserCheck || isFieldsCheck ;
+  const btnDisable = isUserCheck || isFieldsCheck;
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -247,9 +247,9 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
   }, [streetNumber, addressSelected]);
 
   useEffect(() => {
-    if(doErrorScroll) {
-      if(checkFieldRef.current) {
-        checkFieldRef.current?.scrollIntoView({ behavior:'smooth', block:'start' });
+    if (doErrorScroll) {
+      if (checkFieldRef.current) {
+        checkFieldRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
   }, [doErrorScroll])
@@ -332,45 +332,45 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
       setCoberturaData(coveraData);
       setIsLoading(false);
 
-        const { generateLeadId, generateCoverageSessionId, normalizeUserData, pushEcommerceEvent } = izziDataLayerHelpers;
+      const { generateLeadId, generateCoverageSessionId, normalizeUserData, pushEcommerceEvent } = izziDataLayerHelpers;
 
-        const leadId = generateLeadId();
-        const sessionId = generateCoverageSessionId();
-      
-        
+      const leadId = generateLeadId();
+      const sessionId = generateCoverageSessionId();
 
-        const userData = normalizeUserData({
-            street: coveraData.address,
-            city: locality,
-            state,
-            postalCode: postalCode,
-        });
 
-        pushEcommerceEvent(
-            EVENTS.COVERAGE_COMPLETE,
-            {
-                value: 0,
-                currency: CURRENCY,
+
+      const userData = normalizeUserData({
+        street: coveraData.address,
+        city: locality,
+        state,
+        postalCode: postalCode,
+      });
+
+      pushEcommerceEvent(
+        EVENTS.COVERAGE_COMPLETE,
+        {
+          value: 0,
+          currency: CURRENCY,
+        },
+        {
+          session_id: sessionId,
+          lead_id: leadId,
+          coverage_timestamp: new Date().toISOString(),
+          coverage_available: true,
+          coverage_type: 'fiber',
+          coverage_region: locality,
+          lead_data: {
+            address: {
+              street: coveraData.address,
+              colony: neighborhood,
+              city: locality,
+              state,
+              postal_code: postalCode,
             },
-            {
-                session_id: sessionId,
-                lead_id: leadId,
-                coverage_timestamp: new Date().toISOString(),
-                coverage_available: true,
-                coverage_type: 'fiber',
-                coverage_region: locality,
-                lead_data: {
-                    address: {
-                        street: coveraData.address,
-                        colony: neighborhood,
-                        city: locality,
-                        state,
-                        postal_code: postalCode,
-                    },
-                },
-                user_data: userData,
-            }
-        );
+          },
+          user_data: userData,
+        }
+      );
 
       await createCookie(coveraData);
 
@@ -411,8 +411,8 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
   }
 
   const formatFullAddress = (data: AddressParts) => {
-    const {street, streetNumber, aptNumber, neighborhood, postalCode, locality, state} = data;
-     const parts = [
+    const { street, streetNumber, aptNumber, neighborhood, postalCode, locality, state } = data;
+    const parts = [
       street,
       streetNumber ? `#${streetNumber}` : null,
       aptNumber ? `Int.${aptNumber}` : null,
@@ -420,9 +420,9 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
       postalCode ? `C.P .${postalCode}` : null,
       locality ? locality : null,
       state ? state : null,
-     ];
+    ];
 
-     return parts.filter(Boolean).join(', ');
+    return parts.filter(Boolean).join(', ');
   }
 
   useEffect(() => {
@@ -503,11 +503,11 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
       setLocality(valueLocality);
     }
 
-    if(!coloniaExist) {
+    if (!coloniaExist) {
       setColoniaError(true)
     }
 
-    if(!valueStreet) {
+    if (!valueStreet) {
       setNumExtError(true)
     }
   }
@@ -544,7 +544,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
     const lat = place?.geometry?.location?.lat() ?? 0;
     const lng = place?.geometry?.location?.lng() ?? 0;
     const addressExist = place?.name || place?.formatted_address || '';
-    
+
     setHasAddress(addressExist);
     setAddress(true);
 
@@ -557,7 +557,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
         setAddressFielSelected(true);
       });
       if (map) map.panTo({ lat, lng })
-    } 
+    }
     if (mode === 'address') {
       setMode('postalCode')
     }
@@ -573,7 +573,7 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
       return;
     }
 
-    if(change !== hasAddress){
+    if (change !== hasAddress) {
       setAddress(false)
       setAddressFielSelected(false)
     }
@@ -627,144 +627,147 @@ export default function CoberturaForm({ onGoMap}: CoberturaProps) {
         </div>
       }
 
-      <Form className="w-full max-w-[95%] mobile-input-font" onSubmit={onSubmit}>
+      <Form className="w-full mobile-input-font" onSubmit={onSubmit}>
         <GooglePlacesInput
           value={street}
           onValueChange={(e) => handleDirectionChange(e)}
           onPlaceSelect={handleGoogglePlace}
           label={getText('cobertura.form.direccion.label')}
           placeholder={getText('cobertura.form.direccion.placeholder')}
-          errorMessage={ getText('cobertura.form.direccion.error')}
+          errorMessage={getText('cobertura.form.direccion.error')}
           description={addressSelected}
-          onBlur={() => setTimeout(() =>setIsSearching(false), 300)}
+          onBlur={() => setTimeout(() => setIsSearching(false), 300)}
           addressSelected={addressSelected}
           clear={clearForm}
-          onFocus={()=>setIsSearching(true)}
+          onFocus={() => setIsSearching(true)}
         />
 
         <div className='block scroll-mt-[100px] lg:scroll-mt-[300px]'
-        ref={checkFieldRef}
+          ref={checkFieldRef}
         />
 
-        <div  className='lg:hidden xsm:block mb-2'>
-          <button
-            onClick={onGoMap}
-            className=' font-bold text-[16px] text-[#007BFF] underline'>
-            {getText('cobertura.seleccionar.mapa')}
-          </button>
-        </div>
+        {showFields && (
+          <div className='lg:hidden xsm:block mb-2'>
+            <button
+              onClick={onGoMap}
+              className=' font-bold text-[16px] text-[#007BFF] underline'>
+              {getText('cobertura.seleccionar.mapa')}
+            </button>
+          </div>
+        )
+        }
 
         {showFields && (
           <>
-          <div className='flex col-2 w-full gap-4 xsm:mt-1 lg:mt-2 2xl:mt-0'>
-            <Input
-              isReadOnly={isFieldDisabled}
-              isRequired
-              isInvalid={numExtError}
-              label={getText('cobertura.form.numExterno.label')}
-              placeholder={getText('cobertura.form.numExterno.placeholder')}
-              errorMessage={getText('cobertura.form.numExterno.error')}
-              labelPlacement="outside"
-              name="extNumber"
-              type="text"
-              value={streetNumber}
-              onValueChange={(val) =>{
-                setStreetNumber(val);
-                setNumExtError(val.trim().length === 0)
-              }}
-              classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
-            />
-            <Input
-              isReadOnly={isFieldDisabled}
-              label={getText('cobertura.form.numInterno.label')}
-              placeholder={getText('cobertura.form.numInterno.placeholder')}
-              labelPlacement="outside"
-              name="intNumber"
-              type="text"
-              value={aptNumber}
-              onValueChange={setAptNumber}
-              classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
-              className='max-w-[95%]'
-            />
-        </div>
-        <div className='grid grid-cols-1 lg:grid-cols-2 w-full h-full gap-4 mt-2 xl:mt-6 2xl:mt-2'>
-          <Input
-            isReadOnly={isFieldDisabled}
-            isRequired
-            isInvalid={coloniaError}
-            label={getText('cobertura.form.colonia.label')}
-            placeholder={getText('cobertura.form.colonia.placeholder')}
-            errorMessage={getText('cobertura.form.colonia.error')}
-            labelPlacement="outside"
-            name="neighborhood"
-            type="text"
-            value={neighborhood}
-            onValueChange={(val) =>{
-              setNeighborhood(val);
-              setColoniaError(val.trim() === '')
-            }}
-            classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
-          />
-          <Input
-            isReadOnly
-            label={getText('cobertura.form.municipio.label')}
-            placeholder={getText('cobertura.form.municipio.placeholder')}
-            labelPlacement="outside"
-            name="locality"
-            type="text"
-            value={locality}
-            onKeyDown={handleCharPress}
-            onValueChange={setLocality}
-            classNames={inputDisableStyles}
-          />
-          <Input
-            isReadOnly
-            isRequired
-            label={getText('cobertura.form.estado.label')}
-            placeholder={getText('cobertura.form.estado.placeholder')}
-            errorMessage={getText('cobertura.form.estado.error')}
-            labelPlacement="outside"
-            name="state"
-            type="text"
-            value={state}
-            onKeyDown={handleCharPress}
-            onValueChange={setState}
-            classNames={inputDisableStyles}
-          />
-          <Input
-            isReadOnly
-            isRequired
-            label={getText('cobertura.form.codigo.label')}
-            placeholder={getText('cobertura.form.codigo.placeholder')}
-            errorMessage={getText('cobertura.form.codigo.error')}
-            labelPlacement="outside"
-            name="postalCode"
-            type="text"
-            value={postalCode}
-            onValueChange={setPostalCode}
-            classNames={inputDisableStyles}
-            maxLength={5}
-          />
+            <div className='flex col-2 w-full gap-4 xsm:mt-1 lg:mt-2 2xl:mt-0'>
+              <Input
+                isReadOnly={isFieldDisabled}
+                isRequired
+                isInvalid={numExtError}
+                label={getText('cobertura.form.numExterno.label')}
+                placeholder={getText('cobertura.form.numExterno.placeholder')}
+                errorMessage={getText('cobertura.form.numExterno.error')}
+                labelPlacement="outside"
+                name="extNumber"
+                type="text"
+                value={streetNumber}
+                onValueChange={(val) => {
+                  setStreetNumber(val);
+                  setNumExtError(val.trim().length === 0)
+                }}
+                classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
+              />
+              <Input
+                isReadOnly={isFieldDisabled}
+                label={getText('cobertura.form.numInterno.label')}
+                placeholder={getText('cobertura.form.numInterno.placeholder')}
+                labelPlacement="outside"
+                name="intNumber"
+                type="text"
+                value={aptNumber}
+                onValueChange={setAptNumber}
+                classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
+                className='max-w-[95%]'
+              />
+            </div>
+            <div className='grid grid-cols-1 lg:grid-cols-2 w-full h-full gap-4 mt-2 xl:mt-6 2xl:mt-2'>
+              <Input
+                isReadOnly={isFieldDisabled}
+                isRequired
+                isInvalid={coloniaError}
+                label={getText('cobertura.form.colonia.label')}
+                placeholder={getText('cobertura.form.colonia.placeholder')}
+                errorMessage={getText('cobertura.form.colonia.error')}
+                labelPlacement="outside"
+                name="neighborhood"
+                type="text"
+                value={neighborhood}
+                onValueChange={(val) => {
+                  setNeighborhood(val);
+                  setColoniaError(val.trim() === '')
+                }}
+                classNames={isFieldDisabled ? inputDisableStyles : inputStyles(true)}
+              />
+              <Input
+                isReadOnly
+                label={getText('cobertura.form.municipio.label')}
+                placeholder={getText('cobertura.form.municipio.placeholder')}
+                labelPlacement="outside"
+                name="locality"
+                type="text"
+                value={locality}
+                onKeyDown={handleCharPress}
+                onValueChange={setLocality}
+                classNames={inputDisableStyles}
+              />
+              <Input
+                isReadOnly
+                isRequired
+                label={getText('cobertura.form.estado.label')}
+                placeholder={getText('cobertura.form.estado.placeholder')}
+                errorMessage={getText('cobertura.form.estado.error')}
+                labelPlacement="outside"
+                name="state"
+                type="text"
+                value={state}
+                onKeyDown={handleCharPress}
+                onValueChange={setState}
+                classNames={inputDisableStyles}
+              />
+              <Input
+                isReadOnly
+                isRequired
+                label={getText('cobertura.form.codigo.label')}
+                placeholder={getText('cobertura.form.codigo.placeholder')}
+                errorMessage={getText('cobertura.form.codigo.error')}
+                labelPlacement="outside"
+                name="postalCode"
+                type="text"
+                value={postalCode}
+                onValueChange={setPostalCode}
+                classNames={inputDisableStyles}
+                maxLength={5}
+              />
 
-        </div>
+            </div>
           </>
         )}
-        
+
         <div className='w-full pb-4 lg:pt-5 xsm:pt-4 lg:gap-4 xsm:gap-0 
         lg:relative lg:bottom-auto lg:left-auto lg:right-auto lg:z-0 lg:flex-row lg:justify-start lg:h-auto lg:bg-transparent
         fixed bottom-0 left-0 right-0 z-50 flex flex-col items-center justify-center w-full h-[144px] bg-white'>
 
-          <Button startContent={<LocationIcon className='shrink-0'/>} 
+          <Button startContent={<LocationIcon className='shrink-0' />}
             className='rounded-md  border border-black xsm:text-[16px] xl:text-[12px] text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[16px] min-[1150px]:text-[18px]
-            whitespace-normal py-[14px] h-[48px] w-[90%] lg:w-full' 
-            variant='bordered' 
+            whitespace-normal py-[14px] h-[48px] w-[90%] lg:w-full'
+            variant='bordered'
             onPress={handleLocationChange} isDisabled={hasResponse || isLoading}>
             {getText('cobertura.button.ubicacion')}
           </Button>
 
           <Button
             className={`text-white ${btnDisable ? 'bg-[#BFBFC5]' : 'bg-black'} xsm:text-[16px] text-[18px] min-[1024px]:text-[14px] min-[1095]:text-[12px] min-[1150px]:text-[18px]
-            py-[14px] rounded-md h-[48px] w-[90%] lg:w-full xsm:mt-4 lg:mt-0`} 
+            py-[14px] rounded-md h-[48px] w-[90%] lg:w-full xsm:mt-4 lg:mt-0`}
             isDisabled={btnDisable} type="submit">
             {getText('cobertura.button.confirmar')}
           </Button>
