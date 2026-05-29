@@ -64,7 +64,7 @@ export default function Cobertura() {
                     <APIProvider
                         solutionChannel='2'
                         apiKey={`${mapsKey}`}>
-                        <div className='lg:flex lg:flex-col-2 mt-3'>
+                        <div className='lg:flex lg:flex-col-2 mt-3 lg:gap-[26px]'>
                             <div className='lg:w-1/2'>
                             <p className="xsm:text-[16px] lg:text-[18px] mt-1">{getText('cobertura.subtitle')}</p>
                             {!checkValue ? 
@@ -77,7 +77,7 @@ export default function Cobertura() {
 
 
                             {/* Lado derecho de la pagina */}
-                            <div  ref={mapRef}  className='lg:w-1/2'>
+                            <div  ref={mapRef}  className='lg:w-1/2 mb-[154px] lg:mb-0'>
                                 {checkValue ?
                                     <div  className='pb-4'>
                                         <p className='xsm:text-[20px] lg:text-[24px] font-bold pb-2 xsm:mt-6 lg:mt-0'>
