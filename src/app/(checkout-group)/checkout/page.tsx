@@ -36,7 +36,7 @@ const CheckoutPage = async () => {
   });
 
   return (
-    <main className="min-h-screen w-full">
+    <main className="h-full w-full">
       <PageDataTracker
         pageType="checkout"
         pageName="Checkout - Configura tu paquete"

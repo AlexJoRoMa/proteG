@@ -29,8 +29,8 @@ const CheckoutSteps = ({
   const sharedContentSlot = contentSlot ?? activeStepContent;
 
   return (
-    <div className="px-[var(--spacing-sm)] 4xl:px-[var(--spacing-xl)] 3xl:px-[var(--spacing-lg)] 2xl:px-[var(--spacing-md)] sm:px-[var(--spacing-sm)] xl:px-0 !w-full">
-      <div className="flex flex-col xl:flex-row xl:flex-wrap items-stretch pt-[24px] pb-[15px] border-gradient-fixed-main w-full justify-around">
+    <div className="px-[var(--spacing-sm)] 4xl:px-[var(--spacing-xl)] 3xl:px-[var(--spacing-lg)] 2xl:px-[var(--spacing-md)] sm:px-[var(--spacing-sm)] xl:px-0 !w-full mb-[208px] xl:mb-0">
+      <div className="flex flex-col xl:flex-row xl:flex-wrap items-stretch pt-[24px] pb-[15px] w-full justify-around">
         {stepsArray.map((stepName, index) => {
           const stepNumber = index + 1;
           const isClickable = canGoToStep(stepNumber);
