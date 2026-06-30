@@ -1,0 +1,161 @@
+.CarouselCardComponent{
+
+    padding: 64px 0;
+
+    @media screen and (max-width: 576px) {
+    padding: 56px 0  40px  0;
+  }
+
+.embla {
+  max-width: calc(75% + 0.1 * var(--slide-spacing));
+    margin-right: auto;
+  --slide-height: 19rem;
+  --slide-spacing: 24px;
+  --slide-size: 100%;
+  --slide-spacing-sm: 1.6rem;
+  --slide-size-sm: 50%;
+  --slide-spacing-lg: 24px;
+  --slide-size-lg: calc(100% / 3); /* Tener cuidado al modificar esto... puede dañar el componente del carousel */
+
+  @media screen and (max-width: 576px) {
+    max-width: 90.7vw;
+    margin-left: var(--spacing-sm);
+    margin-right: 0;
+  }
+
+  @media screen and (min-width: 600px) {
+    margin-left: var(--spacing-md);
+  }
+
+  @media screen and (min-width: 1400px) {
+    margin-left: var(--spacing-xl);
+  }
+
+  position: relative;
+  overflow: initial;
+}
+.embla__viewport {
+  overflow: hidden;
+}
+.embla__container {
+  backface-visibility: hidden;
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+
+   @media screen and (min-width: 1400px) {
+    
+  }
+}
+
+.embla__slide {
+  min-width: 0;
+  flex: 0 0 var(--slide-size);
+  padding-right: var(--slide-spacing);
+  max-width: 385px;
+  
+  @media screen and (max-width: 576px) {
+    padding-right: 0;
+  }
+
+  @media screen and (min-width: 1024px) {
+    max-width: none; /*Poner si ponen problema por que las cards en pantallas grandes se ven pocas y pss prefieren rellenar deformando las tarjetas*/
+  }
+
+  @media screen and (min-width: 1601px) {
+    box-sizing: content-box;
+    max-width: min-content;
+   >div{
+    min-width: 384px;
+   }
+  }
+  
+  >div{
+      >img{
+      border-width: 0 0 1px 0;
+      border-style: solid;
+      }
+  }
+
+  
+  &:nth-child(3n+4), &:nth-child(1) {
+      >div>img{
+            border-image: var(--gradient-card-line-1) 1;
+      }
+  }
+
+  &:nth-child(3n+5), &:nth-child(2) {
+      >div>img{
+        border-image: var(--gradient-card-line-2) 1;
+      }
+      
+  }
+
+  &:nth-child(3n+6), &:nth-child(3) {
+    >div>img{
+         border-image: var(--gradient-card-line-3) 1;
+    }
+  }
+}
+@media (min-width: 750px) {
+  .embla__slide {
+    flex: 0 0 var(--slide-size-sm);
+  }
+}
+@media (min-width: 1200px) {
+  .embla__slide {
+    flex: 0 0 var(--slide-size-lg);
+
+  }
+}
+
+.embla__prev{
+    left: -65px;
+    top: 50%;
+    position: absolute;
+    transform: translateY(-50%);
+
+    @media screen and (max-width: 560px) {
+        left: 0;
+        top: initial;
+        bottom: -25px;
+        transform: translateY(-10px);
+    }
+}
+
+.embla__next{
+    right: -65px;
+    top: 50%;
+    position: absolute;
+    transform: translateY(-50%);
+
+      @media screen and (max-width: 560px) {
+        right: 0;
+        top: initial;
+        bottom: -25px;
+        transform: translateY(-10px);
+    }
+}
+
+.embla__next img, .embla__prev img {
+    width: 48px;
+    cursor: pointer;
+
+    @media screen and (max-width: 560px) {
+        width: 32px;
+    }
+}
+
+  .titulo-carousel-card{
+    .rich-text-content{
+      gap:24px;
+    }
+  }
+
+  .rich-text-content{
+    gap:0;
+    @media screen and (max-width: 576px) {
+      gap: 10px;
+    }
+  }
+
+}

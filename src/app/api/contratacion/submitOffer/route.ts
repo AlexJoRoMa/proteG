@@ -1,0 +1,20 @@
+'use server'
+
+import { getSubmitOffer } from "@/services/izzi/contratacion";
+import { NextRequest } from "next/server";
+
+export async function POST(request: NextRequest) {
+
+    try {
+        const body = await request.json();
+
+        const data = await getSubmitOffer({
+            body,
+        });
+
+        return new Response(JSON.stringify(data), { status: 200 });
+    } catch (e) {
+        console.error("Error de API")
+        return new Response(JSON.stringify({ error: 'API fetch error', e }), { status: 500 });
+    }
+}
