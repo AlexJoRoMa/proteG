@@ -1,7 +1,5 @@
 import { Lato } from 'next/font/google';
 import "../styles/globals.css";
-import { IzziProvider } from '@/components/providers/IzziProvider';
-import { ScrollReset } from '@/utils/scroll-reset';
 
 
 const lato = Lato({
@@ -25,10 +23,8 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${lato.variable}`}>
       <body>
-        <IzziProvider>
-          <ScrollReset />
           {children}
-        </IzziProvider>
+        
       </body>
     </html>
   );
